@@ -4,19 +4,19 @@ setup:
 
 .PHONY: build
 build:
-	docker-compose build base-api
+	docker-compose build SingleViewApi
 
 .PHONY: serve
 serve:
-	docker-compose build base-api && docker-compose up base-api
+	docker-compose build SingleViewApi && docker-compose up SingleViewApi
 
 .PHONY: shell
 shell:
-	docker-compose run base-api bash
+	docker-compose run SingleViewApi bash
 
 .PHONY: test
 test:
-	docker-compose up test-database & docker-compose build base-api-test && docker-compose up base-api-test
+	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test
 
 .PHONY: lint
 lint:
