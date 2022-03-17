@@ -36,7 +36,7 @@ terraform {
   }
 }
 
-module "development" {
+/* module "development" {
   # Delete as appropriate:
   source                      = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/fargate"
   # source = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/ec2"
@@ -59,4 +59,4 @@ module "development" {
   cost_code = your project's cost code
   task_definition_secrets      = {}
   task_definition_secret_count = number # This number needs to reflect the number of environment variables provided
-}
+} */
