@@ -106,10 +106,10 @@ jobs:
       - setup_remote_docker
       - run:
           name: build
-          command: docker-compose build base-api-test
+          command: docker-compose build single-view-api-test
       - run:
           name: Run tests
-          command: docker-compose run base-api-test
+          command: docker-compose run single-view-api-test
   assume-role-development:
     executor: docker-python
     steps:
