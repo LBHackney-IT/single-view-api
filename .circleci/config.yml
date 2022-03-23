@@ -89,6 +89,12 @@ commands:
             sls deploy --stage <<parameters.stage>> --account <<parameters.aws-account>> --conceal
 
 jobs:
+  check-env:
+    executor: docker-python
+    steps:
+      - run:
+          name: print env
+          command: echo $TEST
   check-code-formatting:
     executor: docker-dotnet
     steps:
@@ -162,6 +168,8 @@ jobs:
 workflows:
   check-and-deploy-development:
     jobs:
+      - check-env:
+          context: api-nuget-token-context
       - check-code-formatting:
           context: api-nuget-token-context
       - build-and-test:
