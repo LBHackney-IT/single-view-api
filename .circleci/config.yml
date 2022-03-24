@@ -86,7 +86,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./SingleViewApi/
-            sls deploy --stage <<parameters.stage>> --conceal
+            sls deploy --stage <<parameters.stage>> --account <<parameters.aws-account>> --conceal
 
 jobs:
   check-env:
@@ -175,7 +175,7 @@ workflows:
       - build-and-test:
           context: api-nuget-token-context
       - assume-role-development:
-          context: api-assume-role-housing-development-context
+          context: api-assume-role-corporate-development-context
           requires:
             - build-and-test
           filters:
@@ -202,7 +202,7 @@ workflows:
 #             branches:
 #               only: master
 #       - assume-role-staging:
-#           context: api-assume-role-staging-context
+#           context: api-assume-role-corporate-staging-context
 #           requires:
 #               - build-and-test
 #           filters:
@@ -226,7 +226,7 @@ workflows:
 #           requires:
 #             - deploy-to-staging
 #       - assume-role-production:
-#           context: api-assume-role-production-context
+#           context:api-assume-role-corporate-production-context
 #           requires:
 #               - permit-production-terraform-release
 #           filters:
