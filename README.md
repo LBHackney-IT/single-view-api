@@ -21,45 +21,17 @@ Base API is a boilerplate code for being reused for new APIs for LBH
 4. Rename the initial template.
 5. Open it in your IDE.
 
-### Renaming
-
-The renaming of `SingleViewApi` into `SomethingElseApi` can be done by running a Renamer powershell script. To do so:
-1. Open the powershell and navigate to this directory's root.
-2. Run the script using the following command:
-```
-.\Renamer.ps1 -apiName My_Api -alternateName my-api
-```
-
-If your ***script execution policy*** prevents you from running the script, you can temporarily ***bypass*** that with:
-```
-powershell -noprofile -ExecutionPolicy Bypass -file .\Renamer.ps1 -apiName My_Api -alternateName my-api
-```
-
-Or you can change your execution policy, prior to running the script, permanently with _(this disables security so, be cautious)_:
-```
-Set-ExecutionPolicy Unrestricted
-```
-
-After the renaming is done, the ***script will ask you if you want to delete it as well***, as it's useless now - It's your choice.
-
-#### On OSX
-
-Use Docker to run this script on Macs:
-```
-docker run -it -v `pwd`:/app mcr.microsoft.com/powershell
-```
-
-#### On *nix
-
-Run the renamer.sh bash script from the project root:
-```
-./rename.sh MyApiName
-```
-Ideally you should provide a script argument in PascalCase as in the example. The script will rename all instances of base api without changing the original casing.
-
 ### Development
 
 To serve the application, run it using your IDE of choice, we use Visual Studio CE and JetBrains Rider on Mac.
+
+```bash
+make setup
+```
+
+```bash
+make serve
+```
 
 **Note**
 When running locally the appropriate database conneciton details are still needed.
@@ -92,7 +64,7 @@ $ make build && make serve
 At Hackney, we have created the NuGet Package to prevent the duplication of common code when implementing our APIs. Hence our NuGet packages will store the common code that can then be used in the relevant projects. For full details on the different features implemented within our packages please read [this ReadMe](https://github.com/LBHackney-IT/lbh-core/blob/release/README.md)
 
 ##### Using the package
-For full details on how to use the package(s) within this repository please read 
+For full details on how to use the package(s) within this repository please read
 [this wiki page](https://github.com/LBHackney-IT/lbh-core/wiki/Using-the-package(s)-from-the-Hackney.Core-repository).
 
 

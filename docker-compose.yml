@@ -1,7 +1,7 @@
 version: "3.2"
 
 services:
-  single-view-api:
+  SingleViewApi:
     image: single-view-api
     build:
      context: .
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./database:/docker-entrypoint-initdb.d
 
-  single-view-api-test:
+  SingleViewApi-test:
     image: single-view-api-test
     build:
       context: .
