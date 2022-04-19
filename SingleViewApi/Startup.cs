@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -46,8 +47,7 @@ namespace SingleViewApi
 
         public IConfiguration Configuration { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
-        //TODO update the below to the name of your API
-        private const string ApiName = "Your API Name";
+        private const string ApiName = "Single View API";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -61,6 +61,11 @@ namespace SingleViewApi
                 o.AssumeDefaultVersionWhenUnspecified = true; // assume that the caller wants the default version if they don't specify
                 o.ApiVersionReader = new UrlSegmentApiVersionReader(); // read the version number from the url segment header)
             });
+
+            services.AddHttpClient();
+
+            services.AddTransient<IPersonGateway, PersonGateway>(s => new PersonGateway(
+                s.GetService<HttpClient>(), Environment.GetEnvironmentVariable("PERSON_API_V1")));
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
