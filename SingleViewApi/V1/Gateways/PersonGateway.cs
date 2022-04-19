@@ -24,14 +24,17 @@ namespace SingleViewApi.V1.Gateways
             request.Headers.Add("Authorization", userToken);
 
             var response = await _httpClient.SendAsync(request);
-            var data = new Person();
+
+#nullable enable
+            Person? person = null;
+#nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                data = await response.Content.ReadFromJsonAsync<Person>();
+                person = await response.Content.ReadFromJsonAsync<Person>();
             }
 
-            return data;
+            return person;
         }
     }
 }
