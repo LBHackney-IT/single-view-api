@@ -18,7 +18,7 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<Person> GetPersonById(int id, string userToken)
+        public async Task<Person> GetPersonById(string id, string userToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/persons/{id}");
             request.Headers.Add("Authorization", userToken);

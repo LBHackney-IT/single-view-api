@@ -7,6 +7,6 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IPersonGateway
     {
-        Task<Person> GetPersonById(int id, string userToken);
+        Task<Person> GetPersonById(string id, string userToken);
     }
 }
