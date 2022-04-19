@@ -102,14 +102,14 @@ namespace SingleViewApi.Tests.V1.Gateways
                 .Respond("application/json",
                     "{\"id\": \"e8a8aa89-0b57-ffdb-cb9f-cb4c3e5ed463\", " +
                         "\"title\": \"Miss\", " +
-                        "\"preferredTitle\": \"Miss\", "+
-                        "\"preferredFirstName\": \"Luna\", "+
-                        "\"preferredSurname\": \"Kitty\", "+
-                        "\"preferredMiddleName\": \"\", "+
-                        "\"firstName\": \"Luna\", "+
-                        "\"middleName\": \"Purry\", "+
-                        "\"surname\": \"Kitty\", "+
-                        "\"placeOfBirth\": \"London\", "+
+                        "\"preferredTitle\": \"Miss\", " +
+                        "\"preferredFirstName\": \"Luna\", " +
+                        "\"preferredSurname\": \"Kitty\", " +
+                        "\"preferredMiddleName\": \"\", " +
+                        "\"firstName\": \"Luna\", " +
+                        "\"middleName\": \"Purry\", " +
+                        "\"surname\": \"Kitty\", " +
+                        "\"placeOfBirth\": \"London\", " +
                         "\"dateOfBirth\": \"2021-01-07\"}");
             // Act
             var person = await _classUnderTest.GetPersonById(id, userToken);
