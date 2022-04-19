@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Hackney.Shared.Person;
+using Newtonsoft.Json;
 
 namespace SingleViewApi.V1.Gateways
 {
@@ -31,7 +30,7 @@ namespace SingleViewApi.V1.Gateways
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                person = await response.Content.ReadFromJsonAsync<Person>();
+                person = JsonConvert.DeserializeObject<Person>(response.Content.ReadAsStringAsync().Result);
             }
 
             return person;
