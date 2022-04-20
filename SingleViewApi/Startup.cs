@@ -33,6 +33,7 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.DynamoDb;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
+using Hackney.Shared.Person;
 
 namespace SingleViewApi
 {
@@ -67,6 +68,12 @@ namespace SingleViewApi
 
             services.AddTransient<IPersonGateway, PersonGateway>(s => new PersonGateway(
                 s.GetService<HttpClient>(), Environment.GetEnvironmentVariable("PERSON_API_V1")));
+
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var personGateway = s.GetService<IPersonGateway>();
+                return new GetCustomerByIdUseCase(personGateway);
+            });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
