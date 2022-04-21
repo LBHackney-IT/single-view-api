@@ -33,7 +33,8 @@ namespace SingleViewApi.V1.Controllers
 
         public IActionResult GetCustomer([FromQuery] string id, string userToken)
         {
-            return Ok(_getCustomerByIdUseCase.Execute(id, userToken));
+            var result = _getCustomerByIdUseCase.Execute(id, userToken);
+            return Ok(result);
         }
     }
 }
