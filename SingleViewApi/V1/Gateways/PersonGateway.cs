@@ -30,7 +30,12 @@ namespace SingleViewApi.V1.Gateways
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                person = JsonConvert.DeserializeObject<Person>(response.Content.ReadAsStringAsync().Result);
+                var jsonRes = await response.Content.ReadAsStringAsync();
+                if (jsonRes != null)
+                {
+                    person = JsonConvert.DeserializeObject<Person>(jsonRes);
+                }
+
             }
 
             return person;
