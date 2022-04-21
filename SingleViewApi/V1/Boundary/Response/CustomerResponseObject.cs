@@ -34,7 +34,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public DateTime? DateOfBirth { get; set; }
 
-        public List<string> KnownAddresses { get; set; }
+        public List<KnownAddress> KnownAddresses { get; set; }
 
         public DateTime? DateOfDeath { get; set; }
 
