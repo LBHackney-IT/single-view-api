@@ -47,7 +47,15 @@ namespace SingleViewApi.V1.UseCase
                     DateOfBirth = person.DateOfBirth,
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
-                    KnownAddresses = new List<string>(person.Tenures.Select(t => t.AssetFullAddress))
+                    KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
+                    {
+
+                        Id = t.Id,
+                        CurrentAddress = t.IsActive,
+                        StartDate = t.StartDate,
+                        EndDate = t.EndDate,
+                        FullAddress = t.AssetFullAddress
+                    }))
                 };
             }
 
