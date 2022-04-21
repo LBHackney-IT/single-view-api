@@ -54,7 +54,11 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.DateOfDeath.Should().Be(stubbedEntity.DateOfDeath);
             result.Customer.IsAMinor.Should().Be(stubbedEntity.IsAMinor);
             result.Customer.KnownAddresses.Count.Should().Be(stubbedEntity.Tenures.ToList().Count);
-            result.Customer.KnownAddresses[0].Should().BeEquivalentTo(stubbedEntity.Tenures.ToList()[0].AssetFullAddress);
+            result.Customer.KnownAddresses[0].Id.Should().Be(stubbedEntity.Tenures.ToList()[0].Id);
+            result.Customer.KnownAddresses[0].EndDate.Should().Be(stubbedEntity.Tenures.ToList()[0].EndDate);
+            result.Customer.KnownAddresses[0].StartDate.Should().Be(stubbedEntity.Tenures.ToList()[0].StartDate);
+            result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedEntity.Tenures.ToList()[0].AssetFullAddress);
+            result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedEntity.Tenures.ToList()[0].IsActive);
         }
         [Test]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
