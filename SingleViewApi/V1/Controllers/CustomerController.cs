@@ -9,7 +9,7 @@ namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
     //TODO: Rename to match the APIs endpoint
-    [Route("api/v1/customer")]
+    [Route("api/v1/customers")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
     //TODO: rename class to match the API name
@@ -30,10 +30,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(ResponseObjectList), StatusCodes.Status200OK)]
         [HttpGet]
         [LogCall(LogLevel.Information)]
-
         public IActionResult GetCustomer([FromQuery] string id, string userToken)
         {
-            return Ok(_getCustomerByIdUseCase.Execute(id, userToken));
+            return Ok(_getCustomerByIdUseCase.Execute(id, userToken).Result);
         }
     }
 }

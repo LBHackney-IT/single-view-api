@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SingleViewApi.V1.Controllers;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Infrastructure;
@@ -30,10 +29,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Hackney.Core.HealthCheck;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.DynamoDb.HealthCheck;
-using Hackney.Core.DynamoDb;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
-using Hackney.Shared.Person;
 
 namespace SingleViewApi
 {
@@ -66,11 +63,9 @@ namespace SingleViewApi
 
             services.AddHttpClient();
 
-
             services.AddTransient<IPersonGateway, PersonGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
-
 
                 return new PersonGateway(
                     httpClient,
