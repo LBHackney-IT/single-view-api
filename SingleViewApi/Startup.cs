@@ -48,7 +48,7 @@ namespace SingleViewApi
         }
 
         public IConfiguration Configuration { get; }
-        private static List<ApiVersionDescription> _apiVersions { get; set; }
+        private static List<ApiVersionDescription> ApiVersions { get; set; }
         private const string ApiName = "Single View API";
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -66,8 +66,17 @@ namespace SingleViewApi
 
             services.AddHttpClient();
 
-            services.AddTransient<IPersonGateway, PersonGateway>(s => new PersonGateway(
-                s.GetService<HttpClient>(), Environment.GetEnvironmentVariable("PERSON_API_V1")));
+
+            services.AddTransient<IPersonGateway, PersonGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+
+                return new PersonGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("PERSON_API_V1")
+                    );
+            });
 
             services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
             {
@@ -119,7 +128,7 @@ namespace SingleViewApi
                 });
 
                 //Get every ApiVersion attribute specified and create swagger docs for them
-                foreach (var apiVersion in _apiVersions)
+                foreach (var apiVersion in ApiVersions)
                 {
                     var version = $"v{apiVersion.ApiVersion.ToString()}";
                     c.SwaggerDoc(version, new OpenApiInfo
@@ -201,12 +210,12 @@ namespace SingleViewApi
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
-            _apiVersions = api.ApiVersionDescriptions.ToList();
+            ApiVersions = api.ApiVersionDescriptions.ToList();
 
             //Swagger ui to view the swagger.json file
             app.UseSwaggerUI(c =>
             {
-                foreach (var apiVersionDescription in _apiVersions)
+                foreach (var apiVersionDescription in ApiVersions)
                 {
                     //Create a swagger endpoint for each swagger version
                     c.SwaggerEndpoint($"{apiVersionDescription.GetFormattedApiVersion()}/swagger.json",
