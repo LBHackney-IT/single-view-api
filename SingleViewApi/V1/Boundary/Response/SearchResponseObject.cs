@@ -13,6 +13,7 @@ namespace SingleViewApi.V1.Boundary.Response
     }
 
     public class SearchResponse
+
     {
         public List<Hackney.Shared.Person.Person> Persons { get; set; }
     }
