@@ -15,10 +15,10 @@ namespace SingleViewApi.V1.Controllers
     //TODO: rename class to match the API name
     public class HousingSearchController : BaseController
     {
-        private readonly ISearchBySearchTextUseCase _searchBySearchTextUseCase;
-        public HousingSearchController(ISearchBySearchTextUseCase searchBySearchTextUseCase)
+        private readonly IGetSearchResultsBySearchTextUseCase _getSearchResultsBySearchTextUseCase;
+        public HousingSearchController(IGetSearchResultsBySearchTextUseCase getSearchResultsBySearchTextUseCase)
         {
-            _searchBySearchTextUseCase = searchBySearchTextUseCase;
+            _getSearchResultsBySearchTextUseCase = getSearchResultsBySearchTextUseCase;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -32,7 +32,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult SearchBySearchText([FromQuery] string searchText, string userToken)
         {
-            return Ok(_searchBySearchTextUseCase.Execute(searchText, userToken).Result);
+            return Ok(_getSearchResultsBySearchTextUseCase.Execute(searchText, userToken).Result);
         }
     }
 }
