@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Hackney.Shared.Person;
 using Newtonsoft.Json;
 
 namespace SingleViewApi.V1.Gateways
@@ -16,7 +18,7 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<dynamic> SearchBySearchText(string searchText, string userToken)
+        public async Task<List<Person>> SearchBySearchText(string searchText, string userToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/persons?searchText={searchText}");
 
