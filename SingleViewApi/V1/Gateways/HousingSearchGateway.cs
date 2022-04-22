@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Hackney.Shared.Person;
 using Newtonsoft.Json;
+using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.V1.Gateways
 {
@@ -18,7 +19,7 @@ namespace SingleViewApi.V1.Gateways
             this._httpClient = httpClient;
             this._baseUrl = baseUrl;
         }
-        public async Task<List<Person>> GetSearchResultsBySearchText(string searchText, string userToken)
+        public async Task<HousingSearchApiResponseObject> GetSearchResultsBySearchText(string searchText, string userToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search/persons?searchText={searchText}");
             request.Headers.Add("Authorization", userToken);
@@ -26,16 +27,15 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
         #nullable enable
-            List<Person>? searchResults = null;
+            HousingSearchApiResponseObject? searchResults = null;
         #nullable disable
 
-            Console.WriteLine(request);
-            Console.WriteLine(response);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-                searchResults = JsonConvert.DeserializeObject<List<Person>>(jsonBody);
+                Console.WriteLine(jsonBody);
+                searchResults = JsonConvert.DeserializeObject<HousingSearchApiResponseObject>(jsonBody);
             }
 
             return searchResults;
