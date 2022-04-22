@@ -10,11 +10,11 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase
 {
-    public class SearchBySearchTextUseCase : ISearchBySearchTextUseCase
+    public class GetSearchResultsBySearchTextUseCase : IGetSearchResultsBySearchTextUseCase
     {
         private IHousingSearchGateway _housingSearchGateway;
 
-        public SearchBySearchTextUseCase(IHousingSearchGateway housingSearchGateway)
+        public GetSearchResultsBySearchTextUseCase(IHousingSearchGateway housingSearchGateway)
         {
             _housingSearchGateway = housingSearchGateway;
         }
@@ -23,7 +23,7 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string searchText, string userToken)
         {
-            var searchResults = await _housingSearchGateway.SearchBySearchText(searchText, userToken);
+            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
 

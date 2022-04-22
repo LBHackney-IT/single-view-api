@@ -87,10 +87,10 @@ namespace SingleViewApi
                     Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_V1"));
             });
 
-            services.AddTransient<ISearchBySearchTextUseCase, SearchBySearchTextUseCase>(s =>
+            services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
-                return new SearchBySearchTextUseCase(housingSearchGateway);
+                return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();

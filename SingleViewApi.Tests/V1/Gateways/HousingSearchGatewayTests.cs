@@ -31,19 +31,17 @@ namespace SingleViewApi.Tests.V1.Gateways
 
         public void ARequestIsMade()
         {
-            //Arrange
-            const string searchText = "Test Term";
+            // Arrange
+            const string searchText = "Search-Text";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}")
                 .WithHeaders("Authorization", userToken);
+            // Act
+            _ = _classUnderTest.GetSearchResultsBySearchText(searchText, userToken);
 
-            //Act
-            _ = _classUnderTest.SearchBySearchText(searchText, userToken);
-
-            //Assert
+            // Assert
             _mockHttp.VerifyNoOutstandingExpectation();
-
         }
 
         [Test]
@@ -52,7 +50,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         {
             //Arrange
 
-            const string searchText = "No Results For You";
+            const string searchText = "Test";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}")
@@ -60,9 +58,25 @@ namespace SingleViewApi.Tests.V1.Gateways
                 .Respond(HttpStatusCode.NotFound, x => new StringContent(searchText));
 
             //Act
-            var searchResults = await _classUnderTest.SearchBySearchText(searchText, userToken);
+            var searchResults = await _classUnderTest.GetSearchResultsBySearchText(searchText, userToken);
 
             //Assert
+
+            searchResults.Should().BeNull();
+        }
+
+        [Test]
+        public async Task SearchBySearchTextReturnsNullIfUserIsUnAuthorised()
+        {
+            // Arrange
+            const string searchText = "Test";
+            const string userToken = "User token";
+
+            _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.Unauthorized, x => new StringContent(searchText));
+
+            var searchResults = await _classUnderTest.GetSearchResultsBySearchText(searchText, userToken);
 
             searchResults.Should().BeNull();
         }

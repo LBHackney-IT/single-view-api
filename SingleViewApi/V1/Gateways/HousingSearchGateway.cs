@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -17,22 +18,23 @@ namespace SingleViewApi.V1.Gateways
             this._httpClient = httpClient;
             this._baseUrl = baseUrl;
         }
-
-        public async Task<List<Person>> SearchBySearchText(string searchText, string userToken)
+        public async Task<List<Person>> GetSearchResultsBySearchText(string searchText, string userToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/persons?searchText={searchText}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search/persons?searchText={searchText}");
             request.Headers.Add("Authorization", userToken);
 
             var response = await _httpClient.SendAsync(request);
 
-            #nullable enable
+        #nullable enable
             List<Person>? searchResults = null;
-            #nullable disable
+        #nullable disable
+
+            Console.WriteLine(request);
+            Console.WriteLine(response);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
                 searchResults = JsonConvert.DeserializeObject<List<Person>>(jsonBody);
             }
 
