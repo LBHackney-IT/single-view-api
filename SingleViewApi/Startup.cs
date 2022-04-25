@@ -73,6 +73,12 @@ namespace SingleViewApi
                     );
             });
 
+            // services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
+            // {
+            //     var personGateway = s.GetService<IPersonGateway>();
+            //     return new GetAllNotesByIdUseCase(personGateway);
+            // });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddDynamoDbHealthCheck<DatabaseEntity>();
