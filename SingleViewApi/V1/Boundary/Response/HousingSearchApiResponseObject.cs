@@ -33,14 +33,9 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<Tenure> Tenures { get; set; }
     }
 
-    public class Results
-    {
-        public List<HousingSearchPerson> Persons { get; set; }
-    }
-
     public class HousingSearchApiResponseObject
     {
-        public Results Results { get; set; }
+        public List<HousingSearchPerson> HousingSearchPersons { get; set; }
         public int Total { get; set; }
     }
 }
