@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2.DocumentModel;
-using Hackney.Core.Logging;
-using Hackney.Shared.Person;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
@@ -19,7 +16,7 @@ namespace SingleViewApi.V1.UseCase
             _housingSearchGateway = housingSearchGateway;
         }
 
-        [LogCall]
+        //[LogCall]
 
         public async Task<SearchResponseObject> Execute(string searchText, string userToken)
         {
