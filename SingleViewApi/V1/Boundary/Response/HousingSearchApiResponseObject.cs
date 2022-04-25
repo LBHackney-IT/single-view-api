@@ -3,6 +3,16 @@ using System.Collections.Generic;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
+
+    public class HousingSearchApiResponseObject
+    {
+#nullable enable
+
+        public HousingSearchApiResponse? HousingSearchResponse { get; set; }
+
+#nullable disable
+        public List<SystemId> SystemIds { get; set; }
+    }
     public class Tenure
     {
         public string Id { get; set; }
@@ -33,7 +43,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<Tenure> Tenures { get; set; }
     }
 
-    public class HousingSearchApiResponseObject
+    public class HousingSearchApiResponse
     {
         public List<HousingSearchPerson> HousingSearchPersons { get; set; }
         public int Total { get; set; }

@@ -18,5 +18,5 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<Hackney.Shared.Person.Person> Persons { get; set; }
     }
 
-    //TODO: don't return the whole data structure
+    //TODO: What fields do we need?
 }
