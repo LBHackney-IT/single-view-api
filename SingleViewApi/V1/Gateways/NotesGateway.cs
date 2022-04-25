@@ -17,9 +17,21 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<List<NoteResponseObject>> GetAllById(string id, string userToken)
+        public async Task<List<NoteResponseObject>> GetAllById(string id, string userToken, string paginationToken = null, int pageSize = 0)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/notes?targetId={id}");
+            var requestUrl = $"{_baseUrl}/notes?targetId={id}";
+
+            if (!string.IsNullOrEmpty(paginationToken))
+            {
+                requestUrl += $"&paginationToken={paginationToken}";
+            }
+
+            if (pageSize > 0)
+            {
+                requestUrl += $"&pageSize={pageSize}";
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", userToken);
 
             var response = await _httpClient.SendAsync(request);
