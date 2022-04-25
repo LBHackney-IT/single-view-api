@@ -4,13 +4,10 @@ namespace SingleViewApi.V1.Boundary.Response
 {
     public class SearchResponseObject
     {
-        #nullable enable
 
-        public SearchResponse? SearchResponse { get; set; }
+       public SearchResponse SearchResponse { get; set; }
 
-        #nullable disable
-        public List<SystemId> SystemIds { get; set; }
-    }
+       public List<SystemId> SystemIds { get; set; } }
 
     public class SearchResponse
 
@@ -18,5 +15,5 @@ namespace SingleViewApi.V1.Boundary.Response
         public HousingSearchApiResponse Results { get; set; }
     }
 
-    //TODO: What fields do we need?
+
 }

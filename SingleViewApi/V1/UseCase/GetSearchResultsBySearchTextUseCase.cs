@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary;
@@ -32,9 +33,24 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
-                response.SearchResponse = response.SearchResponse;
+                var personResponse = new List<Person>();
 
-                //logic here to create list of housing search results, use SearchResponseObject to build
+                foreach (var person in searchResults.Results.Persons)
+                {
+                    personResponse.Add(person);
+                }
+
+                response.SearchResponse = new SearchResponse() { Results = new HousingSearchApiResponse()
+                {
+                    Results = new Results()
+                    {
+                        Persons = personResponse
+                    },
+                    Total = searchResults.Total
+                } };
+
+
+
             }
 
             return response;
