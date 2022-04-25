@@ -15,7 +15,7 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResponse
 
     {
-        public List<Hackney.Shared.Person.Person> Persons { get; set; }
+        public HousingSearchApiResponse Results { get; set; }
     }
 
     //TODO: What fields do we need?

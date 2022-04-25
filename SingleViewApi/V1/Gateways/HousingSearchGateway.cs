@@ -19,7 +19,7 @@ namespace SingleViewApi.V1.Gateways
             this._httpClient = httpClient;
             this._baseUrl = baseUrl;
         }
-        public async Task<HousingSearchApiResponseObject> GetSearchResultsBySearchText(string searchText, string userToken)
+        public async Task<HousingSearchApiResponse> GetSearchResultsBySearchText(string searchText, string userToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search/persons?searchText={searchText}");
             request.Headers.Add("Authorization", userToken);
@@ -27,15 +27,17 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
         #nullable enable
-            HousingSearchApiResponseObject? searchResults = null;
+            HousingSearchApiResponse? searchResults = null;
         #nullable disable
 
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(jsonBody);
-                searchResults = JsonConvert.DeserializeObject<HousingSearchApiResponseObject>(jsonBody);
+
+
+                searchResults = JsonConvert.DeserializeObject<HousingSearchApiResponse>(jsonBody);
+
             }
 
             return searchResults;

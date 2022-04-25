@@ -18,13 +18,13 @@ namespace SingleViewApi.V1.UseCase
 
         //[LogCall]
 
-        public async Task<HousingSearchApiResponseObject> Execute(string searchText, string userToken)
+        public async Task<SearchResponseObject> Execute(string searchText, string userToken)
         {
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
 
-            var response = new HousingSearchApiResponseObject() { SystemIds = new List<SystemId>() { housingSearchApiId } };
+            var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { housingSearchApiId } };
 
             if (searchResults == null)
             {
@@ -32,7 +32,7 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
-                response.HousingSearchResponse = response.HousingSearchResponse;
+                response.SearchResponse = response.SearchResponse;
 
                 //logic here to create list of housing search results, use SearchResponseObject to build
             }
