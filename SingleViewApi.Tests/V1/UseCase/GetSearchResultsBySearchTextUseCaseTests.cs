@@ -57,7 +57,16 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
-            ;
-        }
+
+            results.HousingSearchResponse.Total.Should().Be(stubbedEntity.HousingSearchResponse.Total);
+            results.HousingSearchResponse.HousingSearchPersons[0].Firstname.Should()
+                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].Firstname);
+            results.HousingSearchResponse.HousingSearchPersons[0].Surname.Should()
+                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].Surname);
+            results.HousingSearchResponse.HousingSearchPersons[0].PersonTypes[0].Should()
+                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].PersonTypes[0]);
+            results.HousingSearchResponse.HousingSearchPersons[0].DateOfBirth.Should()
+                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].DateOfBirth);
+          }
     }
 }

@@ -113,9 +113,9 @@ namespace SingleViewApi.Tests.V1.Gateways
 
             _mockHttp.VerifyNoOutstandingExpectation();
 
-            Assert.AreEqual("test", searchResults.HousingSearchPersons[0].Firstname);
-            Assert.AreEqual("test", searchResults.HousingSearchPersons[0].Surname);
-            Assert.AreEqual(737, searchResults.Total);
+            Assert.AreEqual("test", searchResults.HousingSearchResponse.HousingSearchPersons[0].Firstname);
+            Assert.AreEqual("test", searchResults.HousingSearchResponse.HousingSearchPersons[0].Surname);
+            Assert.AreEqual(737, searchResults.HousingSearchResponse.Total);
 
         }
 

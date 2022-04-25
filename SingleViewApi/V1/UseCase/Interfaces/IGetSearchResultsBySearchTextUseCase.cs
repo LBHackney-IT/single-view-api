@@ -5,6 +5,6 @@ namespace SingleViewApi.V1.UseCase.Interfaces
 {
     public interface IGetSearchResultsBySearchTextUseCase
     {
-        Task<SearchResponseObject> Execute(string searchText, string userToken);
+        Task<HousingSearchApiResponseObject> Execute(string searchText, string userToken);
     }
 }
