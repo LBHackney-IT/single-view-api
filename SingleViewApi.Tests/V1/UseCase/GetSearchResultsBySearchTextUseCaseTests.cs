@@ -33,7 +33,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var userToken = _fixture.Create<string>();
             _mockHousingSearchGateway.Setup(x =>
                 x.GetSearchResultsBySearchText(searchText, userToken))
-                    .ReturnsAsync((HousingSearchApiResponseObject)null);
+                    .ReturnsAsync((HousingSearchApiResponse)null);
 
             var results = await _classUnderTest.Execute(searchText, userToken);
 
@@ -48,7 +48,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var searchText = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
-            var stubbedEntity = _fixture.Create<HousingSearchApiResponseObject>();
+            var stubbedEntity = _fixture.Create<HousingSearchApiResponse>();
 
             _mockHousingSearchGateway.Setup(x => x.GetSearchResultsBySearchText(searchText, userToken))
                 .ReturnsAsync(stubbedEntity);
@@ -58,15 +58,18 @@ namespace SingleViewApi.Tests.V1.UseCase
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
 
-            results.HousingSearchResponse.Total.Should().Be(stubbedEntity.HousingSearchResponse.Total);
-            results.HousingSearchResponse.HousingSearchPersons[0].Firstname.Should()
-                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].Firstname);
-            results.HousingSearchResponse.HousingSearchPersons[0].Surname.Should()
-                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].Surname);
-            results.HousingSearchResponse.HousingSearchPersons[0].PersonTypes[0].Should()
-                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].PersonTypes[0]);
-            results.HousingSearchResponse.HousingSearchPersons[0].DateOfBirth.Should()
-                .BeEquivalentTo(stubbedEntity.HousingSearchResponse.HousingSearchPersons[0].DateOfBirth);
+
+
+
+            results.SearchResponse.Results.Total.Should().Be(stubbedEntity.Total);
+            results.SearchResponse.Results.Results.Persons[0].Firstname.Should()
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Firstname);
+            results.SearchResponse.Results.Results.Persons[0].Surname.Should()
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Surname);
+            results.SearchResponse.Results.Results.Persons[0].PersonTypes[0].Should()
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].PersonTypes[0]);
+            results.SearchResponse.Results.Results.Persons[0].DateOfBirth.Should()
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].DateOfBirth);
           }
     }
 }
