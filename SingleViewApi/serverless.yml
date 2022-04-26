@@ -13,7 +13,7 @@ provider:
   region: eu-west-2
   apiKeys:
     - name: apikey
-      value: ${ssm:/single-view-api/${self:provider.stage/api-key}}
+      value: ${ssm:/single-view-api/api-key}
     - secureAccess:
       - api-key-${self:service}-${self:provider.stage}
   usagePlan:
