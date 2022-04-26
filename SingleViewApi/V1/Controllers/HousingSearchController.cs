@@ -30,9 +30,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(ResponseObjectList), StatusCodes.Status200OK)]
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult SearchBySearchText([FromQuery] string searchText, string userToken)
+        public IActionResult SearchBySearchText([FromQuery] string searchText, int page, string userToken)
         {
-            return Ok(_getSearchResultsBySearchTextUseCase.Execute(searchText, userToken).Result);
+            return Ok(_getSearchResultsBySearchTextUseCase.Execute(searchText,page, userToken).Result);
         }
     }
 }

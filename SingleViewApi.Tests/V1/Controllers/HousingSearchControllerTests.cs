@@ -23,10 +23,11 @@ namespace SingleViewApi.Tests.V1.Controllers
         {
             const string searchText = "testSearch";
             const string token = "token";
+            const int page = 1;
 
-var results = _classUnderTest.SearchBySearchText(searchText, token);
+var results = _classUnderTest.SearchBySearchText(searchText, page,token);
 
-            _mockGetSearchResultsBySearchTextUseCase.Verify(x => x.Execute(searchText, token), Times.Once);
+            _mockGetSearchResultsBySearchTextUseCase.Verify(x => x.Execute(searchText,page, token), Times.Once);
         }
     }
 }
