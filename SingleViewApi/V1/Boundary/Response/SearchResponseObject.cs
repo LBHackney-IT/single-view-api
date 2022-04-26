@@ -12,7 +12,7 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResponse
 
     {
-        public HousingSearchApiResponse Results { get; set; }
+        public HousingSearchApiResponse Response { get; set; }
     }
 
 

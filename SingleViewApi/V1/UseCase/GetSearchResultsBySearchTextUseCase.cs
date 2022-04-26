@@ -19,9 +19,9 @@ namespace SingleViewApi.V1.UseCase
 
         //[LogCall]
 
-        public async Task<SearchResponseObject> Execute(string searchText, string userToken)
+        public async Task<SearchResponseObject> Execute(string searchText, int page, string userToken)
         {
-            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
+            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
 
@@ -33,18 +33,18 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
-                var personResponse = new List<Person>();
+                var personResults = new List<Person>();
 
                 foreach (var person in searchResults.Results.Persons)
                 {
-                    personResponse.Add(person);
+                    personResults.Add(person);
                 }
 
-                response.SearchResponse = new SearchResponse() { Results = new HousingSearchApiResponse()
+                response.SearchResponse = new SearchResponse() { Response = new HousingSearchApiResponse()
                 {
                     Results = new Results()
                     {
-                        Persons = personResponse
+                        Persons = personResults
                     },
                     Total = searchResults.Total
                 } };
