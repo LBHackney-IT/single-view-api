@@ -6,9 +6,10 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResponseObject
     {
 
-       public SearchResponse SearchResponse { get; set; }
+        public SearchResponse SearchResponse { get; set; }
 
-       public List<SystemId> SystemIds { get; set; } }
+        public List<SystemId> SystemIds { get; set; }
+    }
 
     public class SearchResponse
 
@@ -23,11 +24,11 @@ namespace SingleViewApi.V1.Boundary.Response
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
-        #nullable enable
+#nullable enable
         public string? MiddleName { get; set; }
         public string? PreferredFirstName { get; set; }
         public string? PreferredSurname { get; set; }
-        #nullable disable
+#nullable disable
         public string DateOfBirth { get; set; }
         public List<string> PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }

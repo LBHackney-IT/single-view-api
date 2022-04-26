@@ -65,7 +65,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
-            _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync((Person)null);
+            _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync((Person) null);
 
             var result = await _classUnderTest.Execute(id, userToken);
 

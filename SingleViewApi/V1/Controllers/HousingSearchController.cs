@@ -32,7 +32,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult SearchBySearchText([FromQuery] string searchText, int page, string userToken)
         {
-            return Ok(_getSearchResultsBySearchTextUseCase.Execute(searchText,page, userToken).Result);
+            return Ok(_getSearchResultsBySearchTextUseCase.Execute(searchText, page, userToken).Result);
         }
     }
 }

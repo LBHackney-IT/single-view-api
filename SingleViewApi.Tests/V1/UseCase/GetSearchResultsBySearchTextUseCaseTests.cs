@@ -34,7 +34,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var page = _fixture.Create<int>();
             _mockHousingSearchGateway.Setup(x =>
                 x.GetSearchResultsBySearchText(searchText, page, userToken))
-                    .ReturnsAsync((HousingSearchApiResponse)null);
+                    .ReturnsAsync((HousingSearchApiResponse) null);
 
             var results = await _classUnderTest.Execute(searchText, page, userToken);
 
