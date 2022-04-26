@@ -116,11 +116,11 @@ namespace SingleViewApi.Tests.V1.Gateways
                     "\"highlight\": false}" +
                     "]}");
 
-            var notes = await _classUnderTest.GetAllById(id, userToken);
+            var results = await _classUnderTest.GetAllById(id, userToken);
 
             _mockHttp.VerifyNoOutstandingExpectation();
-            Assert.AreEqual(notes[0].Title, "Test note 1");
-            Assert.AreEqual(notes[1].Title, "Test note 2");
+            Assert.AreEqual(results.NoteResponseObjects[0].Title, "Test note 1");
+            Assert.AreEqual(results.NoteResponseObjects[1].Title, "Test note 2");
         }
     }
 }

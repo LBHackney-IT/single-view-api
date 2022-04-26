@@ -17,7 +17,7 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<List<NoteResponseObject>> GetAllById(string id, string userToken, string paginationToken = null, int pageSize = 0)
+        public async Task<NoteResponseObjectList> GetAllById(string id, string userToken, string paginationToken = null, int pageSize = 0)
         {
             var requestUrl = $"{_baseUrl}/notes?targetId={id}";
 
@@ -39,9 +39,11 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode != HttpStatusCode.OK) return null;
 
             var jsonBody = response.Content.ReadAsStringAsync().Result;
-            var results = JsonConvert.DeserializeObject<NotesResultsResponseObject>(jsonBody);
+            var responseObject = JsonConvert.DeserializeObject<NotesResultsResponseObject>(jsonBody);
 
-            return results.Results;
+            var noteResponseObjectList  = new NoteResponseObjectList() {NoteResponseObjects = responseObject.Results};
+
+            return noteResponseObjectList;
         }
     }
 }
