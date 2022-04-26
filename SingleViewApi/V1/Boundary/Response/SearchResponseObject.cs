@@ -13,7 +13,8 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResponse
 
     {
-        public HousingSearchApiResponse Response { get; set; }
+        public List<SearchResult> SearchResults { get; set; }
+        public int Total { get; set; }
     }
 
     public class SearchResult
@@ -31,7 +32,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<string> PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
         public bool IsTenureCautionaryAlert { get; set; }
-        public List<KnownAddress> Addresses { get; set; }
+        public List<KnownAddress> KnownAddresses { get; set; }
 
     }
 

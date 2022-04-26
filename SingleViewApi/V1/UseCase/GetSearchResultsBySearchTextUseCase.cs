@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
@@ -33,25 +34,46 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
-                var personResults = new List<Person>();
+                var personResults = new List<SearchResult>();
 
-                foreach (var person in searchResults.Results.Persons)
+                foreach (var result in searchResults.Results.Persons)
                 {
+                    Console.WriteLine("Looping through search results - total results {0}", searchResults.Total);
+                    var person = new SearchResult()
+                    {
+                        Id = result.Id,
+                        FirstName = result.Firstname,
+                        SurName = result.Surname,
+                        Title = result.Title,
+                        PreferredFirstName = result.PreferredFirstname,
+                        PreferredSurname = result.PreferredSurname,
+                        MiddleName = result.MiddleName,
+                        PersonTypes = result.PersonTypes,
+                        DateOfBirth = result.DateOfBirth,
+                        KnownAddresses = new List<KnownAddress>(result.Tenures.Select(t => new KnownAddress()
+                        {
+                            Id = t.Id,
+                            CurrentAddress = t.IsActive,
+                            StartDate = t.StartDate,
+                            EndDate = t.EndDate,
+                            FullAddress = t.AssetFullAddress
+                        }))
+                    };
+
+                    Console.WriteLine("The person being added is {0}",person);
+
                     personResults.Add(person);
                 }
 
-                response.SearchResponse = new SearchResponse() { Response = new HousingSearchApiResponse()
+                response.SearchResponse = new SearchResponse()
                 {
-                    Results = new Results()
-                    {
-                        Persons = personResults
-                    },
-                    Total = searchResults.Total
-                } };
 
-
+                    SearchResults = personResults, Total = searchResults.Total
+                };
 
             }
+
+            Console.WriteLine(response);
 
             return response;
         }
