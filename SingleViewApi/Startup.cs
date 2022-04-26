@@ -73,11 +73,11 @@ namespace SingleViewApi
                     );
             });
 
-            // services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
-            // {
-            //     var personGateway = s.GetService<IPersonGateway>();
-            //     return new GetAllNotesByIdUseCase(personGateway);
-            // });
+            services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new GetAllNotesByIdUseCase(notesGateway);
+            });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 

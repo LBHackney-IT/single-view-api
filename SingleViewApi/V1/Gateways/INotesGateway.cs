@@ -6,6 +6,6 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface INotesGateway
     {
-        Task<List<NoteResponseObject>> GetAllById(string id, string userToken, string paginationToken, int pageSize);
+        Task<NoteResponseObjectList> GetAllById(string id, string userToken, string paginationToken = null, int pageSize = 0);
     }
 }
