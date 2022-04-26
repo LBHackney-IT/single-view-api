@@ -27,7 +27,8 @@ namespace SingleViewApi.V1.Controllers
         /// </summary>
         /// <response code="200">...</response>
         /// <response code="400">Invalid Query Parameter.</response>
-        [ProducesResponseType(typeof(ResponseObjectList), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerResponseObject), StatusCodes.Status200OK)]
+
         [HttpGet]
         [LogCall(LogLevel.Information)]
         public IActionResult GetCustomer([FromQuery] string id, string userToken)
