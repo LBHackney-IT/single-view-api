@@ -38,7 +38,7 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
-          private: true
+          private: false
           cors:
             origin: '*'
             headers:
