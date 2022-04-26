@@ -22,9 +22,11 @@
     <PackageReference Include="AWSXRayRecorder.Handlers.EntityFramework" Version="1.1.0" />
     <PackageReference Include="Hackney.Core.DynamoDb" Version="1.51.0" />
     <PackageReference Include="Hackney.Core.HealthCheck" Version="1.49.0" />
+    <PackageReference Include="Hackney.Core.JWT" Version="1.71.0-feat-best-field-0001" />
     <PackageReference Include="Hackney.Core.Logging" Version="1.49.0" />
     <PackageReference Include="Hackney.Core.Middleware" Version="1.49.0" />
     <PackageReference Include="Hackney.Core.Validation" Version="1.56.0" />
+    <PackageReference Include="Hackney.Shared.Person" Version="0.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1" />

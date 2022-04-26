@@ -33,10 +33,12 @@ functions:
 # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
 # TODO: Remove this line if DynamoDb is being used
 #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
+      PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
     events:
       - http:
           path: /{proxy+}
           method: ANY
+          private: false
           cors:
             origin: '*'
             headers:

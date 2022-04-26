@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SingleViewApi.V1.Controllers;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Infrastructure;
@@ -23,13 +22,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Hackney.Core.HealthCheck;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.DynamoDb.HealthCheck;
-using Hackney.Core.DynamoDb;
+using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 
 namespace SingleViewApi
@@ -45,9 +45,8 @@ namespace SingleViewApi
         }
 
         public IConfiguration Configuration { get; }
-        private static List<ApiVersionDescription> _apiVersions { get; set; }
-        //TODO update the below to the name of your API
-        private const string ApiName = "Your API Name";
+        private static List<ApiVersionDescription> ApiVersions { get; set; }
+        private const string ApiName = "Single View API";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -62,9 +61,29 @@ namespace SingleViewApi
                 o.ApiVersionReader = new UrlSegmentApiVersionReader(); // read the version number from the url segment header)
             });
 
+            services.AddHttpClient();
+
+            services.AddTransient<IPersonGateway, PersonGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new PersonGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("PERSON_API_V1")
+                    );
+            });
+
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var personGateway = s.GetService<IPersonGateway>();
+                return new GetCustomerByIdUseCase(personGateway);
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddDynamoDbHealthCheck<DatabaseEntity>();
+
+            services.AddTokenFactory();
 
             services.AddSwaggerGen(c =>
             {
@@ -104,7 +123,7 @@ namespace SingleViewApi
                 });
 
                 //Get every ApiVersion attribute specified and create swagger docs for them
-                foreach (var apiVersion in _apiVersions)
+                foreach (var apiVersion in ApiVersions)
                 {
                     var version = $"v{apiVersion.ApiVersion.ToString()}";
                     c.SwaggerDoc(version, new OpenApiInfo
@@ -186,12 +205,12 @@ namespace SingleViewApi
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
-            _apiVersions = api.ApiVersionDescriptions.ToList();
+            ApiVersions = api.ApiVersionDescriptions.ToList();
 
             //Swagger ui to view the swagger.json file
             app.UseSwaggerUI(c =>
             {
-                foreach (var apiVersionDescription in _apiVersions)
+                foreach (var apiVersionDescription in ApiVersions)
                 {
                     //Create a swagger endpoint for each swagger version
                     c.SwaggerEndpoint($"{apiVersionDescription.GetFormattedApiVersion()}/swagger.json",
