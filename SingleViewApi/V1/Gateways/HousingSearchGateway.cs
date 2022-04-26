@@ -27,9 +27,9 @@ namespace SingleViewApi.V1.Gateways
 
             var response = await _httpClient.SendAsync(request);
 
-        #nullable enable
+#nullable enable
             HousingSearchApiResponse? searchResults = null;
-        #nullable disable
+#nullable disable
 
 
             if (response.StatusCode == HttpStatusCode.OK)

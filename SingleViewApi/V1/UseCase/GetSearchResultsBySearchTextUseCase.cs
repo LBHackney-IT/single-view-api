@@ -61,7 +61,7 @@ namespace SingleViewApi.V1.UseCase
                         }))
                     };
 
-                    Console.WriteLine("The person being added is {0}",person);
+                    Console.WriteLine("The person being added is {0}", person);
 
                     personResults.Add(person);
                 }
@@ -69,7 +69,8 @@ namespace SingleViewApi.V1.UseCase
                 response.SearchResponse = new SearchResponse()
                 {
 
-                    SearchResults = personResults, Total = searchResults.Total
+                    SearchResults = personResults,
+                    Total = searchResults.Total
                 };
 
             }

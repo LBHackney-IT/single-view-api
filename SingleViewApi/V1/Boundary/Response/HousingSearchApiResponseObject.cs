@@ -10,9 +10,9 @@ namespace SingleViewApi.V1.Boundary.Response
         public string Type { get; set; }
         public double TotalBalance { get; set; }
         public string StartDate { get; set; }
-        #nullable enable
+#nullable enable
         public string? EndDate { get; set; }
-        #nullable disable
+#nullable disable
         public string AssetFullAddress { get; set; }
         public object PostCode { get; set; }
         public string PaymentReference { get; set; }
