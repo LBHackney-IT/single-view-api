@@ -60,18 +60,17 @@ namespace SingleViewApi.Tests.V1.UseCase
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
 
-
-
-
-            results.SearchResponse.Response.Total.Should().Be(stubbedEntity.Total);
-            results.SearchResponse.Response.Results.Persons[0].Firstname.Should()
+            results.SearchResponse.Total.Should().Be(stubbedEntity.Total);
+            results.SearchResponse.SearchResults[0].FirstName.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Firstname);
-            results.SearchResponse.Response.Results.Persons[0].Surname.Should()
+            results.SearchResponse.SearchResults[0].SurName.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Surname);
-            results.SearchResponse.Response.Results.Persons[0].PersonTypes[0].Should()
+            results.SearchResponse.SearchResults[0].PersonTypes[0].Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].PersonTypes[0]);
-            results.SearchResponse.Response.Results.Persons[0].DateOfBirth.Should()
+            results.SearchResponse.SearchResults[0].DateOfBirth.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].DateOfBirth);
-          }
+            results.SearchResponse.SearchResults[0].KnownAddresses[0].FullAddress.Should()
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures[0].AssetFullAddress);
+        }
     }
 }
