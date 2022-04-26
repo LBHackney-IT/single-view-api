@@ -12,11 +12,10 @@ provider:
   #account: ${opt:account}
   region: eu-west-2
   apiKeys:
-    - key-${self:service}-${self:provider.stage}
+    - name: apikey
+      value: ${ssm:/single-view-api/${self:provider.stage/api-key}}
     - secureAccess:
       - api-key-${self:service}-${self:provider.stage}
-    - free:
-      - free-api-key-${self:service}-${self:provider.stage}
   usagePlan:
     - secureAccess:
         throttle:
