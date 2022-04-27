@@ -31,9 +31,9 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetCustomer([FromQuery] string id, string userToken)
+        public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
-            return Ok(_getCustomerByIdUseCase.Execute(id, userToken).Result);
+            return Ok(_getCustomerByIdUseCase.Execute(id, authorization).Result);
         }
     }
 }
