@@ -22,12 +22,12 @@ namespace SingleViewApi.Tests.V1.Controllers
         public void UseCaseGetsCalled()
         {
             const string searchText = "testSearch";
-            const string token = "token";
+            const string authorization = "token";
             const int page = 1;
 
-            var results = _classUnderTest.SearchBySearchText(searchText, page, token);
+            var results = _classUnderTest.SearchBySearchText(searchText, page, authorization);
 
-            _mockGetSearchResultsBySearchTextUseCase.Verify(x => x.Execute(searchText, page, token), Times.Once);
+            _mockGetSearchResultsBySearchTextUseCase.Verify(x => x.Execute(searchText, page, authorization), Times.Once);
         }
     }
 }
