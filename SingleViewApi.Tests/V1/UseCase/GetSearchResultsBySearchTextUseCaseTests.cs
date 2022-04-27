@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -62,15 +63,15 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             results.SearchResponse.Total.Should().Be(stubbedEntity.Total);
             results.SearchResponse.SearchResults[0].FirstName.Should()
-                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Firstname);
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].FirstName);
             results.SearchResponse.SearchResults[0].SurName.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Surname);
             results.SearchResponse.SearchResults[0].PersonTypes[0].Should()
-                .BeEquivalentTo(stubbedEntity.Results.Persons[0].PersonTypes[0]);
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].PersonTypes.ToList()[0]);
             results.SearchResponse.SearchResults[0].DateOfBirth.Should()
-                .BeEquivalentTo(stubbedEntity.Results.Persons[0].DateOfBirth);
+                .Be(stubbedEntity.Results.Persons[0].DateOfBirth);
             results.SearchResponse.SearchResults[0].KnownAddresses[0].FullAddress.Should()
-                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures[0].AssetFullAddress);
+                .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures.ToList()[0].AssetFullAddress);
         }
     }
 }

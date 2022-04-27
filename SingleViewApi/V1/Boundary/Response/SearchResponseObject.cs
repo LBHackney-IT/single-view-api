@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hackney.Shared.Person;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
@@ -21,16 +22,17 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResult
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+
         public string FirstName { get; set; }
         public string SurName { get; set; }
 #nullable enable
+        public Hackney.Shared.Person.Domain.Title? Title { get; set; }
         public string? MiddleName { get; set; }
         public string? PreferredFirstName { get; set; }
         public string? PreferredSurname { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 #nullable disable
-        public string DateOfBirth { get; set; }
-        public List<string> PersonTypes { get; set; }
+        public List<Hackney.Shared.Person.Domain.PersonType> PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
         public bool IsTenureCautionaryAlert { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
