@@ -79,6 +79,20 @@ namespace SingleViewApi
                 return new GetCustomerByIdUseCase(personGateway);
             });
 
+            services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new HousingSearchGateway(httpClient,
+                    Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_V1"));
+            });
+
+            services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
+            {
+                var housingSearchGateway = s.GetService<IHousingSearchGateway>();
+                return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddDynamoDbHealthCheck<DatabaseEntity>();
