@@ -39,17 +39,16 @@ namespace SingleViewApi.V1.UseCase
 
                 foreach (var result in searchResults.Results.Persons)
                 {
-                    Console.WriteLine("Looping through search results - total results {0}", searchResults.Total);
                     var person = new SearchResult()
                     {
                         Id = result.Id,
-                        FirstName = result.Firstname,
+                        FirstName = result.FirstName,
                         SurName = result.Surname,
                         Title = result.Title,
-                        PreferredFirstName = result.PreferredFirstname,
+                        PreferredFirstName = result.PreferredFirstName,
                         PreferredSurname = result.PreferredSurname,
                         MiddleName = result.MiddleName,
-                        PersonTypes = result.PersonTypes,
+                        PersonTypes = result.PersonTypes.ToList(),
                         DateOfBirth = result.DateOfBirth,
                         KnownAddresses = new List<KnownAddress>(result.Tenures.Select(t => new KnownAddress()
                         {
@@ -60,8 +59,6 @@ namespace SingleViewApi.V1.UseCase
                             FullAddress = t.AssetFullAddress
                         }))
                     };
-
-                    Console.WriteLine("The person being added is {0}", person);
 
                     personResults.Add(person);
                 }
@@ -74,8 +71,6 @@ namespace SingleViewApi.V1.UseCase
                 };
 
             }
-
-            Console.WriteLine(response);
 
             return response;
         }
