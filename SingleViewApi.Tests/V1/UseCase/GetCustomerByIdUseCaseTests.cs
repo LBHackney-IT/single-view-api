@@ -5,6 +5,7 @@ using FluentAssertions;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
+using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
 using Moq;
 using NUnit.Framework;
@@ -14,6 +15,7 @@ namespace SingleViewApi.Tests.V1.UseCase
     public class GetPersonByIdUseCaseTests : LogCallAspectFixture
     {
         private Mock<IPersonGateway> _mockPersonGateway;
+        private Mock<IContactDetailsGateway> _mockContactDetailsGateway;
         private GetCustomerByIdUseCase _classUnderTest;
         private Fixture _fixture;
 
@@ -21,7 +23,8 @@ namespace SingleViewApi.Tests.V1.UseCase
         public void SetUp()
         {
             _mockPersonGateway = new Mock<IPersonGateway>();
-            _classUnderTest = new GetCustomerByIdUseCase(_mockPersonGateway.Object);
+            _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
+            _classUnderTest = new GetCustomerByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object);
             _fixture = new Fixture();
 
         }
@@ -31,34 +34,37 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
-            var stubbedEntity = _fixture.Create<Person>();
-            _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedEntity);
+            var stubbedPerson = _fixture.Create<Person>();
+            var stubbedContactDetails = _fixture.Create<ContactDetails>();
+            _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
+            _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
             result.SystemIds[^1].SystemName.Should().BeEquivalentTo("PersonApi");
             result.SystemIds[^1].Id.Should().BeEquivalentTo(id);
 
-            result.Customer.Surname.Should().BeEquivalentTo(stubbedEntity.Surname);
-            result.Customer.Surname.Should().BeEquivalentTo(stubbedEntity.Surname);
-            result.Customer.Title.Should().BeEquivalentTo(stubbedEntity.Title);
-            result.Customer.PreferredTitle.Should().BeEquivalentTo(stubbedEntity.PreferredTitle);
-            result.Customer.PreferredFirstName.Should().BeEquivalentTo(stubbedEntity.PreferredFirstName);
-            result.Customer.PreferredMiddleName.Should().BeEquivalentTo(stubbedEntity.PreferredMiddleName);
-            result.Customer.PreferredSurname.Should().BeEquivalentTo(stubbedEntity.PreferredSurname);
-            result.Customer.FirstName.Should().BeEquivalentTo(stubbedEntity.FirstName);
-            result.Customer.MiddleName.Should().BeEquivalentTo(stubbedEntity.MiddleName);
-            result.Customer.Surname.Should().BeEquivalentTo(stubbedEntity.Surname);
-            result.Customer.PlaceOfBirth.Should().BeEquivalentTo(stubbedEntity.PlaceOfBirth);
-            result.Customer.DateOfBirth.Should().Be(stubbedEntity.DateOfBirth);
-            result.Customer.DateOfDeath.Should().Be(stubbedEntity.DateOfDeath);
-            result.Customer.IsAMinor.Should().Be(stubbedEntity.IsAMinor);
-            result.Customer.KnownAddresses.Count.Should().Be(stubbedEntity.Tenures.ToList().Count);
-            result.Customer.KnownAddresses[0].Id.Should().Be(stubbedEntity.Tenures.ToList()[0].Id);
-            result.Customer.KnownAddresses[0].EndDate.Should().Be(stubbedEntity.Tenures.ToList()[0].EndDate);
-            result.Customer.KnownAddresses[0].StartDate.Should().Be(stubbedEntity.Tenures.ToList()[0].StartDate);
-            result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedEntity.Tenures.ToList()[0].AssetFullAddress);
-            result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedEntity.Tenures.ToList()[0].IsActive);
+            result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
+            result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
+            result.Customer.Title.Should().BeEquivalentTo(stubbedPerson.Title);
+            result.Customer.PreferredTitle.Should().BeEquivalentTo(stubbedPerson.PreferredTitle);
+            result.Customer.PreferredFirstName.Should().BeEquivalentTo(stubbedPerson.PreferredFirstName);
+            result.Customer.PreferredMiddleName.Should().BeEquivalentTo(stubbedPerson.PreferredMiddleName);
+            result.Customer.PreferredSurname.Should().BeEquivalentTo(stubbedPerson.PreferredSurname);
+            result.Customer.FirstName.Should().BeEquivalentTo(stubbedPerson.FirstName);
+            result.Customer.MiddleName.Should().BeEquivalentTo(stubbedPerson.MiddleName);
+            result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
+            result.Customer.PlaceOfBirth.Should().BeEquivalentTo(stubbedPerson.PlaceOfBirth);
+            result.Customer.DateOfBirth.Should().Be(stubbedPerson.DateOfBirth);
+            result.Customer.DateOfDeath.Should().Be(stubbedPerson.DateOfDeath);
+            result.Customer.IsAMinor.Should().Be(stubbedPerson.IsAMinor);
+            result.Customer.KnownAddresses.Count.Should().Be(stubbedPerson.Tenures.ToList().Count);
+            result.Customer.KnownAddresses[0].Id.Should().Be(stubbedPerson.Tenures.ToList()[0].Id);
+            result.Customer.KnownAddresses[0].EndDate.Should().Be(stubbedPerson.Tenures.ToList()[0].EndDate);
+            result.Customer.KnownAddresses[0].StartDate.Should().Be(stubbedPerson.Tenures.ToList()[0].StartDate);
+            result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
+            result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
+            result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
         }
         [Test]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
