@@ -8,6 +8,7 @@ using FluentAssertions;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Boundary;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {
@@ -26,25 +27,55 @@ namespace SingleViewApi.Tests.V1.UseCase
         }
 
         [Test]
-        public async Task GetsAllNotesByIdFromTheGateway()
+        public async Task GetsAllNotesById()
         {
             var stubbedEntities = new NoteResponseObjectList()
             {
                 NoteResponseObjects = _fixture.CreateMany<NoteResponseObject>().ToList()
             };
+            stubbedEntities.SortByCreatedAtDescending();
 
-            var id = _fixture.Create<string>();
+            var systemIdList = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() };
+            var systemIds = systemIdList.ToJson();
+            var targetId = systemIdList.SystemIds[^1].Id;
             var userToken = _fixture.Create<string>();
             var paginationToken = "";
             var pageSize = 0;
 
             _mockNotesGateway.Setup(x =>
-                x.GetAllById(id, userToken, paginationToken, pageSize)).ReturnsAsync(stubbedEntities);
+                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync(stubbedEntities);
 
-            var response = await _classUnderTest.Execute(id, userToken, paginationToken, pageSize);
+            var response = await _classUnderTest.Execute(systemIds, userToken, paginationToken, pageSize);
 
-            response.Notes.NoteResponseObjects[^1].Description.Should()
-                .BeEquivalentTo(stubbedEntities.NoteResponseObjects[^1].Description);
+            response.SystemIds[^1].Should().BeEquivalentTo(systemIdList.SystemIds[^1]);
+
+            var noteResponseObject = response.Notes.NoteResponseObjects[^1];
+            var stubbedEntity = stubbedEntities.NoteResponseObjects[^1];
+
+            noteResponseObject.Author.Should().BeEquivalentTo(stubbedEntity.Author);
+            noteResponseObject.Categorisation.Should().BeEquivalentTo(stubbedEntity.Categorisation);
+            noteResponseObject.Description.Should().BeEquivalentTo(stubbedEntity.Description);
+            noteResponseObject.Highlight.Should().Be(stubbedEntity.Highlight);
+            noteResponseObject.Id.Should().Be(stubbedEntity.Id);
+            noteResponseObject.Title.Should().BeEquivalentTo(stubbedEntity.Title);
+        }
+
+        [Test]
+        public async Task ReturnsSystemIdErrorIfGatewayErrors()
+        {
+            var systemIdList = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() };
+            var systemIds = systemIdList.ToJson();
+            var targetId = systemIdList.SystemIds[^1].Id;
+            var userToken = _fixture.Create<string>();
+            var paginationToken = "";
+            var pageSize = 0;
+
+            _mockNotesGateway.Setup(x =>
+                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync((NoteResponseObjectList) null);
+
+            var response = await _classUnderTest.Execute(systemIds, userToken, paginationToken, pageSize);
+
+            response.SystemIds[^1].Error.Should().BeEquivalentTo(GetAllNotesByIdUseCase.NotFound);
         }
     }
 }

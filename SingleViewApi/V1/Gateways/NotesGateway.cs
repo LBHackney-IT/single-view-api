@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,9 +16,9 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<NoteResponseObjectList> GetAllById(string id, string userToken, string paginationToken = null, int pageSize = 0)
+        public async Task<NoteResponseObjectList> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0)
         {
-            var requestUrl = $"{_baseUrl}/notes?targetId={id}";
+            var requestUrl = $"{_baseUrl}/notes?targetId={targetId}";
 
             if (!string.IsNullOrEmpty(paginationToken))
             {
@@ -41,7 +40,7 @@ namespace SingleViewApi.V1.Gateways
             var jsonBody = response.Content.ReadAsStringAsync().Result;
             var responseObject = JsonConvert.DeserializeObject<NotesResultsResponseObject>(jsonBody);
 
-            var noteResponseObjectList  = new NoteResponseObjectList() {NoteResponseObjects = responseObject.Results};
+            var noteResponseObjectList = new NoteResponseObjectList() { NoteResponseObjects = responseObject.Results };
 
             return noteResponseObjectList;
         }
