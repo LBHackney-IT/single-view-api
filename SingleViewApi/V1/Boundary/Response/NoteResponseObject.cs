@@ -3,7 +3,7 @@ using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
-    public class NoteResponseObject
+    public class NoteResponseObject : IComparable<NoteResponseObject>
     {
         public Guid Id { get; set; }
 
@@ -48,6 +48,13 @@ namespace SingleViewApi.V1.Boundary.Response
                 },
                 Highlight = note.Highlight
             };
+        }
+
+        public int CompareTo(NoteResponseObject other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return CreatedAt.CompareTo(other.CreatedAt);
         }
     }
 }
