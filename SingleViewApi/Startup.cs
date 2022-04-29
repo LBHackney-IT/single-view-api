@@ -87,6 +87,12 @@ namespace SingleViewApi
                     Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_V1"));
             });
 
+            services.AddTransient<IRedisGateway, RedisGateway>(s =>
+            {
+                return new RedisGateway(
+                    Environment.GetEnvironmentVariable("REDIS_HOST"));
+            });
+
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
