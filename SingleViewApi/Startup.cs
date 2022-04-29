@@ -63,6 +63,36 @@ namespace SingleViewApi
 
             services.AddHttpClient();
 
+            services.AddTransient<IPersonGateway, PersonGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new PersonGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("PERSON_API_V1")
+                    );
+            });
+
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var personGateway = s.GetService<IPersonGateway>();
+                return new GetCustomerByIdUseCase(personGateway);
+            });
+
+            services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new HousingSearchGateway(httpClient,
+                    Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_V1"));
+            });
+
+            services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
+            {
+                var housingSearchGateway = s.GetService<IHousingSearchGateway>();
+                return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
+            });
+
             services.AddTransient<INotesGateway, NotesGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
@@ -70,7 +100,7 @@ namespace SingleViewApi
                 return new NotesGateway(
                     httpClient,
                     Environment.GetEnvironmentVariable("NOTES_API_V2")
-                    );
+                );
             });
 
             services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
