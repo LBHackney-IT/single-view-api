@@ -91,7 +91,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
-            var notesResultsResponseObject = new NotesResultsResponseObject() {Results = _fixture.CreateMany<NoteResponseObject>().ToList()};
+            var notesResultsResponseObject = new NotesResultsResponseObject() { Results = _fixture.CreateMany<NoteResponseObject>().ToList() };
 
             _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
