@@ -30,7 +30,7 @@ resource "aws_elasticache_cluster" "redis" {
     num_cache_nodes      = 1
     parameter_group_name = "default.redis3.2"
     port                 = 6379
-    security_group_ids   = ["subnet-0deabb5d8fb9c3446", "subnet-000b89c249f12a8ad"]
+#    security_group_ids   = ["subnet-0deabb5d8fb9c3446", "subnet-000b89c249f12a8ad"]
 }
 /*
 data "aws_iam_role" "ec2_container_service_role" {
