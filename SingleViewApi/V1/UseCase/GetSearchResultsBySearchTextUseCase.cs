@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
@@ -39,6 +40,11 @@ namespace SingleViewApi.V1.UseCase
 
                 foreach (var result in searchResults.Results.Persons)
                 {
+                    var personTypes = new List<PersonType>();
+                    if (result.PersonTypes != null)
+                    {
+                        personTypes = result.PersonTypes.ToList();
+                    }
                     var person = new SearchResult()
                     {
                         Id = result.Id,
@@ -48,7 +54,7 @@ namespace SingleViewApi.V1.UseCase
                         PreferredFirstName = result.PreferredFirstName,
                         PreferredSurname = result.PreferredSurname,
                         MiddleName = result.MiddleName,
-                        PersonTypes = result.PersonTypes.ToList(),
+                        PersonTypes = personTypes,
                         DateOfBirth = result.DateOfBirth,
                         KnownAddresses = new List<KnownAddress>(result.Tenures.Select(t => new KnownAddress()
                         {
