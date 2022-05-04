@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hackney.Shared.ContactDetail.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
@@ -39,5 +40,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public DateTime? DateOfDeath { get; set; }
 
         public bool? IsAMinor { get; set; }
+
+        public ContactDetails ContactDetails { get; set; }
     }
 }

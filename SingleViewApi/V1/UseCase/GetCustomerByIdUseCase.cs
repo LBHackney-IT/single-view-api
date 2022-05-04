@@ -12,14 +12,19 @@ namespace SingleViewApi.V1.UseCase
     public class GetCustomerByIdUseCase : IGetCustomerByIdUseCase
     {
         private IPersonGateway _personGateway;
-        public GetCustomerByIdUseCase(IPersonGateway personGateway)
+        private IContactDetailsGateway _contactDetailsGateway;
+
+        public GetCustomerByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway)
         {
             _personGateway = personGateway;
+            _contactDetailsGateway = contactDetailsGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
         {
             var person = await _personGateway.GetPersonById(personId, userToken);
+            var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
+
             var personApiId = new SystemId() { SystemName = "PersonApi", Id = personId };
 
             var response = new CustomerResponseObject()
@@ -47,6 +52,7 @@ namespace SingleViewApi.V1.UseCase
                     DateOfBirth = person.DateOfBirth,
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
+                    ContactDetails = contactDetails,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
 
