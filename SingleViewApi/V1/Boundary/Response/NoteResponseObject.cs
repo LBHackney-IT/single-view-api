@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
@@ -55,6 +56,11 @@ namespace SingleViewApi.V1.Boundary.Response
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
             return CreatedAt.CompareTo(other.CreatedAt);
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

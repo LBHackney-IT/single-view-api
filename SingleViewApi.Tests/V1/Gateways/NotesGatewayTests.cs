@@ -3,9 +3,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture;
+using Newtonsoft.Json;
 using SingleViewApi.V1.Gateways;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
+using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.Tests.V1.Gateways
@@ -15,16 +17,19 @@ namespace SingleViewApi.Tests.V1.Gateways
     {
         private NotesGateway _classUnderTest;
         private MockHttpMessageHandler _mockHttp;
+        private string _baseUrl;
         private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _mockHttp = new MockHttpMessageHandler();
-            const string baseUrl = "https://api.notes";
-            var mockClient = _mockHttp.ToHttpClient();
-            _classUnderTest = new NotesGateway(mockClient, baseUrl);
             _fixture = new Fixture();
+            _baseUrl = "https://api.notes";
+
+            _mockHttp = new MockHttpMessageHandler();
+            var mockClient = _mockHttp.ToHttpClient();
+
+            _classUnderTest = new NotesGateway(mockClient, _baseUrl);
         }
 
         [Test]
@@ -33,7 +38,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
-            _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken);
 
             _ = _classUnderTest.GetAllById(id, userToken);
@@ -47,7 +52,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
-            _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
                 .Respond(HttpStatusCode.NotFound, x => new StringContent(id));
 
@@ -62,7 +67,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
-            _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
                 .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
 
@@ -77,7 +82,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
-            _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
                 .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
 
@@ -87,13 +92,13 @@ namespace SingleViewApi.Tests.V1.Gateways
         }
 
         [Test]
-        public async Task DataIsReturned()
+        public async Task GetAllByIdReturnsData()
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var notesResultsResponseObject = new NotesResultsResponseObject() { Results = _fixture.CreateMany<NoteResponseObject>().ToList() };
 
-            _mockHttp.Expect($"https://api.notes/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
                 .Respond("application/json", notesResultsResponseObject.ToJson());
 
@@ -107,6 +112,99 @@ namespace SingleViewApi.Tests.V1.Gateways
             Assert.AreEqual(noteResponseObject.Id, noteResponseObjectResult.Id);
             Assert.AreEqual(noteResponseObject.Title, noteResponseObjectResult.Title);
             Assert.AreEqual(noteResponseObject.Description, noteResponseObjectResult.Description);
+        }
+
+        [Test]
+        public async Task CreateNoteReturnsNullIfBadRequest()
+        {
+            var id = _fixture.Create<string>();
+            var userToken = _fixture.Create<string>();
+            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseJson = noteResponseObject.ToJson();
+            var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
+
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.BadRequest, x => new StringContent(id));
+
+            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+
+            Assert.Null(note);
+        }
+
+        public async Task CreateNoteReturnsNullIfInternalServerError()
+        {
+            var id = _fixture.Create<string>();
+            var userToken = _fixture.Create<string>();
+            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseJson = noteResponseObject.ToJson();
+            var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
+
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.InternalServerError, x => new StringContent(id));
+
+            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+
+            Assert.Null(note);
+        }
+
+        [Test]
+        public async Task CreateNoteReturnsNullIfUserIsUnauthorised()
+        {
+            var id = _fixture.Create<string>();
+            var userToken = _fixture.Create<string>();
+            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseJson = noteResponseObject.ToJson();
+            var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
+
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
+
+            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+
+            Assert.Null(note);
+        }
+
+        [Test]
+        public async Task CreateNoteReturnsNullIfServiceUnavailable()
+        {
+            var id = _fixture.Create<string>();
+            var userToken = _fixture.Create<string>();
+            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseJson = noteResponseObject.ToJson();
+            var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
+
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
+
+            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+
+            Assert.Null(note);
+        }
+
+        [Test]
+        public async Task CreateNoteReturnsData()
+        {
+            var id = _fixture.Create<string>();
+            var userToken = _fixture.Create<string>();
+            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseJson = noteResponseObject.ToJson();
+            var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
+
+            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+                .WithHeaders("Authorization", userToken)
+                .Respond(HttpStatusCode.Created, "application/json", noteResponseJson);
+
+            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+
+            _mockHttp.VerifyNoOutstandingExpectation();
+
+            Assert.AreEqual(noteResponseObject.Id, note.Id);
+            Assert.AreEqual(noteResponseObject.Title, note.Title);
+            Assert.AreEqual(noteResponseObject.Description, note.Description);
         }
     }
 }
