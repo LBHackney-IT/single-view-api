@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
@@ -23,17 +21,18 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task GetAuthToken()
+        public async Task<string> GetAuthToken(string email, string password)
         {
-            //logic here to retrieve credentials
+            //logic here to retrieve credentials. For now I am going to store creds as env variables
+            //so we know the logic works, before we integrate with redis
 
             var tokens = await GetCsrfTokens();
 
             //gather auth credentials and post
             var authCredentials = new JigsawAuthCredentials()
             {
-                Email = "test",
-                Password = "Test",
+                Email = email,
+                Password = password,
                 RequestVerificationToken = tokens.Token
             };
 
@@ -48,8 +47,23 @@ namespace SingleViewApi.V1.Gateways
             //Jigsaw responds with a token in the response
             var response = await _httpClient.SendAsync(request);
 
-            //logic here to post to Redis
+            var bearerToken = String.Empty;
 
+            foreach (string header in response.Headers.GetValues("set-cookie"))
+            {
+                Regex r = new Regex("/access_token=([^;]*)/");
+
+                Match match = r.Match(header);
+
+                if (match.Success)
+                {
+                    bearerToken = match.Value;
+                }
+
+            }
+
+            //this should post to redis, but for now just return the token
+            return bearerToken;
         }
 
         private async Task<CsrfTokenResponse> GetCsrfTokens()
