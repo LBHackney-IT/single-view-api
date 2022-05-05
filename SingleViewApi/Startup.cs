@@ -120,6 +120,12 @@ namespace SingleViewApi
                 return new GetAllNotesByIdUseCase(notesGateway);
             });
 
+            services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new CreateNoteUseCase(notesGateway);
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddDynamoDbHealthCheck<DatabaseEntity>();
