@@ -24,12 +24,14 @@ namespace SingleViewApi.V1.Gateways
         {
             //logic here to retrieve credentials
 
-            var tokens  = await GetCsrfTokens();
+            var tokens = await GetCsrfTokens();
 
             //gather auth credentials and post
             var authCredentials = new JigsawAuthCredentials()
             {
-                Email = "test", Password = "Test", RequestVerificationToken = tokens.Token
+                Email = "test",
+                Password = "Test",
+                RequestVerificationToken = tokens.Token
             };
 
             var json = JsonSerializer.Serialize(authCredentials);
