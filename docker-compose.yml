@@ -13,6 +13,7 @@ services:
     environment:
       - CONNECTION_STRING=Host=dev-database;Port=5432;Database=testdb;Username=postgres;Password=mypassword
       - PERSON_API_V1=${PERSON_API_V1}
+      - CONTACT_DETAILS_API_V2=${CONTACT_DETAILS_API_V2}
       - HOUSING_SEARCH_API_V1=${HOUSING_SEARCH_API_V1}
       - NOTES_API_V2=${NOTES_API_V2}
 # TODO: If using DynamoDb remove the line above and uncomment the section below.
