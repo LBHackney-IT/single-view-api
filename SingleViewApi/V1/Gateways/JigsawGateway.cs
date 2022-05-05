@@ -5,6 +5,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 
 namespace SingleViewApi.V1.Gateways
@@ -53,7 +56,21 @@ namespace SingleViewApi.V1.Gateways
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl);
             var response = await _httpClient.SendAsync(request);
-            return new CsrfTokenResponse() { Token = "test", Cookies = new List<string>() { "test" } };
+
+            var cookies = response.Headers.GetValues("set-cookie").Map((cookie) => cookie.Split(";")[0]);
+
+            var parser = new HtmlParser();
+            var document = parser.ParseDocument(response.Content.ToString());
+
+            var token = String.Empty;
+
+            foreach (IElement element in document.QuerySelectorAll("input[name='__RequestVerificationToken']"))
+            {
+                token = element.NodeValue;
+            }
+
+
+            return new CsrfTokenResponse() { Token = token, Cookies = cookies };
         }
     }
 }
