@@ -35,6 +35,8 @@ functions:
       HOUSING_SEARCH_API_V1: ${ssm:/single-view/${self:provider.stage}/housing-search-v1}
 #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
+      JIGSAW_LOGIN_URL: ${ssm:/single-view/${self:provider.stage}/jigsaw-login-url}
+
     events:
       - http:
           path: /{proxy+}
