@@ -4,6 +4,6 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IJigsawGateway
     {
-        Task GetAuthToken();
+        Task<string> GetAuthToken(string email, string password);
     }
 }
