@@ -73,10 +73,21 @@ namespace SingleViewApi
                     );
             });
 
+            services.AddTransient<IContactDetailsGateway, ContactDetailsGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new ContactDetailsGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("CONTACT_DETAILS_API_V2")
+                    );
+            });
+
             services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
             {
                 var personGateway = s.GetService<IPersonGateway>();
-                return new GetCustomerByIdUseCase(personGateway);
+                var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
+                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway);
             });
 
             services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
@@ -85,6 +96,12 @@ namespace SingleViewApi
 
                 return new HousingSearchGateway(httpClient,
                     Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_V1"));
+            });
+
+            services.AddTransient<IRedisGateway, RedisGateway>(s =>
+            {
+                return new RedisGateway(
+                    Environment.GetEnvironmentVariable("REDIS_HOST"));
             });
 
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
