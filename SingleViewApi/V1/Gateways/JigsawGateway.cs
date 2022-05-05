@@ -86,5 +86,7 @@ namespace SingleViewApi.V1.Gateways
 
             return new CsrfTokenResponse() { Token = token, Cookies = cookies };
         }
+
+
     }
 }
