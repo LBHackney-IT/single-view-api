@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SingleViewApi.V1.Boundary.Request;
@@ -46,13 +47,12 @@ namespace SingleViewApi.V1.Gateways
             return noteResponseObjectList;
         }
 
-        public async Task<NoteResponseObject> CreateNote(string targetId, string userToken, CreateNoteRequest createNoteRequest)
+        public async Task<NoteResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken)
         {
-            var requestUrl = $"{_baseUrl}/notes?targetId={targetId}";
-            var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/notes");
 
             request.Headers.Add("Authorization", userToken);
-            request.Content = new StringContent(JsonConvert.SerializeObject(createNoteRequest));
+            request.Content = new StringContent(JsonConvert.SerializeObject(createNoteRequest), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.SendAsync(request);
 

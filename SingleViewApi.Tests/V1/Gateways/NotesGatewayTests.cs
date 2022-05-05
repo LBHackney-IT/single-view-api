@@ -117,34 +117,34 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public async Task CreateNoteReturnsNullIfBadRequest()
         {
-            var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var noteResponseJson = noteResponseObject.ToJson();
             var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
 
-            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes")
                 .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.BadRequest, x => new StringContent(id));
+                .Respond(HttpStatusCode.BadRequest, x =>
+                    new StringContent(noteResponseObject.TargetId.ToString()));
 
-            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+            var note = await _classUnderTest.CreateNote(createNoteRequest, userToken);
 
             Assert.Null(note);
         }
 
         public async Task CreateNoteReturnsNullIfInternalServerError()
         {
-            var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var noteResponseJson = noteResponseObject.ToJson();
             var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
 
-            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes")
                 .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.InternalServerError, x => new StringContent(id));
+                .Respond(HttpStatusCode.InternalServerError, x =>
+                    new StringContent(noteResponseObject.TargetId.ToString()));
 
-            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+            var note = await _classUnderTest.CreateNote(createNoteRequest, userToken);
 
             Assert.Null(note);
         }
@@ -152,17 +152,17 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public async Task CreateNoteReturnsNullIfUserIsUnauthorised()
         {
-            var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var noteResponseJson = noteResponseObject.ToJson();
             var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
 
-            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes")
                 .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
+                .Respond(HttpStatusCode.Unauthorized, x =>
+                    new StringContent(noteResponseObject.TargetId.ToString()));
 
-            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+            var note = await _classUnderTest.CreateNote(createNoteRequest, userToken);
 
             Assert.Null(note);
         }
@@ -170,17 +170,17 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public async Task CreateNoteReturnsNullIfServiceUnavailable()
         {
-            var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var noteResponseJson = noteResponseObject.ToJson();
             var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
 
-            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes")
                 .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
+                .Respond(HttpStatusCode.ServiceUnavailable, x =>
+                    new StringContent(noteResponseObject.TargetId.ToString()));
 
-            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+            var note = await _classUnderTest.CreateNote(createNoteRequest, userToken);
 
             Assert.Null(note);
         }
@@ -188,17 +188,16 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public async Task CreateNoteReturnsData()
         {
-            var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var noteResponseJson = noteResponseObject.ToJson();
             var createNoteRequest = JsonConvert.DeserializeObject<CreateNoteRequest>(noteResponseJson);
 
-            _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
+            _mockHttp.Expect($"{_baseUrl}/notes")
                 .WithHeaders("Authorization", userToken)
                 .Respond(HttpStatusCode.Created, "application/json", noteResponseJson);
 
-            var note = await _classUnderTest.CreateNote(id, userToken, createNoteRequest);
+            var note = await _classUnderTest.CreateNote(createNoteRequest, userToken);
 
             _mockHttp.VerifyNoOutstandingExpectation();
 

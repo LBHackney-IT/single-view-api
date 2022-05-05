@@ -29,13 +29,12 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var noteResponseObject = _fixture.Create<NoteResponseObject>();
             var createNoteRequest = _fixture.Create<CreateNoteRequest>();
-            var targetId = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
             _mockNotesGateway.Setup(x =>
-                x.CreateNote(targetId, userToken, createNoteRequest)).ReturnsAsync(noteResponseObject);
+                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync(noteResponseObject);
 
-            var response = await _classUnderTest.Execute(targetId, userToken, createNoteRequest);
+            var response = await _classUnderTest.Execute(createNoteRequest, userToken);
 
             Assert.AreEqual(noteResponseObject.Author, response.Author);
             Assert.AreEqual(noteResponseObject.Categorisation, response.Categorisation);
@@ -49,14 +48,12 @@ namespace SingleViewApi.Tests.V1.UseCase
         public async Task ReturnsNullIfGatewayErrors()
         {
             var createNoteRequest = _fixture.Create<CreateNoteRequest>();
-
-            var targetId = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
 
             _mockNotesGateway.Setup(x =>
-                x.CreateNote(targetId, userToken, createNoteRequest)).ReturnsAsync((NoteResponseObject) null);
+                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync((NoteResponseObject) null);
 
-            var response = await _classUnderTest.Execute(targetId, userToken, createNoteRequest);
+            var response = await _classUnderTest.Execute(createNoteRequest, userToken);
 
             Assert.IsNull(response);
         }

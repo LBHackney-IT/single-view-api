@@ -8,6 +8,6 @@ namespace SingleViewApi.V1.Gateways
     {
         Task<NoteResponseObjectList> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0);
 
-        Task<NoteResponseObject> CreateNote(string targetId, string userToken, CreateNoteRequest createNoteRequest);
+        Task<NoteResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken);
     }
 }
