@@ -111,6 +111,12 @@ namespace SingleViewApi
                 return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
             });
 
+            services.AddTransient<IGetJigsawAuthTokenUseCase, GetJigsawAuthTokenUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                return new GetJigsawAuthTokenUseCase(jigsawGateway);
+            });
+
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
