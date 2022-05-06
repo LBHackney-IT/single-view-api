@@ -31,10 +31,10 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawAuthToken([FromQuery] string username,[FromBody] string password)
+        public IActionResult GetJigsawAuthToken([FromQuery] string username,[FromHeader] string authorization)
 
         {
-            return Ok(_getJigsawAuthTokenUseCase.Execute(username, password).Result);
+            return Ok(_getJigsawAuthTokenUseCase.Execute(username, authorization).Result);
         }
     }
 }
