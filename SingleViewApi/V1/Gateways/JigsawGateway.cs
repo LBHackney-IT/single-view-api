@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using ServiceStack;
@@ -44,10 +45,11 @@ namespace SingleViewApi.V1.Gateways
 
             request.Headers.Add("Cookie", String.Join("; ", tokens.Cookies));
 
-            //Jigsaw responds with a token in the response
             var response = await _httpClient.SendAsync(request);
 
             var bearerToken = String.Empty;
+
+            //TODO: DEBUG HERE
 
             foreach (string header in response.Headers.GetValues("set-cookie"))
             {
@@ -73,16 +75,15 @@ namespace SingleViewApi.V1.Gateways
 
             var cookies = response.Headers.GetValues("set-cookie").Map((cookie) => cookie.Split(";")[0]);
 
-            var parser = new HtmlParser();
-            var document = parser.ParseDocument(response.Content.ToString());
+            var body = response.Content.ReadAsStringAsync().Result;
 
-            var token = String.Empty;
+            var context = BrowsingContext.New(Configuration.Default);
 
-            foreach (IElement element in document.QuerySelectorAll("input[name='__RequestVerificationToken']"))
-            {
-                token = element.NodeValue;
-            }
+            var document = await context.OpenAsync(req => req.Content(body));
 
+            var element = document.QuerySelector("input[name='__RequestVerificationToken']");
+
+            var token = element.Attributes[2].Value;
 
             return new CsrfTokenResponse() { Token = token, Cookies = cookies };
         }
