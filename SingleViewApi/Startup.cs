@@ -104,6 +104,13 @@ namespace SingleViewApi
                     Environment.GetEnvironmentVariable("REDIS_HOST"));
             });
 
+            services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
+            });
+
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
