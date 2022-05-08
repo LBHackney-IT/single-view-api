@@ -107,7 +107,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             _mockHttp.VerifyNoOutstandingExpectation();
 
             var noteResponseObject = notesResultsResponseObject.Results[^1];
-            var noteResponseObjectResult = results.NoteResponseObjects[^1];
+            var noteResponseObjectResult = results[^1];
 
             Assert.AreEqual(noteResponseObject.Id, noteResponseObjectResult.Id);
             Assert.AreEqual(noteResponseObject.Title, noteResponseObjectResult.Title);
