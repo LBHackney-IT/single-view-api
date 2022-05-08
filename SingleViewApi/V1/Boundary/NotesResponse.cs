@@ -5,8 +5,14 @@ namespace SingleViewApi.V1.Boundary
 {
     public class NotesResponse
     {
-        public NoteResponseObjectList Notes { get; set; }
+        public List<NoteResponseObject> Notes { get; set; }
 
         public List<SystemId> SystemIds { get; set; }
+
+        public void SortByCreatedAtDescending()
+        {
+            Notes.Sort((x, y) =>
+                y.CreatedAt.CompareTo(x.CreatedAt));
+        }
     }
 }

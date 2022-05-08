@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -29,11 +30,12 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public async Task GetsAllNotesById()
         {
-            var stubbedEntities = new NoteResponseObjectList()
+            var notesResponseFixture = new NotesResponse()
             {
-                NoteResponseObjects = _fixture.CreateMany<NoteResponseObject>().ToList()
+                Notes = _fixture.CreateMany<NoteResponseObject>().ToList(),
+                SystemIds = _fixture.CreateMany<SystemId>().ToList()
             };
-            stubbedEntities.SortByCreatedAtDescending();
+            notesResponseFixture.SortByCreatedAtDescending();
 
             var systemIdList = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() };
             var systemIds = systemIdList.ToJson();
@@ -43,21 +45,21 @@ namespace SingleViewApi.Tests.V1.UseCase
             var pageSize = 0;
 
             _mockNotesGateway.Setup(x =>
-                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync(stubbedEntities);
+                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync(notesResponseFixture.Notes);
 
             var response = await _classUnderTest.Execute(systemIds, userToken, paginationToken, pageSize);
 
             response.SystemIds[^1].Should().BeEquivalentTo(systemIdList.SystemIds[^1]);
 
-            var noteResponseObject = response.Notes.NoteResponseObjects[^1];
-            var stubbedEntity = stubbedEntities.NoteResponseObjects[^1];
+            var note = response.Notes[^1];
+            var noteFixture = notesResponseFixture.Notes[^1];
 
-            noteResponseObject.Author.Should().BeEquivalentTo(stubbedEntity.Author);
-            noteResponseObject.Categorisation.Should().BeEquivalentTo(stubbedEntity.Categorisation);
-            noteResponseObject.Description.Should().BeEquivalentTo(stubbedEntity.Description);
-            noteResponseObject.Highlight.Should().Be(stubbedEntity.Highlight);
-            noteResponseObject.Id.Should().Be(stubbedEntity.Id);
-            noteResponseObject.Title.Should().BeEquivalentTo(stubbedEntity.Title);
+            note.Author.Should().BeEquivalentTo(noteFixture.Author);
+            note.Categorisation.Should().BeEquivalentTo(noteFixture.Categorisation);
+            note.Description.Should().BeEquivalentTo(noteFixture.Description);
+            note.Highlight.Should().Be(noteFixture.Highlight);
+            note.Id.Should().Be(noteFixture.Id);
+            note.Title.Should().BeEquivalentTo(noteFixture.Title);
         }
 
         [Test]
@@ -71,7 +73,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var pageSize = 0;
 
             _mockNotesGateway.Setup(x =>
-                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync((NoteResponseObjectList) null);
+                x.GetAllById(targetId, userToken, paginationToken, pageSize)).ReturnsAsync((List<NoteResponseObject>) null);
 
             var response = await _classUnderTest.Execute(systemIds, userToken, paginationToken, pageSize);
 

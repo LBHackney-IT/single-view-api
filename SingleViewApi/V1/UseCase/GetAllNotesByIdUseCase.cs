@@ -21,15 +21,13 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<NotesResponse> Execute(string systemIds, string userToken, string paginationToken, int pageSize)
         {
-            var notes = new NoteResponseObjectList()
-            {
-                NoteResponseObjects = new List<NoteResponseObject>()
-            };
-
+            var notes = new List<NoteResponseObject>();
             var systemIdList = new SystemIdList()
             {
                 SystemIds = JsonConvert.DeserializeObject<List<SystemId>>(systemIds)
             };
+
+            if (systemIdList.SystemIds == null) return null;
 
             foreach (var systemId in systemIdList.SystemIds)
             {
@@ -41,13 +39,15 @@ namespace SingleViewApi.V1.UseCase
                 }
                 else
                 {
-                    notes.NoteResponseObjects.AddRange(noteResponseList.NoteResponseObjects);
+                    notes.AddRange(noteResponseList);
                 }
             }
 
-            notes.SortByCreatedAtDescending();
+            var response = new NotesResponse() { Notes = notes, SystemIds = systemIdList.SystemIds };
 
-            return new NotesResponse() { Notes = notes, SystemIds = systemIdList.SystemIds };
+            response.SortByCreatedAtDescending();
+
+            return response;
         }
     }
 }
