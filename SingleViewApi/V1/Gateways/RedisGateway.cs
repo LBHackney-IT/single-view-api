@@ -16,33 +16,46 @@ namespace SingleViewApi.V1.Gateways
         {
             try
             {
-                using (var redis = new RedisClient(_host, 6379))
+                var redis = new RedisClient(_host, 6379);
+                using (redis)
                 {
                     Console.WriteLine(" ------ REDIS CLIENT ------");
 
-                    var redisUsers = redis.As<RedisPerson>();
-                    Console.WriteLine(" ------ REDIS USER ------");
+                    try
+                    {
+                        var redisUsers = redis.As<RedisPerson>();
+                        Console.WriteLine(" ------ REDIS USER ------");
 
-                    var sequence = redisUsers.GetNextSequence();
-                    Console.WriteLine(" ------ got sequence ------");
 
-                    var user = new RedisPerson { Id = sequence, Name = input };
-                    Console.WriteLine(" ------ new user ------");
+                        var sequence = redisUsers.GetNextSequence();
+                        Console.WriteLine(" ------ got sequence ------");
 
-                    redisUsers.Store(user);
+                        var user = new RedisPerson { Id = sequence, Name = input };
+                        Console.WriteLine(" ------ new user ------");
 
-                    Console.WriteLine(" ------ STORED ------");
+                        redisUsers.Store(user);
 
-                    var allUsers = redisUsers.GetAll();
-                    Console.WriteLine(" ------ ALL USERS ------");
+                        Console.WriteLine(" ------ STORED ------");
 
-                    return allUsers.Count + " " + allUsers[allUsers.Count - 1];
+                        var allUsers = redisUsers.GetAll();
+                        Console.WriteLine(" ------ ALL USERS ------");
+
+                        return allUsers.Count + " " + allUsers[allUsers.Count - 1];
+                    }
+                    catch (Exception err)
+                    {
+                        Console.WriteLine(" ------ SEQUENCE ERROR ------");
+                        Console.WriteLine(err);
+                        return "SEQUENCE ERROR";
+
+                    }
+
 
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(" ------ REDIS CLIENT ------");
+                Console.WriteLine(" ------ REDIS error ------");
                 Console.WriteLine(e.StackTrace);
 
                 return "Oops! something went wrong";

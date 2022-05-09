@@ -72,6 +72,14 @@ resource "aws_elasticache_cluster" "redis" {
     subnet_group_name    = aws_elasticache_subnet_group.default.name
     security_group_ids   = [aws_security_group.redis_sg.id]
 }
+
+#resource "aws_ssm_parameter" "redis_host" {
+#    depends_on = [aws_elasticache_cluster.redis]
+#
+#    name  = "/single-view/development/auto-gen-redis-host"
+#    type  = "String"
+#    value = aws_elasticache_cluster.redis.cluster_address
+#}
 /*
 data "aws_iam_role" "ec2_container_service_role" {
   name = "ecsServiceRole"
