@@ -1,11 +1,10 @@
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp;
-using AngleSharp.Dom;
-using AngleSharp.Html.Parser;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 
@@ -29,7 +28,6 @@ namespace SingleViewApi.V1.Gateways
 
             var tokens = await GetCsrfTokens();
 
-            //gather auth credentials and post
             var authCredentials = new JigsawAuthCredentials()
             {
                 Email = email,
@@ -41,7 +39,7 @@ namespace SingleViewApi.V1.Gateways
 
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl);
 
-            request.Content = new StringContent(json);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             request.Headers.Add("Cookie", String.Join("; ", tokens.Cookies));
 
@@ -49,7 +47,7 @@ namespace SingleViewApi.V1.Gateways
 
             var bearerToken = String.Empty;
 
-            //TODO: DEBUG HERE
+            Console.WriteLine("------HEADERS IN RESPONSE ARE : {0}",response.Headers);
 
             foreach (string header in response.Headers.GetValues("set-cookie"))
             {
@@ -61,10 +59,9 @@ namespace SingleViewApi.V1.Gateways
                 {
                     bearerToken = match.Value;
                 }
-
             }
-
             //this should post to redis, but for now just return the token
+            Console.WriteLine("Bearer token is {0}", bearerToken);
             return bearerToken;
         }
 
