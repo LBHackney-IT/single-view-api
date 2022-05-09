@@ -5,11 +5,11 @@ namespace SingleViewApi.V1.Boundary
 {
     public class JigsawAuthCredentials
     {
-        [JsonPropertyName("Email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
-        [JsonPropertyName("Password")]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
-        [JsonPropertyName("_RequestVerificationToken")]
+        [JsonPropertyName("__RequestVerificationToken")]
         public string RequestVerificationToken { get; set; }
     }
 

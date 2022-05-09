@@ -16,9 +16,9 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<string> Execute(string username, string password)
+        public async Task<string> Execute(string username)
         {
-            var token = await _jigsawGateway.GetAuthToken(username, password);
+            var token = await _jigsawGateway.GetAuthToken(username);
 
             return token;
         }
