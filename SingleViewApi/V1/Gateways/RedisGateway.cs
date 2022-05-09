@@ -21,7 +21,9 @@ namespace SingleViewApi.V1.Gateways
 
             try
             {
+
                 Console.WriteLine(" ------ MAKING CONNECTION ------");
+                Console.WriteLine(_host);
                 ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_host);
 
                 Console.WriteLine(" ------ MAKING DB ------");
