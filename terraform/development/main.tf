@@ -20,58 +20,58 @@ locals {
 }
 
 # Create ElastiCache Redis security group
-
-resource "aws_security_group" "redis_sg" {
-    vpc_id = "vpc-05c7e3d5ffd5f00a4"
-
-    ingress {
-        cidr_blocks = ["10.120.37.0/24"]
-        from_port   = 6379
-        to_port     = 6379
-        protocol    = "tcp"
-    }
-
-    egress {
-        from_port       = 0
-        to_port         = 0
-        protocol        = "-1"
-        cidr_blocks     = ["0.0.0.0/0"]
-    }
-
-}
-
-data "aws_subnet" "subnet1" {
-    id = "subnet-068ec0a87972e4714"
-}
-
-data "aws_subnet" "subnet2" {
-    id = "subnet-07ba583cbf5207869"
-}
-
-
-# Create ElastiCache Redis subnet group
-
-resource "aws_elasticache_subnet_group" "default" {
-    name        = "subnet-group-single-view"
-    description = "Private subnets for the ElastiCache instances: single view"
-    subnet_ids  = [data.aws_subnet.subnet1.id, data.aws_subnet.subnet2.id]
-}
-
-
-# Create ElastiCache Redis cluster
-
-resource "aws_elasticache_cluster" "redis" {
-
-    cluster_id           = "single-view-development"
-    engine               = "redis"
-    engine_version       = "3.2.10"
-    node_type            = "cache.m4.large"
-    num_cache_nodes      = 1
-    parameter_group_name = "default.redis3.2"
-    port                 = 6379
-    subnet_group_name    = aws_elasticache_subnet_group.default.name
-    security_group_ids   = [aws_security_group.redis_sg.id]
-}
+#
+#resource "aws_security_group" "redis_sg" {
+#    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+#
+#    ingress {
+#        cidr_blocks = ["10.120.37.0/24"]
+#        from_port   = 6379
+#        to_port     = 6379
+#        protocol    = "tcp"
+#    }
+#
+#    egress {
+#        from_port       = 0
+#        to_port         = 0
+#        protocol        = "-1"
+#        cidr_blocks     = ["0.0.0.0/0"]
+#    }
+#
+#}
+#
+#data "aws_subnet" "subnet1" {
+#    id = "subnet-068ec0a87972e4714"
+#}
+#
+#data "aws_subnet" "subnet2" {
+#    id = "subnet-07ba583cbf5207869"
+#}
+#
+#
+## Create ElastiCache Redis subnet group
+#
+#resource "aws_elasticache_subnet_group" "default" {
+#    name        = "subnet-group-single-view"
+#    description = "Private subnets for the ElastiCache instances: single view"
+#    subnet_ids  = [data.aws_subnet.subnet1.id, data.aws_subnet.subnet2.id]
+#}
+#
+#
+## Create ElastiCache Redis cluster
+#
+#resource "aws_elasticache_cluster" "redis" {
+#
+#    cluster_id           = "single-view-development"
+#    engine               = "redis"
+#    engine_version       = "3.2.10"
+#    node_type            = "cache.m4.large"
+#    num_cache_nodes      = 1
+#    parameter_group_name = "default.redis3.2"
+#    port                 = 6379
+#    subnet_group_name    = aws_elasticache_subnet_group.default.name
+#    security_group_ids   = [aws_security_group.redis_sg.id]
+#}
 
 #resource "aws_ssm_parameter" "redis_host" {
 #    depends_on = [aws_elasticache_cluster.redis]

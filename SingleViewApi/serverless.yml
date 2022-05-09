@@ -60,6 +60,42 @@ functions:
           private: false
 resources:
   Resources:
+    ServerlessSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: SecurityGroup for Serverless Functions
+        VpcId: 'vpc-05c7e3d5ffd5f00a4'
+    ServerlessStorageSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for Redis Cluster
+        VpcId: 'vpc-05c7e3d5ffd5f00a4'
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '6379'
+            ToPort: '6379'
+            SourceSecurityGroupId:
+              Ref: ServerlessSecurityGroup
+    ServerlessCacheSubnetGroup:
+      Type: AWS::ElastiCache::SubnetGroup
+      Properties:
+        Description: "Cache Subnet Group"
+        SubnetIds:
+          - 'subnet-0deabb5d8fb9c3446'
+          - 'subnet-000b89c249f12a8ad'
+    ElasticCacheCluster:
+      DependsOn: ServerlessStorageSecurityGroup
+      Type: AWS::ElastiCache::CacheCluster
+      Properties:
+        AutoMinorVersionUpgrade: true
+        Engine: redis
+        CacheNodeType: ${self:custom.config.CACHE_INSTANCE_SIZE}
+        NumCacheNodes: 1
+        VpcSecurityGroupIds:
+          - "Fn::GetAtt": ServerlessStorageSecurityGroup.GroupId
+        CacheSubnetGroupName:
+          Ref: ServerlessCacheSubnetGroup
+
     lambdaExecutionRole:
       Type: AWS::IAM::Role
       Properties:
@@ -111,6 +147,8 @@ resources:
                     - "lambda:InvokeFunction"
                   Resource: "*"
 custom:
+  config:
+    CACHE_INSTANCE_SIZE: cache.t2.micro
   vpc:
     development:
       subnetIds:
