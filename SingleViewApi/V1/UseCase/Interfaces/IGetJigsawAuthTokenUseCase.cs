@@ -4,6 +4,6 @@ namespace SingleViewApi.V1.UseCase.Interfaces
 {
     public interface IGetJigsawAuthTokenUseCase
     {
-        Task<string> Execute(string username, string password);
+        Task<string> Execute(string username);
     }
 }

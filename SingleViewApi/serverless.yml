@@ -38,6 +38,7 @@ functions:
       JIGSAW_LOGIN_URL: ${ssm:/single-view/${self:provider.stage}/jigsaw-login-url}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
+      JIGSAW_PASSWORD: ${ssm/single-view/${self:provider.stage}/jigsaw-password}
 
     events:
       - http:

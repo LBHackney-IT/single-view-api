@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -12,42 +13,60 @@ namespace SingleViewApi.V1.Gateways
 {
     public class JigsawGateway : IJigsawGateway
     {
-        private readonly HttpClient _httpClient;
+
         private readonly string _baseUrl;
+        private readonly HttpClient _httpClient;
 
         public JigsawGateway(HttpClient httpClient, string baseUrl)
         {
-            this._httpClient = httpClient;
             this._baseUrl = baseUrl;
+            this._httpClient = httpClient;
+
         }
 
-        public async Task<string> GetAuthToken(string email, string password)
+        public async Task<string> GetAuthToken(string email)
         {
             //logic here to retrieve credentials. For now I am going to store creds as env variables
             //so we know the logic works, before we integrate with redis
+            var baseAddress = new Uri(_baseUrl);
+
+           // var handler = new HttpClientHandler() { UseCookies = false };
+           // var client = new HttpClient(handler) { BaseAddress = baseAddress };
 
             var tokens = await GetCsrfTokens();
 
             var authCredentials = new JigsawAuthCredentials()
             {
                 Email = email,
-                Password = password,
+                Password = Environment.GetEnvironmentVariable("JIGSAW_PASSWORD"),
                 RequestVerificationToken = tokens.Token
             };
 
-            var json = JsonSerializer.Serialize(authCredentials);
-
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl);
 
-            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            MultipartFormDataContent form = new MultipartFormDataContent();
 
-            request.Headers.Add("Cookie", String.Join("; ", tokens.Cookies));
+            form.Add(new StringContent(authCredentials.Email), "Email");
+            form.Add(new StringContent(authCredentials.Password), "Password");
+            form.Add(new StringContent(authCredentials.RequestVerificationToken), "__RequestVerificationToken");
+
+            request.Content = form;
+
+            request.Headers.Add("Cookie", tokens.Cookies.Join("; "));
+
+            foreach (var cookie in tokens.Cookies)
+            {
+                Console.WriteLine("token being passed to set as cookie is are: {0}", cookie);
+            }
+
+            Console.WriteLine("Cookie set is {0}", JSON.stringify(request.Headers.GetValues("Cookie")));
 
             var response = await _httpClient.SendAsync(request);
 
-            var bearerToken = String.Empty;
+            Console.WriteLine("Full request is {0}", JSON.stringify(request));
+            Console.WriteLine("Full response is {0}", JSON.stringify(response));
 
-            Console.WriteLine("------HEADERS IN RESPONSE ARE : {0}", response.Headers);
+            var bearerToken = String.Empty;
 
             foreach (string header in response.Headers.GetValues("set-cookie"))
             {
