@@ -104,6 +104,28 @@ namespace SingleViewApi
                 return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
             });
 
+            services.AddTransient<INotesGateway, NotesGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new NotesGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("NOTES_API_V2")
+                );
+            });
+
+            services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new GetAllNotesByIdUseCase(notesGateway);
+            });
+
+            services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new CreateNoteUseCase(notesGateway);
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddDynamoDbHealthCheck<DatabaseEntity>();
