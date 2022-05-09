@@ -1,57 +1,39 @@
 using System;
 using ServiceStack.Redis;
+using StackExchange.Redis;
 
 namespace SingleViewApi.V1.Gateways
 {
     public class RedisGateway : IRedisGateway
     {
-        private readonly string _host;
+        // private readonly string _host;
+        private readonly IDatabase _db;
 
         public RedisGateway(string host)
         {
-            _host = host;
+            // _host = host;
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(host);
+            _db = redis.GetDatabase();
         }
 
-        public dynamic DoTheThing(string input)
+        public string DoTheThing(string input)
         {
+            var key = new Guid().ToString();
+            Console.WriteLine($" ------ SWEET NEW KEY BABY: {key} ------");
+
+            var ttl = new TimeSpan(0, 0, 15, 0);
+            Console.WriteLine(" ------ REDIS starting to add ------");
+
             try
             {
-                var redis = new RedisClient(_host, 6379);
-                using (redis)
-                {
-                    Console.WriteLine(" ------ REDIS CLIENT ------");
+                _db.StringSet(key, input, ttl);
+                Console.WriteLine(" ------ REDIS KEY CREATED ------");
 
-                    try
-                    {
-                        var redisUsers = redis.As<RedisPerson>();
-                        Console.WriteLine(" ------ REDIS USER ------");
+                string value = _db.StringGet(key);
+                Console.WriteLine(" ------ GOT VALUE ------");
 
-
-                        var sequence = redisUsers.GetNextSequence();
-                        Console.WriteLine(" ------ got sequence ------");
-
-                        var user = new RedisPerson { Id = sequence, Name = input };
-                        Console.WriteLine(" ------ new user ------");
-
-                        redisUsers.Store(user);
-
-                        Console.WriteLine(" ------ STORED ------");
-
-                        var allUsers = redisUsers.GetAll();
-                        Console.WriteLine(" ------ ALL USERS ------");
-
-                        return allUsers.Count + " " + allUsers[allUsers.Count - 1];
-                    }
-                    catch (Exception err)
-                    {
-                        Console.WriteLine(" ------ SEQUENCE ERROR ------");
-                        Console.WriteLine(err);
-                        return "SEQUENCE ERROR";
-
-                    }
-
-
-                }
+                Console.WriteLine(value); // writes: "abcdefg"
+                return $"{key} - {value}";
             }
             catch (Exception e)
             {
@@ -62,14 +44,5 @@ namespace SingleViewApi.V1.Gateways
 
             }
         }
-    }
-}
-class RedisPerson
-{
-    public long Id { get; set; }
-    public string Name { get; set; }
-    public override string ToString()
-    {
-        return $"{Id} - {Name}";
     }
 }
