@@ -35,7 +35,19 @@ namespace SingleViewApi.V1.Controllers
         public IActionResult GetRedis([FromQuery] string input)
         {
             Console.WriteLine("------ BOOO BOOO ------");
-            return Ok(_redisGateway.DoTheThing(input));
+            string thing;
+            try
+            {
+                thing = _redisGateway.DoTheThing(input);
+                Console.WriteLine("------ GOT THE THING ------");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                thing = "no such thing";
+            }
+
+            return Ok(thing);
         }
     }
 }
