@@ -47,7 +47,7 @@ namespace SingleViewApi.V1.Gateways
 
             var bearerToken = String.Empty;
 
-            Console.WriteLine("------HEADERS IN RESPONSE ARE : {0}",response.Headers);
+            Console.WriteLine("------HEADERS IN RESPONSE ARE : {0}", response.Headers);
 
             foreach (string header in response.Headers.GetValues("set-cookie"))
             {
