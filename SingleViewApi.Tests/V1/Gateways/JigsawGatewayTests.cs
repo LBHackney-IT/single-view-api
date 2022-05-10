@@ -18,9 +18,8 @@ namespace SingleViewApi.Tests.V1.Gateways
         {
             _mockHttp = new MockHttpMessageHandler();
             const string baseUrl = "http://jigsaw.api";
-            Uri baseAddress = new Uri(baseUrl);
             var mockClient = _mockHttp.ToHttpClient();
-            _classUnderTest = new JigsawGateway(mockClient, baseUrl, baseAddress);
+            _classUnderTest = new JigsawGateway(mockClient, baseUrl);
         }
 
         [Test]
@@ -29,7 +28,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         {
             const string username = "testUser@test.com";
 
-            _mockHttp.Expect($"http://jigsaw.api/authorise/{username}");
+            _mockHttp.Expect($"http://jigsaw.api/authorise/");
 
             _ = _classUnderTest.GetAuthToken(username);
 
