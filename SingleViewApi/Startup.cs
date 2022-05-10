@@ -33,6 +33,7 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 using Microsoft.AspNetCore.Http;
+using ServiceStack;
 
 namespace SingleViewApi
 {
@@ -64,6 +65,8 @@ namespace SingleViewApi
             });
 
             services.AddHttpClient();
+
+            services.AddHttpContextAccessor();
 
             services.AddTransient<IPersonGateway, PersonGateway>(s =>
             {
@@ -114,9 +117,12 @@ namespace SingleViewApi
                 () => new HttpClientHandler() { CookieContainer = new CookieContainer() });
 
             services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
+
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
+
                 return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
+
             });
 
             services.AddTransient<IGetJigsawAuthTokenUseCase, GetJigsawAuthTokenUseCase>(s =>
