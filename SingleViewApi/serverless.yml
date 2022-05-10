@@ -36,6 +36,7 @@ functions:
 #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
+      NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
     events:
       - http:
           path: /{proxy+}
