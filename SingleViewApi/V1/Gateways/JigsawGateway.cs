@@ -31,8 +31,6 @@ namespace SingleViewApi.V1.Gateways
 
         public async Task<string> GetAuthToken(string email)
         {
-
-
             CookieContainer cookies = new CookieContainer();
             var handler = new HttpClientHandler();
             handler.CookieContainer = cookies;
