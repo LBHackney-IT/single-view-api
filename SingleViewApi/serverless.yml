@@ -28,8 +28,13 @@ functions:
   SingleViewApi:
     name: ${self:service}-${self:provider.stage}
     handler: SingleViewApi::SingleViewApi.LambdaEntryPoint::FunctionHandlerAsync
-    vpc: ${self:custom.vpc.${opt:stage}}
-    role: lambdaExecutionRole
+    vpc:
+      subnetIds:
+        - 'subnet-068ec0a87972e4714'
+        - 'subnet-05fe49c939c6c7b1e'
+        - 'subnet-07ba583cbf5207869'
+        - 'subnet-0b0b79fab8c3fd705'
+      role: lambdaExecutionRole
     environment:
 # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
 # TODO: Remove this line if DynamoDb is being used
@@ -84,6 +89,8 @@ resources:
         SubnetIds:
           - 'subnet-068ec0a87972e4714'
           - 'subnet-05fe49c939c6c7b1e'
+          - 'subnet-07ba583cbf5207869'
+          - 'subnet-0b0b79fab8c3fd705'
     ElasticCacheCluster:
       DependsOn: ServerlessStorageSecurityGroup
       Type: AWS::ElastiCache::CacheCluster
