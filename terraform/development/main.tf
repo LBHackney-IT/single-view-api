@@ -8,15 +8,15 @@
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
 provider "aws" {
-  region  = "eu-west-2"
-  version = "~> 2.0"
+    region  = "eu-west-2"
+    version = "~> 2.0"
 }
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  application_name = "single-view-api"
-  parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    application_name = "single-view-api"
+    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
 # Create ElastiCache Redis security group
@@ -82,12 +82,12 @@ data "aws_iam_role" "ecs_task_execution_role" {
 */
 
 terraform {
-  backend "s3" {
-    bucket  = "terraform-state-corporate-development"
-    encrypt = true
-    region  = "eu-west-2"
-    key     = "services/single-view-api/state"
-  }
+    backend "s3" {
+        bucket  = "terraform-state-corporate-development"
+        encrypt = true
+        region  = "eu-west-2"
+        key     = "services/single-view-api/state"
+    }
 }
 
 #/* module "development" {
