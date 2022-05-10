@@ -23,8 +23,9 @@ namespace SingleViewApi.V1.Gateways
             try
             {
                 Console.WriteLine(" ------ MAKING CONNECTION ------");
-                Console.WriteLine(_host);
-                redis = ConnectionMultiplexer.Connect(_host);
+                var configuration = $"{_host},ssl=true";
+                Console.WriteLine(configuration);
+                redis = ConnectionMultiplexer.Connect(configuration);
             }
             catch (Exception e)
             {
