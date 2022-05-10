@@ -22,7 +22,7 @@ provider:
 
 package:
 # TODO: Rename zipfile in build.sh and build.cmd to match this
-  artifact: ./bin/release/netcoreapp6.0/SingleViewApi.zip
+  artifact: ./bin/release/net6.0/SingleViewApi.zip
 
 functions:
   SingleViewApi:
