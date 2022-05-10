@@ -19,15 +19,36 @@ namespace SingleViewApi.V1.Gateways
         {
             Console.WriteLine(" ------ DOING THE THING ------");
 
+            ConnectionMultiplexer redis;
+            try
+            {
+                Console.WriteLine(" ------ MAKING CONNECTION ------");
+                Console.WriteLine(_host);
+                redis = ConnectionMultiplexer.Connect(_host);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(" ------ CONNECTION ERROR------");
+                Console.WriteLine(e);
+                return "connection error";
+            }
+
+            IDatabase db;
             try
             {
 
-                Console.WriteLine(" ------ MAKING CONNECTION ------");
-                Console.WriteLine(_host);
-                ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_host);
-
                 Console.WriteLine(" ------ MAKING DB ------");
-                var db = redis.GetDatabase();
+                db = redis.GetDatabase();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(" ------ DB ERROR------");
+                Console.WriteLine(e);
+                return "db error";
+            }
+
+            try
+            {
 
                 var key = "new Guid().ToString()";
                 Console.WriteLine($" ------ SWEET NEW KEY BABY: {key} ------");
