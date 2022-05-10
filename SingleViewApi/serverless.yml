@@ -147,6 +147,19 @@ resources:
                   Action:
                     - "lambda:InvokeFunction"
                   Resource: "*"
+          - PolicyName: lambdaElastiCacheAccess
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "lambda:InvokeFunction"
+                    - "es:DescribeElasticsearchDomain"
+                    - "es:DescribeElasticsearchDomains"
+                    - "es:DescribeElasticsearchDomainConfig"
+                    - "es:ESHttpPost"
+                    - "es:ESHttpGet"
+                    - "es:ESHttpPut"
+                  Resource: "*"
 custom:
   config:
     CACHE_INSTANCE_SIZE: cache.t2.micro
@@ -155,8 +168,10 @@ custom:
       subnetIds:
 #        - subnet-0deabb5d8fb9c3446
 #        - subnet-000b89c249f12a8ad
-        - subnet-068ec0a87972e4714
-        - subnet-05fe49c939c6c7b1e
+        - 'subnet-068ec0a87972e4714'
+        - 'subnet-05fe49c939c6c7b1e'
+        - 'subnet-07ba583cbf5207869'
+        - 'subnet-0b0b79fab8c3fd705'
     staging:
       subnetIds:
         - subnet-06d3de1bd9181b0d7
