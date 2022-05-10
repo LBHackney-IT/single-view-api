@@ -21,15 +21,13 @@ namespace SingleViewApi.V1.Gateways
 
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
-        //private readonly HttpContext _httpContext;
-
         public JigsawGateway(HttpClient httpClient, string baseUrl)
         {
             this._baseUrl = baseUrl;
             this._httpClient = httpClient;
         }
 
-        public async Task<string> GetAuthToken(string email)
+        public async Task<string> GetAuthToken(string email, string password)
         {
             CookieContainer cookies = new CookieContainer();
             var handler = new HttpClientHandler();
@@ -43,7 +41,7 @@ namespace SingleViewApi.V1.Gateways
             var keyPairs = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("Email", email),
-                new KeyValuePair<string, string>("Password", Environment.GetEnvironmentVariable("JIGSAW_PASSWORD")),
+                new KeyValuePair<string, string>("Password", password),
                 new KeyValuePair<string, string>("__RequestVerificationToken", tokens.Token)
             };
 
