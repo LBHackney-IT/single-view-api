@@ -29,6 +29,7 @@ functions:
     name: ${self:service}-${self:provider.stage}
     handler: SingleViewApi::SingleViewApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
+    vpc: ${self:custom.vpc.${opt:stage}}
     environment:
       # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
       # TODO: Remove this line if DynamoDb is being used
@@ -113,6 +114,8 @@ resources:
 custom:
   vpc:
     development:
+      securityGroupIds:
+        - 'sg-0dda44bf3e0f155d3'
       subnetIds:
         - 'subnet-068ec0a87972e4714'
         - 'subnet-05fe49c939c6c7b1e'
