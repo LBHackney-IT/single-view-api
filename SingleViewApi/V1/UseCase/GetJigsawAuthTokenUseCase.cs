@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Gateways;
@@ -18,7 +19,7 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<string> Execute(string username)
         {
-            var token = await _jigsawGateway.GetAuthToken(username);
+            var token = await _jigsawGateway.GetAuthToken(username, Environment.GetEnvironmentVariable("JIGSAW_PASSWORD"));
 
             return token;
         }
