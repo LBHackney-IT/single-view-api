@@ -32,6 +32,7 @@ using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
+using Microsoft.AspNetCore.Http;
 
 namespace SingleViewApi
 {
@@ -114,9 +115,7 @@ namespace SingleViewApi
 
             services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
             {
-
-                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
-
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
                 return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
             });
 
