@@ -1,7 +1,26 @@
 using System;
 using ServiceStack.Redis;
 using StackExchange.Redis;
-
+//
+// NEED TO UPDATE TO VERSION 6
+// using Amazon.ElastiCacheCluster;
+//
+// using Enyim.Caching;
+// using Enyim.Caching.Memcached;
+//
+// ElastiCacheClusterConfig config = new ElastiCacheClusterConfig();
+// MemcachedClient memClient = new MemcachedClient(config);
+//
+//
+// // nstall failed (project: SingleViewApi, package: Amazon.ElastiCacheCluster v1.0.0)
+// // Package restore failed. Rolling back package changes for 'SingleViewApi'.
+// // Package 'Amazon.ElastiCacheCluster 1.0.0' was restored using '.NETFramework,Version=v4.6.1,
+// // .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7,
+// // .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2,
+// // .NETFramework ... mework,Version=v4.6.1, .NETFramework,Version=v4.6.2,
+// // .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2,
+// // .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'.
+// // This package may not be fully compatible with your project.
 namespace SingleViewApi.V1.Gateways
 {
     public class RedisGateway : IRedisGateway
@@ -12,6 +31,7 @@ namespace SingleViewApi.V1.Gateways
         public RedisGateway(string host)
         {
             _host = host;
+
             Console.WriteLine(" ------ LOG ME PLZ ------");
         }
 
