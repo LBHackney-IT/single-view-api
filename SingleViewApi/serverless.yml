@@ -28,6 +28,7 @@ functions:
   SingleViewApi:
     name: ${self:service}-${self:provider.stage}
     handler: SingleViewApi::SingleViewApi.LambdaEntryPoint::FunctionHandlerAsync
+    vpc: ${self:custom.vpc.${opt:stage}}
     role: lambdaExecutionRole
     environment:
 # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
