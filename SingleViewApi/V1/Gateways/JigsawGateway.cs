@@ -21,24 +21,22 @@ namespace SingleViewApi.V1.Gateways
 
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
-        //private CookieContainer _cookieContainer;
+        //private readonly HttpContext _httpContext;
 
         public JigsawGateway(HttpClient httpClient, string baseUrl)
         {
             this._baseUrl = baseUrl;
             this._httpClient = httpClient;
-            //this._cookieContainer = cookieContainer;
-
         }
 
         public async Task<string> GetAuthToken(string email)
         {
 
-            var baseAddress = new Uri(_baseUrl);
+
             CookieContainer cookies = new CookieContainer();
             var handler = new HttpClientHandler();
             handler.CookieContainer = cookies;
-            var client = new HttpClient(handler) { BaseAddress = baseAddress };
+            var client = new HttpClient(handler) { BaseAddress = _httpClient.BaseAddress };
 
             var tokens = await GetCsrfTokens();
 
@@ -64,7 +62,7 @@ namespace SingleViewApi.V1.Gateways
 
             var bearerToken = String.Empty;
 
-            IEnumerable<Cookie> responseCookies = cookies.GetCookies(baseAddress).Cast<Cookie>();
+            IEnumerable<Cookie> responseCookies = cookies.GetCookies(_httpClient.BaseAddress);
 
             foreach (Cookie cookie in responseCookies)
             {
