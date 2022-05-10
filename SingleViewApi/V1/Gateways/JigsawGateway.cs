@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using AngleSharp;
+using Microsoft.AspNetCore.Http;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 
@@ -20,16 +21,19 @@ namespace SingleViewApi.V1.Gateways
 
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
+        //private CookieContainer _cookieContainer;
 
         public JigsawGateway(HttpClient httpClient, string baseUrl)
         {
             this._baseUrl = baseUrl;
             this._httpClient = httpClient;
+            //this._cookieContainer = cookieContainer;
 
         }
 
         public async Task<string> GetAuthToken(string email)
         {
+
             var baseAddress = new Uri(_baseUrl);
             CookieContainer cookies = new CookieContainer();
             var handler = new HttpClientHandler();
