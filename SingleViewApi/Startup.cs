@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
@@ -104,8 +105,16 @@ namespace SingleViewApi
                     Environment.GetEnvironmentVariable("REDIS_HOST"));
             });
 
+            services.AddHttpClient("JigsawClient").ConfigureHttpClient(client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
+
+            }).ConfigurePrimaryHttpMessageHandler(
+                () => new HttpClientHandler() { CookieContainer = new CookieContainer() });
+
             services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
             {
+
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
 
                 return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
