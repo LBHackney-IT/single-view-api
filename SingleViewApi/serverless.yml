@@ -35,8 +35,8 @@ functions:
       HOUSING_SEARCH_API_V1: ${ssm:/single-view/${self:provider.stage}/housing-search-v1}
 #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
-      REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
+      REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
     events:
       - http:
           path: /{proxy+}
@@ -81,8 +81,8 @@ resources:
       Properties:
         Description: "Cache Subnet Group"
         SubnetIds:
-          - 'subnet-0deabb5d8fb9c3446'
-          - 'subnet-000b89c249f12a8ad'
+          - 'subnet-068ec0a87972e4714'
+          - 'subnet-05fe49c939c6c7b1e'
     ElasticCacheCluster:
       DependsOn: ServerlessStorageSecurityGroup
       Type: AWS::ElastiCache::CacheCluster
@@ -152,8 +152,10 @@ custom:
   vpc:
     development:
       subnetIds:
-        - subnet-0deabb5d8fb9c3446
-        - subnet-000b89c249f12a8ad
+#        - subnet-0deabb5d8fb9c3446
+#        - subnet-000b89c249f12a8ad
+        - subnet-068ec0a87972e4714
+        - subnet-05fe49c939c6c7b1e
     staging:
       subnetIds:
         - subnet-06d3de1bd9181b0d7
