@@ -1,7 +1,7 @@
 service: SingleViewApi
 provider:
   name: aws
-  runtime: dotnetcore3.1
+  runtime: dotnet6
   memorySize: 2048
   tracing:
     lambda: true
@@ -21,8 +21,8 @@ provider:
           rateLimit: 100
 
 package:
-  # TODO: Rename zipfile in build.sh and build.cmd to match this
-  artifact: ./bin/release/netcoreapp3.1/SingleViewApi.zip
+# TODO: Rename zipfile in build.sh and build.cmd to match this
+  artifact: ./bin/release/net6.0/SingleViewApi.zip
 
 functions:
   SingleViewApi:
@@ -38,6 +38,7 @@ functions:
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
+      NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
     events:
       - http:
           path: /{proxy+}
