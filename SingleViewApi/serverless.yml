@@ -13,7 +13,7 @@ provider:
   region: eu-west-2
   apiKeys:
     - secureAccess:
-      - api-key-${self:service}-${self:provider.stage}
+        - api-key-${self:service}-${self:provider.stage}
   usagePlan:
     - secureAccess:
         throttle:
@@ -21,25 +21,19 @@ provider:
           rateLimit: 100
 
 package:
-# TODO: Rename zipfile in build.sh and build.cmd to match this
+  # TODO: Rename zipfile in build.sh and build.cmd to match this
   artifact: ./bin/release/netcoreapp3.1/SingleViewApi.zip
 
 functions:
   SingleViewApi:
     name: ${self:service}-${self:provider.stage}
     handler: SingleViewApi::SingleViewApi.LambdaEntryPoint::FunctionHandlerAsync
-    vpc:
-      subnetIds:
-        - 'subnet-068ec0a87972e4714'
-        - 'subnet-05fe49c939c6c7b1e'
-        - 'subnet-07ba583cbf5207869'
-        - 'subnet-0b0b79fab8c3fd705'
-      role: lambdaExecutionRole
+    role: lambdaExecutionRole
     environment:
-# TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
-# TODO: Remove this line if DynamoDb is being used
+      # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
+      # TODO: Remove this line if DynamoDb is being used
       HOUSING_SEARCH_API_V1: ${ssm:/single-view/${self:provider.stage}/housing-search-v1}
-#      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
+      #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
@@ -66,44 +60,6 @@ functions:
           private: false
 resources:
   Resources:
-    ServerlessSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: SecurityGroup for Serverless Functions
-        VpcId: 'vpc-05c7e3d5ffd5f00a4'
-    ServerlessStorageSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Ingress for Redis Cluster
-        VpcId: 'vpc-05c7e3d5ffd5f00a4'
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: '6379'
-            ToPort: '6379'
-            SourceSecurityGroupId:
-              Ref: ServerlessSecurityGroup
-    ServerlessCacheSubnetGroup:
-      Type: AWS::ElastiCache::SubnetGroup
-      Properties:
-        Description: "Cache Subnet Group"
-        SubnetIds:
-          - 'subnet-068ec0a87972e4714'
-          - 'subnet-05fe49c939c6c7b1e'
-          - 'subnet-07ba583cbf5207869'
-          - 'subnet-0b0b79fab8c3fd705'
-    ElasticCacheCluster:
-      DependsOn: ServerlessStorageSecurityGroup
-      Type: AWS::ElastiCache::CacheCluster
-      Properties:
-        AutoMinorVersionUpgrade: true
-        Engine: redis
-        CacheNodeType: ${self:custom.config.CACHE_INSTANCE_SIZE}
-        NumCacheNodes: 1
-        VpcSecurityGroupIds:
-          - "Fn::GetAtt": ServerlessStorageSecurityGroup.GroupId
-        CacheSubnetGroupName:
-          Ref: ServerlessCacheSubnetGroup
-
     lambdaExecutionRole:
       Type: AWS::IAM::Role
       Properties:
@@ -154,27 +110,10 @@ resources:
                   Action:
                     - "lambda:InvokeFunction"
                   Resource: "*"
-          - PolicyName: lambdaElastiCacheAccess
-            PolicyDocument:
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - "lambda:InvokeFunction"
-                    - "es:DescribeElasticsearchDomain"
-                    - "es:DescribeElasticsearchDomains"
-                    - "es:DescribeElasticsearchDomainConfig"
-                    - "es:ESHttpPost"
-                    - "es:ESHttpGet"
-                    - "es:ESHttpPut"
-                  Resource: "*"
 custom:
-  config:
-    CACHE_INSTANCE_SIZE: cache.t2.micro
   vpc:
     development:
       subnetIds:
-#        - subnet-0deabb5d8fb9c3446
-#        - subnet-000b89c249f12a8ad
         - 'subnet-068ec0a87972e4714'
         - 'subnet-05fe49c939c6c7b1e'
         - 'subnet-07ba583cbf5207869'
