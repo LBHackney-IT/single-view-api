@@ -38,14 +38,14 @@ namespace SingleViewApi.V1.Gateways
 
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl);
 
-            var keyPairs = new List<KeyValuePair<string, string>>
+            var jigsawCredentials = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Email", email),
-                new KeyValuePair<string, string>("Password", password),
-                new KeyValuePair<string, string>("__RequestVerificationToken", tokens.Token)
+                new ("Email", email),
+                new ("Password", password),
+                new ("__RequestVerificationToken", tokens.Token)
             };
 
-            FormUrlEncodedContent form = new FormUrlEncodedContent(keyPairs);
+            FormUrlEncodedContent form = new FormUrlEncodedContent(jigsawCredentials);
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
 
@@ -70,6 +70,13 @@ namespace SingleViewApi.V1.Gateways
             return bearerToken;
         }
 
+        public Task<dynamic> GetCustomers(string firstName, string lastName)
+        {
+            return new Task<dynamic>(null);
+        }
+
+
+
         private async Task<CsrfTokenResponse> GetCsrfTokens()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl);
@@ -89,6 +96,7 @@ namespace SingleViewApi.V1.Gateways
 
             return new CsrfTokenResponse() { Token = token, Cookies = cookies };
         }
+
 
     }
 }
