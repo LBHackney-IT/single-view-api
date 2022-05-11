@@ -1,5 +1,6 @@
 using System;
-using StackExchange.Redis;
+using ServiceStack.Redis;
+
 //
 // NEED TO UPDATE TO VERSION 6
 // using Amazon.ElastiCacheCluster;
@@ -38,22 +39,15 @@ namespace SingleViewApi.V1.Gateways
         {
             Console.WriteLine(" ------ DOING THE THING ------");
 
-            ConnectionMultiplexer redis;
+            RedisManagerPool manager;
             try
             {
                 Console.WriteLine(" ------ MAKING CONNECTION ------");
-                var configuration = $"{_host},ssl=true";
 
-                var configOptions = new ConfigurationOptions();
-                configOptions.EndPoints.Add(_host);
-                configOptions.Ssl = true;
-                configOptions.ClientName = "MyRedis";
-                configOptions.ConnectTimeout = 10000;
-                configOptions.SyncTimeout = 30000;
-                configOptions.KeepAlive = 10;
-                configOptions.AbortOnConnectFail = false;
-                Console.WriteLine(configOptions);
-                redis = ConnectionMultiplexer.Connect(configOptions);
+                Console.WriteLine(_host);
+
+                manager = new RedisManagerPool(_host);
+
             }
             catch (Exception e)
             {
@@ -62,47 +56,49 @@ namespace SingleViewApi.V1.Gateways
                 return "connection error";
             }
 
-            IDatabase db;
             try
             {
 
-                Console.WriteLine(" ------ MAKING DB ------");
-                db = redis.GetDatabase();
-            }
+                Console.WriteLine(" ------ MAKING CLIENT ------");
+                using (var client = manager.GetClient())
+                {
+                    try
+                    {
+                        Console.WriteLine(" ------ ADDING ------");
+                        client.Set("foo", input);
+                    }
+                    catch (Exception errorAd)
+                    {
+                        Console.WriteLine(" ------ ERROR ADDING ------");
+                        Console.WriteLine(errorAd);
+                        return "'error adding'";
+                    }
+
+                    try
+                    {
+                        Console.WriteLine(" ------ GETTING ------");
+                        var thing = client.Get<string>("foo");
+                        var returnThing = $"foo={thing}";
+
+                        Console.WriteLine(returnThing);
+
+                        return returnThing;
+                    }
+                    catch (Exception errGet)
+                    {
+                        Console.WriteLine(" ------ ERROR GETTING ------");
+                        Console.WriteLine(errGet);
+                        return "error getting";
+                    }
+                }            }
             catch (Exception e)
             {
-                Console.WriteLine(" ------ DB ERROR------");
+                Console.WriteLine(" ------ CLIENT ERROR------");
                 Console.WriteLine(e);
                 return "db error";
             }
 
-            try
-            {
 
-                var key = "new Guid().ToString()";
-                Console.WriteLine($" ------ SWEET NEW KEY BABY: {key} ------");
-
-                var ttl = new TimeSpan(0, 0, 15, 0);
-                Console.WriteLine(" ------ REDIS starting to add ------");
-
-
-                db.StringSet(key, input, ttl);
-                Console.WriteLine(" ------ REDIS KEY CREATED ------");
-
-                string value = db.StringGet(key);
-                Console.WriteLine(" ------ GOT VALUE ------");
-
-                Console.WriteLine(value); // writes: "abcdefg"
-                return $"{key} - {value}";
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(" ------ REDIS error ------");
-                Console.WriteLine(e);
-
-                return "Oops! something went wrong";
-
-            }
         }
     }
 }
