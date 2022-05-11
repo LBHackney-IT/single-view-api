@@ -16,15 +16,14 @@ namespace SingleViewApi.V1.Controllers
     public class JigsawController : BaseController
     {
         private readonly IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
-        public JigsawController(IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+        private readonly IGetJigsawCustomersUseCase _getJigsawCustomersUse;
+        public JigsawController(IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase)
         {
             _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
+            _getJigsawCustomersUse = getJigsawCustomersUseCase;
         }
 
-        //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
-        /// <summary>
-        /// ...
-        /// </summary>
+
         /// <response code="200">...</response>
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
@@ -36,5 +35,17 @@ namespace SingleViewApi.V1.Controllers
         {
             return Ok(_getJigsawAuthTokenUseCase.Execute(username).Result);
         }
+
+        /// <response code="200">...</response>
+        /// <response code="400">Invalid Query Parameter.</response>
+        [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
+
+        [HttpGet]
+        [LogCall(LogLevel.Information)]
+        public IActionResult GetJigsawCustomers([FromQuery] string firstName, string lastName)
+        {
+            return Ok(_getJigsawCustomersUse.Execute(firstName, lastName).Result);
+        }
+
     }
 }
