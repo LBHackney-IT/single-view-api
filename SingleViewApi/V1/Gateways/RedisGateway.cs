@@ -5,80 +5,31 @@ namespace SingleViewApi.V1.Gateways
 {
     public class RedisGateway : IRedisGateway
     {
-        private readonly string _host;
-        // private readonly IDatabase _db;
+        private readonly RedisManagerPool _redisManager;
 
         public RedisGateway(string host)
         {
-            _host = host;
-
-            Console.WriteLine(" ------ LOG ME PLZ ------");
+            _redisManager = new RedisManagerPool(host);
         }
 
-        public string DoTheThing(string input)
+        public string AddValue(string value)
         {
-            Console.WriteLine(" ------ DOING THE THING ------");
+            using var client = _redisManager.GetClient();
 
-            RedisManagerPool manager;
-            try
-            {
-                Console.WriteLine(" ------ MAKING CONNECTION ------");
+            var id = Guid.NewGuid().ToString();
 
-                Console.WriteLine(_host);
+            client.Set(id, value);
 
-                manager = new RedisManagerPool(_host);
+            return id;
+        }
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(" ------ CONNECTION ERROR------");
-                Console.WriteLine(e);
-                return "connection error";
-            }
+        public string GetValue(string id)
+        {
+            using var client = _redisManager.GetClient();
 
-            try
-            {
+            var value = client.Get<string>(id);
 
-                Console.WriteLine(" ------ MAKING CLIENT ------");
-                using (var client = manager.GetClient())
-                {
-                    // try
-                    // {
-                    //     Console.WriteLine(" ------ ADDING ------");
-                    //     client.Set("foo", input);
-                    // }
-                    // catch (Exception errorAd)
-                    // {
-                    //     Console.WriteLine(" ------ ERROR ADDING ------");
-                    //     Console.WriteLine(errorAd);
-                    //     return "'error adding'";
-                    // }
-
-                    try
-                    {
-                        Console.WriteLine(" ------ GETTING ------");
-                        var thing = client.Get<string>("foo");
-                        var returnThing = $"foo={thing}";
-
-                        Console.WriteLine(returnThing);
-
-                        return returnThing;
-                    }
-                    catch (Exception errGet)
-                    {
-                        Console.WriteLine(" ------ ERROR GETTING ------");
-                        Console.WriteLine(errGet);
-                        return "error getting";
-                    }
-                }            }
-            catch (Exception e)
-            {
-                Console.WriteLine(" ------ CLIENT ERROR------");
-                Console.WriteLine(e);
-                return "db error";
-            }
-
-
+            return value;
         }
     }
 }
