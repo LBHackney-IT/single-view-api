@@ -8,15 +8,15 @@
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
 provider "aws" {
-  region  = "eu-west-2"
-  version = "~> 2.0"
+    region  = "eu-west-2"
+    version = "~> 2.0"
 }
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  application_name = "single-view-api"
-  parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    application_name = "single-view-api"
+    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
 # Create ElastiCache Redis security group
@@ -25,7 +25,7 @@ resource "aws_security_group" "redis_sg" {
     vpc_id = "vpc-05c7e3d5ffd5f00a4"
 
     ingress {
-        cidr_blocks = ["10.120.37.0/24"]
+        cidr_blocks = ["0.0.0.0/0"]
         from_port   = 6379
         to_port     = 6379
         protocol    = "tcp"
@@ -40,21 +40,12 @@ resource "aws_security_group" "redis_sg" {
 
 }
 
-data "aws_subnet" "subnet1" {
-    id = "subnet-068ec0a87972e4714"
-}
-
-data "aws_subnet" "subnet2" {
-    id = "subnet-07ba583cbf5207869"
-}
-
-
 # Create ElastiCache Redis subnet group
 
 resource "aws_elasticache_subnet_group" "default" {
     name        = "subnet-group-single-view"
     description = "Private subnets for the ElastiCache instances: single view"
-    subnet_ids  = [data.aws_subnet.subnet1.id, data.aws_subnet.subnet2.id]
+    subnet_ids  = ["subnet-068ec0a87972e4714", "subnet-05fe49c939c6c7b1e", "subnet-07ba583cbf5207869", "subnet-0b0b79fab8c3fd705"]
 }
 
 
@@ -72,6 +63,14 @@ resource "aws_elasticache_cluster" "redis" {
     subnet_group_name    = aws_elasticache_subnet_group.default.name
     security_group_ids   = [aws_security_group.redis_sg.id]
 }
+
+#resource "aws_ssm_parameter" "redis_host" {
+#    depends_on = [aws_elasticache_cluster.redis]
+#
+#    name  = "/single-view/development/auto-gen-redis-host"
+#    type  = "String"
+#    value = aws_elasticache_cluster.redis.cluster_address
+#}
 /*
 data "aws_iam_role" "ec2_container_service_role" {
   name = "ecsServiceRole"
@@ -83,12 +82,12 @@ data "aws_iam_role" "ecs_task_execution_role" {
 */
 
 terraform {
-  backend "s3" {
-    bucket  = "terraform-state-corporate-development"
-    encrypt = true
-    region  = "eu-west-2"
-    key     = "services/single-view-api/state"
-  }
+    backend "s3" {
+        bucket  = "terraform-state-corporate-development"
+        encrypt = true
+        region  = "eu-west-2"
+        key     = "services/single-view-api/state"
+    }
 }
 
 #/* module "development" {
