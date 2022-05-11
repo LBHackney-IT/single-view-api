@@ -117,7 +117,6 @@ namespace SingleViewApi
                 () => new HttpClientHandler() { CookieContainer = new CookieContainer() });
 
             services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
-
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
 
