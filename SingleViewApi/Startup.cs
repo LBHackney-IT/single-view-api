@@ -55,8 +55,7 @@ namespace SingleViewApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddMvc();
             services.AddApiVersioning(o =>
             {
                 o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -134,6 +133,28 @@ namespace SingleViewApi
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
                 return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
+            });
+
+            services.AddTransient<INotesGateway, NotesGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new NotesGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("NOTES_API_V2")
+                );
+            });
+
+            services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new GetAllNotesByIdUseCase(notesGateway);
+            });
+
+            services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>
+            {
+                var notesGateway = s.GetService<INotesGateway>();
+                return new CreateNoteUseCase(notesGateway);
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();

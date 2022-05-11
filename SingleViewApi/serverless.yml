@@ -1,7 +1,7 @@
 service: SingleViewApi
 provider:
   name: aws
-  runtime: dotnetcore3.1
+  runtime: dotnet6
   memorySize: 2048
   tracing:
     lambda: true
@@ -13,7 +13,7 @@ provider:
   region: eu-west-2
   apiKeys:
     - secureAccess:
-      - api-key-${self:service}-${self:provider.stage}
+        - api-key-${self:service}-${self:provider.stage}
   usagePlan:
     - secureAccess:
         throttle:
@@ -22,23 +22,25 @@ provider:
 
 package:
 # TODO: Rename zipfile in build.sh and build.cmd to match this
-  artifact: ./bin/release/netcoreapp3.1/SingleViewApi.zip
+  artifact: ./bin/release/net6.0/SingleViewApi.zip
 
 functions:
   SingleViewApi:
     name: ${self:service}-${self:provider.stage}
     handler: SingleViewApi::SingleViewApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
+    vpc: ${self:custom.vpc.${opt:stage}}
     environment:
-# TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
-# TODO: Remove this line if DynamoDb is being used
+      # TODO: Create ssm variables for this API's postgres mirror then rename SingleViewApi below to match api name
+      # TODO: Remove this line if DynamoDb is being used
       HOUSING_SEARCH_API_V1: ${ssm:/single-view/${self:provider.stage}/housing-search-v1}
-#      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
+      #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
       JIGSAW_LOGIN_URL: ${ssm:/single-view/${self:provider.stage}/jigsaw-login-url}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
       JIGSAW_PASSWORD: ${ssm/single-view/${self:provider.stage}/jigsaw-password}
+      NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
 
     events:
       - http:
@@ -116,9 +118,13 @@ resources:
 custom:
   vpc:
     development:
+      securityGroupIds:
+        - 'sg-0dda44bf3e0f155d3'
       subnetIds:
-        - subnet-0deabb5d8fb9c3446
-        - subnet-000b89c249f12a8ad
+        - 'subnet-068ec0a87972e4714'
+        - 'subnet-05fe49c939c6c7b1e'
+        - 'subnet-07ba583cbf5207869'
+        - 'subnet-0b0b79fab8c3fd705'
     staging:
       subnetIds:
         - subnet-06d3de1bd9181b0d7

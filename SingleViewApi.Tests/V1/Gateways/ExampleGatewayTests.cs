@@ -22,13 +22,13 @@ namespace SingleViewApi.Tests.V1.Gateways
             _classUnderTest = new ExampleGateway(DatabaseContext);
         }
 
-        [Test]
-        public void GetEntityByIdReturnsNullIfEntityDoesntExist()
-        {
-            var response = _classUnderTest.GetEntityById(123);
-
-            response.Should().BeNull();
-        }
+        // [Test]
+        // public void GetEntityByIdReturnsNullIfEntityDoesntExist()
+        // {
+        //     var response = _classUnderTest.GetEntityById(123);
+        //
+        //     response.Should().BeNull();
+        // }
 
         [Test]
         public void GetEntityByIdReturnsTheEntityIfItExists()
