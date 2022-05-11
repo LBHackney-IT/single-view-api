@@ -8,16 +8,17 @@ using Microsoft.Extensions.Logging;
 namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/authorise")]
+    [Route("api/v1/searchJigsaw")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    public class JigsawController : BaseController
+    public class JigsawSearchController : BaseController
     {
-        private readonly IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
-        public JigsawController(IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
-        {
-            _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
 
+        private readonly IGetJigsawCustomersUseCase _getJigsawCustomersUse;
+        public JigsawSearchController(IGetJigsawCustomersUseCase getJigsawCustomersUseCase)
+        {
+
+            _getJigsawCustomersUse = getJigsawCustomersUseCase;
         }
 
 
@@ -27,12 +28,10 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawAuthToken([FromQuery] string username)
-
+        public IActionResult GetJigsawCustomers([FromQuery] string firstName, string lastName)
         {
-            return Ok(_getJigsawAuthTokenUseCase.Execute(username).Result);
+            return Ok(_getJigsawCustomersUse.Execute(firstName, lastName).Result);
         }
-
 
     }
 }
