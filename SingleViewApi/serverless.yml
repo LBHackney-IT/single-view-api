@@ -123,9 +123,13 @@ custom:
         - 'subnet-07ba583cbf5207869'
         - 'subnet-0b0b79fab8c3fd705'
     staging:
+      securityGroupIds:
+        - '-----'
       subnetIds:
-        - subnet-06d3de1bd9181b0d7
-        - subnet-0ed7d7713d1127656
+        - 'subnet-05e41a7c805051449'
+        - 'subnet-02e2bfa025835cc20'
+        - 'subnet-04fe111167269c8c2'
+        - 'subnet-0dc9e293451de5466'
     production:
       subnetIds:
         - subnet-01d3657f97a243261

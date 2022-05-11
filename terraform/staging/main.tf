@@ -18,6 +18,49 @@ locals {
    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
+# Create ElastiCache Redis security group
+
+resource "aws_security_group" "redis_sg" {
+    vpc_id = "vpc-06bc937006240a256"
+
+    ingress {
+        cidr_blocks = ["0.0.0.0/0"]
+        from_port   = 6379
+        to_port     = 6379
+        protocol    = "tcp"
+    }
+
+    egress {
+        from_port       = 0
+        to_port         = 0
+        protocol        = "-1"
+        cidr_blocks     = ["0.0.0.0/0"]
+    }
+
+}
+
+# Create ElastiCache Redis subnet group
+
+resource "aws_elasticache_subnet_group" "default" {
+    name        = "subnet-group-single-view"
+    description = "Private subnets for the ElastiCache instances: single view"
+    subnet_ids  = ["subnet-05e41a7c805051449", "subnet-02e2bfa025835cc20", "subnet-04fe111167269c8c2", "subnet-0dc9e293451de5466" ]
+}
+
+
+# Create ElastiCache Redis cluster
+
+resource "aws_elasticache_cluster" "redis" {
+    cluster_id           = "single-view-staging"
+    engine               = "redis"
+    engine_version       = "3.2.10"
+    node_type            = "cache.m4.large"
+    num_cache_nodes      = 1
+    parameter_group_name = "default.redis3.2"
+    port                 = 6379
+    subnet_group_name    = aws_elasticache_subnet_group.default.name
+    security_group_ids   = [aws_security_group.redis_sg.id]
+}
 
 #data "aws_iam_role" "ec2_container_service_role" {
 #  name = "ecsServiceRole"

@@ -187,6 +187,19 @@ workflows:
           filters:
             branches:
               only: development
+      - assume-role-staging:
+          context: api-assume-role-corporate-staging-context
+#          requires:
+#            - build-and-test
+          filters:
+            branches:
+              only: development
+      - terraform-init-and-apply-to-staging:
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              only: development
       - deploy-to-development:
           context: api-nuget-token-context
           requires:
