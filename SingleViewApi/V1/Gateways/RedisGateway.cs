@@ -1,5 +1,4 @@
 using System;
-using ServiceStack.Redis;
 using StackExchange.Redis;
 //
 // NEED TO UPDATE TO VERSION 6
@@ -44,8 +43,17 @@ namespace SingleViewApi.V1.Gateways
             {
                 Console.WriteLine(" ------ MAKING CONNECTION ------");
                 var configuration = $"{_host},ssl=true";
-                Console.WriteLine(configuration);
-                redis = ConnectionMultiplexer.Connect(configuration);
+
+                var configOptions = new ConfigurationOptions();
+                configOptions.EndPoints.Add(_host);
+                configOptions.Ssl = true;
+                configOptions.ClientName = "MyRedis";
+                configOptions.ConnectTimeout = 10000;
+                configOptions.SyncTimeout = 30000;
+                configOptions.KeepAlive = 10;
+                configOptions.AbortOnConnectFail = false;
+                Console.WriteLine(configOptions);
+                redis = ConnectionMultiplexer.Connect(configOptions);
             }
             catch (Exception e)
             {
