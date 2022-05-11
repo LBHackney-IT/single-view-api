@@ -31,6 +31,7 @@ using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
+using ServiceStack.Redis;
 
 namespace SingleViewApi
 {
@@ -99,8 +100,12 @@ namespace SingleViewApi
 
             services.AddTransient<IRedisGateway, RedisGateway>(s =>
             {
+                var host = Environment.GetEnvironmentVariable("REDIS_HOST");
+
+                var redisManager = new RedisManagerPool(host);
+
                 return new RedisGateway(
-                    Environment.GetEnvironmentVariable("REDIS_HOST"));
+                    redisManager.GetClient());
             });
 
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>

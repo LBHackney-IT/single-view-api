@@ -5,31 +5,27 @@ namespace SingleViewApi.V1.Gateways
 {
     public class RedisGateway : IRedisGateway
     {
-        private readonly RedisManagerPool _redisManager;
+        private readonly IRedisClient _redisClient;
 
-        public RedisGateway(string host)
+        public RedisGateway(IRedisClient redisClient)
         {
-            _redisManager = new RedisManagerPool(host);
+            _redisClient = redisClient;
         }
 
-        public string AddValue(string value)
+        public string AddValue(string value, int ttlDays = 1)
         {
-            using var client = _redisManager.GetClient();
-
             var id = Guid.NewGuid().ToString();
 
-            var ttl = new TimeSpan(0, 0, 1, 0);
+            var ttl = new TimeSpan(ttlDays, 0, 0, 0);
 
-            client.SetValue(id, value, ttl);
+            _redisClient.SetValue(id, value, ttl);
 
             return id;
         }
 
         public string GetValue(string id)
         {
-            using var client = _redisManager.GetClient();
-
-            var value = client.Get<string>(id);
+            var value = _redisClient.Get<string>(id);
 
             return value;
         }
