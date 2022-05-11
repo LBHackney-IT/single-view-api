@@ -124,13 +124,17 @@ custom:
         - 'subnet-0b0b79fab8c3fd705'
     staging:
       securityGroupIds:
-        - '-----'
+        - 'sg-0554acb53fa61331c'
       subnetIds:
         - 'subnet-05e41a7c805051449'
         - 'subnet-02e2bfa025835cc20'
         - 'subnet-04fe111167269c8c2'
         - 'subnet-0dc9e293451de5466'
     production:
+      securityGroupIds:
+        - 'sg-093b2a97fa68e75f2'
       subnetIds:
-        - subnet-01d3657f97a243261
-        - subnet-0b7b8fea07efabf34
+        - 'subnet-0549806bb139ea8be'
+        - 'subnet-0ee03e80fcc765fb2'
+        - 'subnet-04f3f27d8d1bb349f'
+        - 'subnet-012bdebbf8bf17369'
