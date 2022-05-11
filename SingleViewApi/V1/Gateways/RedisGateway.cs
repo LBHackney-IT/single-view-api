@@ -18,7 +18,9 @@ namespace SingleViewApi.V1.Gateways
 
             var id = Guid.NewGuid().ToString();
 
-            client.Set(id, value);
+            var ttl = new TimeSpan(0, 0, 1, 0);
+
+            client.SetValue(id, value, ttl);
 
             return id;
         }
