@@ -35,7 +35,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult AddToRedis([FromQuery] string value)
         {
-            var id = _redisGateway.AddValue(value);
+            var id = _redisGateway.AddValue(value, 1);
             return Ok(id);
         }
         [HttpGet]
