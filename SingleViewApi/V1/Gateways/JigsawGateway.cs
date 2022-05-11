@@ -11,19 +11,23 @@ using System.Threading.Tasks;
 using System.Web;
 using AngleSharp;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.V1.Gateways
 {
     public class JigsawGateway : IJigsawGateway
     {
 
-        private readonly string _baseUrl;
+        private readonly string _authUrl;
+        private readonly string _searchUrl;
         private readonly HttpClient _httpClient;
-        public JigsawGateway(HttpClient httpClient, string baseUrl)
+        public JigsawGateway(HttpClient httpClient, string authUrl, string searchUrl)
         {
-            this._baseUrl = baseUrl;
+            this._authUrl = authUrl;
+            this._searchUrl = searchUrl;
             this._httpClient = httpClient;
         }
 
@@ -36,7 +40,7 @@ namespace SingleViewApi.V1.Gateways
 
             var tokens = await GetCsrfTokens();
 
-            var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, _authUrl);
 
             var jigsawCredentials = new List<KeyValuePair<string, string>>
             {
@@ -70,15 +74,30 @@ namespace SingleViewApi.V1.Gateways
             return bearerToken;
         }
 
-        public async Task<dynamic> GetCustomers(string firstName, string lastName, string bearerToken)
+        public async Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search=${firstName}%20${lastName}");
+            var requestUrl = $"{_searchUrl}?search={firstName}%20{lastName}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
-            request.Headers.Add("Authorization", bearerToken);
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            Console.WriteLine("Full request is {0}", JSON.stringify(request));
 
             var response = await _httpClient.SendAsync(request);
 
-            return JSON.stringify(response);
+#nullable enable
+            List<JigsawCustomerSearchApiResponseObject>? searchResults = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                searchResults = JsonConvert.DeserializeObject<List<JigsawCustomerSearchApiResponseObject>>(jsonBody);
+
+            }
+            return searchResults;
 
         }
 
@@ -86,7 +105,7 @@ namespace SingleViewApi.V1.Gateways
 
         private async Task<CsrfTokenResponse> GetCsrfTokens()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl);
+            var request = new HttpRequestMessage(HttpMethod.Get, _authUrl);
             var response = await _httpClient.SendAsync(request);
 
             var cookies = response.Headers.GetValues("set-cookie").Map((cookie) => cookie.Split(";")[0]);
