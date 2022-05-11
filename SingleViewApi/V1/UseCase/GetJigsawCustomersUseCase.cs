@@ -17,9 +17,9 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<dynamic> Execute(string firstName, string lastName)
+        public async Task<dynamic> Execute(string firstName, string lastName, string bearerToken)
         {
-            var results = await _jigsawGateway.GetCustomers(firstName, lastName);
+            var results = await _jigsawGateway.GetCustomers(firstName, lastName, bearerToken);
 
             return results;
         }

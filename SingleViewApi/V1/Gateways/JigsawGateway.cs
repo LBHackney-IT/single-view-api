@@ -70,9 +70,16 @@ namespace SingleViewApi.V1.Gateways
             return bearerToken;
         }
 
-        public Task<dynamic> GetCustomers(string firstName, string lastName)
+        public async Task<dynamic> GetCustomers(string firstName, string lastName, string bearerToken)
         {
-            return new Task<dynamic>(null);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search=${firstName}%20${lastName}");
+
+            request.Headers.Add("Authorization", bearerToken);
+
+            var response = await _httpClient.SendAsync(request);
+
+            return JSON.stringify(response);
+
         }
 
 

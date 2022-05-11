@@ -28,9 +28,9 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawCustomers([FromQuery] string firstName, string lastName)
+        public IActionResult GetJigsawCustomers([FromQuery] string firstName, string lastName, [FromHeader] string bearerToken)
         {
-            return Ok(_getJigsawCustomersUse.Execute(firstName, lastName).Result);
+            return Ok(_getJigsawCustomersUse.Execute(firstName, lastName, bearerToken).Result);
         }
 
     }
