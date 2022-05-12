@@ -1,6 +1,12 @@
 version: "3.2"
 
 services:
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning
   SingleViewApi:
     image: single-view-api
     build:
@@ -10,9 +16,12 @@ services:
      - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
     ports:
       - 3000:3000
+    depends_on:
+      - cache
     environment:
       - CONNECTION_STRING=Host=dev-database;Port=5432;Database=testdb;Username=postgres;Password=mypassword
       - PERSON_API_V1=${PERSON_API_V1}
+      - REDIS_HOST=${REDIS_HOST}
       - CONTACT_DETAILS_API_V2=${CONTACT_DETAILS_API_V2}
       - HOUSING_SEARCH_API_V1=${HOUSING_SEARCH_API_V1}
       - NOTES_API_V2=${NOTES_API_V2}
@@ -24,6 +33,7 @@ services:
 #      - AWS_SECRET_ACCESS_KEY=local
     links:
       - dev-database
+      - cache
   dev-database:
     env_file:
       - database.env
