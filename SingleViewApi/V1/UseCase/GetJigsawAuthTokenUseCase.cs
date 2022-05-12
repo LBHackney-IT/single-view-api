@@ -9,10 +9,12 @@ namespace SingleViewApi.V1.UseCase
     public class GetJigsawAuthTokenUseCase : IGetJigsawAuthTokenUseCase
     {
         private IJigsawGateway _jigsawGateway;
+        private IRedisGateway _redisGateway;
 
-        public GetJigsawAuthTokenUseCase(IJigsawGateway jigsawGateway)
+        public GetJigsawAuthTokenUseCase(IJigsawGateway jigsawGateway, IRedisGateway redisGateway)
         {
             _jigsawGateway = jigsawGateway;
+            _redisGateway = redisGateway;
         }
 
         [LogCall]
@@ -25,8 +27,9 @@ namespace SingleViewApi.V1.UseCase
 
             var token = await _jigsawGateway.GetAuthToken(email, password );
 
-            //store token in redis
-            return token;
+            var id = _redisGateway.AddValue(token, 1);
+            return id;
+
         }
     }
 }
