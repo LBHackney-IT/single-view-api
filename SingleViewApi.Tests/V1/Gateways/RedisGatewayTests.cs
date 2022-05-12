@@ -9,7 +9,7 @@ using ServiceStack.Redis;
 namespace SingleViewApi.Tests.V1.Gateways
 {
     [TestFixture]
-    public class RedisGatewayTests : DatabaseTests
+    public class RedisGatewayTests
     {
         private readonly Fixture _fixture = new Fixture();
         private RedisGateway _classUnderTest;
