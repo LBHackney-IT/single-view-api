@@ -11,6 +11,8 @@ namespace SingleViewApi.V1.Controllers
     [Route("api/v1/searchJigsaw")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
+
+    //NOTE: This controller will disappear - searches will be made through the HousingSearch Controller (which will be renamed)
     public class JigsawSearchController : BaseController
     {
 
