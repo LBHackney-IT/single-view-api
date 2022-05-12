@@ -9,26 +9,22 @@ namespace SingleViewApi.V1.UseCase
     public class GetJigsawAuthTokenUseCase : IGetJigsawAuthTokenUseCase
     {
         private IJigsawGateway _jigsawGateway;
-        private IRedisGateway _redisGateway;
 
-        public GetJigsawAuthTokenUseCase(IJigsawGateway jigsawGateway, IRedisGateway redisGateway)
+        public GetJigsawAuthTokenUseCase(IJigsawGateway jigsawGateway)
         {
             _jigsawGateway = jigsawGateway;
-            _redisGateway = redisGateway;
+
         }
 
         [LogCall]
-
         public async Task<string> Execute(string hashedUsername, string hashedPassword)
         {
-            //logic to encrypt token here
-            var email = hashedUsername;
+            var username = hashedUsername;
             var password = hashedPassword;
 
-            var token = await _jigsawGateway.GetAuthToken(email, password );
+            var token = await _jigsawGateway.GetAuthToken(username, password);
 
-            var id = _redisGateway.AddValue(token, 1);
-            return id;
+            return token;
 
         }
     }
