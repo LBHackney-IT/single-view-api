@@ -14,13 +14,15 @@ public class StoreJigsawCredentialsUseCaseTests: LogCallAspectFixture
 {
 
     private Mock<IRedisClient> _mockRedisClient;
+    private Mock<IJigsawGateway> _jigsawGatewayMock;
     private StoreJigsawCredentialsUseCase _classUnderTest;
 
     [SetUp]
     public void Setup()
     {
         _mockRedisClient = new Mock<IRedisClient>();
-        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object));
+        _jigsawGatewayMock = new Mock<IJigsawGateway>();
+        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object), new Mock<IJigsawGateway>().Object);
 
     }
 
