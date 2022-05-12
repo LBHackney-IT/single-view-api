@@ -25,12 +25,12 @@ namespace SingleViewApi.V1.Controllers
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
 
-        [HttpGet]
+        [HttpPost]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawAuthToken([FromQuery] string username)
+        public IActionResult GetJigsawAuthToken([FromBody] string hashedUsername, string hashedPassword)
 
         {
-            return Ok(_getJigsawAuthTokenUseCase.Execute(username).Result);
+            return Ok(_getJigsawAuthTokenUseCase.Execute(hashedUsername, hashedPassword).Result);
         }
 
 

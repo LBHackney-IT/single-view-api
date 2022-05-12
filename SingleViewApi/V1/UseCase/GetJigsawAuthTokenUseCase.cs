@@ -17,10 +17,15 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<string> Execute(string username)
+        public async Task<string> Execute(string hashedUsername, string hashedPassword)
         {
-            var token = await _jigsawGateway.GetAuthToken(username, Environment.GetEnvironmentVariable("JIGSAW_PASSWORD"));
+            //logic to encrypt token here
+            var email = hashedUsername;
+            var password = hashedPassword;
 
+            var token = await _jigsawGateway.GetAuthToken(email, password );
+
+            //store token in redis
             return token;
         }
     }
