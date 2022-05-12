@@ -17,7 +17,7 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
     public string Execute(string jwt)
     {
-        //decrypt credentials here
+
         var username = "test";
         var password = "test";
 
