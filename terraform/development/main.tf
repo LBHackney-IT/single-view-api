@@ -19,6 +19,36 @@ locals {
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
+# Create ElastiCache Redis security group
+
+resource "aws_security_group" "redis_sg" {
+    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+
+    ingress {
+        cidr_blocks = ["0.0.0.0/0"]
+        from_port   = 6379
+        to_port     = 6379
+        protocol    = "tcp"
+    }
+
+    egress {
+        from_port       = 0
+        to_port         = 0
+        protocol        = "-1"
+        cidr_blocks     = ["0.0.0.0/0"]
+    }
+
+}
+
+# Create ElastiCache Redis subnet group
+
+resource "aws_elasticache_subnet_group" "default" {
+    name        = "subnet-group-single-view"
+    description = "Private subnets for the ElastiCache instances: single view"
+    subnet_ids  = ["subnet-068ec0a87972e4714", "subnet-05fe49c939c6c7b1e", "subnet-07ba583cbf5207869", "subnet-0b0b79fab8c3fd705"]
+}
+
+
 # Create ElastiCache Redis cluster
 
 resource "aws_elasticache_cluster" "redis" {
@@ -30,8 +60,10 @@ resource "aws_elasticache_cluster" "redis" {
     num_cache_nodes      = 1
     parameter_group_name = "default.redis3.2"
     port                 = 6379
-    security_group_ids   = ["subnet-0deabb5d8fb9c3446", "subnet-000b89c249f12a8ad"]
+    subnet_group_name    = aws_elasticache_subnet_group.default.name
+    security_group_ids   = [aws_security_group.redis_sg.id]
 }
+
 /*
 data "aws_iam_role" "ec2_container_service_role" {
   name = "ecsServiceRole"
