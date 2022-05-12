@@ -4,6 +4,7 @@ using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SingleViewApi.V1.Boundary;
 
 namespace SingleViewApi.V1.Controllers
 {
@@ -27,10 +28,10 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpPost]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawAuthToken([FromBody] string hashedUsername, string hashedPassword)
+        public IActionResult GetJigsawAuthToken([FromBody] Credentials credentials)
 
         {
-            return Ok(_getJigsawAuthTokenUseCase.Execute(hashedUsername, hashedPassword).Result);
+            return Ok(_getJigsawAuthTokenUseCase.Execute(credentials.HashedUsername, credentials.HashedPassword).Result);
         }
 
 
