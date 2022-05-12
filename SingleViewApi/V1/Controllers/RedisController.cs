@@ -1,4 +1,3 @@
-using System;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,14 +30,20 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
 
         [HttpGet]
+        [Route("Add")]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetRedis([FromQuery] string input)
+        public IActionResult AddToRedis([FromQuery] string value)
         {
-            Console.WriteLine("------ CONTROLLER YA!!!! ------");
-            Console.WriteLine("-------- plz -------- ");
-            var thing = _redisGateway.DoTheThing(input);
-            Console.WriteLine("------ GOT THE THING ------");
-            return Ok(thing);
+            var id = _redisGateway.AddValue(value, 1);
+            return Ok(id);
+        }
+        [HttpGet]
+        [Route("Get")]
+        [LogCall(LogLevel.Information)]
+        public IActionResult GetFromRedis([FromQuery] string id)
+        {
+            var value = _redisGateway.GetValue(id);
+            return Ok(value);
         }
     }
 }

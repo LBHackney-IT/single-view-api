@@ -4,6 +4,7 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IRedisGateway
     {
-        string DoTheThing(string input);
+        string AddValue(string value, int ttlDays);
+        string GetValue(string id);
     }
 }
