@@ -9,5 +9,11 @@ namespace SingleViewApi.V1.Boundary
         public List<string> Cookies { get; set; }
     }
 
+    public class Credentials
+    {
+        public string HashedUsername { get; set; }
+        public string HashedPassword { get; set; }
+    }
+
 
 }
