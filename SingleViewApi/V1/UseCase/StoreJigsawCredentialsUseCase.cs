@@ -7,16 +7,24 @@ namespace SingleViewApi.V1.UseCase;
 public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 {
     private IRedisGateway _redisGateway;
+    private IJigsawGateway _jigsawGateway;
 
-    public StoreJigsawCredentialsUseCase(IRedisGateway redisGateway)
+    public StoreJigsawCredentialsUseCase(IRedisGateway redisGateway, IJigsawGateway jigsawGateway)
     {
         _redisGateway = redisGateway;
+        _jigsawGateway = jigsawGateway;
     }
 
     public string Execute(string jwt)
     {
-        //decrypt credentials and authorise
-        // if returns a token, store id. if not, return null
+        //decrypt credentials here
+        var username = "test";
+        var password = "test";
+
+        var token = _jigsawGateway.GetAuthToken(username, password);
+
+        if (token == null) return null;
+
         var id = _redisGateway.AddValue(jwt, 1);
 
         return id;
