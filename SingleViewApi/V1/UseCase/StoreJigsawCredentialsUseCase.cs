@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Helpers.Interfaces;
@@ -23,9 +24,9 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
-        var token = _jigsawGateway.GetAuthToken(decryptedCredentials);
+        var token = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
-        if (token == null) return null;
+        if (String.IsNullOrEmpty(token)) return null;
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 
