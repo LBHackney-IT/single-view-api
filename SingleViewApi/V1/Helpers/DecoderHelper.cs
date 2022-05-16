@@ -8,7 +8,7 @@ using SingleViewApi.V1.Helpers.Interfaces;
 
 namespace SingleViewApi.V1.Helpers;
 
-public class DecoderHelper: IDecoderHelper
+public class DecoderHelper : IDecoderHelper
 {
     private readonly byte[] _iv;
     private readonly byte[] _key;

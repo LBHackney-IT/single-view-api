@@ -26,7 +26,7 @@ namespace SingleViewApi.V1.UseCase
         public async Task<string> Execute(string redisKey)
         {
 
-            var encyptedCredentials =  _redisGateway.GetValue(redisKey);
+            var encyptedCredentials = _redisGateway.GetValue(redisKey);
 
             var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
 

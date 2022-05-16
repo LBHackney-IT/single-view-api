@@ -17,7 +17,7 @@ namespace SingleViewApi.Tests.V1.Helper
             const string testiv = "J@_@.hAr-Lh2GVAX";
             _classUnderTest = new DecoderHelper(testKey, testiv);
 
-          }
+        }
 
         [Test]
         public void ItDecodesTheEncryptedCredentials()
