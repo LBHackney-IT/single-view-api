@@ -47,7 +47,8 @@ public class JigsawGatewayTests
 
     }
     [Test]
-    public async Task GetCustomersReturnsNullIfThereAreNoResults() {
+    public async Task GetCustomersReturnsNullIfThereAreNoResults()
+    {
 
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
