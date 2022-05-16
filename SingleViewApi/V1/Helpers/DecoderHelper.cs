@@ -21,13 +21,9 @@ public class DecoderHelper : IDecoderHelper
     public JigsawCredentials DecodeJigsawCredentials(string cipher)
     {
 
-        //TODO: Pass in these values at instantiation
-        byte[] key = Encoding.UTF8.GetBytes("GVitnm.QjsXUYjTTJ@_@.hAr-Lh2GVAX"); // 32
-        byte[] iv = Encoding.UTF8.GetBytes("J@_@.hAr-Lh2GVAX"); //16
-
         var cipherText = Convert.FromBase64String(cipher);
 
-        var decodedJson = Decrypt(cipherText, key, iv);
+        var decodedJson = Decrypt(cipherText, _key, _iv);
 
         var credentials = JsonConvert.DeserializeObject<JigsawCredentials>(decodedJson);
 
