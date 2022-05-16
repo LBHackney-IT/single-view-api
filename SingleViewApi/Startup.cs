@@ -33,6 +33,8 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 using ServiceStack.Redis;
+using SingleViewApi.V1.Helpers;
+using SingleViewApi.V1.Helpers.Interfaces;
 
 
 namespace SingleViewApi
@@ -127,12 +129,6 @@ namespace SingleViewApi
 
             });
 
-            services.AddTransient<IGetJigsawAuthTokenUseCase, GetJigsawAuthTokenUseCase>(s =>
-            {
-                var jigsawGateway = s.GetService<IJigsawGateway>();
-                return new GetJigsawAuthTokenUseCase(jigsawGateway);
-            });
-
             services.AddTransient<IGetJigsawCustomersUseCase, GetJigsawCustomersUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
@@ -153,6 +149,12 @@ namespace SingleViewApi
                     httpClient,
                     Environment.GetEnvironmentVariable("NOTES_API_V2")
                 );
+            });
+
+            services.AddTransient<IDecoderHelper>(s =>
+            {
+                return new DecoderHelper(Environment.GetEnvironmentVariable(("AES_KEY")),
+                    Environment.GetEnvironmentVariable(("AES_IV")));
             });
 
             services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>

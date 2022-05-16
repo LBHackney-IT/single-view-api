@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Gateways;
 
 namespace SingleViewApi.V1.Controllers
 {
@@ -14,10 +15,10 @@ namespace SingleViewApi.V1.Controllers
     [ApiVersion("1.0")]
     public class JigsawController : BaseController
     {
-        private readonly IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
-        public JigsawController(IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+        private readonly IRedisGateway _redisGateway;
+        public JigsawController(IRedisGateway redisGateway)
         {
-            _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
+            _redisGateway = redisGateway;
 
         }
 
@@ -28,10 +29,10 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpPost]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetJigsawAuthToken([FromBody] Credentials credentials)
+        public IActionResult AddJigsawCredentials([FromBody] string credentials)
 
         {
-            return Ok(_getJigsawAuthTokenUseCase.Execute(credentials.HashedUsername, credentials.HashedPassword).Result);
+            return Ok(_redisGateway.AddValue(credentials, 1));
         }
 
 
