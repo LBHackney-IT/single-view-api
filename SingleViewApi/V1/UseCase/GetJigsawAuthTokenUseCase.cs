@@ -30,7 +30,7 @@ namespace SingleViewApi.V1.UseCase
 
             var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
 
-            var token = await _jigsawGateway.GetAuthToken(credentials.Username, credentials.Password);
+            var token = await _jigsawGateway.GetAuthToken(credentials);
 
             return token;
 

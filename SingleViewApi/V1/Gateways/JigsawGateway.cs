@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Helpers;
 
 namespace SingleViewApi.V1.Gateways
 {
@@ -31,7 +32,7 @@ namespace SingleViewApi.V1.Gateways
             this._httpClient = httpClient;
         }
 
-        public async Task<string> GetAuthToken(string email, string password)
+        public async Task<string> GetAuthToken(JigsawCredentials credentials)
         {
             CookieContainer cookies = new CookieContainer();
             var handler = new HttpClientHandler();
@@ -44,8 +45,8 @@ namespace SingleViewApi.V1.Gateways
 
             var jigsawCredentials = new List<KeyValuePair<string, string>>
             {
-                new ("Email", email),
-                new ("Password", password),
+                new ("Email", credentials.Username),
+                new ("Password", credentials.Password),
                 new ("__RequestVerificationToken", tokens.Token)
             };
 

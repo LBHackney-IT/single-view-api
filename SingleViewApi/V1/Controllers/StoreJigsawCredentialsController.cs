@@ -1,3 +1,4 @@
+using System;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +34,13 @@ namespace SingleViewApi.V1.Controllers
         [HttpPost]
         [LogCall(LogLevel.Information)]
 
-        public IActionResult StoreJigsawCredentials([FromBody] string jwt)
+        public IActionResult StoreJigsawCredentials([FromBody] string encryptedCredentials)
         {
-            var id = _storeJigsawCredentialsUseCase.Execute(jwt);
+            var id = _storeJigsawCredentialsUseCase.Execute(encryptedCredentials);
+            if (String.IsNullOrEmpty(id))
+            {
+               return Unauthorized("Credentials are incorrect");
+            }
             return Ok(id);
         }
     }
