@@ -10,7 +10,7 @@ using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase;
 [TestFixture]
-public class StoreJigsawCredentialsUseCaseTests: LogCallAspectFixture
+public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
 {
 
     private Mock<IRedisClient> _mockRedisClient;

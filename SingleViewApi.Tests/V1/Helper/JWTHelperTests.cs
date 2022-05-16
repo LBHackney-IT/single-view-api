@@ -21,7 +21,7 @@ namespace SingleViewApi.Tests.V1.Helper
         public void ItDecodesAJwt()
         {
             const string jwt =
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImEgY2hpbGQifQ.eyJwYXNzd29yZCI6IjEyMzQ1Njc4OTAiLCJ1c2VybmFtZSI6IkpvaG4gRG9lIn0.8zMil45BiIrXfDyvADeaKDJwmbLvFYGDZShplUd_IgU";
+                "NlPY0psUQks028XLpqHJppmAYBS17gk30ozlCCdR/3UFpuI9QfwndbmikmI3xAUl0UQ=";
             const string expectedUsername = "test";
 
             var result = _classUnderTest.DecodeJigsawCredentials(jwt);
