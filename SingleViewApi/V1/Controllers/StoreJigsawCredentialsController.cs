@@ -39,7 +39,7 @@ namespace SingleViewApi.V1.Controllers
             var id = _storeJigsawCredentialsUseCase.Execute(encryptedCredentials);
             if (String.IsNullOrEmpty(id))
             {
-               return Unauthorized("Credentials are incorrect");
+                return Unauthorized("Credentials are incorrect");
             }
             return Ok(id);
         }

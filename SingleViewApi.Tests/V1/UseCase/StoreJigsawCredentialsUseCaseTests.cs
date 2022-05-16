@@ -39,7 +39,8 @@ public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
         const int ttl = 1;
         var mockJigsawCredentials = new JigsawCredentials()
         {
-            Username = "TestUsername", Password = "TestPassword",
+            Username = "TestUsername",
+            Password = "TestPassword",
         };
 
         _decoderHelperMock.Setup(x => x.DecodeJigsawCredentials(encryptedCreds)).Returns(mockJigsawCredentials);
