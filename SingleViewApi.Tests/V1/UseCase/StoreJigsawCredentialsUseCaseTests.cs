@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using ServiceStack.Redis;
 using SingleViewApi.V1.Gateways;
+using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase;
@@ -22,7 +23,7 @@ public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
     {
         _mockRedisClient = new Mock<IRedisClient>();
         _jigsawGatewayMock = new Mock<IJigsawGateway>();
-        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object), new Mock<IJigsawGateway>().Object);
+        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object), new Mock<IJigsawGateway>().Object, new Mock<IDecoderHelper>().Object);
 
     }
 

@@ -1,7 +1,10 @@
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Controllers;
 using SingleViewApi.V1.UseCase.Interfaces;
+using System = Bogus.DataSets.System;
 
 namespace SingleViewApi.Tests.V1.Controllers
 {
@@ -21,12 +24,31 @@ namespace SingleViewApi.Tests.V1.Controllers
         [Test]
         public void UseCaseGetsCalled()
         {
-            const string jwt = "Fake-jwt";
+            const string encryptedCredentials = "Test-creds";
 
-            _ = _classUnderTest.StoreJigsawCredentials(jwt);
+            _ = _classUnderTest.StoreJigsawCredentials(encryptedCredentials);
 
-            _mockStoreJigsawCredentialsUseCase.Verify(x => x.Execute(jwt), Times.Once);
+            _mockStoreJigsawCredentialsUseCase.Verify(x => x.Execute(encryptedCredentials), Times.Once);
         }
+
+        [Test]
+        public void ControllerReturnsUnauthorisedWhenCredentialsAreIncorrect()
+        {
+            const string encryptedCredentials = "Incorrect-Credentials";
+            UnauthorizedObjectResult expectedResult = new UnauthorizedObjectResult("Credentials are incorrect");
+
+            _mockStoreJigsawCredentialsUseCase.Setup(e => e.Execute(encryptedCredentials))
+                .Returns<string>((s) => "");
+
+            var result = _classUnderTest.StoreJigsawCredentials(encryptedCredentials);
+
+            result.Should().BeEquivalentTo(expectedResult);
+
+        }
+
+
+
     }
 }
+
 
