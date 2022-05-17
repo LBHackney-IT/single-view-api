@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
@@ -32,6 +33,9 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 using ServiceStack.Redis;
+using SingleViewApi.V1.Helpers;
+using SingleViewApi.V1.Helpers.Interfaces;
+
 
 namespace SingleViewApi
 {
@@ -62,6 +66,8 @@ namespace SingleViewApi
             });
 
             services.AddHttpClient();
+
+            services.AddHttpContextAccessor();
 
             services.AddTransient<IPersonGateway, PersonGateway>(s =>
             {
@@ -108,6 +114,27 @@ namespace SingleViewApi
                     redisManager.GetClient());
             });
 
+            services.AddHttpClient("JigsawClient").ConfigureHttpClient(client =>
+            {
+                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
+
+            }).ConfigurePrimaryHttpMessageHandler(
+                () => new HttpClientHandler() { CookieContainer = new CookieContainer() });
+
+            services.AddTransient<IJigsawGateway, JigsawGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
+
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_SEARCH_API"));
+
+            });
+
+            services.AddTransient<IGetJigsawCustomersUseCase, GetJigsawCustomersUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                return new GetJigsawCustomersUseCase(jigsawGateway);
+            });
+
             services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
@@ -122,6 +149,12 @@ namespace SingleViewApi
                     httpClient,
                     Environment.GetEnvironmentVariable("NOTES_API_V2")
                 );
+            });
+
+            services.AddTransient<IDecoderHelper>(s =>
+            {
+                return new DecoderHelper(Environment.GetEnvironmentVariable(("AES_KEY")),
+                    Environment.GetEnvironmentVariable(("AES_IV")));
             });
 
             services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
