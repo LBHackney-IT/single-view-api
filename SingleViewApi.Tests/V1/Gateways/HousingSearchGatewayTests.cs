@@ -22,7 +22,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public void Setup()
         {
             _mockHttp = new MockHttpMessageHandler();
-            const string baseUrl = "https://housingsearch.api";
+            const string baseUrl = "https://housingsearch.api/";
             var mockClient = _mockHttp.ToHttpClient();
             _classUnderTest = new HousingSearchGateway(mockClient, baseUrl);
 

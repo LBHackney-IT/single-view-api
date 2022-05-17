@@ -24,7 +24,13 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - CONTACT_DETAILS_API_V2=${CONTACT_DETAILS_API_V2}
       - HOUSING_SEARCH_API_V1=${HOUSING_SEARCH_API_V1}
+      - JIGSAW_LOGIN_URL=${JIGSAW_LOGIN_URL}
+      - JIGSAW_PASSWORD=${JIGSAW_PASSWORD}
       - NOTES_API_V2=${NOTES_API_V2}
+      - JIGSAW_SEARCH_API=${JIGSAW_SEARCH_API}
+      - AES_KEY=${AES_KEY}
+      - AES_IV=${AES_IV}
+
 # TODO: If using DynamoDb remove the line above and uncomment the section below.
 #      - DynamoDb_LocalMode=true
 #      - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
