@@ -11,11 +11,11 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase
 {
-    public class GetSearchResultsBySearchTextUseCase : IGetSearchResultsBySearchTextUseCase
+    public class GetSearchResultsByNameUseCase : IGetSearchResultsByNameUseCase
     {
         private IHousingSearchGateway _housingSearchGateway;
 
-        public GetSearchResultsBySearchTextUseCase(IHousingSearchGateway housingSearchGateway)
+        public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway)
         {
             _housingSearchGateway = housingSearchGateway;
         }
