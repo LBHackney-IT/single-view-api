@@ -36,9 +36,15 @@ functions:
       HOUSING_SEARCH_API_V1: ${ssm:/single-view/${self:provider.stage}/housing-search-v1}
       #      CONNECTION_STRING: Host=${ssm:/SingleViewApi/${self:provider.stage}/postgres-hostname};Port=${ssm:/SingleViewApi/${self:provider.stage}/postgres-port};Database=SingleViewApi-mirror;Username=${ssm:/SingleViewApi/${self:provider.stage}/postgres-username};Password=${ssm:/SingleViewApi/${self:provider.stage}/postgres-password}
       PERSON_API_V1: ${ssm:/single-view/${self:provider.stage}/person-v1}
-      CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
+      JIGSAW_LOGIN_URL: ${ssm:/single-view/${self:provider.stage}/jigsaw-login-url}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
+      CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
+      JIGSAW_PASSWORD: ${ssm/single-view/${self:provider.stage}/jigsaw-password}
       NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
+      JIGSAW_SEARCH_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-search}
+      AES_KEY: ${ssm:/single-view/${self:provider.stage}/aes_key}
+      AES_IV: ${ssm:/single-view/${self:provider.stage}/aes_iv}
+
     events:
       - http:
           path: /{proxy+}
