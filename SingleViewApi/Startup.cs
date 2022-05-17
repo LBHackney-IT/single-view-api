@@ -135,10 +135,10 @@ namespace SingleViewApi
                 return new GetJigsawCustomersUseCase(jigsawGateway);
             });
 
-            services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
+            services.AddTransient<IGetSearchResultsByNameUseCase, GetSearchResultsByNameUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
-                return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
+                return new GetSearchResultsByNameUseCase(housingSearchGateway);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
