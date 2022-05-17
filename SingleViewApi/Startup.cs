@@ -132,7 +132,8 @@ namespace SingleViewApi
             services.AddTransient<IGetJigsawCustomersUseCase, GetJigsawCustomersUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
-                return new GetJigsawCustomersUseCase(jigsawGateway);
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCustomersUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
             services.AddTransient<IGetSearchResultsByNameUseCase, GetSearchResultsByNameUseCase>(s =>

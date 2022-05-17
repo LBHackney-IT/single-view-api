@@ -11,7 +11,7 @@ using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {
-    public class GetSearchResultsBySearchTextUseCaseTests
+    public class GetSearchResultsByNameUseCaseTests
     {
         private Mock<IHousingSearchGateway> _mockHousingSearchGateway;
         private GetSearchResultsByNameUseCase _classUnderTest;
