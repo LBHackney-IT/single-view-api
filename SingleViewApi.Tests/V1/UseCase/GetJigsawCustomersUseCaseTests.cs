@@ -57,7 +57,7 @@ public class GetJigsawCustomersUseCaseTests
 
         _mockJigsawGateway.Setup(x => x.GetCustomers(firstName, lastName, jigsawToken)).ReturnsAsync(stubbedEntity);
 
-        var results =  _classUnderTest.Execute(firstName, lastName, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, redisId).Result;
 
         results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Jigsaw");
         results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);

@@ -39,7 +39,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 x.GetSearchResultsBySearchText(searchText, page, userToken))
                     .ReturnsAsync((HousingSearchApiResponse) null);
 
-            var results = await _classUnderTest.Execute(firstName,lastName, page, userToken);
+            var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
