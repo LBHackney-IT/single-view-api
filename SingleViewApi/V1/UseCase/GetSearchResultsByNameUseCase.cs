@@ -22,8 +22,10 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<SearchResponseObject> Execute(string searchText, int page, string userToken)
+        public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken)
         {
+            var searchText = $"{firstName}+{lastName}";
+
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };

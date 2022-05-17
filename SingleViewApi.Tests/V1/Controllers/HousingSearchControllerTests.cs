@@ -8,26 +8,27 @@ namespace SingleViewApi.Tests.V1.Controllers
     public class HousingSearchControllerTests
     {
         private HousingSearchController _classUnderTest;
-        private Mock<IGetSearchResultsBySearchTextUseCase> _mockGetSearchResultsBySearchTextUseCase;
+        private Mock<IGetSearchResultsByNameUseCase> _mockGetSearchResultsByNameUseCase;
 
         [SetUp]
         public void SetUp()
         {
-            _mockGetSearchResultsBySearchTextUseCase = new Mock<IGetSearchResultsBySearchTextUseCase>();
-            _classUnderTest = new HousingSearchController(_mockGetSearchResultsBySearchTextUseCase.Object);
+            _mockGetSearchResultsByNameUseCase = new Mock<IGetSearchResultsByNameUseCase>();
+            _classUnderTest = new HousingSearchController(_mockGetSearchResultsByNameUseCase.Object);
         }
 
 
         [Test]
         public void UseCaseGetsCalled()
         {
-            const string searchText = "testSearch";
+            const string firstName = "Test";
+            const string lastName = "Test";
             const string authorization = "token";
             const int page = 1;
 
-            var results = _classUnderTest.SearchBySearchText(searchText, page, authorization);
+            var results = _classUnderTest.SearchBySearchText(firstName, lastName, page, authorization);
 
-            _mockGetSearchResultsBySearchTextUseCase.Verify(x => x.Execute(searchText, page, authorization), Times.Once);
+            _mockGetSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, page, authorization), Times.Once);
         }
     }
 }
