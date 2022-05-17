@@ -15,6 +15,7 @@ namespace SingleViewApi.V1.UseCase
     {
         private IHousingSearchGateway _housingSearchGateway;
 
+
         public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway)
         {
             _housingSearchGateway = housingSearchGateway;
