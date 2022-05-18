@@ -83,8 +83,6 @@ namespace SingleViewApi.V1.Gateways
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            Console.WriteLine("Full request is {0}", JSON.stringify(request));
-
             var response = await _httpClient.SendAsync(request);
 
 #nullable enable
