@@ -11,7 +11,7 @@ namespace SingleViewApi.V1.Controllers
     [Route("api/v1/search")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-   public class CombinedSearchController : BaseController
+    public class CombinedSearchController : BaseController
     {
         private readonly IGetCombinedSearchResultsByNameUseCase _getCombinedSearchResultsByNameUseCase;
 
@@ -31,7 +31,7 @@ namespace SingleViewApi.V1.Controllers
         [HttpGet]
         public IActionResult SearchByName([FromQuery] string firstName, string lastName, int page, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, page, authorization, redisId ));
+            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, page, authorization, redisId));
         }
     }
 }
