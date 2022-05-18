@@ -24,11 +24,18 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
         var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
 
+        var concatenatedResults = ConcatenateResults(housingResults.SearchResponse.SearchResults,
+            jigsawResults.SearchResponse.SearchResults);
+
+        var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
+
+
         var collatedResults = new SearchResponseObject()
+
         {
             SearchResponse = new SearchResponse()
             {
-                SearchResults = ConcatenateResults(housingResults.SearchResponse.SearchResults, jigsawResults.SearchResponse.SearchResults),
+                SearchResults = sortedResults,
 
                 Total = housingResults.SearchResponse.Total + jigsawResults.SearchResponse.Total
             },
@@ -38,7 +45,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         return collatedResults;
     }
 
-    private List<SearchResult> ConcatenateResults(List<SearchResult> housingResults, List<SearchResult> jigsawResults)
+    public List<SearchResult> ConcatenateResults(List<SearchResult> housingResults, List<SearchResult> jigsawResults)
     {
         if (housingResults == null && jigsawResults == null)
         {
@@ -53,5 +60,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             return housingResults;
         }
         return housingResults.Concat(jigsawResults).ToList();
+    }
+
+    public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
+    {
+        return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName== lastName ? 0 : 1).ToList();
     }
 }
