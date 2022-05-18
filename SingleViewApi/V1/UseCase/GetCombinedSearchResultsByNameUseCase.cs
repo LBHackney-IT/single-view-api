@@ -64,6 +64,6 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
 
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
     {
-        return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName== lastName ? 0 : 1).ToList();
+        return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName == lastName ? 0 : 1).ToList();
     }
 }
