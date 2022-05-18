@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
@@ -134,5 +135,66 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
     }
 
+    [Test]
+    public void SortResultsByRelevanceReturnsMatchingResultsFirst()
+    {
+        var testFirstName = "testFirstName";
+        var testLastName = "testLastName";
+        var testUnsortedData = new List<SearchResult> {
+            new SearchResult() {
+                Id = _fixture.Create<Guid>(),
+                FirstName = "IrrelevantName",
+                SurName = testLastName,
+                DateOfBirth = DateTime.Now,
+                DataSource = DataSource.Jigsaw
+            },
+            new SearchResult()
+        {
+            Id = _fixture.Create<Guid>(),
+            FirstName = testFirstName,
+            SurName = testLastName,
+            DateOfBirth = DateTime.Now,
+            DataSource = DataSource.Jigsaw
 
+        },
+            new SearchResult() {
+                Id = _fixture.Create<Guid>(),
+                FirstName = "AnotherIrrelevantName",
+                SurName = "IrrelevantLastName",
+                DateOfBirth = DateTime.Now,
+                DataSource = DataSource.Jigsaw
+            },
+        };
+        var expectedSortedData = new List<SearchResult>
+        {
+            new SearchResult()
+            {
+                Id = _fixture.Create<Guid>(),
+                FirstName = testFirstName,
+                SurName = testLastName,
+                DateOfBirth = DateTime.Now,
+                DataSource = DataSource.Jigsaw
+            },
+            new SearchResult(){
+                Id = _fixture.Create<Guid>(),
+                FirstName = "IrrelevantName",
+                SurName = testLastName,
+                DateOfBirth = DateTime.Now,
+                DataSource = DataSource.HousingSearch
+            },
+            new SearchResult() {
+                Id = _fixture.Create<Guid>(),
+                FirstName = "AnotherIrrelevantName",
+                SurName = "IrrelevantLastName",
+                DateOfBirth = DateTime.Now,
+                DataSource = DataSource.Jigsaw
+            },
+        };
+
+        var results = _classUnderTest.SortResultsByRelevance(testFirstName, testLastName, testUnsortedData);
+
+        results[0].FirstName.Should().BeEquivalentTo(expectedSortedData[0].FirstName);
+        results[1].FirstName.Should().BeEquivalentTo(expectedSortedData[1].FirstName);
+        results[2].FirstName.Should().BeEquivalentTo(expectedSortedData[2].FirstName);
+    }
 }

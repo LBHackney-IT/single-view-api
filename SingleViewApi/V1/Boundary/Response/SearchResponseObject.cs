@@ -27,7 +27,6 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResult
     {
         public Guid Id { get; set; }
-
         public DataSource DataSource { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
@@ -39,10 +38,10 @@ namespace SingleViewApi.V1.Boundary.Response
         public DateTime? DateOfBirth { get; set; }
 
         public string? NiNumber { get; set; }
-#nullable disable
-        public List<Hackney.Shared.Person.Domain.PersonType> PersonTypes { get; set; }
+        public List<Hackney.Shared.Person.Domain.PersonType>? PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
         public bool IsTenureCautionaryAlert { get; set; }
+#nullable disable
         public List<KnownAddress> KnownAddresses { get; set; }
 
 
