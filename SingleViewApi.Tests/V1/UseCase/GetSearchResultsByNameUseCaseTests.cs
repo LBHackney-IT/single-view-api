@@ -32,7 +32,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var firstName = _fixture.Create<string>();
             var lastName = _fixture.Create<string>();
-            var searchText = $"{firstName}+{lastName}";
+            var searchText = $"{firstName}%2B{lastName}";
             var userToken = _fixture.Create<string>();
             var page = _fixture.Create<int>();
             _mockHousingSearchGateway.Setup(x =>
@@ -52,7 +52,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var firstName = _fixture.Create<string>();
             var lastName = _fixture.Create<string>();
-            var searchText = $"{firstName}+{lastName}";
+            var searchText = $"{firstName}%2B{lastName}";
             var userToken = _fixture.Create<string>();
             var page = _fixture.Create<int>();
             var stubbedEntity = _fixture.Create<HousingSearchApiResponse>();
