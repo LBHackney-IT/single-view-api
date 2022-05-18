@@ -56,6 +56,7 @@ namespace SingleViewApi.V1.UseCase
                     FirstName = result.FirstName,
                     SurName = result.LastName,
                     DateOfBirth = result.DoB,
+                    NiNumber = result.NiNumber,
                     KnownAddresses = new List<KnownAddress>()
                     {
                         new KnownAddress()
