@@ -52,6 +52,7 @@ namespace SingleViewApi.V1.UseCase
                 var person = new SearchResult()
                 {
                     Id = result.Id,
+                    DataSource = DataSource.Jigsaw,
                     FirstName = result.FirstName,
                     SurName = result.LastName,
                     DateOfBirth = result.DoB,
