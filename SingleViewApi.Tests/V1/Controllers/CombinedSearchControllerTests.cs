@@ -31,7 +31,7 @@ namespace SingleViewApi.Tests.V1.Controllers
 
             _ = _classUnderTest.SearchByName(firstName, lastName, page, redisId, authorization);
 
-           _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, page, authorization, redisId), Times.Once);
+            _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, page, authorization, redisId), Times.Once);
         }
     }
 }

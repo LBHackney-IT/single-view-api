@@ -43,10 +43,12 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         if (housingResults == null && jigsawResults == null)
         {
             return new List<SearchResult>();
-        } else if (housingResults == null)
+        }
+        else if (housingResults == null)
         {
             return jigsawResults;
-        } else if (jigsawResults == null)
+        }
+        else if (jigsawResults == null)
         {
             return housingResults;
         }

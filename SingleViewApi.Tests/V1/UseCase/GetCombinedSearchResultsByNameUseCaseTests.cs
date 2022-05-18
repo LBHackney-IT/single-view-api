@@ -52,7 +52,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "HousingSearchApi", Id = searchTerm, Error = "no results found"} })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "HousingSearchApi", Id = searchTerm, Error = "no results found" } })
 
             });
 
@@ -65,7 +65,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "Jigsaw", Id = searchTerm, Error = "no results found"} })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "Jigsaw", Id = searchTerm, Error = "no results found" } })
 
             });
 
