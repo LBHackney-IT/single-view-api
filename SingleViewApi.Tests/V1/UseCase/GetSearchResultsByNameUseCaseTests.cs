@@ -11,10 +11,10 @@ using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {
-    public class GetSearchResultsBySearchTextUseCaseTests
+    public class GetSearchResultsByNameUseCaseTests
     {
         private Mock<IHousingSearchGateway> _mockHousingSearchGateway;
-        private GetSearchResultsBySearchTextUseCase _classUnderTest;
+        private GetSearchResultsByNameUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
@@ -22,7 +22,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         public void SetUp()
         {
             _mockHousingSearchGateway = new Mock<IHousingSearchGateway>();
-            _classUnderTest = new GetSearchResultsBySearchTextUseCase(_mockHousingSearchGateway.Object);
+            _classUnderTest = new GetSearchResultsByNameUseCase(_mockHousingSearchGateway.Object);
             _fixture = new Fixture();
         }
 
@@ -30,14 +30,16 @@ namespace SingleViewApi.Tests.V1.UseCase
 
         public async Task ReturnsAnErrorWhenNoResultsFoundFromHousingSearchApi()
         {
-            var searchText = _fixture.Create<string>();
+            var firstName = _fixture.Create<string>();
+            var lastName = _fixture.Create<string>();
+            var searchText = $"{firstName}%2B{lastName}";
             var userToken = _fixture.Create<string>();
             var page = _fixture.Create<int>();
             _mockHousingSearchGateway.Setup(x =>
                 x.GetSearchResultsBySearchText(searchText, page, userToken))
                     .ReturnsAsync((HousingSearchApiResponse) null);
 
-            var results = await _classUnderTest.Execute(searchText, page, userToken);
+            var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
@@ -48,7 +50,9 @@ namespace SingleViewApi.Tests.V1.UseCase
 
         public async Task ReturnsSearchResultsFromHousingSearchApi()
         {
-            var searchText = _fixture.Create<string>();
+            var firstName = _fixture.Create<string>();
+            var lastName = _fixture.Create<string>();
+            var searchText = $"{firstName}%2B{lastName}";
             var userToken = _fixture.Create<string>();
             var page = _fixture.Create<int>();
             var stubbedEntity = _fixture.Create<HousingSearchApiResponse>();
@@ -56,7 +60,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockHousingSearchGateway.Setup(x => x.GetSearchResultsBySearchText(searchText, page, userToken))
                 .ReturnsAsync(stubbedEntity);
 
-            var results = await _classUnderTest.Execute(searchText, page, userToken);
+            var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
@@ -72,6 +76,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 .Be(stubbedEntity.Results.Persons[0].DateOfBirth);
             results.SearchResponse.SearchResults[0].KnownAddresses[0].FullAddress.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures.ToList()[0].AssetFullAddress);
+            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(DataSource.HousingSearch);
         }
     }
 }

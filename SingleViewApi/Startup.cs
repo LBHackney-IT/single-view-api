@@ -129,16 +129,32 @@ namespace SingleViewApi
 
             });
 
+            services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
+            {
+                var redisGateway = s.GetService<IRedisGateway>();
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var decoderHelper = s.GetService<IDecoderHelper>();
+                return new StoreJigsawCredentialsUseCase(redisGateway, jigsawGateway, decoderHelper);
+            });
+
             services.AddTransient<IGetJigsawCustomersUseCase, GetJigsawCustomersUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
-                return new GetJigsawCustomersUseCase(jigsawGateway);
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCustomersUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
-            services.AddTransient<IGetSearchResultsBySearchTextUseCase, GetSearchResultsBySearchTextUseCase>(s =>
+            services.AddTransient<IGetSearchResultsByNameUseCase, GetSearchResultsByNameUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
-                return new GetSearchResultsBySearchTextUseCase(housingSearchGateway);
+                return new GetSearchResultsByNameUseCase(housingSearchGateway);
+            });
+
+            services.AddTransient<IGetCombinedSearchResultsByNameUseCase, GetCombinedSearchResultsByNameUseCase>(s =>
+            {
+                var getSearchResultsByNameUseCase = s.GetService<IGetSearchResultsByNameUseCase>();
+                var getJigsawCustomersUseCase = s.GetService<IGetJigsawCustomersUseCase>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
