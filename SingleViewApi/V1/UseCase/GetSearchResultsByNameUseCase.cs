@@ -25,7 +25,7 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken)
         {
-            var searchText = $"{firstName}%2B{lastName}";
+            var searchText = $"{firstName}+{lastName}";
 
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
