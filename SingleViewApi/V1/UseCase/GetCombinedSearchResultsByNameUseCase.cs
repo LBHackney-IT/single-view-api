@@ -11,6 +11,7 @@ namespace SingleViewApi.V1.UseCase;
 
 public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsByNameUseCase
 {
+
     private IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
     private IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
 
@@ -36,15 +37,16 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         total += housingResults?.SearchResponse?.Total ?? 0;
         total += jigsawResults?.SearchResponse?.Total ?? 0;
 
-        var collatedResults = new SearchResponseObject()
 
+
+        var collatedResults = new SearchResponseObject
         {
-            SearchResponse = new SearchResponse()
+            SearchResponse = new SearchResponse
             {
                 SearchResults = sortedResults,
                 Total = total
             },
-            SystemIds = housingResults?.SystemIds.Concat(jigsawResults?.SystemIds).ToList()
+            SystemIds = housingResults?.SystemIds?.Concat(jigsawResults?.SystemIds.DefaultIfEmpty()).ToList()
         };
 
         return collatedResults;
@@ -73,4 +75,6 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     {
         return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName == lastName ? 0 : 1).ToList();
     }
+
+
 }
