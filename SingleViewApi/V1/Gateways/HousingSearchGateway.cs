@@ -22,7 +22,7 @@ namespace SingleViewApi.V1.Gateways
         }
         public async Task<HousingSearchApiResponse> GetSearchResultsBySearchText(string searchText, int page, string userToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}search/persons?searchText={searchText}&page={page}&pageSize=12");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/search/persons?searchText={searchText}&page={page}&pageSize=12");
             request.Headers.Add("Authorization", userToken);
 
             var response = await _httpClient.SendAsync(request);
