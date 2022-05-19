@@ -46,6 +46,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         return collatedResults;
     }
 
+    [LogCall]
     public List<SearchResult> ConcatenateResults(List<SearchResult> housingResults, List<SearchResult> jigsawResults)
     {
         if (housingResults == null && jigsawResults == null)
@@ -63,6 +64,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         return housingResults.Concat(jigsawResults).ToList();
     }
 
+    [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
     {
         return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName == lastName ? 0 : 1).ToList();
