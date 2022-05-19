@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -37,7 +38,9 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         total += housingResults?.SearchResponse?.Total ?? 0;
         total += jigsawResults?.SearchResponse?.Total ?? 0;
 
+        List<SystemId> jigsawids = new List<SystemId>();
 
+        jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
 
         var collatedResults = new SearchResponseObject
         {
@@ -46,7 +49,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
                 SearchResults = sortedResults,
                 Total = total
             },
-            SystemIds = housingResults?.SystemIds?.Concat(jigsawResults?.SystemIds.DefaultIfEmpty()).ToList()
+            SystemIds = housingResults?.SystemIds?.Concat(jigsawids).ToList()
         };
 
         return collatedResults;
