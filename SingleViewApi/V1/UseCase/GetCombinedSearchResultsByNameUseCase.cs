@@ -26,33 +26,35 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         string redisId)
     {
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
-        var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
+        // var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
 
-        var concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
-            jigsawResults?.SearchResponse?.SearchResults);
+        return housingResults;
 
-        var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
-
-        int total = 0;
-
-        total += housingResults?.SearchResponse?.Total ?? 0;
-        total += jigsawResults?.SearchResponse?.Total ?? 0;
-
-        List<SystemId> jigsawids = new List<SystemId>();
-
-        jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
-
-        var collatedResults = new SearchResponseObject
-        {
-            SearchResponse = new SearchResponse
-            {
-                SearchResults = sortedResults,
-                Total = total
-            },
-            SystemIds = housingResults?.SystemIds?.Concat(jigsawids).ToList()
-        };
-
-        return collatedResults;
+        // var concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
+        //     jigsawResults?.SearchResponse?.SearchResults);
+        //
+        // var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
+        //
+        // int total = 0;
+        //
+        // total += housingResults?.SearchResponse?.Total ?? 0;
+        // total += jigsawResults?.SearchResponse?.Total ?? 0;
+        //
+        // List<SystemId> jigsawids = new List<SystemId>();
+        //
+        // jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
+        //
+        // var collatedResults = new SearchResponseObject
+        // {
+        //     SearchResponse = new SearchResponse
+        //     {
+        //         SearchResults = sortedResults,
+        //         Total = total
+        //     },
+        //     SystemIds = housingResults?.SystemIds?.Concat(jigsawids).ToList()
+        // };
+        //
+        // return collatedResults;
     }
 
     [LogCall]
