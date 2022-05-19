@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -17,7 +18,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         _getSearchResultsByNameUseCase = getSearchResultsByNameUseCase;
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
     }
-
+    [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken,
         string redisId)
     {
