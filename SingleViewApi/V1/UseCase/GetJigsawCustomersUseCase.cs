@@ -28,6 +28,12 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
         {
+            Console.WriteLine($"executing GetJigsawwCustomers with Debug logging:" +
+                              $"{nameof(GetJigsawCustomersUseCase)}: Execute()" +
+                              $"{nameof(firstName)}: {firstName}" +
+                              $"{nameof(lastName)}: {lastName}" +
+                              $"{nameof(redisId)}: {redisId}");
+
             string jigsawToken = null;
             try
             {
