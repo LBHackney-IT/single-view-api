@@ -26,10 +26,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
         var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
 
-        //var concatenatedResults = ConcatenateResults(housingResults.SearchResponse.SearchResults,
-        //    jigsawResults.SearchResponse.SearchResults);
+        var concatenatedResults = ConcatenateResults(housingResults.SearchResponse.SearchResults,
+            jigsawResults.SearchResponse.SearchResults);
 
-        // var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
+        var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
 
 
         var collatedResults = new SearchResponseObject()
@@ -37,7 +37,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             SearchResponse = new SearchResponse()
             {
-                SearchResults = new List<SearchResult>(),
+                SearchResults = sortedResults,
 
                 Total = housingResults.SearchResponse.Total + jigsawResults.SearchResponse.Total
             },
