@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Hackney.Core.Logging;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -19,6 +20,7 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
         _decoderHelper = decoderHelper;
     }
 
+    [LogCall]
     public string Execute(string encryptedCredentials)
     {
 
