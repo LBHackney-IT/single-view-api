@@ -31,6 +31,9 @@ namespace SingleViewApi.V1.UseCase
 
             var jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
 
+            Console.WriteLine($"Searching for {firstName} - Jigsaw");
+            Console.WriteLine($"Jigsaw Token {jigsawToken}");
+
             if (String.IsNullOrEmpty(jigsawToken)) return null;
 
             var searchResults = await _jigsawGateway.GetCustomers(firstName, lastName, jigsawToken);

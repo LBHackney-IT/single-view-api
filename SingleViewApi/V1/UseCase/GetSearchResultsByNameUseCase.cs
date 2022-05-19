@@ -27,6 +27,10 @@ namespace SingleViewApi.V1.UseCase
         {
             var searchText = $"{firstName}%2B{lastName}";
 
+            Console.WriteLine($"Searching for {searchText}");
+            Console.WriteLine($"Page {page}");
+            Console.WriteLine($"User token {userToken}");
+
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
