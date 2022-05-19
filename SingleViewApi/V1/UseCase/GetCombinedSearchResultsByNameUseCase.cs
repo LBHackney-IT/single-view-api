@@ -39,9 +39,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             {
                 SearchResults = sortedResults,
 
-                Total = housingResults.SearchResponse.Total + jigsawResults.SearchResponse.Total
+                //do something with null checking here
+                Total = sortedResults.Count
             },
-            SystemIds = housingResults.SystemIds.Concat(jigsawResults.SystemIds).ToList()
+            SystemIds = housingResults?.SystemIds.Concat(jigsawResults?.SystemIds).ToList()
         };
 
         return collatedResults;
