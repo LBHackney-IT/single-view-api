@@ -31,6 +31,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
 
+        int total = 0;
+
+        total += housingResults?.SearchResponse?.Total ?? 0;
+        total += jigsawResults?.SearchResponse?.Total ?? 0;
 
         var collatedResults = new SearchResponseObject()
 
@@ -38,9 +42,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             SearchResponse = new SearchResponse()
             {
                 SearchResults = sortedResults,
-
-                //do something with null checking here
-                Total = sortedResults.Count
+                Total = total
             },
             SystemIds = housingResults?.SystemIds.Concat(jigsawResults?.SystemIds).ToList()
         };

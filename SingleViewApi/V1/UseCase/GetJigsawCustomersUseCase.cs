@@ -29,9 +29,6 @@ namespace SingleViewApi.V1.UseCase
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
         {
 
-            var jigsawApiId = new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" };
-
-            var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { jigsawApiId } };
 
             string jigsawToken = null;
             try
@@ -41,13 +38,17 @@ namespace SingleViewApi.V1.UseCase
             catch (Exception e)
             {
                 Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
-                return response;
+                return null;
             }
 
             if (String.IsNullOrEmpty(jigsawToken))
             {
-                return response;
+                return null;
             }
+
+            var jigsawApiId = new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" };
+
+            var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { jigsawApiId } };
 
             var searchResults = await _jigsawGateway.GetCustomers(firstName, lastName, jigsawToken);
 
