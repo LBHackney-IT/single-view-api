@@ -25,8 +25,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken,
         string redisId)
     {
-        var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
-        // var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
+        //var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
+        var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
         //
         // var concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
         //     jigsawResults?.SearchResponse?.SearchResults);
@@ -53,7 +53,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         // };
         //
         // return collatedResults;
-        return housingResults;
+        return jigsawResults;
     }
 
     [LogCall]
