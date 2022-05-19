@@ -27,6 +27,8 @@ namespace SingleViewApi.V1.UseCase
         {
             var searchText = $"{firstName}+{lastName}";
 
+            Console.WriteLine($"--------- Executing GetSearchResultsByNameUseCase with searchText: {searchText}, userToken: {userToken}");
+
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
@@ -35,6 +37,7 @@ namespace SingleViewApi.V1.UseCase
 
             if (searchResults == null)
             {
+                Console.WriteLine($"No results found for search term {searchText}");
                 housingSearchApiId.Error = "No results found";
             }
             else

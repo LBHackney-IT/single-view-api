@@ -26,7 +26,6 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         string redisId)
     {
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
-        return housingResults;
         // var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
         //
         // var concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
@@ -54,6 +53,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         // };
         //
         // return collatedResults;
+        return housingResults;
     }
 
     [LogCall]
