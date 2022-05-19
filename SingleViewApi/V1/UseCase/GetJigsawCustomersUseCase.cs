@@ -33,7 +33,7 @@ namespace SingleViewApi.V1.UseCase
             {
                 jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
             }
-             catch (Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
                 return null;
