@@ -28,8 +28,6 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
         {
-
-
             string jigsawToken = null;
             try
             {
