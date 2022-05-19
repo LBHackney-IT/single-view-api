@@ -26,11 +26,19 @@ namespace SingleViewApi.V1.UseCase
         public async Task<string> Execute(string redisKey)
         {
 
+            Console.WriteLine($"------> GetJigsawAuthTokenUseCase - Getting Value From Redis: Key = {redisKey}");
+
             var encyptedCredentials = _redisGateway.GetValue(redisKey);
+
+            Console.WriteLine($"------> Got Value From Redis: Key = {redisKey}. Decoding...");
 
             var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
 
+            Console.WriteLine($"------> Decoded Value From Redis: Key = {redisKey}. Getting Token...");
+
             var token = await _jigsawGateway.GetAuthToken(credentials);
+
+            Console.WriteLine($"------> Got Token From Redis: Key = {redisKey}. Saving Token...");
 
             return token;
 
