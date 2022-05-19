@@ -27,7 +27,7 @@ namespace SingleViewApi.V1.UseCase
         {
             var searchText = $"{firstName}+{lastName}";
 
-            Console.WriteLine($"--------- Executing GetSearchResultsByNameUseCase with searchText: {searchText}, userToken: {userToken}");
+            Console.WriteLine($"--------- Executing GetSearchResultsByNameUseCase with searchText: {searchText}");
 
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
