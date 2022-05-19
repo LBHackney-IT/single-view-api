@@ -48,7 +48,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult>  housingResults,[Optional] List<SearchResult> jigsawResults)
+    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults)
     {
         if (housingResults == null && jigsawResults == null)
         {
