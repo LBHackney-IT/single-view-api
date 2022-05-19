@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary.Response;
@@ -47,7 +48,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults(List<SearchResult> housingResults, List<SearchResult> jigsawResults)
+    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult>  housingResults,[Optional] List<SearchResult> jigsawResults)
     {
         if (housingResults == null && jigsawResults == null)
         {
