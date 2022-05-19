@@ -1,7 +1,7 @@
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -31,7 +31,7 @@ namespace SingleViewApi.V1.Controllers
         [HttpGet]
         public IActionResult SearchByName([FromQuery] string firstName, string lastName, int page, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, page, authorization, redisId));
+            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, page, authorization, redisId).Result);
         }
     }
 }
