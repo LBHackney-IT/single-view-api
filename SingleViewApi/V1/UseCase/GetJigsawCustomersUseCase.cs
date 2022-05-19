@@ -28,10 +28,21 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
         {
+            string jigsawToken = null;
+            try
+            {
+                jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
+            }
+             catch (Exception e)
+            {
+                Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
+                return null;
+            }
 
-            var jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
-
-            if (String.IsNullOrEmpty(jigsawToken)) return null;
+            if (String.IsNullOrEmpty(jigsawToken))
+            {
+                return null;
+            }
 
             var searchResults = await _jigsawGateway.GetCustomers(firstName, lastName, jigsawToken);
 
