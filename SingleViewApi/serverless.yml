@@ -39,9 +39,7 @@ functions:
       JIGSAW_LOGIN_URL: ${ssm:/single-view/${self:provider.stage}/jigsaw-login-url}
       REDIS_HOST: ${ssm:/single-view/${self:provider.stage}/redis-host}
       CONTACT_DETAILS_API_V2: ${ssm:/single-view/${self:provider.stage}/contact-details-v2}
-      JIGSAW_PASSWORD: ${ssm/single-view/${self:provider.stage}/jigsaw-password}
       NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
-      JIGSAW_SEARCH_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-search}
       AES_KEY: ${ssm:/single-view/${self:provider.stage}/aes_key}
       AES_IV: ${ssm:/single-view/${self:provider.stage}/aes_iv}
       JIGSAW_CUSTOMER_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-customer}

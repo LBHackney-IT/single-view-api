@@ -17,17 +17,15 @@ namespace SingleViewApi.V1.Gateways
     {
 
         private readonly string _authUrl;
-        private readonly string _searchUrl;
-        private readonly string _customerUrl;
+        private readonly string _customerBaserUrl;
         private readonly HttpClient _httpClient;
-        public JigsawGateway(HttpClient httpClient, string authUrl, string searchUrl, string customerUrl)
+        public JigsawGateway(HttpClient httpClient, string authUrl, string customerBaseUrl)
         {
-            this._authUrl = authUrl;
-            this._searchUrl = searchUrl;
-            this._customerUrl = customerUrl;
-            this._httpClient = httpClient;
-
+            _authUrl = authUrl;
+            _customerBaserUrl = customerBaseUrl;
+            _httpClient = httpClient;
         }
+
 
         public async Task<string> GetAuthToken(JigsawCredentials credentials)
         {
@@ -75,7 +73,7 @@ namespace SingleViewApi.V1.Gateways
         public async Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken)
 
         {
-            var requestUrl = $"{_searchUrl}?search={firstName}%20{lastName}";
+            var requestUrl = $"{_customerBaserUrl}/customerSearch?search={firstName}%20{lastName}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -101,7 +99,7 @@ namespace SingleViewApi.V1.Gateways
 
         public async Task<JigsawCustomerResponseObject> GetCustomerById(string id, string bearerToken)
         {
-            var requestUrl = $"{_customerUrl}/customerOverview/{id}";
+            var requestUrl = $"{_customerBaserUrl}/customerOverview/{id}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -109,9 +107,9 @@ namespace SingleViewApi.V1.Gateways
 
             var response = await _httpClient.SendAsync(request);
 
-            #nullable enable
+#nullable enable
             JigsawCustomerResponseObject? customer = null;
-            #nullable disable
+#nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
