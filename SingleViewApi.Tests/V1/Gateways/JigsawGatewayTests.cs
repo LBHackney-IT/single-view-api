@@ -16,8 +16,7 @@ public class JigsawGatewayTests
     private JigsawGateway _classUnderTest;
     private MockHttpMessageHandler _mockHttp;
     private string _authUrl;
-    private string _searchUrl;
-    private string _customerUrl;
+    private string _customerBaseUrl;
     private Fixture _fixture;
 
     [SetUp]
@@ -25,21 +24,20 @@ public class JigsawGatewayTests
     {
         _fixture = new Fixture();
         _authUrl = "https://api.jigsaw-auth";
-        _searchUrl = "https://api.jigsaw-search";
-        _customerUrl = "https://api.jigsaw-customer";
+        _customerBaseUrl = "https://api.jigsaw-customer";
         _mockHttp = new MockHttpMessageHandler();
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _searchUrl, _customerUrl);
+        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _customerBaseUrl);
     }
 
     [Test]
-    public void ARequestIsMade()
+    public void ARequestIsMadeToTheSearchEndpoint()
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_searchUrl}?search={firstName}%20{lastName}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}");
 
         _ = _classUnderTest.GetCustomers(firstName, lastName, bearerToken);
@@ -56,7 +54,7 @@ public class JigsawGatewayTests
         var lastName = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_searchUrl}?search={firstName}%20{lastName}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond(HttpStatusCode.NotFound);
 
@@ -72,7 +70,7 @@ public class JigsawGatewayTests
         var lastName = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_searchUrl}?search={firstName}%20{lastName}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond(HttpStatusCode.Unauthorized);
 
@@ -88,7 +86,7 @@ public class JigsawGatewayTests
         var lastName = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_searchUrl}?search={firstName}%20{lastName}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond(HttpStatusCode.ServiceUnavailable);
 
@@ -105,7 +103,7 @@ public class JigsawGatewayTests
         var bearerToken = _fixture.Create<string>();
         var searchResultsResponseObject = _fixture.CreateMany<JigsawCustomerSearchApiResponseObject>().ToList();
 
-        _mockHttp.Expect($"{_searchUrl}?search={firstName}%20{lastName}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", searchResultsResponseObject.ToJson());
 
@@ -125,7 +123,7 @@ public class JigsawGatewayTests
         var id = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerOverview/{id}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond(HttpStatusCode.Unauthorized);
 
@@ -140,7 +138,7 @@ public class JigsawGatewayTests
         var id = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerOverview/{id}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond(HttpStatusCode.ServiceUnavailable);
 
@@ -156,7 +154,7 @@ public class JigsawGatewayTests
         var bearerToken = _fixture.Create<string>();
         var jigsawCustomerResponseObject = _fixture.Create<JigsawCustomerResponseObject>();
 
-        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+        _mockHttp.Expect($"{_customerBaseUrl}/customerOverview/{id}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", jigsawCustomerResponseObject.ToJson());
 
