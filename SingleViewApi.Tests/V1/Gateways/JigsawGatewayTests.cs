@@ -17,6 +17,7 @@ public class JigsawGatewayTests
     private MockHttpMessageHandler _mockHttp;
     private string _authUrl;
     private string _searchUrl;
+    private string _customerUrl;
     private Fixture _fixture;
 
     [SetUp]
@@ -25,9 +26,10 @@ public class JigsawGatewayTests
         _fixture = new Fixture();
         _authUrl = "https://api.jigsaw-auth";
         _searchUrl = "https://api.jigsaw-search";
+        _customerUrl = "https://api.jigsaw-customer";
         _mockHttp = new MockHttpMessageHandler();
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _searchUrl);
+        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _searchUrl, _customerUrl);
     }
 
     [Test]
@@ -96,7 +98,7 @@ public class JigsawGatewayTests
     }
 
     [Test]
-    public async Task DataFromApiIsReturned()
+    public async Task DataFromSearchApiIsReturned()
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
@@ -115,6 +117,54 @@ public class JigsawGatewayTests
         Assert.AreEqual(searchResponseObject.Id, searchResponseObjectResult.Id);
         Assert.AreEqual(searchResponseObject.FirstName, searchResponseObjectResult.FirstName);
         Assert.AreEqual(searchResponseObject.LastName, searchResponseObjectResult.LastName);
+    }
+
+    [Test]
+    public async Task GetCustomerByIdReturnsNullIfUnauthorised()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.Unauthorized);
+
+        var searchResults = await _classUnderTest.GetCustomerById(id, bearerToken);
+
+        searchResults.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetCustomerByIdReturnsNullIfApiIsUnavailable()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        var searchResults = await _classUnderTest.GetCustomerById(id, bearerToken);
+
+        searchResults.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DataFromCustomerByIdApiIsReturned()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var jigsawCustomerResponseObject = _fixture.Create<JigsawCustomerResponseObject>();
+
+        _mockHttp.Expect($"{_customerUrl}/customerOverview/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", jigsawCustomerResponseObject.ToJson());
+
+        var customer = await _classUnderTest.GetCustomerById(id, bearerToken);
+
+        Assert.AreEqual(jigsawCustomerResponseObject.Id, customer.Id);
+        Assert.AreEqual(jigsawCustomerResponseObject.PersonInfo.FirstName, customer.PersonInfo.FirstName);
+        Assert.AreEqual(jigsawCustomerResponseObject.PersonInfo.LastName, customer.PersonInfo.LastName);
     }
 
 }
