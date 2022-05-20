@@ -17,12 +17,12 @@ namespace SingleViewApi.V1.Gateways
     {
 
         private readonly string _authUrl;
-        private readonly string _customerBaserUrl;
+        private readonly string _customerBaseUrl;
         private readonly HttpClient _httpClient;
         public JigsawGateway(HttpClient httpClient, string authUrl, string customerBaseUrl)
         {
             _authUrl = authUrl;
-            _customerBaserUrl = customerBaseUrl;
+            _customerBaseUrl = customerBaseUrl;
             _httpClient = httpClient;
         }
 
@@ -73,7 +73,7 @@ namespace SingleViewApi.V1.Gateways
         public async Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken)
 
         {
-            var requestUrl = $"{_customerBaserUrl}/customerSearch?search={firstName}%20{lastName}";
+            var requestUrl = $"{_customerBaseUrl}/customerSearch?search={firstName}%20{lastName}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -99,7 +99,7 @@ namespace SingleViewApi.V1.Gateways
 
         public async Task<JigsawCustomerResponseObject> GetCustomerById(string id, string bearerToken)
         {
-            var requestUrl = $"{_customerBaserUrl}/customerOverview/{id}";
+            var requestUrl = $"{_customerBaseUrl}/customerOverview/{id}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -119,6 +119,31 @@ namespace SingleViewApi.V1.Gateways
 
             }
             return customer;
+        }
+
+        public async Task<List<JigsawNotesResponseObject>> GetCustomerNotesByCustomerId(string id, string bearerToken)
+        {
+            var requestUrl = $"{_customerBaseUrl}/customer/{id}/notes";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            List<JigsawNotesResponseObject>? notes = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                notes = JsonConvert.DeserializeObject<List<JigsawNotesResponseObject>>(jsonBody);
+
+            }
+
+            return notes;
         }
 
 
