@@ -34,7 +34,7 @@ namespace SingleViewApi.V1.UseCase
                               $"{nameof(lastName)}: {lastName}" +
                               $"{nameof(redisId)}: {redisId}");
 
-            string jigsawToken = null;
+            string jigsawToken;
             try
             {
                 jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
