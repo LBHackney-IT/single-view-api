@@ -9,7 +9,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/search")]
+    [Route("api/v1/getJigsawCustomer")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
     public class JigsawController : BaseController
