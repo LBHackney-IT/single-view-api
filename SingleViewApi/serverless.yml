@@ -44,6 +44,7 @@ functions:
       JIGSAW_SEARCH_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-search}
       AES_KEY: ${ssm:/single-view/${self:provider.stage}/aes_key}
       AES_IV: ${ssm:/single-view/${self:provider.stage}/aes_iv}
+      JIGSAW_CUSTOMER_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-customer}
 
     events:
       - http:
