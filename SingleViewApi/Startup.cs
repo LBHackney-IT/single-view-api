@@ -161,8 +161,7 @@ namespace SingleViewApi
 
             services.AddTransient<IDecoderHelper>(s =>
             {
-                return new DecoderHelper(Environment.GetEnvironmentVariable(("AES_KEY")),
-                    Environment.GetEnvironmentVariable(("AES_IV")));
+                return new DecoderHelper(Environment.GetEnvironmentVariable(("RSA_PRIVATE_KEY")));
             });
 
             services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
