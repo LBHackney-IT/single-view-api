@@ -40,7 +40,8 @@ namespace SingleViewApi.V1.Gateways
                 searchResults = JsonConvert.DeserializeObject<HousingSearchApiResponse>(jsonBody);
 
             }
-            return searchResults;
+
+            return null; //comment for jigsaw debug
         }
     }
 }
