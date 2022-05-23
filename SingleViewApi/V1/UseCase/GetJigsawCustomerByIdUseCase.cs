@@ -1,4 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hackney.Shared.ContactDetail.Domain;
+using Hackney.Shared.Person;
+using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -16,10 +22,65 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
         _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
     }
 
-    public async Task<dynamic> Execute(string customerId, string redisId)
+    public async Task<CustomerResponseObject> Execute(string customerId, string redisId)
     {
-        var jigsawAuthToken = await _getJigsawAuthTokenUseCase.Execute(redisId);
-        return await _jigsawGateway.GetCustomerById(customerId, jigsawAuthToken);
+        string jigsawToken;
+        try
+        {
+            jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
+            return null;
+        }
+
+        if (String.IsNullOrEmpty(jigsawToken))
+        {
+            return null;
+        }
+
+        var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawToken);
+
+        var jigsawId = new SystemId() { SystemName = "Jigsaw", Id = customer.Id };
+
+        var response = new CustomerResponseObject() { SystemIds = new List<SystemId>() { jigsawId }, };
+
+        if (customer == null)
+        {
+            jigsawId.Error = "Not found";
+        }
+        else
+        {
+            response.Customer = new Customer()
+            {
+
+                FirstName = customer.PersonInfo.FirstName,
+                Surname = customer.PersonInfo.LastName,
+                DateOfBirth = customer.PersonInfo.DateOfBirth,
+                DataSource = DataSource.Jigsaw,
+                KnownAddresses = new List<KnownAddress>()
+                {
+                    new KnownAddress()
+                    {
+                        Id = ToGuid(customer.PersonInfo.Address.Id),
+                        FullAddress = customer.PersonInfo.AddressString,
+                        CurrentAddress = true
+                    }
+                }
+            };
+        }
+
+
+        return response;
+
+    }
+
+    public static Guid ToGuid(int value)
+    {
+        byte[] bytes = new byte[16];
+        BitConverter.GetBytes(value).CopyTo(bytes, 0);
+        return new Guid(bytes);
     }
 
 }
