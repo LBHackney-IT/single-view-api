@@ -26,7 +26,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
     public class SearchResult
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public DataSource DataSource { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
