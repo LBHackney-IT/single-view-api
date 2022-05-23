@@ -41,6 +41,7 @@ namespace SingleViewApi.V1.UseCase
                 response.Customer = new Customer()
                 {
                     Title = person.Title,
+                    DataSource = DataSource.HousingSearch,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,
