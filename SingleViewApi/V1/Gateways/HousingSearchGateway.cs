@@ -41,7 +41,7 @@ namespace SingleViewApi.V1.Gateways
 
             }
 
-            return null; //comment for jigsaw debug
+            return searchResults;
         }
     }
 }
