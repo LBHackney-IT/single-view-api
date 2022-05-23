@@ -1,4 +1,4 @@
-# LBH Base API
+# LBH Single View API
 
 Base API is a boilerplate code for being reused for new APIs for LBH
 
@@ -9,7 +9,7 @@ Base API is a boilerplate code for being reused for new APIs for LBH
 
 ## Dependencies
 
-- Universal Housing Simulator
+- Redis
 
 ## Contributing
 
@@ -129,6 +129,16 @@ If changes to the database schema are made then the docker image for the databas
 - Unit tests and E2E tests should run in CI
 - Test database schemas should match up with production database schema
 - Have integration tests which test from the PostgreSQL database to API Gateway
+
+
+# Rotating Encryption keys
+
+```bash
+openssl genrsa -out rsa_dev_priv.pem
+openssl rsa -pubout -in rsa_dev_priv.pem -out rsa_dev_pub.pem
+```
+
+Set the values without RSA padding where appropriate
 
 ## Data Migrations
 ### A good data migration
