@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Helpers;
 using SingleViewApi.V1.Helpers.Interfaces;
@@ -23,7 +24,7 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<string> Execute(string redisKey)
+        public async Task<AuthGatewayResponse> Execute(string redisKey)
         {
 
             Console.WriteLine($"------> GetJigsawAuthTokenUseCase - Getting Value From Redis: Key = {redisKey}");
@@ -36,11 +37,11 @@ namespace SingleViewApi.V1.UseCase
 
             Console.WriteLine($"------> Decoded Value From Redis: Key = {redisKey}. Getting Token...");
 
-            var token = await _jigsawGateway.GetAuthToken(credentials);
+            var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
 
             Console.WriteLine($"------> Got Token From Redis: Key = {redisKey}. Saving Token...");
 
-            return token;
+            return authGatewayResponse;
 
         }
     }

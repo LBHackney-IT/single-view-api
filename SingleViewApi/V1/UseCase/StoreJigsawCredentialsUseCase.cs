@@ -29,11 +29,11 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         Console.WriteLine("--------- DECODED ---------");
 
-        var token = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
+        var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
         Console.WriteLine("--------- GOT TOKEN ---------");
 
-        if (String.IsNullOrEmpty(token)) return null;
+        if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 
