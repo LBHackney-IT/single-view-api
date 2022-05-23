@@ -36,8 +36,8 @@ public class DecoderHelper : IDecoderHelper
         byte[] bytesPrivakeKey = Convert.FromBase64String(privateKey);
         int bytesRead;
         rsa.ImportRSAPrivateKey(new ReadOnlySpan<byte>(bytesPrivakeKey), out bytesRead);
-        var thing = rsa.Decrypt(dataByte, RSAEncryptionPadding.Pkcs1);
-        return Encoding.UTF8.GetString(thing);
+        var decrypted = rsa.Decrypt(dataByte, RSAEncryptionPadding.Pkcs1);
+        return Encoding.UTF8.GetString(decrypted);
     }
 }
 
