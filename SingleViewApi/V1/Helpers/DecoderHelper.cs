@@ -1,8 +1,8 @@
 using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
+
 using SingleViewApi.V1.Helpers.Interfaces;
 
 
@@ -10,67 +10,34 @@ namespace SingleViewApi.V1.Helpers;
 
 public class DecoderHelper : IDecoderHelper
 {
-    private readonly byte[] _iv;
-    private readonly byte[] _key;
+    private readonly string _privateKey;
 
-    public DecoderHelper(string aeskey, string aesiv)
+    public DecoderHelper(string rsaPrivateKey)
     {
-        _key = Encoding.UTF8.GetBytes(aeskey);
-        _iv = Encoding.UTF8.GetBytes(aesiv);
+        _privateKey = rsaPrivateKey;
+
     }
     public JigsawCredentials DecodeJigsawCredentials(string cipher)
     {
 
         var cipherText = Convert.FromBase64String(cipher);
 
-        var decodedJson = Decrypt(cipherText, _key, _iv);
+        var decodedJson = Decrypt(cipherText, _privateKey);
 
         var credentials = JsonConvert.DeserializeObject<JigsawCredentials>(decodedJson);
 
         return credentials;
     }
-    static string Decrypt(byte[] cipherText, byte[] key, byte[] iv)
+
+    private static string Decrypt(byte[] dataByte, string privateKey)
     {
-        // Check arguments.
-        if (cipherText == null || cipherText.Length <= 0)
-            throw new ArgumentNullException("cipherText");
-        if (key == null || key.Length <= 0)
-            throw new ArgumentNullException("key");
-        if (iv == null || iv.Length <= 0)
-            throw new ArgumentNullException("iv");
 
-        // Declare the string used to hold
-        // the decrypted text.
-        string plaintext = null;
-
-        // Create an Aes object
-        // with the specified key and IV.
-        using (Aes aesAlg = Aes.Create())
-        {
-            aesAlg.Key = key;
-            aesAlg.IV = iv;
-            aesAlg.Padding = PaddingMode.None;
-
-            // Create a decryptor to perform the stream transform.
-            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-            // Create the streams used for decryption.
-            using (MemoryStream msDecrypt = new MemoryStream(cipherText))
-            {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                {
-                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                    {
-
-                        // Read the decrypted bytes from the decrypting stream
-                        // and place them in a string.
-                        plaintext = srDecrypt.ReadToEnd();
-                    }
-                }
-            }
-        }
-
-        return plaintext;
+        var rsa = RSA.Create();
+        byte[] bytesPrivakeKey = Convert.FromBase64String(privateKey);
+        int bytesRead;
+        rsa.ImportRSAPrivateKey(new ReadOnlySpan<byte>(bytesPrivakeKey), out bytesRead);
+        var decrypted = rsa.Decrypt(dataByte, RSAEncryptionPadding.Pkcs1);
+        return Encoding.UTF8.GetString(decrypted);
     }
 }
 
