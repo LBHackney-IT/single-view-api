@@ -28,35 +28,20 @@ namespace SingleViewApi.V1.UseCase
 
         public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
         {
-            Console.WriteLine($"executing GetJigsawwCustomers with Debug logging:" +
-                              $"{nameof(GetJigsawCustomersUseCase)}: Execute()" +
-                              $"{nameof(firstName)}: {firstName}" +
-                              $"{nameof(lastName)}: {lastName}" +
-                              $"{nameof(redisId)}: {redisId}");
 
-            string jigsawToken;
-            try
-            {
-                jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
-                return null;
-            }
-
-            if (String.IsNullOrEmpty(jigsawToken))
-            {
-                return null;
-            }
+            var authGatewayResponse = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
 
             var jigsawApiId = new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" };
 
             var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { jigsawApiId } };
 
-            var searchResults = await _jigsawGateway.GetCustomers(firstName, lastName, jigsawToken);
+            if (!String.IsNullOrEmpty(authGatewayResponse.ExceptionMessage))
+            {
+                jigsawApiId.Error = authGatewayResponse.ExceptionMessage;
+                return response;
+            }
 
-
+            var searchResults = await _jigsawGateway.GetCustomers(firstName, lastName, authGatewayResponse.Token);
 
             if (searchResults == null)
             {
