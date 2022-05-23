@@ -142,7 +142,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var testLastName = "testLastName";
         var testUnsortedData = new List<SearchResult> {
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
@@ -150,7 +150,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             new SearchResult()
         {
-            Id = _fixture.Create<Guid>(),
+            Id = _fixture.Create<Guid>().ToString(),
             FirstName = testFirstName,
             SurName = testLastName,
             DateOfBirth = DateTime.Now,
@@ -158,7 +158,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
         },
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
@@ -169,21 +169,21 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         {
             new SearchResult()
             {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = testFirstName,
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
                 DataSource = DataSource.Jigsaw
             },
             new SearchResult(){
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
                 DataSource = DataSource.HousingSearch
             },
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,

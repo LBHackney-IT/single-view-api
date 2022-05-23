@@ -137,6 +137,14 @@ namespace SingleViewApi
                 return new StoreJigsawCredentialsUseCase(redisGateway, jigsawGateway, decoderHelper);
             });
 
+            services.AddTransient<IGetJigsawAuthTokenUseCase, GetJigsawAuthTokenUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var redisGateway = s.GetService<IRedisGateway>();
+                var decoderHelper = s.GetService<IDecoderHelper>();
+                return new GetJigsawAuthTokenUseCase(jigsawGateway, redisGateway, decoderHelper);
+            });
+
             services.AddTransient<IGetJigsawCustomersUseCase, GetJigsawCustomersUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
@@ -176,8 +184,7 @@ namespace SingleViewApi
 
             services.AddTransient<IDecoderHelper>(s =>
             {
-                return new DecoderHelper(Environment.GetEnvironmentVariable(("AES_KEY")),
-                    Environment.GetEnvironmentVariable(("AES_IV")));
+                return new DecoderHelper(Environment.GetEnvironmentVariable(("RSA_PRIVATE_KEY")));
             });
 
             services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
