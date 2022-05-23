@@ -5,7 +5,7 @@ namespace SingleViewApi.V1.Boundary.Response;
 
 public class JigsawCustomerSearchApiResponseObject
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
 #nullable enable
