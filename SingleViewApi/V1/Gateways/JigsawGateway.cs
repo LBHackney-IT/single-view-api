@@ -108,7 +108,7 @@ namespace SingleViewApi.V1.Gateways
 
         }
 
-        [LogCall]ß
+        [LogCall]
         public async Task<JigsawCustomerResponseObject> GetCustomerById(string id, string bearerToken)
         {
             var requestUrl = $"{_customerBaserUrl}/customerOverview/{id}";
