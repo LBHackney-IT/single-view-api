@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using AngleSharp;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
@@ -23,16 +17,19 @@ namespace SingleViewApi.V1.Gateways
     {
 
         private readonly string _authUrl;
-        private readonly string _searchUrl;
+        private readonly string _customerBaserUrl;
         private readonly HttpClient _httpClient;
-        public JigsawGateway(HttpClient httpClient, string authUrl, string searchUrl)
+        public JigsawGateway(HttpClient httpClient, string authUrl, string customerBaseUrl)
         {
-            this._authUrl = authUrl;
-            this._searchUrl = searchUrl;
-            this._httpClient = httpClient;
+            _authUrl = authUrl;
+            _customerBaserUrl = customerBaseUrl;
+            _httpClient = httpClient;
         }
 
+
+
         public async Task<AuthGatewayResponse> GetAuthToken(JigsawCredentials credentials)
+
         {
             try
             {
@@ -85,8 +82,9 @@ namespace SingleViewApi.V1.Gateways
         }
 
         public async Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken)
+
         {
-            var requestUrl = $"{_searchUrl}?search={firstName}%20{lastName}";
+            var requestUrl = $"{_customerBaserUrl}/customerSearch?search={firstName}%20{lastName}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -109,6 +107,30 @@ namespace SingleViewApi.V1.Gateways
 
         }
 
+
+        public async Task<JigsawCustomerResponseObject> GetCustomerById(string id, string bearerToken)
+        {
+            var requestUrl = $"{_customerBaserUrl}/customerOverview/{id}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCustomerResponseObject? customer = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
+
+            }
+            return customer;
+        }
 
 
         private async Task<CsrfTokenResponse> GetCsrfTokens()

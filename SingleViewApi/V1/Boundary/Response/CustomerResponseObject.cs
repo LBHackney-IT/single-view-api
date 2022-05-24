@@ -17,6 +17,8 @@ namespace SingleViewApi.V1.Boundary.Response
     {
         public Hackney.Shared.Person.Domain.Title? Title { get; set; }
 
+        public DataSource DataSource { get; set; }
+
         public Hackney.Shared.Person.Domain.Title? PreferredTitle { get; set; }
 
         public string PreferredFirstName { get; set; }
@@ -33,14 +35,21 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string PlaceOfBirth { get; set; }
 
+        public List<KnownAddress> KnownAddresses { get; set; }
+
+        public ContactDetails ContactDetails { get; set; }
+
+#nullable enable
         public DateTime? DateOfBirth { get; set; }
 
-        public List<KnownAddress> KnownAddresses { get; set; }
+        public string? NiNo { get; set; }
 
         public DateTime? DateOfDeath { get; set; }
 
         public bool? IsAMinor { get; set; }
 
-        public ContactDetails ContactDetails { get; set; }
+#nullable disable
+
+
     }
 }
