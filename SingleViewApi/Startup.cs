@@ -24,6 +24,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -68,6 +69,10 @@ namespace SingleViewApi
             services.AddHttpClient();
 
             services.AddHttpContextAccessor();
+
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 
             services.AddTransient<IPersonGateway, PersonGateway>(s =>
             {
