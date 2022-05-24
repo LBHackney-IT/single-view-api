@@ -36,6 +36,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
+        Console.WriteLine($" ------ DEBUG --- CustomerById: {customer.ToString()} ");
+
         var jigsawId = new SystemId() { SystemName = "Jigsaw", Id = customer.Id };
 
         var response = new CustomerResponseObject() { SystemIds = new List<SystemId>() { jigsawId }, };

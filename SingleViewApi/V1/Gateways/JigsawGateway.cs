@@ -126,7 +126,11 @@ namespace SingleViewApi.V1.Gateways
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
+                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
+
                 customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
+
+                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}");;
 
             }
             return customer;
