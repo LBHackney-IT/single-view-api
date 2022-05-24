@@ -100,7 +100,6 @@ namespace SingleViewApi.V1.Gateways
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-
                 searchResults = JsonConvert.DeserializeObject<List<JigsawCustomerSearchApiResponseObject>>(jsonBody);
 
             }
