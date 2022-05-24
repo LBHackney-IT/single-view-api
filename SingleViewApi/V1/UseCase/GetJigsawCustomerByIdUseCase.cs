@@ -53,6 +53,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 Surname = customer.PersonInfo.LastName,
                 DateOfBirth = customer.PersonInfo.DateOfBirth,
                 DataSource = DataSource.Jigsaw,
+                NiNo = customer.PersonInfo.NationalInsuranceNumber,
                 KnownAddresses = new List<KnownAddress>()
                 {
                     new KnownAddress()
