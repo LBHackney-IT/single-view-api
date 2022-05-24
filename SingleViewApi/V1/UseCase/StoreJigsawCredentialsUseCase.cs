@@ -23,21 +23,13 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
     [LogCall]
     public string Execute(string encryptedCredentials)
     {
-        Console.WriteLine("--------- USECASE HIT ---------");
-
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
-        Console.WriteLine("--------- DECODED ---------");
-
         var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
-
-        Console.WriteLine("--------- GOT TOKEN ---------");
 
         if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
-
-        Console.WriteLine("--------- GOT ID ---------");
 
         return id;
     }
