@@ -40,6 +40,7 @@ namespace SingleViewApi.V1.UseCase
             {
                 response.Customer = new Customer()
                 {
+                    Id = person.Id.ToString(),
                     Title = person.Title,
                     DataSource = DataSource.HousingSearch,
                     PreferredTitle = person.PreferredTitle,
