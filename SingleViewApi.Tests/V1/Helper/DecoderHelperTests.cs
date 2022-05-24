@@ -13,9 +13,6 @@ namespace SingleViewApi.Tests.V1.Helper
         [SetUp]
         public void Setup()
         {
-            //             const string testKey = @"-----BEGIN RSA PRIVATE KEY-----
-            // MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK2xcApwIKTaK3S/KNaU3xBKsZvHq211GKAf0Q7Rr2ZslTZk0r3oaAaCeEWrTamkqj7BmqcZle0KHoTQAwCe+op3oJL4iO969fplvvm7IZnfLAJlu6Na96xvpA5u4EwuxzZC6ypfCL0rO90F0apHu3X00xWpqA9M2Cv1FfMARuflAgMBAAECgYAlDHMElvQvlaWtSlUQqEKIPBZ0Tvu+5joxdXfnPEy4gTK2nnzhKyB9Ovkiiy6On+P8bNlrCScUn5Lw61momUCBTIMcOqoWCnIa/LzrtzrmTIWoK9CbDXWb3BtHpWbrOA5ImthjUnhuiC8Se4TBHysBKP16rKYYcOFghrza6RzHBQJBANzgrlZYsYVue3IHphn6Z4Z2wtWTnG3YOYXTbKIZJ3bprTUxMqCdCCeOSlin/5XrhXuvJb6JrYtQ/fWnNKPEZbsCQQDJUAEYq0HQPa+TjiZ8GCIvwrIfKwhoj1Yqtt6yc5ZaHGkmUjhyaD7wIHUpvjYrUWOlGT+YxLy3zpypiWn+PT7fAkBuo60wW2Uw7VKwn9w4DxJkbIDT8wjcjP7jZjB4UhlOm2bDyk0N3xsClWfwWNbSBhPrDKTfeJ+RtZRAxOy9S9eZAkBeA3zflmr/4y7xy/rxDRw6DcS9hY1Bt17YR9qsoAphPs9kVBWEaGasIZxVyDzn8fSFD8uBfq9bb6P+EOxtDRElAkEAtTc4kV/DtIDYEWjSTcOK+HuAitvGpl4/2nwtE1tpHGKzRZNAgSdsCL4oJ4TGD7mBbMGhRf2SlpQ5dBHF3MFQOg==
-            // -----END RSA PRIVATE KEY-----";
             const string testKey = @"MIIEpAIBAAKCAQEAz1xzhzn9ulK+rQ0gOCb/xzquQgelF8BGtyXRiMqs0hLbwDSG
 smNm27l7+ZJ4FyUEWz7WBQdpXg7GKgqU4JOo5z/rS5L2CtYxMv09G0JL28GSeCKb
 mKyc0FU7XXuFXT52E6MAHAEX8A8It7PkQxnYn7GF0T5BOzrTE/lJGvrZ9SNbvTho
