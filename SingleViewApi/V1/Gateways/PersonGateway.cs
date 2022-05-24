@@ -20,7 +20,7 @@ namespace SingleViewApi.V1.Gateways
 
         public async Task<Person> GetPersonById(string id, string userToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/persons/{Guid.Parse(id)}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/persons/{new Guid(id)}");
             request.Headers.Add("Authorization", userToken);
 
             var response = await _httpClient.SendAsync(request);
