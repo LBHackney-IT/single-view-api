@@ -24,23 +24,17 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
     public async Task<CustomerResponseObject> Execute(string customerId, string redisId)
     {
-        string jigsawToken;
-        try
+
+
+        var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
+
+        if (!String.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
         {
-            jigsawToken = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Error getting Jigsaw token: {e.Message}");
+            Console.WriteLine($"Error getting Jigsaw token for CustomerById: {jigsawAuthResponse.ExceptionMessage}");
             return null;
         }
 
-        if (String.IsNullOrEmpty(jigsawToken))
-        {
-            return null;
-        }
-
-        var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawToken);
+        var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
         var jigsawId = new SystemId() { SystemName = "Jigsaw", Id = customer.Id };
 
