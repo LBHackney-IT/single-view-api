@@ -36,17 +36,12 @@ namespace SingleViewApi.V1.Controllers
 
         public IActionResult StoreJigsawCredentials([FromBody] string encryptedCredentials)
         {
-            Console.WriteLine("--------- GOT REQUEST ---------");
-
             var id = _storeJigsawCredentialsUseCase.Execute(encryptedCredentials);
 
             if (String.IsNullOrEmpty(id))
             {
-                Console.WriteLine("--------- GOT NULL ---------");
-
                 return Unauthorized("Credentials are incorrect");
             }
-            Console.WriteLine("--------- GOT VALUE ---------");
 
             return Ok(id);
         }

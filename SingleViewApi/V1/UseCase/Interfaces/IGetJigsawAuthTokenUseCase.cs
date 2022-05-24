@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
+using SingleViewApi.V1.Boundary;
 
 namespace SingleViewApi.V1.UseCase.Interfaces
 {
     public interface IGetJigsawAuthTokenUseCase
     {
-        Task<string> Execute(string redisKey);
+        Task<AuthGatewayResponse> Execute(string redisKey);
     }
 }
