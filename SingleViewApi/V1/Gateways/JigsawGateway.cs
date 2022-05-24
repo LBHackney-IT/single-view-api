@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AngleSharp;
+using Hackney.Core.Logging;
 using Newtonsoft.Json;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
@@ -107,7 +108,7 @@ namespace SingleViewApi.V1.Gateways
 
         }
 
-
+        [LogCall]ß
         public async Task<JigsawCustomerResponseObject> GetCustomerById(string id, string bearerToken)
         {
             var requestUrl = $"{_customerBaserUrl}/customerOverview/{id}";
@@ -130,7 +131,7 @@ namespace SingleViewApi.V1.Gateways
 
                 customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
 
-                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}");;
+                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}"); ;
 
             }
             return customer;
