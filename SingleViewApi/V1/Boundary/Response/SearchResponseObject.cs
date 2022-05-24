@@ -4,6 +4,11 @@ using Hackney.Shared.Person;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
+    public class GetPersonsResponse
+    {
+        public List<Person> Persons { get; set; }
+        public DateTime LastUpdated { get; set; }
+    }
     public class SearchResponseObject
     {
 
@@ -21,8 +26,8 @@ namespace SingleViewApi.V1.Boundary.Response
 
     public class SearchResult
     {
-        public Guid Id { get; set; }
-
+        public string Id { get; set; }
+        public DataSource DataSource { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
 #nullable enable
@@ -31,13 +36,25 @@ namespace SingleViewApi.V1.Boundary.Response
         public string? PreferredFirstName { get; set; }
         public string? PreferredSurname { get; set; }
         public DateTime? DateOfBirth { get; set; }
-#nullable disable
-        public List<Hackney.Shared.Person.Domain.PersonType> PersonTypes { get; set; }
+
+        public string? NiNumber { get; set; }
+        public List<Hackney.Shared.Person.Domain.PersonType>? PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
         public bool IsTenureCautionaryAlert { get; set; }
+#nullable disable
         public List<KnownAddress> KnownAddresses { get; set; }
 
+
+
     }
+
+    public enum DataSource
+    {
+        HousingSearch,
+        Jigsaw
+    }
+
+
 
 
 }

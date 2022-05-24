@@ -32,47 +32,56 @@ namespace SingleViewApi.V1.Gateways
             this._httpClient = httpClient;
         }
 
-        public async Task<string> GetAuthToken(JigsawCredentials credentials)
+        public async Task<AuthGatewayResponse> GetAuthToken(JigsawCredentials credentials)
         {
-            CookieContainer cookies = new CookieContainer();
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = cookies;
-            var client = new HttpClient(handler) { BaseAddress = _httpClient.BaseAddress };
-
-            var tokens = await GetCsrfTokens();
-
-            var request = new HttpRequestMessage(HttpMethod.Post, _authUrl);
-
-            var jigsawCredentials = new List<KeyValuePair<string, string>>
+            try
             {
-                new ("Email", credentials.Username),
-                new ("Password", credentials.Password),
-                new ("__RequestVerificationToken", tokens.Token)
-            };
+                CookieContainer cookies = new CookieContainer();
+                var handler = new HttpClientHandler();
+                handler.CookieContainer = cookies;
+                var client = new HttpClient(handler) { BaseAddress = _httpClient.BaseAddress };
 
-            FormUrlEncodedContent form = new FormUrlEncodedContent(jigsawCredentials);
+                var tokens = await GetCsrfTokens();
 
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                var request = new HttpRequestMessage(HttpMethod.Post, _authUrl);
 
-            request.Content = form;
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
-            request.Headers.Add("Cookie", tokens.Cookies.Join("; "));
-
-            await client.SendAsync(request);
-
-            var bearerToken = String.Empty;
-
-            IEnumerable<Cookie> responseCookies = cookies.GetCookies(_httpClient.BaseAddress);
-
-            foreach (Cookie cookie in responseCookies)
-            {
-                if (cookie.Name == "access_token")
+                var jigsawCredentials = new List<KeyValuePair<string, string>>
                 {
-                    bearerToken = cookie.Value;
+                    new ("Email", credentials.Username),
+                    new ("Password", credentials.Password),
+                    new ("__RequestVerificationToken", tokens.Token)
+                };
+
+                FormUrlEncodedContent form = new FormUrlEncodedContent(jigsawCredentials);
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+
+                request.Content = form;
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+                request.Headers.Add("Cookie", tokens.Cookies.Join("; "));
+
+                await client.SendAsync(request);
+
+                var bearerToken = String.Empty;
+
+                IEnumerable<Cookie> responseCookies = cookies.GetCookies(_httpClient.BaseAddress);
+
+                foreach (Cookie cookie in responseCookies)
+                {
+                    if (cookie.Name == "access_token")
+                    {
+                        bearerToken = cookie.Value;
+                    }
                 }
+
+                return new AuthGatewayResponse() { Token = bearerToken, ExceptionMessage = null };
             }
-            return bearerToken;
+            catch (Exception e)
+            {
+                return new AuthGatewayResponse() { Token = null, ExceptionMessage = e.ToString() };
+            }
+
         }
 
         public async Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken)
@@ -82,8 +91,6 @@ namespace SingleViewApi.V1.Gateways
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            Console.WriteLine("Full request is {0}", JSON.stringify(request));
 
             var response = await _httpClient.SendAsync(request);
 

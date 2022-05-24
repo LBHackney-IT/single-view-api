@@ -1,8 +1,10 @@
 using System;
+using Hackney.Core.Logging;
 using ServiceStack.Redis;
 
 namespace SingleViewApi.V1.Gateways
 {
+
     public class RedisGateway : IRedisGateway
     {
         private readonly IRedisClient _redisClient;
@@ -11,7 +13,7 @@ namespace SingleViewApi.V1.Gateways
         {
             _redisClient = redisClient;
         }
-
+        [LogCall]
         public string AddValue(string value, int ttlDays = 1)
         {
             var id = Guid.NewGuid().ToString();
@@ -22,11 +24,12 @@ namespace SingleViewApi.V1.Gateways
 
             return id;
         }
-
+        [LogCall]
         public string GetValue(string id)
         {
+            Console.WriteLine($"Getting value for {id}");
             var value = _redisClient.Get<string>(id);
-
+            Console.WriteLine($"Got value {value}");
             return value;
         }
     }
