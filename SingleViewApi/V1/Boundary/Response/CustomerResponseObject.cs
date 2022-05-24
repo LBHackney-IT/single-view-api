@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Amazon.DynamoDBv2.Model;
 using Hackney.Shared.ContactDetail.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
@@ -15,6 +16,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
     public class Customer
     {
+        public string Id { get; set; }
         public Hackney.Shared.Person.Domain.Title? Title { get; set; }
 
         public DataSource DataSource { get; set; }
