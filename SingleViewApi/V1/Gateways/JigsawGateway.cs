@@ -129,7 +129,7 @@ namespace SingleViewApi.V1.Gateways
 
                 Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
 
-                customer = JsonConvert.DeserializeObject<dynamic>(jsonBody);
+                customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
 
                 Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}"); ;
 
