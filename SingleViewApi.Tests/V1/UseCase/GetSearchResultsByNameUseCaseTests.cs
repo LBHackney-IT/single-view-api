@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -6,6 +5,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 
@@ -76,7 +76,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 .Be(stubbedEntity.Results.Persons[0].DateOfBirth);
             results.SearchResponse.SearchResults[0].KnownAddresses[0].FullAddress.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures.ToList()[0].AssetFullAddress);
-            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(DataSource.HousingSearch);
+            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(DataSource.HousingSearchApi);
         }
     }
 }
