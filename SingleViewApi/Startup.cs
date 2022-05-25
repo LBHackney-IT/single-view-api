@@ -70,9 +70,6 @@ namespace SingleViewApi
 
             services.AddHttpContextAccessor();
 
-            services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
             services.AddTransient<IPersonGateway, PersonGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
