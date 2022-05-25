@@ -26,20 +26,16 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<AuthGatewayResponse> Execute(string redisKey)
         {
+            //check if credentials exist in redis stored against hackneyToken
 
-            Console.WriteLine($"------> GetJigsawAuthTokenUseCase - Getting Value From Redis: Key = {redisKey}");
 
             var encyptedCredentials = _redisGateway.GetValue(redisKey);
 
-            Console.WriteLine($"------> Got Value From Redis: Key = {redisKey}. Decoding...");
-
             var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
-
-            Console.WriteLine($"------> Decoded Value From Redis: Key = {redisKey}. Getting Token...");
 
             var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
 
-            Console.WriteLine($"------> Got Token From Redis: Key = {redisKey}. Saving Token...");
+            //store auth token in redis, with hackney token as key
 
             return authGatewayResponse;
 

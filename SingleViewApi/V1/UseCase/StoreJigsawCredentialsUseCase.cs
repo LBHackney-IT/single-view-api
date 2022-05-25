@@ -29,6 +29,8 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
+        _redisGateway.AddValueWithKey("hackneyToken", authGatewayResponse.Token, 1);
+
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 
         return id;
