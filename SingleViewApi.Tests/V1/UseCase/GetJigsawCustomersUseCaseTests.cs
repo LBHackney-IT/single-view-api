@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using SingleViewApi.V1.UseCase.Interfaces;
