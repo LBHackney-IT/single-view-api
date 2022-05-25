@@ -126,17 +126,25 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine($"----- DEBUG ---- CustomerById Gateway -- response is {response.ToString()}");
-                var jsonBody = response.Content.ReadAsStringAsync().Result;
+                try
+                {
+                    var jsonBody = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
+                    customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
 
-                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
-
-                customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"------ DEBUG ----- CustomerById Gateway -- Exception is {e.ToString()}");
+                }
 
                 Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}"); ;
 
             }
             return customer;
         }
+
+
 
 
         private async Task<CsrfTokenResponse> GetCsrfTokens()
