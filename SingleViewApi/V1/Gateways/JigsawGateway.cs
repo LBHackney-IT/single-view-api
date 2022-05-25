@@ -125,6 +125,7 @@ namespace SingleViewApi.V1.Gateways
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
+                Console.WriteLine($"----- DEBUG ---- CustomerById Gateway -- response is {response.ToString()}");
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
                 Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
