@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
@@ -25,7 +26,6 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
     public async Task<CustomerResponseObject> Execute(string customerId, string redisId)
     {
 
-
         var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
 
         if (!String.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
@@ -36,11 +36,11 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
-        Console.WriteLine($" ------ DEBUG --- CustomerById: {customer.ToString()} ");
-
         var jigsawId = new SystemId() { SystemName = "Jigsaw", Id = customer.Id };
 
-        var response = new CustomerResponseObject() { SystemIds = new List<SystemId>() { jigsawId }, };
+        var systemIdList = new List<SystemId>() { jigsawId };
+
+        var response = new CustomerResponseObject() { SystemIds = systemIdList };
 
         if (customer == null)
         {
@@ -50,7 +50,6 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
         {
             response.Customer = new Customer()
             {
-
                 FirstName = customer.PersonInfo.FirstName,
                 Surname = customer.PersonInfo.LastName,
                 DateOfBirth = customer.PersonInfo.DateOfBirth,
@@ -60,14 +59,13 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 {
                     new KnownAddress()
                     {
-                        Id = ToGuid(customer.PersonInfo.Address.Id),
+                        Id = new Guid(),
                         FullAddress = customer.PersonInfo.AddressString,
                         CurrentAddress = true
                     }
                 }
             };
         }
-
 
         return response;
 

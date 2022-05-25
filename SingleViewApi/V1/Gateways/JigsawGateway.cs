@@ -125,11 +125,10 @@ namespace SingleViewApi.V1.Gateways
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                Console.WriteLine($"----- DEBUG ---- CustomerById Gateway -- response is {response.ToString()}");
+
                 try
                 {
                     var jsonBody = response.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialising... {jsonBody}");
                     customer = JsonConvert.DeserializeObject<JigsawCustomerResponseObject>(jsonBody);
 
                 }
@@ -138,7 +137,7 @@ namespace SingleViewApi.V1.Gateways
                     Console.WriteLine($"------ DEBUG ----- CustomerById Gateway -- Exception is {e.ToString()}");
                 }
 
-                Console.WriteLine($" ------ DEBUG --- CustomerById Gateway -- Deserialised... {customer}"); ;
+
 
             }
             return customer;

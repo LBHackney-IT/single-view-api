@@ -27,12 +27,12 @@ namespace SingleViewApi.V1.Controllers
         /// </summary>
         /// <response code="200">...</response>
         /// <response code="400">Invalid Query Parameter.</response>
-        [ProducesResponseType(typeof(DynamicAttribute), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerResponseObject), StatusCodes.Status200OK)]
         [LogCall]
         [HttpGet]
         public IActionResult GetCustomerById([FromQuery] string id, string redisId)
         {
-            return Ok(_getJigsawCustomerByIdUseCase.Execute(id, redisId));
+            return Ok(_getJigsawCustomerByIdUseCase.Execute(id, redisId).Result);
         }
     }
 }
