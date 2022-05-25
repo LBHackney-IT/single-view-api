@@ -25,6 +25,16 @@ namespace SingleViewApi.V1.Gateways
             return id;
         }
         [LogCall]
+        public void AddValueWithKey(string key, string value, int ttlHours =1)
+        {
+            var id = Guid.NewGuid().ToString();
+
+            var ttl = new TimeSpan(0, ttlHours, 0, 0);
+
+            _redisClient.SetValue(key, value, ttl);
+
+        }
+        [LogCall]
         public string GetValue(string id)
         {
             Console.WriteLine($"Getting value for {id}");
