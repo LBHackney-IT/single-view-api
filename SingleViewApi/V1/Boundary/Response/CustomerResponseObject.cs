@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.Model;
 using Hackney.Shared.ContactDetail.Domain;
+using Hackney.Shared.Person.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
@@ -29,6 +30,8 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string PreferredSurname { get; set; }
 
+
+
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -40,6 +43,8 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<KnownAddress> KnownAddresses { get; set; }
 
         public ContactDetails ContactDetails { get; set; }
+
+        public List<PersonType> PersonTypes { get; set; }
 
 #nullable enable
         public DateTime? DateOfBirth { get; set; }
