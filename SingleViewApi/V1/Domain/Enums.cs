@@ -10,12 +10,4 @@ namespace SingleViewApi.V1.Domain
         Tenure,
         Repair
     }
-
-    public enum DataSource
-    {
-        HousingSearchApi,
-        Jigsaw,
-        NotesApi,
-        PersonApi
-    }
 }

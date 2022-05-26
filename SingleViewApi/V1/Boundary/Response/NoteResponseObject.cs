@@ -30,7 +30,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string DataSourceId { get; set; }
 
-        public DataSource DataSource { get; set; }
+        public string DataSource { get; set; }
 
         public int CompareTo(NoteResponseObject other)
         {
