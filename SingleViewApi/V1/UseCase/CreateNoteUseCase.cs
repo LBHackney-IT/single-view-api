@@ -16,7 +16,7 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<NoteResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken)
+        public async Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken)
         {
             return await _gateway.CreateNote(createNoteRequest, userToken);
         }

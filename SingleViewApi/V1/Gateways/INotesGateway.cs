@@ -7,8 +7,8 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface INotesGateway
     {
-        Task<List<NoteResponseObject>> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0);
+        Task<List<NotesApiResponseObject>> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0);
 
-        Task<NoteResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken);
+        Task<NotesApiResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken);
     }
 }
