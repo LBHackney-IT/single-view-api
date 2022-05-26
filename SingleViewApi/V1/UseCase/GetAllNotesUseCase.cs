@@ -55,7 +55,7 @@ namespace SingleViewApi.V1.UseCase
                 }
             }
             var response = new NotesResponse() { Notes = notes, SystemIds = systemIdList.SystemIds };
-            response.SortByCreatedAtDescending();
+            response.Sort();
             return response;
         }
     }

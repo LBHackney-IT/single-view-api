@@ -9,6 +9,7 @@ using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase
@@ -32,17 +33,28 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public async Task GetsAllNotes()
         {
-            var systemIdListFixture = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() };
+            var personApiSystemIdFixture = _fixture.Build<SystemId>()
+                .With(o => o.SystemName, DataSource.PersonApi).Create();
+            var personApiSystemId = personApiSystemIdFixture.Id;
+            var jigsawSystemIdFixture = _fixture.Build<SystemId>()
+                .With(o => o.SystemName, DataSource.Jigsaw).Create();
+            var jigsawSystemId = jigsawSystemIdFixture.Id;
+            var systemIdListFixture = new SystemIdList()
+            {
+                SystemIds = new List<SystemId>() { personApiSystemIdFixture, jigsawSystemIdFixture }
+            };
             var systemIds = systemIdListFixture.ToJson();
-            var id = systemIdListFixture.SystemIds[^1].Id;
+
             var userToken = _fixture.Create<string>();
             var redisKey = _fixture.Create<string>();
             var paginationToken = "";
             var pageSize = 0;
 
             var notesFixture = new List<NoteResponseObject>();
-            var notesApiNoteResponseObjectListFixture = _fixture.CreateMany<NoteResponseObject>().ToList();
-            var jigsawNoteResponseObjectListFixture = _fixture.CreateMany<NoteResponseObject>().ToList();
+            var notesApiNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
+                .With(o => o.DataSource, DataSource.NotesApi).CreateMany().ToList();
+            var jigsawNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
+                .With(o => o.DataSource, DataSource.Jigsaw).CreateMany().ToList();
             notesFixture.AddRange(notesApiNoteResponseObjectListFixture);
             notesFixture.AddRange(jigsawNoteResponseObjectListFixture);
             var notesResponseFixture = new NotesResponse()
@@ -50,25 +62,18 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Notes = notesFixture,
                 SystemIds = systemIdListFixture.SystemIds
             };
-            notesResponseFixture.SortByCreatedAtDescending();
+            notesResponseFixture.Sort();
 
             _mockGetNotesUseCase.Setup(x =>
-                x.Execute(id, userToken, paginationToken, pageSize)).ReturnsAsync(notesApiNoteResponseObjectListFixture);
+                x.Execute(personApiSystemId, userToken, paginationToken, pageSize)).ReturnsAsync(notesApiNoteResponseObjectListFixture);
 
             _mockGetJigsawNotesUseCase.Setup(x =>
-                x.Execute(id, redisKey)).ReturnsAsync(jigsawNoteResponseObjectListFixture);
+                x.Execute(jigsawSystemId, redisKey)).ReturnsAsync(jigsawNoteResponseObjectListFixture);
 
             var response = await _classUnderTest.Execute(systemIds, userToken, redisKey, paginationToken, pageSize);
-            response.SystemIds[^1].Should().BeEquivalentTo(systemIdListFixture.SystemIds[^1]);
-
-            var note = response.Notes[^1];
-            var noteFixture = notesResponseFixture.Notes[^1];
-            note.Author.Should().BeEquivalentTo(noteFixture.Author);
-            note.Categorisation.Should().BeEquivalentTo(noteFixture.Categorisation);
-            note.Description.Should().BeEquivalentTo(noteFixture.Description);
-            note.Highlight.Should().Be(noteFixture.Highlight);
-            note.Id.Should().Be(noteFixture.Id);
-            note.Title.Should().BeEquivalentTo(noteFixture.Title);
+            Assert.AreEqual(systemIdListFixture.SystemIds[^1].Id, response.SystemIds[^1].Id);
+            Assert.AreEqual(notesResponseFixture.Notes.Count, response.Notes.Count);
+            Assert.AreEqual(notesResponseFixture.Notes[^1].Id, response.Notes[^1].Id);
         }
 
         [Test]
