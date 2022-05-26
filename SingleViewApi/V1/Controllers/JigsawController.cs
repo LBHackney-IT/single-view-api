@@ -30,9 +30,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(CustomerResponseObject), StatusCodes.Status200OK)]
         [LogCall]
         [HttpGet]
-        public IActionResult GetCustomerById([FromQuery] string id, string redisId, [FromHeader] string hackneyToken)
+        public IActionResult GetCustomerById([FromQuery] string id, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getJigsawCustomerByIdUseCase.Execute(id, redisId, hackneyToken).Result);
+            return Ok(_getJigsawCustomerByIdUseCase.Execute(id, redisId, authorization).Result);
         }
     }
 }

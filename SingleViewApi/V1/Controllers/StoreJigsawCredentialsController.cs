@@ -34,9 +34,9 @@ namespace SingleViewApi.V1.Controllers
         [HttpPost]
         [LogCall(LogLevel.Information)]
 
-        public IActionResult StoreJigsawCredentials([FromBody] string encryptedCredentials, [FromHeader] string hackneyToken)
+        public IActionResult StoreJigsawCredentials([FromBody] string encryptedCredentials, [FromHeader] string authorization)
         {
-            var id = _storeJigsawCredentialsUseCase.Execute(encryptedCredentials, hackneyToken);
+            var id = _storeJigsawCredentialsUseCase.Execute(encryptedCredentials, authorization);
 
             if (String.IsNullOrEmpty(id))
             {
