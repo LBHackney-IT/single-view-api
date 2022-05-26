@@ -21,7 +21,7 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
     }
 
     [LogCall]
-    public string Execute(string encryptedCredentials)
+    public string Execute(string encryptedCredentials, string hackneyToken)
     {
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 

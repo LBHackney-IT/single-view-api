@@ -23,10 +23,10 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
         _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
     }
 
-    public async Task<CustomerResponseObject> Execute(string customerId, string redisId)
+    public async Task<CustomerResponseObject> Execute(string customerId, string redisId, string hackneyToken)
     {
 
-        var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
+        var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
         if (!String.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
         {

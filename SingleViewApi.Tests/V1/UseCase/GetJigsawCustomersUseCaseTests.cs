@@ -36,9 +36,10 @@ public class GetJigsawCustomersUseCaseTests
         var redisId = _fixture.Create<string>();
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
+        const string hackneyToken = "test-token";
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
 
-        var result = _classUnderTest.Execute(firstName, lastName, redisId).Result;
+        var result = _classUnderTest.Execute(firstName, lastName, redisId, hackneyToken).Result;
 
         Assert.That(result.SystemIds[0].Error, Is.EqualTo("No token present")); ;
 
@@ -51,14 +52,15 @@ public class GetJigsawCustomersUseCaseTests
         var redisId = _fixture.Create<string>();
         var jigsawToken = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        const string hackneyToken = "test-token";
         var searchText = $"{firstName}+{lastName}";
         var stubbedEntity = _fixture.Create<List<JigsawCustomerSearchApiResponseObject>>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
 
         _mockJigsawGateway.Setup(x => x.GetCustomers(firstName, lastName, jigsawToken)).ReturnsAsync(stubbedEntity);
 
-        var results = _classUnderTest.Execute(firstName, lastName, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, redisId, hackneyToken).Result;
 
         results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Jigsaw");
         results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
