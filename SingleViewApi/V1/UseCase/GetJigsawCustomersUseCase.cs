@@ -61,7 +61,7 @@ namespace SingleViewApi.V1.UseCase
 
             if (searchResults == null)
             {
-                jigsawApiId.Error = "No results found";
+                jigsawApiId.Error = SystemId.NotFoundMessage;
                 return response;
             }
 

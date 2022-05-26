@@ -11,9 +11,6 @@ namespace SingleViewApi.V1.UseCase
 {
     public class GetAllNotesUseCase : IGetAllNotesUseCase
     {
-        // TODO: Move this?
-        public const string NotFound = "Not found";
-
         private readonly IGetNotesUseCase _getNotesUseCase;
         private readonly IGetJigsawNotesUseCase _getJigsawNotesUseCase;
         public GetAllNotesUseCase(IGetNotesUseCase getNotesUseCase, IGetJigsawNotesUseCase getJigsawNotesUseCase)
@@ -47,7 +44,7 @@ namespace SingleViewApi.V1.UseCase
 
                 if (useCaseResponse == null)
                 {
-                    systemId.Error = NotFound;
+                    systemId.Error = SystemId.NotFoundMessage;
                 }
                 else
                 {

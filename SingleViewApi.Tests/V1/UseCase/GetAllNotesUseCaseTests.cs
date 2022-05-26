@@ -96,7 +96,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var response = await _classUnderTest.Execute(systemIds, userToken, redisKey, paginationToken, pageSize);
             response.SystemIds[^1].Id.Should().BeEquivalentTo(systemIdListFixture.SystemIds[^1].Id);
             response.SystemIds[^1].SystemName.Should().BeEquivalentTo(systemIdListFixture.SystemIds[^1].SystemName);
-            response.SystemIds[^1].Error.Should().BeEquivalentTo(GetAllNotesUseCase.NotFound);
+            response.SystemIds[^1].Error.Should().BeEquivalentTo(SystemId.NotFoundMessage);
         }
     }
 }

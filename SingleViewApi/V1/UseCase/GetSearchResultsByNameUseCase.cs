@@ -39,7 +39,7 @@ namespace SingleViewApi.V1.UseCase
             if (searchResults == null)
             {
                 Console.WriteLine($"No results found for search term {searchText}");
-                housingSearchApiId.Error = "No results found";
+                housingSearchApiId.Error = SystemId.NotFoundMessage;
             }
             else
             {

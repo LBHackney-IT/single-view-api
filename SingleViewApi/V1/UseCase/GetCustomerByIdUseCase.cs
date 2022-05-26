@@ -35,7 +35,7 @@ namespace SingleViewApi.V1.UseCase
 
             if (person == null)
             {
-                personApiId.Error = "Not found";
+                personApiId.Error = SystemId.NotFoundMessage;
             }
             else
             {
