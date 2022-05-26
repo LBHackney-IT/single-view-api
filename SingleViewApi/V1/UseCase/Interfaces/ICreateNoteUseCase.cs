@@ -6,6 +6,6 @@ namespace SingleViewApi.V1.UseCase.Interfaces
 {
     public interface ICreateNoteUseCase
     {
-        Task<NoteResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken);
+        Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken);
     }
 }

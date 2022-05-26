@@ -24,6 +24,12 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public bool Highlight { get; set; }
 
+        public bool IsSensitive { get; set; }
+
+        public bool IsPinned { get; set; }
+
+        public string DataSourceId { get; set; }
+
         public DataSource DataSource { get; set; }
 
         public int CompareTo(NoteResponseObject other)
