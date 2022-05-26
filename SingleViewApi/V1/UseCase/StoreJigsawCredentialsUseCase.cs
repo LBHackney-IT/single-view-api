@@ -31,7 +31,7 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         Console.WriteLine($"Adding Jigsaw token to Redis cache");
 
-        _redisGateway.AddValueWithKey("hackneyToken", authGatewayResponse.Token, 1);
+        _redisGateway.AddValueWithKey(hackneyToken, authGatewayResponse.Token, 1);
 
         Console.WriteLine("Jigsaw token added to Redis cache");
 
