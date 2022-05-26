@@ -24,6 +24,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -125,7 +126,7 @@ namespace SingleViewApi
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
 
-                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_SEARCH_API"));
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"));
 
             });
 
@@ -150,6 +151,13 @@ namespace SingleViewApi
                 var jigsawGateway = s.GetService<IJigsawGateway>();
                 var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
                 return new GetJigsawCustomersUseCase(jigsawGateway, jigsawAuthUseCase);
+            });
+
+            services.AddTransient<IGetJigsawCustomerByIdUseCase, GetJigsawCustomerByIdUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCustomerByIdUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
             services.AddTransient<IGetSearchResultsByNameUseCase, GetSearchResultsByNameUseCase>(s =>

@@ -11,5 +11,7 @@ namespace SingleViewApi.V1.Gateways
     {
         Task<AuthGatewayResponse> GetAuthToken(JigsawCredentials credentials);
         Task<List<JigsawCustomerSearchApiResponseObject>> GetCustomers(string firstName, string lastName, string bearerToken);
+
+        Task<JigsawCustomerResponseObject> GetCustomerById(string customerId, string bearerToken);
     }
 }
