@@ -46,7 +46,9 @@ namespace SingleViewApi.Tests.V1.Gateways
             var response = _classUnderTest.GetValue(id);
 
             response.Should().BeEquivalentTo(value);
+
         }
+
 
     }
 }

@@ -30,6 +30,8 @@ namespace SingleViewApi.V1.UseCase
 
             if (String.IsNullOrEmpty(jigsawToken))
             {
+                Console.WriteLine($"No token found. Adding token...");
+
                 var encyptedCredentials = _redisGateway.GetValue(redisKey);
 
                 var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
@@ -42,6 +44,8 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
+                Console.WriteLine("Token found. Returning token...");
+
                 var authGatewayResponse = new AuthGatewayResponse
                 {
                     Token = jigsawToken
