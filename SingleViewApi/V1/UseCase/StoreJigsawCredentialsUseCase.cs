@@ -21,13 +21,15 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
     }
 
     [LogCall]
-    public string Execute(string encryptedCredentials)
+    public string Execute(string encryptedCredentials, string hackneyToken)
     {
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
         var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
         if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
+
+        _redisGateway.AddValueWithKey("hackneyToken", authGatewayResponse.Token, 1);
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 

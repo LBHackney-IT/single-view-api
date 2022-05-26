@@ -20,31 +20,17 @@ namespace SingleViewApi.Tests.V1.Controllers
             _classUnderTest = new StoreJigsawCredentialsController(_mockStoreJigsawCredentialsUseCase.Object);
         }
 
-
         [Test]
         public void UseCaseGetsCalled()
         {
             const string encryptedCredentials = "Test-creds";
+            const string hackneyToken = "hackneyToken";
 
-            _ = _classUnderTest.StoreJigsawCredentials(encryptedCredentials);
+            _ = _classUnderTest.StoreJigsawCredentials(encryptedCredentials, hackneyToken);
 
-            _mockStoreJigsawCredentialsUseCase.Verify(x => x.Execute(encryptedCredentials), Times.Once);
+            _mockStoreJigsawCredentialsUseCase.Verify(x => x.Execute(encryptedCredentials, hackneyToken), Times.Once);
         }
 
-        [Test]
-        public void ControllerReturnsUnauthorisedWhenCredentialsAreIncorrect()
-        {
-            const string encryptedCredentials = "Incorrect-Credentials";
-            UnauthorizedObjectResult expectedResult = new UnauthorizedObjectResult("Credentials are incorrect");
-
-            _mockStoreJigsawCredentialsUseCase.Setup(e => e.Execute(encryptedCredentials))
-                .Returns<string>((s) => "");
-
-            var result = _classUnderTest.StoreJigsawCredentials(encryptedCredentials);
-
-            result.Should().BeEquivalentTo(expectedResult);
-
-        }
 
 
 
