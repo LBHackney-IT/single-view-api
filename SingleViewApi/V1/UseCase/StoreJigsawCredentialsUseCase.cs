@@ -29,7 +29,11 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
+        Console.WriteLine($"Adding Jigsaw token to Redis cache");
+
         _redisGateway.AddValueWithKey("hackneyToken", authGatewayResponse.Token, 1);
+
+        Console.WriteLine("Jigsaw token added to Redis cache");
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 
