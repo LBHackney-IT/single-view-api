@@ -77,6 +77,24 @@ namespace SingleViewApi.Tests.V1.UseCase
         }
 
         [Test]
+        public async Task IgnoresJigsawNotesIfRedisKeyIsNull()
+        {
+            var jigsawSystemIdFixture = _fixture.Build<SystemId>()
+                .With(o => o.SystemName, DataSource.Jigsaw).Create();
+            var customerIdFixture = jigsawSystemIdFixture.Id;
+            var systemIdListFixture = new SystemIdList()
+            {
+                SystemIds = new List<SystemId>() { jigsawSystemIdFixture }
+            };
+            var systemIds = systemIdListFixture.ToJson();
+            var userToken = _fixture.Create<string>();
+            var response = await _classUnderTest.Execute(systemIds, userToken, null, null, 0);
+            Assert.AreEqual(SystemId.UnauthorisedMessage, response.SystemIds[^1].Error);
+            _mockGetJigsawNotesUseCase.Verify(x =>
+                x.Execute(customerIdFixture, null), Times.Never);
+        }
+
+        [Test]
         public async Task ReturnsSystemIdErrorIfGatewayErrors()
         {
             var systemIdListFixture = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() };

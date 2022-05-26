@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -34,6 +35,11 @@ namespace SingleViewApi.V1.UseCase
                 List<NoteResponseObject> useCaseResponse;
                 if (systemId.SystemName == DataSource.Jigsaw)
                 {
+                    if (redisKey == null)
+                    {
+                        systemId.Error = SystemId.UnauthorisedMessage;
+                        continue;
+                    }
                     useCaseResponse = await _getJigsawNotesUseCase.Execute(systemId.Id, redisKey);
                 }
                 else
@@ -45,11 +51,10 @@ namespace SingleViewApi.V1.UseCase
                 if (useCaseResponse == null)
                 {
                     systemId.Error = SystemId.NotFoundMessage;
+                    continue;
                 }
-                else
-                {
-                    notes.AddRange(useCaseResponse);
-                }
+
+                notes.AddRange(useCaseResponse);
             }
             var response = new NotesResponse() { Notes = notes, SystemIds = systemIdList.SystemIds };
             response.Sort();
