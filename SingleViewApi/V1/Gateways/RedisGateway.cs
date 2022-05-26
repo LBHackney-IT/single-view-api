@@ -25,7 +25,7 @@ namespace SingleViewApi.V1.Gateways
             return id;
         }
         [LogCall]
-        public void AddValueWithKey(string key, string value, int ttlHours =1)
+        public void AddValueWithKey(string key, string value, int ttlHours = 1)
         {
             var id = Guid.NewGuid().ToString();
 

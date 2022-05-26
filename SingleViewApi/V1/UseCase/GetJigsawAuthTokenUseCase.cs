@@ -24,20 +24,31 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<AuthGatewayResponse> Execute(string redisKey)
+        public async Task<AuthGatewayResponse> Execute(string redisKey, string hackneyToken)
         {
-            //check if credentials exist in redis stored against hackneyToken
+            var jigsawToken = _redisGateway.GetValue(hackneyToken);
 
+            if (String.IsNullOrEmpty(jigsawToken))
+            {
+                var encyptedCredentials = _redisGateway.GetValue(redisKey);
 
-            var encyptedCredentials = _redisGateway.GetValue(redisKey);
+                var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
 
-            var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
+                var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
 
-            var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
+                _redisGateway.AddValueWithKey(hackneyToken, authGatewayResponse.Token, 1);
 
-            //store auth token in redis, with hackney token as key
+                return authGatewayResponse;
+            }
+            else
+            {
+                var authGatewayResponse = new AuthGatewayResponse
+                {
+                    Token = jigsawToken
+                };
 
-            return authGatewayResponse;
+                return authGatewayResponse;
+            }
 
         }
     }
