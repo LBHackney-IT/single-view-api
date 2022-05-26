@@ -58,7 +58,7 @@ public class GetJigsawCustomersUseCaseTests
 
         var results = _classUnderTest.Execute(firstName, lastName, redisId).Result;
 
-        results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Jigsaw");
+        results.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.Jigsaw);
         results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
         results.SearchResponse.SearchResults[0].FirstName.Should().BeEquivalentTo(stubbedEntity[0].FirstName);
         results.SearchResponse.SearchResults[0].SurName.Should().BeEquivalentTo(stubbedEntity[0].LastName);

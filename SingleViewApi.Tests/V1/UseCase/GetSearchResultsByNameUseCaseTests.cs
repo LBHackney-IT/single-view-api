@@ -41,7 +41,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
 
-            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
+            results.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.HousingSearchApi);
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
             results.SystemIds[^1].Error.Should().BeEquivalentTo("No results found");
         }
@@ -62,7 +62,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
 
-            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("HousingSearchApi");
+            results.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.HousingSearchApi);
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
 
             results.SearchResponse.Total.Should().Be(stubbedEntity.Total);
