@@ -23,10 +23,11 @@ public class JigsawControllerTests : LogCallAspectFixture
     public void UseCaseGetsCalled()
     {
         const string id = "test-id";
+        const string hackneyToken = "test-token";
         const string redisId = "test-redis-id";
 
-        _ = _classUnderTest.GetCustomerById(id, redisId);
+        _ = _classUnderTest.GetCustomerById(id, redisId, hackneyToken);
 
-        _getJigsawCustomerByIdUseCaseMock.Verify(x => x.Execute(id, redisId), Times.Once);
+        _getJigsawCustomerByIdUseCaseMock.Verify(x => x.Execute(id, redisId, hackneyToken), Times.Once);
     }
 }

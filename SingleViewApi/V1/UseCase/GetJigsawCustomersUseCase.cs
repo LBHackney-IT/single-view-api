@@ -26,9 +26,9 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId)
+        public async Task<SearchResponseObject> Execute(string firstName, string lastName, string redisId, string hackneyToken)
         {
-            var authGatewayResponse = _getJigsawAuthTokenUseCase.Execute(redisId).Result;
+            var authGatewayResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
             var jigsawApiId = new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" };
 

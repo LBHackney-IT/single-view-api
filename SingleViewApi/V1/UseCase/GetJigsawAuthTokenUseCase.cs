@@ -24,24 +24,31 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<AuthGatewayResponse> Execute(string redisKey)
+        public async Task<AuthGatewayResponse> Execute(string redisKey, string hackneyToken)
         {
+            var jigsawToken = _redisGateway.GetValue(hackneyToken);
 
-            Console.WriteLine($"------> GetJigsawAuthTokenUseCase - Getting Value From Redis: Key = {redisKey}");
+            if (String.IsNullOrEmpty(jigsawToken))
+            {
+                var encyptedCredentials = _redisGateway.GetValue(redisKey);
 
-            var encyptedCredentials = _redisGateway.GetValue(redisKey);
+                var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
 
-            Console.WriteLine($"------> Got Value From Redis: Key = {redisKey}. Decoding...");
+                var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
 
-            var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
+                _redisGateway.AddValueWithKey(hackneyToken, authGatewayResponse.Token, 1);
 
-            Console.WriteLine($"------> Decoded Value From Redis: Key = {redisKey}. Getting Token...");
+                return authGatewayResponse;
+            }
+            else
+            {
+                var authGatewayResponse = new AuthGatewayResponse
+                {
+                    Token = jigsawToken
+                };
 
-            var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
-
-            Console.WriteLine($"------> Got Token From Redis: Key = {redisKey}. Saving Token...");
-
-            return authGatewayResponse;
+                return authGatewayResponse;
+            }
 
         }
     }
