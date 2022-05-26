@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Amazon.DynamoDBv2.Model;
 using Hackney.Shared.ContactDetail.Domain;
+using Hackney.Shared.Person.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
@@ -15,7 +17,10 @@ namespace SingleViewApi.V1.Boundary.Response
 
     public class Customer
     {
+        public string Id { get; set; }
         public Hackney.Shared.Person.Domain.Title? Title { get; set; }
+
+        public DataSource DataSource { get; set; }
 
         public Hackney.Shared.Person.Domain.Title? PreferredTitle { get; set; }
 
@@ -25,6 +30,8 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string PreferredSurname { get; set; }
 
+
+
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -33,14 +40,23 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string PlaceOfBirth { get; set; }
 
+        public List<KnownAddress> KnownAddresses { get; set; }
+
+        public ContactDetails ContactDetails { get; set; }
+
+        public List<PersonType> PersonTypes { get; set; }
+
+#nullable enable
         public DateTime? DateOfBirth { get; set; }
 
-        public List<KnownAddress> KnownAddresses { get; set; }
+        public string? NiNo { get; set; }
 
         public DateTime? DateOfDeath { get; set; }
 
         public bool? IsAMinor { get; set; }
 
-        public ContactDetails ContactDetails { get; set; }
+#nullable disable
+
+
     }
 }

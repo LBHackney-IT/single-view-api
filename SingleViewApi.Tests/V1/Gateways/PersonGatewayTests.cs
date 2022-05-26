@@ -29,7 +29,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public void ARequestIsMade()
         {
             // Arrange
-            const string id = "123-Some-ID";
+            const string id = "e749f036-3183-49cb-8504-59b76c1a8f88";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://person.api/persons/{id}")
@@ -46,7 +46,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
             // Arrange
-            const string id = "123-Some-ID";
+            const string id = "e749f036-3183-49cb-8504-59b76c1a8f88";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://person.api/persons/{id}")
@@ -62,7 +62,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsNullIfUserIsUnAuthorised()
         {
             // Arrange
-            const string id = "123-Some-ID";
+            const string id = "e749f036-3183-49cb-8504-59b76c1a8f88";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://person.api/persons/{id}")
@@ -78,7 +78,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsNullIfApiIsDown()
         {
             // Arrange
-            const string id = "123-Some-ID";
+            const string id = "e749f036-3183-49cb-8504-59b76c1a8f88";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://person.api/persons/{id}")
@@ -94,7 +94,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         public async Task DataFromApiIsReturned()
         {
             // Arrange
-            const string id = "123-Some-ID";
+            const string id = "e749f036-3183-49cb-8504-59b76c1a8f88";
             const string userToken = "User token";
 
             _mockHttp.Expect($"https://person.api/persons/{id}")
