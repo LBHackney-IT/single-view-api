@@ -4,6 +4,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
@@ -43,7 +44,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.HousingSearchApi);
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
-            results.SystemIds[^1].Error.Should().BeEquivalentTo("No results found");
+            results.SystemIds[^1].Error.Should().BeEquivalentTo(SystemId.NotFoundMessage);
         }
 
         [Test]

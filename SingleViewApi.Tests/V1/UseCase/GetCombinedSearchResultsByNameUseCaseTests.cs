@@ -41,8 +41,8 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var page = _fixture.Create<int>();
         var expectedSystemIds = new List<SystemId>
         {
-            new SystemId() { Id = searchTerm, SystemName = DataSource.HousingSearchApi, Error = "no results found" },
-            new SystemId(){ Id = searchTerm, SystemName = DataSource.Jigsaw, Error = "no results found" }
+            new SystemId() { Id = searchTerm, SystemName = DataSource.HousingSearchApi, Error = SystemId.NotFoundMessage },
+            new SystemId(){ Id = searchTerm, SystemName = DataSource.Jigsaw, Error = SystemId.NotFoundMessage }
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
@@ -54,7 +54,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchTerm, Error = "no results found" } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
@@ -67,7 +67,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.Jigsaw, Id = searchTerm, Error = "no results found" } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.Jigsaw, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
