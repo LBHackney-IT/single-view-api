@@ -26,21 +26,30 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         string redisId)
     {
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
-        var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
+        int total = 0;
 
-        var concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
-            jigsawResults?.SearchResponse?.SearchResults);
+        List<SearchResult> concatenatedResults;
+        List<SystemId> jigsawids = new List<SystemId>();
+
+        if (redisId != null)
+        {
+            var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
+            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
+                jigsawResults?.SearchResponse?.SearchResults);
+            total += jigsawResults?.SearchResponse?.Total ?? 0;
+
+            jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
+        }
+        else
+        {
+            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults);
+        }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
 
-        int total = 0;
 
         total += housingResults?.SearchResponse?.Total ?? 0;
-        total += jigsawResults?.SearchResponse?.Total ?? 0;
 
-        List<SystemId> jigsawids = new List<SystemId>();
-
-        jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
 
         var collatedResults = new SearchResponseObject
         {
