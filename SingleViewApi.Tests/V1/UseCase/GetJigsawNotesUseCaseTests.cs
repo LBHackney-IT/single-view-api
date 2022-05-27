@@ -6,6 +6,7 @@ using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
@@ -34,17 +35,21 @@ namespace SingleViewApi.Tests.V1.UseCase
         public async Task GetsNotes()
         {
             var redisKeyFixture = _fixture.Create<string>();
-            var tokenFixture = _fixture.Create<string>();
+            var authGatewayResponseFixture = new AuthGatewayResponse()
+            {
+                Token = _fixture.Create<string>()
+            };
             var idFixture = _fixture.Create<string>();
+            var hackneyTokenFixture = _fixture.Create<string>();
             var jigsawNotesFixture = _fixture.CreateMany<JigsawNotesResponseObject>().ToList();
 
             _mockGetJigsawAuthTokenUseCase.Setup(x =>
-                x.Execute(redisKeyFixture)).ReturnsAsync(tokenFixture);
+                x.Execute(redisKeyFixture, hackneyTokenFixture)).ReturnsAsync(authGatewayResponseFixture);
 
             _mockJigsawGateway.Setup(x =>
-                x.GetCustomerNotesByCustomerId(idFixture, tokenFixture)).ReturnsAsync(jigsawNotesFixture);
+                x.GetCustomerNotesByCustomerId(idFixture, authGatewayResponseFixture.Token)).ReturnsAsync(jigsawNotesFixture);
 
-            var response = await _classUnderTest.Execute(idFixture, redisKeyFixture);
+            var response = await _classUnderTest.Execute(idFixture, redisKeyFixture, hackneyTokenFixture);
             Assert.AreEqual(DataSource.Jigsaw, response[^1].DataSource);
             Assert.AreEqual(jigsawNotesFixture[^1].Id.ToString(), response[^1].DataSourceId);
             Assert.AreEqual(jigsawNotesFixture[^1].Content, response[^1].Description);
@@ -54,16 +59,17 @@ namespace SingleViewApi.Tests.V1.UseCase
         public async Task ReturnsNullIfGatewayErrors()
         {
             var redisKeyFixture = _fixture.Create<string>();
-            var tokenFixture = _fixture.Create<string>();
             var idFixture = _fixture.Create<string>();
+            var authGatewayResponseFixture = _fixture.Create<AuthGatewayResponse>();
+            var hackneyTokenFixture = _fixture.Create<string>();
 
             _mockGetJigsawAuthTokenUseCase.Setup(x =>
-                x.Execute(redisKeyFixture)).ReturnsAsync((string) null);
+                x.Execute(redisKeyFixture, hackneyTokenFixture)).ReturnsAsync(authGatewayResponseFixture);
 
-            _mockJigsawGateway.Setup(x =>
-                x.GetCustomerNotesByCustomerId(idFixture, tokenFixture)).ReturnsAsync((List<JigsawNotesResponseObject>) null);
+            _mockJigsawGateway.Verify(x =>
+                x.GetCustomerNotesByCustomerId(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
 
-            var response = await _classUnderTest.Execute(idFixture, redisKeyFixture);
+            var response = await _classUnderTest.Execute(idFixture, redisKeyFixture, hackneyTokenFixture);
             Assert.IsNull(response);
         }
     }

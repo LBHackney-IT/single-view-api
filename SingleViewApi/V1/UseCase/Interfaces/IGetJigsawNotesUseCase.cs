@@ -6,6 +6,6 @@ namespace SingleViewApi.V1.UseCase.Interfaces
 {
     public interface IGetJigsawNotesUseCase
     {
-        Task<List<NoteResponseObject>> Execute(string customerId, string redisKey);
+        Task<List<NoteResponseObject>> Execute(string customerId, string redisKey, string userToken);
     }
 }

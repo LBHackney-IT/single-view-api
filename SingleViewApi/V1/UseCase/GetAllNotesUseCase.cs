@@ -40,7 +40,7 @@ namespace SingleViewApi.V1.UseCase
                         systemId.Error = SystemId.UnauthorisedMessage;
                         continue;
                     }
-                    useCaseResponse = await _getJigsawNotesUseCase.Execute(systemId.Id, redisKey);
+                    useCaseResponse = await _getJigsawNotesUseCase.Execute(systemId.Id, redisKey, userToken);
                 }
                 else
                 {
