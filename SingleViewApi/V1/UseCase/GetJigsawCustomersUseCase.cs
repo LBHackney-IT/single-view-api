@@ -6,6 +6,7 @@ using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -30,7 +31,7 @@ namespace SingleViewApi.V1.UseCase
         {
             var authGatewayResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
-            var jigsawApiId = new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" };
+            var jigsawApiId = new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" };
 
             var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { jigsawApiId } };
 
@@ -44,7 +45,7 @@ namespace SingleViewApi.V1.UseCase
 
             if (searchResults == null)
             {
-                jigsawApiId.Error = "No results found";
+                jigsawApiId.Error = SystemId.NotFoundMessage;
                 return response;
             }
 
