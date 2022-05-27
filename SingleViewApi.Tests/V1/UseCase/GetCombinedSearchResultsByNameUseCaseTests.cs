@@ -58,7 +58,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             });
 
         _mockGetJigsawCustomersUseCase.Setup(x =>
-                x.Execute(firstName, lastName, redisId))
+                x.Execute(firstName, lastName, redisId, userToken))
             .ReturnsAsync(new SearchResponseObject()
             {
                 SearchResponse = new SearchResponse()
@@ -123,7 +123,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             .ReturnsAsync(housingResponseObject);
 
         _mockGetJigsawCustomersUseCase.Setup(x =>
-                x.Execute(firstName, lastName, redisId))
+                x.Execute(firstName, lastName, redisId, userToken))
             .ReturnsAsync(jigsawResponseObject);
 
         var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
