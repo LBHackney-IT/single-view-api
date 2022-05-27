@@ -26,7 +26,6 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         string redisId)
     {
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
-
         int total = 0;
 
         List<SearchResult> concatenatedResults;
@@ -34,7 +33,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
 
         if (redisId != null)
         {
-            var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId);
+            var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
             concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
                 jigsawResults?.SearchResponse?.SearchResults);
             total += jigsawResults?.SearchResponse?.Total ?? 0;
