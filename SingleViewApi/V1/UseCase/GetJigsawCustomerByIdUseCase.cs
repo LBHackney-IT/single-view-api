@@ -6,6 +6,7 @@ using Hackney.Shared.Person;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -36,7 +37,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
-        var jigsawId = new SystemId() { SystemName = "Jigsaw", Id = customer.Id };
+        var jigsawId = new SystemId() { SystemName = DataSource.Jigsaw, Id = customer.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
 

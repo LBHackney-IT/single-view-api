@@ -16,16 +16,16 @@ namespace SingleViewApi.Tests.V1.Controllers
     public class NotesControllerTests : LogCallAspectFixture
     {
         private NotesController _classUnderTest;
-        private Mock<IGetAllNotesByIdUseCase> _mockGetAllNotesByIdUseCase;
+        private Mock<IGetAllNotesUseCase> _mockGetAllNotesUseCase;
         private Mock<ICreateNoteUseCase> _mockCreateNoteUseCase;
         private Fixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _mockGetAllNotesByIdUseCase = new Mock<IGetAllNotesByIdUseCase>();
+            _mockGetAllNotesUseCase = new Mock<IGetAllNotesUseCase>();
             _mockCreateNoteUseCase = new Mock<ICreateNoteUseCase>();
-            _classUnderTest = new NotesController(_mockGetAllNotesByIdUseCase.Object, _mockCreateNoteUseCase.Object);
+            _classUnderTest = new NotesController(_mockGetAllNotesUseCase.Object, _mockCreateNoteUseCase.Object);
             _fixture = new Fixture();
         }
 
@@ -33,12 +33,13 @@ namespace SingleViewApi.Tests.V1.Controllers
         public void GetAllNotesByIdUseCaseGetsCalled()
         {
             var systemIds = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() }.ToJson();
+            var redisId = _fixture.Create<string>();
             var authorization = _fixture.Create<string>();
 
-            _ = _classUnderTest.ListNotes(systemIds, authorization);
+            _ = _classUnderTest.ListNotes(systemIds, redisId, authorization);
 
-            _mockGetAllNotesByIdUseCase.Verify(x =>
-                x.Execute(systemIds, authorization, null, 0), Times.Once);
+            _mockGetAllNotesUseCase.Verify(x =>
+                x.Execute(systemIds, authorization, redisId, null, 0), Times.Once);
         }
 
         [Test]

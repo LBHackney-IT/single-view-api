@@ -96,7 +96,7 @@ namespace SingleViewApi.Tests.V1.Gateways
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
-            var notesResultsResponseObject = new NotesResultsResponseObject() { Results = _fixture.CreateMany<NoteResponseObject>().ToList() };
+            var notesResultsResponseObject = new NotesResultsResponseObject() { Results = _fixture.CreateMany<NotesApiResponseObject>().ToList() };
 
             _mockHttp.Expect($"{_baseUrl}/notes?targetId={id}")
                 .WithHeaders("Authorization", userToken)
@@ -132,6 +132,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             Assert.Null(note);
         }
 
+        [Test]
         public async Task CreateNoteReturnsNullIfInternalServerError()
         {
             var userToken = _fixture.Create<string>();
