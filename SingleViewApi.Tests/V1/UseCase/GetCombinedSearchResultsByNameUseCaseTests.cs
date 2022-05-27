@@ -137,13 +137,57 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     }
 
     [Test]
+    public void ReturnsOnlyHousingSearchResultsWhenNoRedisIdIsGiven()
+    {
+        var firstName = _fixture.Create<string>();
+        var lastName = _fixture.Create<string>();
+        string redisId = null;
+        var userToken = _fixture.Create<string>();
+        var page = _fixture.Create<int>();
+        var housingResults = _fixture.Create<SearchResponse>();
+        var housingResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = housingResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+            }
+        };
+        var expectedSearchResults = new SearchResponseObject()
+        {
+            SearchResponse = new SearchResponse()
+            {
+                SearchResults =
+                    housingResults.SearchResults,
+                Total = housingResults.Total
+            },
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+            }
+        };
+
+        _mockGetSearchResultsByNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, page, userToken))
+            .ReturnsAsync(housingResponseObject);
+
+        var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
+
+        results.Should().BeEquivalentTo(expectedSearchResults);
+
+
+
+
+    }
+
+    [Test]
     public void SortResultsByRelevanceReturnsMatchingResultsFirst()
     {
         var testFirstName = "testFirstName";
         var testLastName = "testLastName";
         var testUnsortedData = new List<SearchResult> {
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
@@ -151,7 +195,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             new SearchResult()
         {
-            Id = _fixture.Create<Guid>(),
+            Id = _fixture.Create<Guid>().ToString(),
             FirstName = testFirstName,
             SurName = testLastName,
             DateOfBirth = DateTime.Now,
@@ -159,7 +203,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
         },
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
@@ -170,21 +214,21 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         {
             new SearchResult()
             {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = testFirstName,
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
                 DataSource = DataSource.Jigsaw
             },
             new SearchResult(){
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
                 DataSource = DataSource.HousingSearchApi
             },
             new SearchResult() {
-                Id = _fixture.Create<Guid>(),
+                Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,

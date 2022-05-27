@@ -42,7 +42,7 @@ public class CustomerCreationOverrides
 
 public class PersonInfo
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public bool HasUserAccount { get; set; }
     public int PersonTitleId { get; set; }
     public object RelationshipId { get; set; }
@@ -89,7 +89,7 @@ public class PersonInfo
 
 public class JigsawCustomerResponseObject
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public int PersonId { get; set; }
     public bool HasAccount { get; set; }
     public bool HasEhrModule { get; set; }
