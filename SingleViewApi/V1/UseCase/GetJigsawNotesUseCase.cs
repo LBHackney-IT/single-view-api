@@ -21,8 +21,8 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<List<NoteResponseObject>> Execute(string customerId, string redisKey)
         {
-            var token = await _getAuthTokenUseCase.Execute(redisKey);
-            var gatewayResponse = await _gateway.GetCustomerNotesByCustomerId(customerId, token);
+            var authResponse = await _getAuthTokenUseCase.Execute(redisKey);
+            var gatewayResponse = await _gateway.GetCustomerNotesByCustomerId(customerId, authResponse.Token);
             if (gatewayResponse == null) return null;
 
             var notes = new List<NoteResponseObject>();
