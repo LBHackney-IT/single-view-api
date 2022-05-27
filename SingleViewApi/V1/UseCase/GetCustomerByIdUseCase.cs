@@ -43,7 +43,7 @@ namespace SingleViewApi.V1.UseCase
                 {
                     Id = person.Id.ToString(),
                     Title = person.Title,
-                    DataSource = DataSource.HousingSearch,
+                    DataSource = DataSource.HousingSearchApi,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,
