@@ -3,6 +3,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
@@ -29,16 +30,16 @@ public class GetJigsawCustomersUseCaseTests
     }
 
     [Test]
-    public void UseCaseReturnsNullWhenThereIsNoJigsawToken()
+    public void UseCaseReturnsErrorWhenThereIsNoJigsawToken()
     {
         var redisId = _fixture.Create<string>();
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync("");
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
 
         var result = _classUnderTest.Execute(firstName, lastName, redisId).Result;
 
-        Assert.IsNull(result);
+        Assert.That(result.SystemIds[0].Error, Is.EqualTo("No token present")); ;
 
     }
 
@@ -52,7 +53,7 @@ public class GetJigsawCustomersUseCaseTests
         var searchText = $"{firstName}+{lastName}";
         var stubbedEntity = _fixture.Create<List<JigsawCustomerSearchApiResponseObject>>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync(jigsawToken);
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
 
         _mockJigsawGateway.Setup(x => x.GetCustomers(firstName, lastName, jigsawToken)).ReturnsAsync(stubbedEntity);
 

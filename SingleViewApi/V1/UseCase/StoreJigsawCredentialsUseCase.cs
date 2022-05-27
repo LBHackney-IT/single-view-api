@@ -23,12 +23,11 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
     [LogCall]
     public string Execute(string encryptedCredentials)
     {
-
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
-        var token = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
+        var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
-        if (String.IsNullOrEmpty(token)) return null;
+        if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 

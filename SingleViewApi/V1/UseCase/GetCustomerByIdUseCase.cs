@@ -41,7 +41,9 @@ namespace SingleViewApi.V1.UseCase
             {
                 response.Customer = new Customer()
                 {
+                    Id = person.Id.ToString(),
                     Title = person.Title,
+                    DataSource = DataSource.HousingSearch,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,
@@ -53,6 +55,7 @@ namespace SingleViewApi.V1.UseCase
                     DateOfBirth = person.DateOfBirth,
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
+                    PersonTypes = person.PersonTypes?.ToList(),
                     ContactDetails = contactDetails,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
