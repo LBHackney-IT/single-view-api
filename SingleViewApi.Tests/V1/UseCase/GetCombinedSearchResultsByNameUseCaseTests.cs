@@ -150,7 +150,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = housingResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -163,7 +163,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
             }
         };
 

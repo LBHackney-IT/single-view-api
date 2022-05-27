@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Gateways;
@@ -19,9 +20,14 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<List<NoteResponseObject>> Execute(string customerId, string redisKey)
+        public async Task<List<NoteResponseObject>> Execute(string customerId, string redisKey, string userToken)
         {
-            var authResponse = await _getAuthTokenUseCase.Execute(redisKey);
+            var authResponse = await _getAuthTokenUseCase.Execute(redisKey, userToken);
+            if (authResponse.ExceptionMessage != null)
+            {
+                Console.WriteLine(authResponse.ExceptionMessage);
+                return null;
+            }
             var gatewayResponse = await _gateway.GetCustomerNotesByCustomerId(customerId, authResponse.Token);
             if (gatewayResponse == null) return null;
 
