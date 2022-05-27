@@ -33,12 +33,13 @@ namespace SingleViewApi.Tests.V1.Controllers
         public void GetAllNotesByIdUseCaseGetsCalled()
         {
             var systemIds = new SystemIdList() { SystemIds = _fixture.CreateMany<SystemId>().ToList() }.ToJson();
+            var redisId = _fixture.Create<string>();
             var authorization = _fixture.Create<string>();
 
-            _ = _classUnderTest.ListNotes(systemIds, authorization);
+            _ = _classUnderTest.ListNotes(systemIds, redisId, authorization);
 
             _mockGetAllNotesUseCase.Verify(x =>
-                x.Execute(systemIds, authorization, null, null, 0), Times.Once);
+                x.Execute(systemIds, authorization, redisId, null, 0), Times.Once);
         }
 
         [Test]
