@@ -125,8 +125,7 @@ data "aws_security_group" "default" {
 # DB
 #####
 module "db" {
-    source  = "terraform-aws-modules/rds/aws"
-    version = "2.0.0"
+    source  = "../modules/rds"
 
     identifier = local.application_name
 
@@ -159,9 +158,6 @@ module "db" {
 
     # DB subnet group
     subnet_ids = data.aws_subnet_ids.all.ids
-
-    # DB parameter group
-    parameters = ["foo", "bar"]
 
     family = "postgres9.6"
 
