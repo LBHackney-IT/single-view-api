@@ -75,38 +75,21 @@ terraform {
     }
 }
 
-#
-#locals {
-#    name   = "complete-postgresql"
-#    region = "eu-west-1"
-#    tags = {
-#        Owner       = "user"
-#        Environment = "dev"
-#    }
-#}
 
 ################################################################################
 # Supporting Resources
 ################################################################################
 
-module "security_group" {
-    source  = "terraform-aws-modules/security-group/aws"
-    version = "~> 4.0"
 
-    name        = local.application_name
-    description = "Complete PostgreSQL example security group"
-    vpc_id      = local.vpc_id
+resource "aws_security_group" "db_sg" {
+    vpc_id = local.vpc_id
 
-    # ingress
-    ingress_with_cidr_blocks = [
-        {
-            from_port   = 5432
-            to_port     = 5432
-            protocol    = "tcp"
-            description = "PostgreSQL access from within VPC"
-            cidr_blocks = [local.cidr]
-        },
-    ]
+    ingress {
+        cidr_blocks = [local.cidr]
+        from_port   = 5432
+        to_port     = 5432
+        protocol    = "tcp"
+    }
 }
 
 ##############################################################
