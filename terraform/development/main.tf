@@ -17,15 +17,17 @@ data "aws_region" "current" {}
 locals {
     application_name = "single-view-api"
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+    cidr = "0.0.0.0/0"
 }
 
 # Create ElastiCache Redis security group
 
 resource "aws_security_group" "redis_sg" {
-    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+    vpc_id = local.vpc_id
 
     ingress {
-        cidr_blocks = ["0.0.0.0/0"]
+        cidr_blocks = [local.cidr]
         from_port   = 6379
         to_port     = 6379
         protocol    = "tcp"
@@ -35,7 +37,7 @@ resource "aws_security_group" "redis_sg" {
         from_port       = 0
         to_port         = 0
         protocol        = "-1"
-        cidr_blocks     = ["0.0.0.0/0"]
+        cidr_blocks     = [local.cidr]
     }
 
 }
@@ -64,16 +66,6 @@ resource "aws_elasticache_cluster" "redis" {
     security_group_ids   = [aws_security_group.redis_sg.id]
 }
 
-/*
-data "aws_iam_role" "ec2_container_service_role" {
-  name = "ecsServiceRole"
-}
-
-data "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-}
-*/
-
 terraform {
     backend "s3" {
         bucket  = "terraform-state-corporate-development"
@@ -83,27 +75,102 @@ terraform {
     }
 }
 
-#/* module "development" {
-#  # Delete as appropriate:
-#  source                      = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/fargate"
-#  # source = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/ec2"
-#  cluster_name                = "development-apis"
-#  ecr_name                    = ecr repository name # Replace with your repository name - pattern: "hackney/YOUR APP NAME"
-#  environment_name            = "development"
-#  application_name            = local.application_name
-#  security_group_name         = back end security group name # Replace with your security group name, WITHOUT SPECIFYING environment. Usually the SG has the name of your API
-#  vpc_name                    = "vpc-development-apis"
-#  host_port                   = port # Replace with the port to use for your api / app
-#  port                        = port # Replace with the port to use for your api / app
-#  desired_number_of_ec2_nodes = number of nodes # Variable will only be used if EC2 is required. Do not remove it.
-#  lb_prefix                   = "nlb-development-apis"
-#  ecs_execution_role          = data.aws_iam_role.ecs_task_execution_role.arn
-#  lb_iam_role_arn             = data.aws_iam_role.ec2_container_service_role.arn
-#  task_definition_environment_variables = {
-#    ASPNETCORE_ENVIRONMENT = "development"
-#  }
-#  task_definition_environment_variable_count = number # This number needs to reflect the number of environment variables provided
-#  cost_code = your project's cost code
-#  task_definition_secrets      = {}
-#  task_definition_secret_count = number # This number needs to reflect the number of environment variables provided
-#} */
+#
+#locals {
+#    name   = "complete-postgresql"
+#    region = "eu-west-1"
+#    tags = {
+#        Owner       = "user"
+#        Environment = "dev"
+#    }
+#}
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+module "security_group" {
+    source  = "terraform-aws-modules/security-group/aws"
+    version = "~> 4.0"
+
+    name        = local.application_name
+    description = "Complete PostgreSQL example security group"
+    vpc_id      = local.vpc_id
+
+    # ingress
+    ingress_with_cidr_blocks = [
+        {
+            from_port   = 5432
+            to_port     = 5432
+            protocol    = "tcp"
+            description = "PostgreSQL access from within VPC"
+            cidr_blocks = [local.cidr]
+        },
+    ]
+}
+
+################################################################################
+# RDS Module
+################################################################################
+module "rds" {
+    source  = "terraform-aws-modules/rds/aws"
+    version = "4.4.0"
+    # insert the 38 required variables here
+
+    identifier = local.application_name
+
+    # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
+    engine               = "postgres"
+    engine_version       = "14.1"
+    family               = "postgres14" # DB parameter group
+    major_engine_version = "14"         # DB option group
+    instance_class       = "db.t2.micro"
+
+    allocated_storage     = 20
+    max_allocated_storage = 100
+
+    # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
+    # "Error creating DB Instance: InvalidParameterValue: MasterUsername
+    # user cannot be used as it is a reserved word used by the engine"
+    db_name  = "completePostgresql"
+    username = "complete_postgresql"
+    port     = 5432
+
+    multi_az               = true
+    db_subnet_group_name   = aws_elasticache_subnet_group.default.name
+    vpc_security_group_ids = [module.security_group.security_group_id]
+
+    maintenance_window              = "Mon:00:00-Mon:03:00"
+    backup_window                   = "03:00-06:00"
+    enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+    create_cloudwatch_log_group     = true
+
+    backup_retention_period = 0
+    skip_final_snapshot     = true
+    deletion_protection     = false
+
+    performance_insights_enabled          = true
+    performance_insights_retention_period = 7
+    create_monitoring_role                = true
+    monitoring_interval                   = 60
+    monitoring_role_name                  = "single-view-monitoring-role-name"
+    monitoring_role_description           = "Description for monitoring role"
+
+    parameters = [
+        {
+            name  = "autovacuum"
+            value = 1
+        },
+        {
+            name  = "client_encoding"
+            value = "utf8"
+        }
+    ]
+
+    db_option_group_tags = {
+        "Sensitive" = "low"
+    }
+    db_parameter_group_tags = {
+        "Sensitive" = "low"
+    }
+}
