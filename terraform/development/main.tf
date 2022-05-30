@@ -112,8 +112,9 @@ module "db" {
 
     identifier = local.application_name
 
-    engine            = "postgres"
-    engine_version    = "9.6.20"
+    engine         = "aurora-postgresql"
+    engine_version = "11.9"
+
     instance_class    = "db.t2.micro"
     allocated_storage = 5
     storage_encrypted = false
