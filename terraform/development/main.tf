@@ -161,6 +161,8 @@ module "db" {
     subnet_ids = data.aws_subnet_ids.all.ids
 
     # DB parameter group
+    parameters = [""]
+
     family = "postgres9.6"
 
     # DB option group
