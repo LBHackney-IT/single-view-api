@@ -96,7 +96,7 @@ data "aws_ssm_parameter" "uh_postgres_username" {
 #####
 # DB
 #####
-module "postgres_db_staging" {
+module "postgres_db" {
     source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
     environment_name = "development"
     vpc_id = local.vpc_id
@@ -105,8 +105,8 @@ module "postgres_db_staging" {
     db_port  = 5302
     subnet_ids = data.aws_subnet_ids.all.ids
     db_engine = "postgres"
-    db_engine_version = "11.1" //DMS does not work well with v12
-    db_instance_class = "db.t2.micro"
+    db_engine_version = "12.5" //DMS does not work well with v12
+    db_instance_class = "db.t3.micro"
     db_allocated_storage = 20
     maintenance_window = "sun:10:00-sun:10:30"
     db_username = data.aws_ssm_parameter.uh_postgres_username.value
