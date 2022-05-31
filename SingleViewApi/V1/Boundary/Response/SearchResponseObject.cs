@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Hackney.Shared.Person;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {
@@ -43,18 +44,5 @@ namespace SingleViewApi.V1.Boundary.Response
         public bool IsTenureCautionaryAlert { get; set; }
 #nullable disable
         public List<KnownAddress> KnownAddresses { get; set; }
-
-
-
     }
-
-    public enum DataSource
-    {
-        HousingSearch,
-        Jigsaw
-    }
-
-
-
-
 }

@@ -5,5 +5,5 @@ namespace SingleViewApi.V1.UseCase.Interfaces;
 
 public interface IGetJigsawCustomerByIdUseCase
 {
-    Task<CustomerResponseObject> Execute(string customerId, string redisId);
+    Task<CustomerResponseObject> Execute(string customerId, string redisId, string hackneyToken);
 }

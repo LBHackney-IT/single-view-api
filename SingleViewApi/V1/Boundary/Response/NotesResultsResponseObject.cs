@@ -6,7 +6,7 @@ namespace SingleViewApi.V1.Boundary.Response
 {
     public class NotesResultsResponseObject
     {
-        public List<NoteResponseObject> Results { get; set; }
+        public List<NotesApiResponseObject> Results { get; set; }
 
         public PaginationDetails PaginationDetails { get; set; }
 
