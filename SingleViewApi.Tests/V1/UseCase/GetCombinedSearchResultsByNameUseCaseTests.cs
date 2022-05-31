@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.UseCase;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -40,8 +41,8 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var page = _fixture.Create<int>();
         var expectedSystemIds = new List<SystemId>
         {
-            new SystemId() { Id = searchTerm, SystemName = "HousingSearchApi", Error = "no results found" },
-            new SystemId(){ Id = searchTerm, SystemName = "Jigsaw", Error = "no results found" }
+            new SystemId() { Id = searchTerm, SystemName = DataSource.HousingSearchApi, Error = SystemId.NotFoundMessage },
+            new SystemId(){ Id = searchTerm, SystemName = DataSource.Jigsaw, Error = SystemId.NotFoundMessage }
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
@@ -53,12 +54,12 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "HousingSearchApi", Id = searchTerm, Error = "no results found" } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
         _mockGetJigsawCustomersUseCase.Setup(x =>
-                x.Execute(firstName, lastName, redisId))
+                x.Execute(firstName, lastName, redisId, userToken))
             .ReturnsAsync(new SearchResponseObject()
             {
                 SearchResponse = new SearchResponse()
@@ -66,7 +67,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = "Jigsaw", Id = searchTerm, Error = "no results found" } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.Jigsaw, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
@@ -91,7 +92,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = jigsawResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" }
             }
         };
         var housingResponseObject = new SearchResponseObject()
@@ -99,7 +100,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = housingResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -113,8 +114,8 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "Jigsaw", Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = "HousingSearchApi", Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" },
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
             }
         };
 
@@ -123,8 +124,52 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             .ReturnsAsync(housingResponseObject);
 
         _mockGetJigsawCustomersUseCase.Setup(x =>
-                x.Execute(firstName, lastName, redisId))
+                x.Execute(firstName, lastName, redisId, userToken))
             .ReturnsAsync(jigsawResponseObject);
+
+        var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
+
+        results.Should().BeEquivalentTo(expectedSearchResults);
+
+
+
+
+    }
+
+    [Test]
+    public void ReturnsOnlyHousingSearchResultsWhenNoRedisIdIsGiven()
+    {
+        var firstName = _fixture.Create<string>();
+        var lastName = _fixture.Create<string>();
+        string redisId = null;
+        var userToken = _fixture.Create<string>();
+        var page = _fixture.Create<int>();
+        var housingResults = _fixture.Create<SearchResponse>();
+        var housingResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = housingResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+            }
+        };
+        var expectedSearchResults = new SearchResponseObject()
+        {
+            SearchResponse = new SearchResponse()
+            {
+                SearchResults =
+                    housingResults.SearchResults,
+                Total = housingResults.Total
+            },
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+            }
+        };
+
+        _mockGetSearchResultsByNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, page, userToken))
+            .ReturnsAsync(housingResponseObject);
 
         var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
 
@@ -180,7 +225,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.HousingSearch
+                DataSource = DataSource.HousingSearchApi
             },
             new SearchResult() {
                 Id = _fixture.Create<Guid>().ToString(),

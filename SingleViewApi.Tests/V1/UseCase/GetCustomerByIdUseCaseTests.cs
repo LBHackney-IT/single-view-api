@@ -9,6 +9,8 @@ using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {
@@ -41,7 +43,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var result = await _classUnderTest.Execute(id, userToken);
 
-            result.SystemIds[^1].SystemName.Should().BeEquivalentTo("PersonApi");
+            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.PersonApi);
             result.SystemIds[^1].Id.Should().BeEquivalentTo(id);
 
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
@@ -75,9 +77,9 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var result = await _classUnderTest.Execute(id, userToken);
 
-            result.SystemIds[^1].SystemName.Should().BeEquivalentTo("PersonApi");
+            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.PersonApi);
             result.SystemIds[^1].Id.Should().BeEquivalentTo(id);
-            result.SystemIds[^1].Error.Should().BeEquivalentTo("Not found");
+            result.SystemIds[^1].Error.Should().BeEquivalentTo(SystemId.NotFoundMessage);
 
 
         }

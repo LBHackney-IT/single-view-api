@@ -15,11 +15,11 @@ namespace SingleViewApi.V1.Controllers
     [ApiVersion("1.0")]
     public class NotesController : BaseController
     {
-        private readonly IGetAllNotesByIdUseCase _getAllNotesByIdUseCase;
+        private readonly IGetAllNotesUseCase _getAllNotesUseCase;
         private readonly ICreateNoteUseCase _createNoteUseCase;
-        public NotesController(IGetAllNotesByIdUseCase getAllNotesByIdUseCase, ICreateNoteUseCase createNoteUseCase)
+        public NotesController(IGetAllNotesUseCase getAllNotesByIdUseCase, ICreateNoteUseCase createNoteUseCase)
         {
-            _getAllNotesByIdUseCase = getAllNotesByIdUseCase;
+            _getAllNotesUseCase = getAllNotesByIdUseCase;
             _createNoteUseCase = createNoteUseCase;
         }
 
@@ -27,9 +27,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(NotesResponse), StatusCodes.Status200OK)]
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult ListNotes([FromQuery] string systemIds, [FromHeader] string authorization)
+        public IActionResult ListNotes([FromQuery] string systemIds, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getAllNotesByIdUseCase.Execute(systemIds, authorization).Result);
+            return Ok(_getAllNotesUseCase.Execute(systemIds, authorization, redisId).Result);
         }
 
         /// <response code="201">Successfully created note</response>

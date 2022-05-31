@@ -24,32 +24,13 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public bool Highlight { get; set; }
 
-        public static NoteResponseObject Create(Note note)
-        {
-            if (note is null) throw new ArgumentNullException(nameof(note));
+        public bool IsSensitive { get; set; }
 
-            return new NoteResponseObject
-            {
-                Id = note.Id,
-                Title = note.Title,
-                Description = note.Description,
-                TargetType = note.TargetType,
-                TargetId = note.TargetId,
-                CreatedAt = note.CreatedAt,
-                Categorisation = new Categorisation
-                {
-                    Description = note.Categorisation?.Description,
-                    Category = note.Categorisation?.Category,
-                    SubCategory = note.Categorisation?.SubCategory
-                },
-                Author = new AuthorDetails
-                {
-                    Email = note.Author?.Email,
-                    FullName = note.Author?.FullName
-                },
-                Highlight = note.Highlight
-            };
-        }
+        public bool IsPinned { get; set; }
+
+        public string DataSourceId { get; set; }
+
+        public DataSource DataSource { get; set; }
 
         public int CompareTo(NoteResponseObject other)
         {

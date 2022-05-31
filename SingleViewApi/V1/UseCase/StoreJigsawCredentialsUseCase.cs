@@ -21,13 +21,19 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
     }
 
     [LogCall]
-    public string Execute(string encryptedCredentials)
+    public string Execute(string encryptedCredentials, string hackneyToken)
     {
         var decryptedCredentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
         var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
         if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
+
+        Console.WriteLine($"Adding Jigsaw token to Redis cache");
+
+        _redisGateway.AddValueWithKey(hackneyToken, authGatewayResponse.Token, 1);
+
+        Console.WriteLine("Jigsaw token added to Redis cache");
 
         var id = _redisGateway.AddValue(encryptedCredentials, 1);
 

@@ -19,7 +19,7 @@ namespace SingleViewApi.V1.Gateways
             this._baseUrl = baseUrl;
         }
 
-        public async Task<List<NoteResponseObject>> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0)
+        public async Task<List<NotesApiResponseObject>> GetAllById(string targetId, string userToken, string paginationToken = null, int pageSize = 0)
         {
             var requestUrl = $"{_baseUrl}/notes?targetId={targetId}";
 
@@ -46,7 +46,7 @@ namespace SingleViewApi.V1.Gateways
             return responseObject?.Results;
         }
 
-        public async Task<NoteResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken)
+        public async Task<NotesApiResponseObject> CreateNote(CreateNoteRequest createNoteRequest, string userToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/notes");
 
@@ -59,7 +59,7 @@ namespace SingleViewApi.V1.Gateways
 
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-            return JsonConvert.DeserializeObject<NoteResponseObject>(jsonBody);
+            return JsonConvert.DeserializeObject<NotesApiResponseObject>(jsonBody);
         }
     }
 }
