@@ -188,10 +188,24 @@ namespace SingleViewApi
                 return new DecoderHelper(Environment.GetEnvironmentVariable(("RSA_PRIVATE_KEY")));
             });
 
-            services.AddTransient<IGetAllNotesByIdUseCase, GetAllNotesByIdUseCase>(s =>
+            services.AddTransient<IGetNotesUseCase>(s =>
             {
                 var notesGateway = s.GetService<INotesGateway>();
-                return new GetAllNotesByIdUseCase(notesGateway);
+                return new GetNotesUseCase(notesGateway);
+            });
+
+            services.AddTransient<IGetJigsawNotesUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var getJigsawAuthTokenUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawNotesUseCase(jigsawGateway, getJigsawAuthTokenUseCase);
+            });
+
+            services.AddTransient<IGetAllNotesUseCase, GetAllNotesUseCase>(s =>
+            {
+                var getNotesUseCase = s.GetService<IGetNotesUseCase>();
+                var getJigsawNotesUseCase = s.GetService<IGetJigsawNotesUseCase>();
+                return new GetAllNotesUseCase(getNotesUseCase, getJigsawNotesUseCase);
             });
 
             services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>

@@ -165,4 +165,52 @@ public class JigsawGatewayTests
         Assert.AreEqual(jigsawCustomerResponseObject.PersonInfo.LastName, customer.PersonInfo.LastName);
     }
 
+    [Test]
+    public async Task GetCustomerNotesByCustomerIdReturnsNullIfUnauthorised()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_customerBaseUrl}/customer/{id}/notes")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.Unauthorized);
+
+        var searchResults = await _classUnderTest.GetCustomerNotesByCustomerId(id, bearerToken);
+
+        searchResults.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetCustomerNotesByCustomerIdReturnsNullIfApiIsUnavailable()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_customerBaseUrl}/customer/{id}/notes")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        var searchResults = await _classUnderTest.GetCustomerNotesByCustomerId(id, bearerToken);
+
+        searchResults.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DataFromCustomerNotesByCustomerIdApiIsReturned()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var jigsawNotesResponseObject = _fixture.CreateMany<JigsawNotesResponseObject>().ToList();
+
+        _mockHttp.Expect($"{_customerBaseUrl}/customer/{id}/notes")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", jigsawNotesResponseObject.ToJson());
+
+        var customerNotes = await _classUnderTest.GetCustomerNotesByCustomerId(id, bearerToken);
+
+        Assert.AreEqual(jigsawNotesResponseObject[0].Id, customerNotes[0].Id);
+        Assert.AreEqual(jigsawNotesResponseObject[0].Content, customerNotes[0].Content);
+        Assert.AreEqual(jigsawNotesResponseObject[0].CustomerId, customerNotes[0].CustomerId);
+    }
+
 }

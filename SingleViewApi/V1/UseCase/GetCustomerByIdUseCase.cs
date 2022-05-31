@@ -6,6 +6,7 @@ using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.UseCase
 {
@@ -25,7 +26,7 @@ namespace SingleViewApi.V1.UseCase
             var person = await _personGateway.GetPersonById(personId, userToken);
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
 
-            var personApiId = new SystemId() { SystemName = "PersonApi", Id = personId };
+            var personApiId = new SystemId() { SystemName = DataSource.PersonApi, Id = personId };
 
             var response = new CustomerResponseObject()
             {
@@ -34,7 +35,7 @@ namespace SingleViewApi.V1.UseCase
 
             if (person == null)
             {
-                personApiId.Error = "Not found";
+                personApiId.Error = SystemId.NotFoundMessage;
             }
             else
             {
@@ -42,7 +43,7 @@ namespace SingleViewApi.V1.UseCase
                 {
                     Id = person.Id.ToString(),
                     Title = person.Title,
-                    DataSource = DataSource.HousingSearch,
+                    DataSource = DataSource.HousingSearchApi,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,

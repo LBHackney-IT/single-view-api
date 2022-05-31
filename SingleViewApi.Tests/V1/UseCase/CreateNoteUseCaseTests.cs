@@ -27,7 +27,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public async Task CreatesNote()
         {
-            var noteResponseObject = _fixture.Create<NoteResponseObject>();
+            var noteResponseObject = _fixture.Create<NotesApiResponseObject>();
             var createNoteRequest = _fixture.Create<CreateNoteRequest>();
             var userToken = _fixture.Create<string>();
 
@@ -51,7 +51,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var userToken = _fixture.Create<string>();
 
             _mockNotesGateway.Setup(x =>
-                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync((NoteResponseObject) null);
+                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync((NotesApiResponseObject) null);
 
             var response = await _classUnderTest.Execute(createNoteRequest, userToken);
 

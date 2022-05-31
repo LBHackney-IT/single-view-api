@@ -9,10 +9,14 @@ namespace SingleViewApi.V1.Boundary
 
         public List<SystemId> SystemIds { get; set; }
 
+        public void Sort()
+        {
+            SortByCreatedAtDescending();
+        }
+
         public void SortByCreatedAtDescending()
         {
-            Notes.Sort((x, y) =>
-                y.CreatedAt.CompareTo(x.CreatedAt));
+            Notes.Sort((x, y) => y.CreatedAt.CompareTo(x.CreatedAt));
         }
     }
 }
