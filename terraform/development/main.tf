@@ -120,7 +120,7 @@ module "db" {
     storage_encrypted = false
 
     # kms_key_id        = "arm:aws:kms:<region>:<account id>:key/<kms key id>"
-    name = local.application_name
+    name = "singleviewapi"
 
     # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
     # "Error creating DB Instance: InvalidParameterValue: MasterUsername
