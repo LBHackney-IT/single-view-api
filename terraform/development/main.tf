@@ -110,7 +110,7 @@ data "aws_security_group" "default" {
 module "db" {
     source  = "../modules/rds"
 
-    identifier = "SingleViewAPI"
+    identifier = "singleviewapi"
 
     engine         = "aurora-postgresql"
     engine_version = "11.9"
