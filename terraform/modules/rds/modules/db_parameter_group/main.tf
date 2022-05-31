@@ -5,7 +5,7 @@ locals {
 resource "aws_db_parameter_group" "this_no_prefix" {
   count = var.create && false == var.use_name_prefix ? 1 : 0
 
-  name        = var.name
+  name        = "db"
   description = local.description
   family      = var.family
 
