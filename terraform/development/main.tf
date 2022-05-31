@@ -17,15 +17,17 @@ data "aws_region" "current" {}
 locals {
     application_name = "single-view-api"
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+    cidr = "0.0.0.0/0"
 }
 
 # Create ElastiCache Redis security group
 
 resource "aws_security_group" "redis_sg" {
-    vpc_id = "vpc-05c7e3d5ffd5f00a4"
+    vpc_id = local.vpc_id
 
     ingress {
-        cidr_blocks = ["0.0.0.0/0"]
+        cidr_blocks = [local.cidr]
         from_port   = 6379
         to_port     = 6379
         protocol    = "tcp"
@@ -35,7 +37,7 @@ resource "aws_security_group" "redis_sg" {
         from_port       = 0
         to_port         = 0
         protocol        = "-1"
-        cidr_blocks     = ["0.0.0.0/0"]
+        cidr_blocks     = [local.cidr]
     }
 
 }
@@ -64,16 +66,6 @@ resource "aws_elasticache_cluster" "redis" {
     security_group_ids   = [aws_security_group.redis_sg.id]
 }
 
-/*
-data "aws_iam_role" "ec2_container_service_role" {
-  name = "ecsServiceRole"
-}
-
-data "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-}
-*/
-
 terraform {
     backend "s3" {
         bucket  = "terraform-state-corporate-development"
@@ -83,27 +75,82 @@ terraform {
     }
 }
 
-#/* module "development" {
-#  # Delete as appropriate:
-#  source                      = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/fargate"
-#  # source = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/ec2"
-#  cluster_name                = "development-apis"
-#  ecr_name                    = ecr repository name # Replace with your repository name - pattern: "hackney/YOUR APP NAME"
-#  environment_name            = "development"
-#  application_name            = local.application_name
-#  security_group_name         = back end security group name # Replace with your security group name, WITHOUT SPECIFYING environment. Usually the SG has the name of your API
-#  vpc_name                    = "vpc-development-apis"
-#  host_port                   = port # Replace with the port to use for your api / app
-#  port                        = port # Replace with the port to use for your api / app
-#  desired_number_of_ec2_nodes = number of nodes # Variable will only be used if EC2 is required. Do not remove it.
-#  lb_prefix                   = "nlb-development-apis"
-#  ecs_execution_role          = data.aws_iam_role.ecs_task_execution_role.arn
-#  lb_iam_role_arn             = data.aws_iam_role.ec2_container_service_role.arn
-#  task_definition_environment_variables = {
-#    ASPNETCORE_ENVIRONMENT = "development"
-#  }
-#  task_definition_environment_variable_count = number # This number needs to reflect the number of environment variables provided
-#  cost_code = your project's cost code
-#  task_definition_secrets      = {}
-#  task_definition_secret_count = number # This number needs to reflect the number of environment variables provided
-#} */
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+
+resource "aws_security_group" "db_sg" {
+    vpc_id = local.vpc_id
+
+    ingress {
+        cidr_blocks = [local.cidr]
+        from_port   = 5432
+        to_port     = 5432
+        protocol    = "tcp"
+    }
+}
+
+##############################################################
+# Data sources to get VPC, subnets and security group details
+##############################################################
+data "aws_subnet_ids" "all" {
+    vpc_id = local.vpc_id
+}
+
+data "aws_security_group" "default" {
+    vpc_id = local.vpc_id
+    name   = "default"
+}
+
+#####
+# DB
+#####
+module "db" {
+    source  = "../modules/rds"
+
+    identifier = "singleviewapi"
+
+    engine         = "aurora-postgresql"
+    engine_version = "11.9"
+
+    instance_class    = "db.t3.medium"
+    allocated_storage = 5
+    storage_encrypted = false
+
+    # kms_key_id        = "arm:aws:kms:<region>:<account id>:key/<kms key id>"
+    name = local.application_name
+
+    # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
+    # "Error creating DB Instance: InvalidParameterValue: MasterUsername
+    # user cannot be used as it is a reserved word used by the engine"
+    username = "dbuser"
+
+    password = "YourPwdShouldBeLongAndSecure!"
+    port     = "5432"
+
+    vpc_security_group_ids = [data.aws_security_group.default.id]
+
+    maintenance_window = "Mon:00:00-Mon:03:00"
+    backup_window      = "03:00-06:00"
+
+    # disable backups to create DB faster
+    backup_retention_period = 0
+
+    enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+
+    # DB subnet group
+    subnet_ids = data.aws_subnet_ids.all.ids
+
+    family = "postgres9.6"
+
+    # DB option group
+    major_engine_version = "9.6"
+
+    # Snapshot name upon DB deletion
+    final_snapshot_identifier = "demodb"
+
+    # Database Deletion Protection
+    deletion_protection = false
+}
