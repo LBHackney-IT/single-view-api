@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Amazon.DynamoDBv2.Model;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person.Domain;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Boundary.Response
 {

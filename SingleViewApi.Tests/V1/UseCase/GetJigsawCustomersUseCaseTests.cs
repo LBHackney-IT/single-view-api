@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -62,7 +61,7 @@ public class GetJigsawCustomersUseCaseTests
 
         var results = _classUnderTest.Execute(firstName, lastName, redisId, hackneyToken).Result;
 
-        results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Jigsaw");
+        results.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.Jigsaw);
         results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
         results.SearchResponse.SearchResults[0].FirstName.Should().BeEquivalentTo(stubbedEntity[0].FirstName);
         results.SearchResponse.SearchResults[0].SurName.Should().BeEquivalentTo(stubbedEntity[0].LastName);

@@ -6,6 +6,7 @@ using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -29,13 +30,13 @@ namespace SingleViewApi.V1.UseCase
 
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
 
-            var housingSearchApiId = new SystemId() { SystemName = "HousingSearchApi", Id = searchText };
+            var housingSearchApiId = new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchText };
 
             var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { housingSearchApiId } };
 
             if (searchResults == null)
             {
-                housingSearchApiId.Error = "No results found";
+                housingSearchApiId.Error = SystemId.NotFoundMessage;
             }
             else
             {
@@ -51,7 +52,7 @@ namespace SingleViewApi.V1.UseCase
                     var person = new SearchResult()
                     {
                         Id = result.Id.ToString(),
-                        DataSource = DataSource.HousingSearch,
+                        DataSource = DataSource.HousingSearchApi,
                         FirstName = result.FirstName,
                         SurName = result.Surname,
                         Title = result.Title,
