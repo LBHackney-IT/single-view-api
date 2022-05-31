@@ -81,76 +81,38 @@ terraform {
 ################################################################################
 
 
-resource "aws_security_group" "db_sg" {
-    vpc_id = local.vpc_id
-
-    ingress {
-        cidr_blocks = [local.cidr]
-        from_port   = 5432
-        to_port     = 5432
-        protocol    = "tcp"
-    }
-}
-
-##############################################################
-# Data sources to get VPC, subnets and security group details
-##############################################################
 data "aws_subnet_ids" "all" {
     vpc_id = local.vpc_id
 }
 
-data "aws_security_group" "default" {
-    vpc_id = local.vpc_id
-    name   = "default"
+data "aws_ssm_parameter" "uh_postgres_db_password" {
+    name = "/single-view/development/postgres-password"
+}
+
+data "aws_ssm_parameter" "uh_postgres_username" {
+    name = "/single-view/development/postgres-username"
 }
 
 #####
 # DB
 #####
-module "db" {
-    source  = "../modules/rds"
-
-    identifier = "singleviewapi"
-
-    engine         = "aurora-postgresql"
-    engine_version = "11.9"
-
-    instance_class    = "db.t3.medium"
-    allocated_storage = 5
-    storage_encrypted = false
-
-    # kms_key_id        = "arm:aws:kms:<region>:<account id>:key/<kms key id>"
-    name = local.application_name
-
-    # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
-    # "Error creating DB Instance: InvalidParameterValue: MasterUsername
-    # user cannot be used as it is a reserved word used by the engine"
-    username = "dbuser"
-
-    password = "YourPwdShouldBeLongAndSecure!"
-    port     = "5432"
-
-    vpc_security_group_ids = [data.aws_security_group.default.id]
-
-    maintenance_window = "Mon:00:00-Mon:03:00"
-    backup_window      = "03:00-06:00"
-
-    # disable backups to create DB faster
-    backup_retention_period = 0
-
-    enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-
-    # DB subnet group
+module "postgres_db_staging" {
+    source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
+    environment_name = "development"
+    vpc_id = local.vpc_id
+    db_identifier = "singleview"
+    db_name = "singleview"
+    db_port  = 5302
     subnet_ids = data.aws_subnet_ids.all.ids
-
-    family = "postgres9.6"
-
-    # DB option group
-    major_engine_version = "9.6"
-
-    # Snapshot name upon DB deletion
-    final_snapshot_identifier = "demodb"
-
-    # Database Deletion Protection
-    deletion_protection = false
+    db_engine = "postgres"
+    db_engine_version = "11.1" //DMS does not work well with v12
+    db_instance_class = "db.t2.micro"
+    db_allocated_storage = 20
+    maintenance_window = "sun:10:00-sun:10:30"
+    db_username = data.aws_ssm_parameter.uh_postgres_username.value
+    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
+    storage_encrypted = false
+    multi_az = false //only true if production deployment
+    publicly_accessible = false
+    project_name = "single view"
 }
