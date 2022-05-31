@@ -115,7 +115,7 @@ module "db" {
     engine         = "aurora-postgresql"
     engine_version = "11.9"
 
-    instance_class    = "db.t2.micro"
+    instance_class    = "db.t3.medium"
     allocated_storage = 5
     storage_encrypted = false
 
