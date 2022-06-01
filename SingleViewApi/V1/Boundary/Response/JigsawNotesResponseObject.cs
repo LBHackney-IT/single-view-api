@@ -17,7 +17,7 @@ public class JigsawNotesResponseObject
 
     public int NoteTypeId { get; set; }
 
-   public string OfficerName { get; set; }
+    public string OfficerName { get; set; }
 
 
 #nullable enable
