@@ -61,7 +61,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 {
                     new KnownAddress()
                     {
-                        Id = new Guid(),
+
                         FullAddress = customer.PersonInfo.AddressString,
                         CurrentAddress = true
                     }
