@@ -11,22 +11,19 @@ public class JigsawNotesResponseObject
     public string Content { get; set; }
 
     public DateTime CreatedDate { get; set; }
-
-    public DateTime InterviewDate { get; set; }
-
     public bool IsSensitive { get; set; }
 
     public bool IsPinned { get; set; }
 
     public int NoteTypeId { get; set; }
 
-    public int OfficerId { get; set; }
+   public string OfficerName { get; set; }
 
-    public string OfficerName { get; set; }
-
-    public string OfficerInitials { get; set; }
 
 #nullable enable
     public string? CustomerName { get; set; }
+    public DateTime? InterviewDate { get; set; }
+    public int? OfficerId { get; set; }
+    public string? OfficerInitials { get; set; }
 #nullable disable
 }
