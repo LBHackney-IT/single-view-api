@@ -177,7 +177,7 @@ workflows:
       - assume-role-development:
           context: api-assume-role-corporate-development-context
           requires:
-          - build-and-test
+           - build-and-test
           filters:
             branches:
               only: development
