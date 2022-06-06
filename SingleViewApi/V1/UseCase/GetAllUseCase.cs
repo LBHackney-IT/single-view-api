@@ -9,8 +9,8 @@ namespace SingleViewApi.V1.UseCase
     //TODO: Rename class name and interface name to reflect the entity they are representing eg. GetAllClaimantsUseCase
     public class GetAllUseCase : IGetAllUseCase
     {
-        private readonly IExampleGateway _gateway;
-        public GetAllUseCase(IExampleGateway gateway)
+        private readonly IDataSourceGateway _gateway;
+        public GetAllUseCase(IDataSourceGateway gateway)
         {
             _gateway = gateway;
         }
