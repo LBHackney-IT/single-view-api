@@ -13,7 +13,6 @@ namespace SingleViewApi.V1.Factories
             return new DBDataSource
             {
                 Id = databaseEntity.Id,
-                CreatedAt = databaseEntity.CreatedAt,
                 Name = databaseEntity.Name
             };
         }
@@ -25,7 +24,6 @@ namespace SingleViewApi.V1.Factories
             return new DataSourceEntity
             {
                 Id = entity.Id,
-                CreatedAt = entity.CreatedAt,
                 Name = entity.Name
             };
         }

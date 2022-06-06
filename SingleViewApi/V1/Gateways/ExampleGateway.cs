@@ -7,7 +7,7 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Gateways
 {
-    //TODO: Rename to match the data source that is being accessed in the gateway eg. MosaicGateway
+    //TODO: Rename to DataSourcegateway
     public class ExampleGateway : IExampleGateway
     {
         private readonly DatabaseContext _databaseContext;
