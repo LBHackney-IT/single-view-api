@@ -20,6 +20,7 @@ services:
       - cache
     environment:
       - CONNECTION_STRING=Host=dev-database;Port=5432;Database=testdb;Username=postgres;Password=mypassword
+      - PATH="$PATH:/root/.dotnet/tools"
       - PERSON_API_V1=${PERSON_API_V1}
       - REDIS_HOST=cache:6379
       - CONTACT_DETAILS_API_V2=${CONTACT_DETAILS_API_V2}

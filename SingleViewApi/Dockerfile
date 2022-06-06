@@ -16,5 +16,7 @@ COPY ./SingleViewApi ./
 RUN dotnet build -c Release -o out
 RUN dotnet publish -c Release -o out
 
+RUN dotnet tool install -g dotnet-ef
+
 EXPOSE ${PORT:-3000}
 CMD ASPNETCORE_URLS=http://+:${PORT:-3000} dotnet ./out/SingleViewApi.dll
