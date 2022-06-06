@@ -37,7 +37,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("data_source");
+                    b.ToTable("data_sources");
                 });
 #pragma warning restore 612, 618
         }
