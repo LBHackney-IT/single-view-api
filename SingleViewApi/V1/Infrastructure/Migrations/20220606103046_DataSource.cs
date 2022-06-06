@@ -29,14 +29,14 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                 table: "data_source",
                 column: "id");
 
-            // migrationBuilder.InsertData(
-            //     table: "data_source",
-            //     columns: new[] { "name" },
-            //     values: new object[,]
-            //     {
-            //         { "PersonAPI" },
-            //         { "Jigsaw" }
-            //     });
+            migrationBuilder.InsertData(
+                table: "data_source",
+                columns: new[] { "name" },
+                values: new object[,]
+                {
+                    { "PersonAPI" },
+                    { "Jigsaw" }
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
