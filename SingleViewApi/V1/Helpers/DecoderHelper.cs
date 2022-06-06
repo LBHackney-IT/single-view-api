@@ -19,6 +19,13 @@ public class DecoderHelper : IDecoderHelper
     }
     public JigsawCredentials DecodeJigsawCredentials(string cipher)
     {
+        if (cipher == "Placeholder-Jigsaw-Token")
+        {
+            return new JigsawCredentials()
+            {
+                Password = "Placeholder-Jigsaw-Password", Username = "Placeholder-Jigsaw-Username"
+            };
+        }
 
         var cipherText = Convert.FromBase64String(cipher);
 
