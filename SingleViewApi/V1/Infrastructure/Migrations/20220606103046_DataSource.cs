@@ -16,7 +16,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -29,15 +29,14 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                 table: "data_source",
                 column: "id");
 
-            migrationBuilder.InsertData("data_source", "name", "HousingSearch");
-            migrationBuilder.InsertData(
-                table: "data_source",
-                columns: new[] { "name" },
-                values: new object[,]
-                {
-                    { "PersonAPI" },
-                    { "Jigsaw" }
-                });
+            // migrationBuilder.InsertData(
+            //     table: "data_source",
+            //     columns: new[] { "name" },
+            //     values: new object[,]
+            //     {
+            //         { "PersonAPI" },
+            //         { "Jigsaw" }
+            //     });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
