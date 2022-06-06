@@ -149,7 +149,7 @@ dotnet restore
 ```
 
 ```bash
-CONNECTION_STRING="Host=localhost;Port=5432;Database=testdb;Username=postgres;Password=mypassword" dotnet ef migrations add -o ./V1/Infrastructure/Migrations YourMigrationName
+CONNECTION_STRING="Host=localhost;Port=5432;Database=testdb;Username=postgres;Password=mypassword" dotnet ef migrations add YourMigrationName
 ```
 
 ### To run migrations manually
