@@ -51,11 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations" />
-    <Folder Include="V1\Infrastructure\Migrations" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="V1\Infrastructure\Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Remove="V1\Infrastructure\Migrations\20220601144615_DataSource.Designer.cs" />
   </ItemGroup>
