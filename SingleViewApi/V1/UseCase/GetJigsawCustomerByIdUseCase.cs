@@ -51,6 +51,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
         {
             response.Customer = new Customer()
             {
+                Id = customer.Id,
                 FirstName = customer.PersonInfo.FirstName,
                 Surname = customer.PersonInfo.LastName,
                 DateOfBirth = customer.PersonInfo.DateOfBirth,
@@ -60,7 +61,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 {
                     new KnownAddress()
                     {
-                        Id = new Guid(),
+
                         FullAddress = customer.PersonInfo.AddressString,
                         CurrentAddress = true
                     }
