@@ -294,7 +294,9 @@ namespace SingleViewApi
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
             services.AddDbContext<DatabaseContext>(
-                opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true));
+                opt => opt.UseNpgsql(connectionString)
+                    // .AddXRayInterceptor(true)
+                );
         }
 
 
