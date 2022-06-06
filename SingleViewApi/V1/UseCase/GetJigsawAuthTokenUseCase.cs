@@ -26,15 +26,20 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<AuthGatewayResponse> Execute(string redisKey, string hackneyToken)
         {
+
+            if (redisKey == "Placeholder-Jigsaw-Token")
+            {
+                return new AuthGatewayResponse() { Token = "Placeholder-Jigsaw-Token", };
+            }
             var jigsawToken = _redisGateway.GetValue(hackneyToken);
 
             if (String.IsNullOrEmpty(jigsawToken))
             {
                 Console.WriteLine($"No token found. Adding token...");
 
-                var encyptedCredentials = _redisGateway.GetValue(redisKey);
+                var encryptedCredentials = _redisGateway.GetValue(redisKey);
 
-                var credentials = _decoderHelper.DecodeJigsawCredentials(encyptedCredentials);
+                var credentials = _decoderHelper.DecodeJigsawCredentials(encryptedCredentials);
 
                 var authGatewayResponse = await _jigsawGateway.GetAuthToken(credentials);
 
