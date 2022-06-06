@@ -13,11 +13,11 @@ namespace SingleViewApi.V1.Controllers
     [ApiVersion("1.0")]
     public class PostgresController : BaseController
     {
-        private readonly IExampleGateway _exampleGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-        public PostgresController(IExampleGateway exampleGateway)
+        public PostgresController(IDataSourceGateway dataSourceGateway)
         {
-            _exampleGateway = exampleGateway;
+            _dataSourceGateway = dataSourceGateway;
 
         }
 
@@ -34,7 +34,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult GetAll()
         {
-            var res = _exampleGateway.GetAll();
+            var res = _dataSourceGateway.GetAll();
             return Ok(res);
         }
         [HttpGet]
@@ -42,7 +42,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult Get([FromQuery] int id)
         {
-            var value = _exampleGateway.GetEntityById(id);
+            var value = _dataSourceGateway.GetEntityById(id);
             return Ok(value);
         }
     }

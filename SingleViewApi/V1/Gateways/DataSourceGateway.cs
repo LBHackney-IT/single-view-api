@@ -7,12 +7,11 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Gateways
 {
-    //TODO: Rename to DataSourcegateway
-    public class ExampleGateway : IExampleGateway
+    public class DataSourceGateway : IDataSourceGateway
     {
         private readonly DatabaseContext _databaseContext;
 
-        public ExampleGateway(DatabaseContext databaseContext)
+        public DataSourceGateway(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }

@@ -3,7 +3,7 @@ using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Gateways
 {
-    public interface IExampleGateway
+    public interface IDataSourceGateway
     {
         DBDataSource GetEntityById(int id);
 
