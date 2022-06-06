@@ -5,8 +5,8 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IExampleGateway
     {
-        Entity GetEntityById(int id);
+        DBDataSource GetEntityById(int id);
 
-        List<Entity> GetAll();
+        List<DBDataSource> GetAll();
     }
 }
