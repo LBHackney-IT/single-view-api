@@ -188,6 +188,21 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "production"
+  migrate-database-development:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "development"
+  migrate-database-staging:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "staging"
+  migrate-database-production:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "production"
   deploy-to-development:
     executor: docker-dotnet
     steps:
@@ -223,9 +238,12 @@ workflows:
           filters:
             branches:
               only: development
-      - terraform-init-and-apply-to-development:
+      - migrate-database-development:
           requires:
             - assume-role-development
+      - terraform-init-and-apply-to-development:
+          requires:
+            - migrate-database-development
           filters:
             branches:
               only: development
