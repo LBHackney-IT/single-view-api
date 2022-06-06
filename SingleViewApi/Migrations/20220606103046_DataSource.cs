@@ -11,7 +11,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "data_source",
+                name: "data_sources",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -20,16 +20,16 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_data_source", x => x.id);
+                    table.PrimaryKey("PK_data_sources", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_data_source_id",
-                table: "data_source",
+                name: "ix_data_sources_id",
+                table: "data_sources",
                 column: "id");
 
             migrationBuilder.InsertData(
-                table: "data_source",
+                table: "data_sources",
                 columns: new[] { "name" },
                 values: new object[,]
                 {
@@ -41,7 +41,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "data_source");
+                name: "data_sources");
         }
     }
 }

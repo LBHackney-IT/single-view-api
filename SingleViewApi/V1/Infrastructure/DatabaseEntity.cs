@@ -10,7 +10,7 @@ namespace SingleViewApi.V1.Infrastructure
     // Postgres will use the "Table" and "Column" attributes
 
 
-    [Table("data_source")]
+    [Table("data_sources")]
     public class DataSourceEntity
     {
         [Column("id")]
