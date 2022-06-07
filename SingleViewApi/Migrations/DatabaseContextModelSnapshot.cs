@@ -10,7 +10,7 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Infrastructure.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(SingleViewContext))]
     partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SingleViewApi.V1.Infrastructure.DataSourceEntity", b =>
+            modelBuilder.Entity("SingleViewApi.V1.Infrastructure.DataSourceDbEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

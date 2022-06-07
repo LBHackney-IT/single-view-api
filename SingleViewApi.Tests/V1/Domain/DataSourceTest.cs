@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace SingleViewApi.Tests.V1.Domain
 {
     [TestFixture]
-    public class EntityTests
+    public class DataSourceTest
     {
         [Test]
         public void EntitiesHaveAnId()
