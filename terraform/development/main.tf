@@ -21,6 +21,10 @@ locals {
     cidr = "0.0.0.0/0"
 }
 
+data "aws_subnet_ids" "all" {
+    vpc_id = local.vpc_id
+}
+
 # Create ElastiCache Redis security group
 
 resource "aws_security_group" "redis_sg" {
@@ -47,7 +51,7 @@ resource "aws_security_group" "redis_sg" {
 resource "aws_elasticache_subnet_group" "default" {
     name        = "subnet-group-single-view"
     description = "Private subnets for the ElastiCache instances: single view"
-    subnet_ids  = ["subnet-068ec0a87972e4714", "subnet-05fe49c939c6c7b1e", "subnet-07ba583cbf5207869", "subnet-0b0b79fab8c3fd705"]
+    subnet_ids  = data.aws_subnet_ids.all.ids
 }
 
 
@@ -79,11 +83,6 @@ terraform {
 ################################################################################
 # Supporting Resources
 ################################################################################
-
-
-data "aws_subnet_ids" "all" {
-    vpc_id = local.vpc_id
-}
 
 data "aws_ssm_parameter" "uh_postgres_db_password" {
     name = "/single-view/development/postgres-password"
