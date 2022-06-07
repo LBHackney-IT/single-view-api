@@ -239,6 +239,8 @@ workflows:
             branches:
               only: development
       - migrate-database-development:
+          context:
+            - api-nuget-token-context
           requires:
             - assume-role-development
       - terraform-init-and-apply-to-development:
