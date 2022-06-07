@@ -1,17 +1,20 @@
 using System.Linq;
-using SingleViewApi.Tests.V1.Helper;
+using AutoFixture;
 using NUnit.Framework;
+using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.Tests.V1.Infrastructure
 {
     [TestFixture]
     public class SingleViewContextTest : DatabaseTests
     {
+        private readonly Fixture _fixture = new();
+
         [Test]
-        [Ignore("Bypass RDS tests")]
+        [Ignore("Bypass RDS tests until deployment is working")]
         public void CanGetADataSourceDbEntity()
         {
-            var dataSourceDbEntity = DataSourceDbEntityHelper.CreateDatabaseEntity();
+            var dataSourceDbEntity = _fixture.Create<DataSourceDbEntity>();
 
             SingleViewContext.Add(dataSourceDbEntity);
             SingleViewContext.SaveChanges();
