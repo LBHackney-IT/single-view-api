@@ -8,6 +8,7 @@ namespace SingleViewApi.Tests.V1.Infrastructure
     public class SingleViewContextTest : DatabaseTests
     {
         [Test]
+        [Ignore("Bypass RDS tests")]
         public void CanGetADataSourceDbEntity()
         {
             var dataSourceDbEntity = DataSourceDbEntityHelper.CreateDatabaseEntity();
