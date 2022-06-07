@@ -4,18 +4,18 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.Tests.V1.Helper
 {
-    public static class DatabaseEntityHelper
+    public static class DataSourceDbEntityHelper
     {
-        public static DataSourceEntity CreateDatabaseEntity()
+        public static DataSourceDbEntity CreateDatabaseEntity()
         {
             var entity = new Fixture().Create<DbDataSource>();
 
             return CreateDatabaseEntityFrom(entity);
         }
 
-        public static DataSourceEntity CreateDatabaseEntityFrom(DbDataSource entity)
+        public static DataSourceDbEntity CreateDatabaseEntityFrom(DbDataSource entity)
         {
-            return new DataSourceEntity()
+            return new DataSourceDbEntity()
             {
                 Id = entity.Id,
                 Name = entity.Name,

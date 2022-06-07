@@ -10,7 +10,7 @@ namespace SingleViewApi.V1.Infrastructure
 
 
     [Table("data_sources")]
-    public class DataSourceEntity
+    public class DataSourceDbEntity
     {
         [Column("id")]
         public int Id { get; set; }

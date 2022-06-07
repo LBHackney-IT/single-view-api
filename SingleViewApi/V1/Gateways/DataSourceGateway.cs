@@ -9,23 +9,23 @@ namespace SingleViewApi.V1.Gateways
 {
     public class DataSourceGateway : IDataSourceGateway
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly SingleViewContext _singleViewContext;
 
-        public DataSourceGateway(DatabaseContext databaseContext)
+        public DataSourceGateway(SingleViewContext singleViewContext)
         {
-            _databaseContext = databaseContext;
+            _singleViewContext = singleViewContext;
         }
 
         public DbDataSource GetEntityById(int id)
         {
-            var result = _databaseContext.DataSourceEntities.Find(id);
+            var result = _singleViewContext.DataSources.Find(id);
 
             return result?.ToDomain();
         }
 
         public List<DbDataSource> GetAll()
         {
-            var results = _databaseContext.DataSourceEntities.ToList();
+            var results = _singleViewContext.DataSources.ToList();
             return results.Map(x => x.ToDomain());
         }
     }
