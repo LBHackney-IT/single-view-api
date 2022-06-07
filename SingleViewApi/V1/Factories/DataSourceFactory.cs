@@ -3,23 +3,23 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Factories
 {
-    public static class EntityFactory
+    public static class DataSourceFactory
     {
-        public static DbDataSource ToDomain(this DataSourceEntity databaseEntity)
+        public static DbDataSource ToDomain(this DataSourceDbEntity dataSourceDbEntity)
         {
-            //TODO: Map the rest of the fields in the domain object.
+            // TODO: Map the rest of the fields in the domain object.
             // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
 
             return new DbDataSource
             {
-                Id = databaseEntity.Id,
-                Name = databaseEntity.Name
+                Id = dataSourceDbEntity.Id,
+                Name = dataSourceDbEntity.Name
             };
         }
 
-        public static DataSourceEntity ToDatabase(this DbDataSource entity)
+        public static DataSourceDbEntity ToDatabase(this DbDataSource entity)
         {
-            return new DataSourceEntity
+            return new DataSourceDbEntity
             {
                 Id = entity.Id,
                 Name = entity.Name

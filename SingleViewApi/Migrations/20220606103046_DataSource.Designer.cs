@@ -11,7 +11,7 @@ using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Infrastructure.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(SingleViewContext))]
     [Migration("20220606103046_DataSource")]
     partial class DataSource
     {
@@ -24,7 +24,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SingleViewApi.V1.Infrastructure.DataSourceEntity", b =>
+            modelBuilder.Entity("SingleViewApi.V1.Infrastructure.DataSourceDbEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
