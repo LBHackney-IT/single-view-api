@@ -9,17 +9,17 @@ namespace SingleViewApi.Tests
     public class DatabaseTests
     {
         private IDbContextTransaction _transaction;
-        protected DatabaseContext DatabaseContext { get; private set; }
+        protected SingleViewContext SingleViewContext { get; private set; }
 
         [SetUp]
         public void RunBeforeAnyTests()
         {
             var builder = new DbContextOptionsBuilder();
             builder.UseNpgsql(ConnectionString.TestDatabase());
-            DatabaseContext = new DatabaseContext(builder.Options);
+            SingleViewContext = new SingleViewContext(builder.Options);
 
-            DatabaseContext.Database.EnsureCreated();
-            _transaction = DatabaseContext.Database.BeginTransaction();
+            SingleViewContext.Database.EnsureCreated();
+            _transaction = SingleViewContext.Database.BeginTransaction();
         }
 
         [TearDown]

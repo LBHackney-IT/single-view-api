@@ -9,7 +9,7 @@ using SingleViewApi.Tests.V1.Helper;
 namespace SingleViewApi.Tests.V1.Factories
 {
     [TestFixture]
-    public class EntityFactoryTest
+    public class DataSourceFactoryTest
     {
         private readonly Fixture _fixture = new();
 
@@ -18,7 +18,7 @@ namespace SingleViewApi.Tests.V1.Factories
         [Test]
         public void CanMapADatabaseEntityToADomainObject()
         {
-            var databaseEntity = _fixture.Create<DataSourceEntity>();
+            var databaseEntity = _fixture.Create<DataSourceDbEntity>();
             var entity = databaseEntity.ToDomain();
 
             databaseEntity.Id.Should().Be(entity.Id);
