@@ -1,8 +1,7 @@
-using System;
-
 namespace SingleViewApi.V1.Domain
 {
-    public class DBDataSource
+    // TODO: Rename to DataSource and remove DataSource enum
+    public class DbDataSource
     {
         public int Id { get; set; }
         public string Name { get; set; }

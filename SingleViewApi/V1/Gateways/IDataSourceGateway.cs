@@ -5,8 +5,8 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IDataSourceGateway
     {
-        DBDataSource GetEntityById(int id);
+        DbDataSource GetEntityById(int id);
 
-        List<DBDataSource> GetAll();
+        List<DbDataSource> GetAll();
     }
 }

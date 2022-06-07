@@ -6,19 +6,19 @@ namespace SingleViewApi.Tests.V1.Helper
 {
     public static class DatabaseEntityHelper
     {
-        public static DatabaseEntity CreateDatabaseEntity()
+        public static DataSourceEntity CreateDatabaseEntity()
         {
-            var entity = new Fixture().Create<Entity>();
+            var entity = new Fixture().Create<DbDataSource>();
 
             return CreateDatabaseEntityFrom(entity);
         }
 
-        public static DatabaseEntity CreateDatabaseEntityFrom(Entity entity)
+        public static DataSourceEntity CreateDatabaseEntityFrom(DbDataSource entity)
         {
-            return new DatabaseEntity
+            return new DataSourceEntity()
             {
                 Id = entity.Id,
-                CreatedAt = entity.CreatedAt,
+                Name = entity.Name,
             };
         }
     }
