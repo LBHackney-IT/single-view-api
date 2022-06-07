@@ -5,22 +5,20 @@ namespace SingleViewApi.V1.Factories
 {
     public static class EntityFactory
     {
-        public static DBDataSource ToDomain(this DataSourceEntity databaseEntity)
+        public static DbDataSource ToDomain(this DataSourceEntity databaseEntity)
         {
             //TODO: Map the rest of the fields in the domain object.
             // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
 
-            return new DBDataSource
+            return new DbDataSource
             {
                 Id = databaseEntity.Id,
                 Name = databaseEntity.Name
             };
         }
 
-        public static DataSourceEntity ToDatabase(this DBDataSource entity)
+        public static DataSourceEntity ToDatabase(this DbDataSource entity)
         {
-            //TODO: Map the rest of the fields in the database object.
-
             return new DataSourceEntity
             {
                 Id = entity.Id,

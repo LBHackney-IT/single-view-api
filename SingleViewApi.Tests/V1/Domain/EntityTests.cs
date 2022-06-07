@@ -1,4 +1,3 @@
-using System;
 using SingleViewApi.V1.Domain;
 using FluentAssertions;
 using NUnit.Framework;
@@ -11,18 +10,18 @@ namespace SingleViewApi.Tests.V1.Domain
         [Test]
         public void EntitiesHaveAnId()
         {
-            var entity = new Entity();
+            var entity = new DbDataSource();
             entity.Id.Should().BeGreaterOrEqualTo(0);
         }
 
         [Test]
-        public void EntitiesHaveACreatedAt()
+        public void EntitiesHaveAName()
         {
-            var entity = new Entity();
-            var date = new DateTime(2019, 02, 21);
-            entity.CreatedAt = date;
+            var entity = new DbDataSource();
+            var name = "My Entity";
+            entity.Name = name;
 
-            entity.CreatedAt.Should().BeSameDateAs(date);
+            entity.Name.Should().Be(name);
         }
     }
 }
