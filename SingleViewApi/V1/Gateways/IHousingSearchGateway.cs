@@ -7,6 +7,6 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface IHousingSearchGateway
     {
-        Task<HousingSearchApiResponse> GetSearchResultsBySearchText(string searchText, int page, string userToken);
+        Task<HousingSearchApiResponse> GetSearchResultsBySearchText(string searchText, string userToken);
     }
 }
