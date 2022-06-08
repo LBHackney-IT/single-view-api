@@ -125,6 +125,9 @@ commands:
             HOST=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-hostname --query Parameter.Value)
             PORT=5302
             INSTANCE_NAME=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/jump-box-instance-name --query Parameter.Value)
+            echo "-----------------"
+            echo $INSTANCE_NAME
+            echo "-----------------"
             ssh -4 -i ./private-key.pem -Nf -M -L ${PORT//\"}:${HOST//\"}:${PORT//\"} -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -o ProxyCommand="aws ssm start-session --target %h --document AWS-StartSSHSession --parameters portNumber=%p --region=eu-west-2" ec2-user@${INSTANCE_NAME//\"}
             PASSWORD=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-password --query Parameter.Value --with-decryption)
             USERNAME=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-username --query Parameter.Value)
