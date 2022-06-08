@@ -92,14 +92,13 @@ commands:
     description: "Install entity framework for DB migrations"
     steps:
       - *attach_workspace
-      - checkout
       - run:
           name: Install dotnet ef core
           command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - project/dotnet-ef-local
+            - dotnet-ef-local
   migrate-database:
     description: "Migrate database"
     parameters:
@@ -109,6 +108,11 @@ commands:
       - *attach_workspace
       - checkout
       - setup_remote_docker
+      - run:
+          name: debug
+          command: |
+            pwd
+            ls -al
       - run:
           name: Install Unzip
           command: apt-get update && apt-get install unzip
