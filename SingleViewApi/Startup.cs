@@ -216,7 +216,7 @@ namespace SingleViewApi
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
-            // services.AddDynamoDbHealthCheck<DatabaseEntity>();
+            services.AddHealthChecks();
 
             services.AddTokenFactory();
 
@@ -365,10 +365,10 @@ namespace SingleViewApi
                 // SwaggerGen won't find controllers that are routed via this technique.
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
-                // endpoints.MapHealthChecks("/api/v1/healthcheck/ping", new HealthCheckOptions()
-                // {
-                //     ResponseWriter = HealthCheckResponseWriter.WriteResponse
-                // });
+                endpoints.MapHealthChecks("/api/v1/healthcheck/ping", new HealthCheckOptions()
+                {
+                    ResponseWriter = HealthCheckResponseWriter.WriteResponse
+                });
             });
             app.UseLogCall();
         }
