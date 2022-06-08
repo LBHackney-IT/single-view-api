@@ -29,9 +29,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(SearchResponseObject), StatusCodes.Status200OK)]
 
         [HttpGet]
-        public IActionResult SearchByName([FromQuery] string firstName, string lastName, int page, string redisId, [FromHeader] string authorization)
+        public IActionResult SearchByName([FromQuery] string firstName, string lastName, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, page, authorization, redisId).Result);
+            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId).Result);
         }
     }
 }
