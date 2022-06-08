@@ -88,9 +88,59 @@ commands:
             cd ./SingleViewApi/
             sls deploy --stage <<parameters.stage>> --conceal
 
+  migrate-database:
+    description: "Migrate database"
+    parameters:
+      stage:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: debug
+          command: |
+            pwd
+            ls -al
+      - run:
+          name: Install Unzip
+          command: apt-get update && apt-get install unzip
+      - run:
+          name: Install dotnet ef core
+          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
+      - run:
+          name: Install ssh
+          command: apt-get update && apt-get -y install openssh-server
+      - run:
+          name: Install AWS CLI
+          command: |
+            curl -L -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+            unzip awscliv2.zip
+            ./aws/install
+      - run:
+          name: Install Session Manager plugin
+          command: |
+            curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+            dpkg -i session-manager-plugin.deb
+      - run:
+          name: SSH into RDS and migrate database
+          command: |
+            aws ssm get-parameter --name "/single-view/<<parameters.stage>>/jump-box-pem-key" --output text --query Parameter.Value > ./private-key.pem
+            chmod 400 ./private-key.pem
+            HOST=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-hostname --query Parameter.Value)
+            PORT=5302
+            INSTANCE_ID=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/jump-box-instance-id --query Parameter.Value)
+            ssh -4 -i ./private-key.pem -Nf -M -L ${PORT//\"}:${HOST//\"}:${PORT//\"} -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -o ProxyCommand="aws ssm start-session --target %h --document AWS-StartSSHSession --parameters portNumber=%p --region=eu-west-2" ec2-user@${INSTANCE_ID//\"}
+            PASSWORD=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-password --query Parameter.Value --with-decryption)
+            USERNAME=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-username --query Parameter.Value)
+            DATABASE=singleview
+            CONN_STR="Host=localhost;Password=${PASSWORD};Port=${PORT};Username=${USERNAME};Database=${DATABASE}"
+            cd ./SingleViewApi/
+            CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
+
 jobs:
   check-env:
-    executor: docker-python
+    executor: docker-dotnet
     steps:
       - run:
           name: print env
@@ -146,6 +196,21 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "production"
+  migrate-database-development:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "development"
+  migrate-database-staging:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "staging"
+  migrate-database-production:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "production"
   deploy-to-development:
     executor: docker-dotnet
     steps:
@@ -181,9 +246,13 @@ workflows:
           filters:
             branches:
               only: development
-      - terraform-init-and-apply-to-development:
+      - migrate-database-development:
+          context: api-nuget-token-context
           requires:
             - assume-role-development
+      - terraform-init-and-apply-to-development:
+          requires:
+            - migrate-database-development
           filters:
             branches:
               only: development

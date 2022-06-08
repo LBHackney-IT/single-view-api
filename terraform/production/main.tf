@@ -14,17 +14,23 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 locals {
-  application_name = "single-view-api"
-   parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    application_name = "single-view-api"
+    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    vpc_id = "vpc-0a577fbdce98e5fe9"
+    cidr = "0.0.0.0/0"
+}
+
+data "aws_subnet_ids" "all" {
+    vpc_id = local.vpc_id
 }
 
 # Create ElastiCache Redis security group
 
 resource "aws_security_group" "redis_sg" {
-    vpc_id = "vpc-0a577fbdce98e5fe9"
+    vpc_id = local.vpc_id
 
     ingress {
-        cidr_blocks = ["0.0.0.0/0"]
+        cidr_blocks = [local.cidr]
         from_port   = 6379
         to_port     = 6379
         protocol    = "tcp"
@@ -34,7 +40,7 @@ resource "aws_security_group" "redis_sg" {
         from_port       = 0
         to_port         = 0
         protocol        = "-1"
-        cidr_blocks     = ["0.0.0.0/0"]
+        cidr_blocks = [local.cidr]
     }
 
 }
@@ -44,7 +50,7 @@ resource "aws_security_group" "redis_sg" {
 resource "aws_elasticache_subnet_group" "default" {
     name        = "subnet-group-single-view"
     description = "Private subnets for the ElastiCache instances: single view"
-    subnet_ids  = ["subnet-0549806bb139ea8be", "subnet-0ee03e80fcc765fb2", "subnet-04f3f27d8d1bb349f", "subnet-012bdebbf8bf17369" ]
+    subnet_ids  = data.aws_subnet_ids.all.ids
 }
 
 
@@ -62,14 +68,6 @@ resource "aws_elasticache_cluster" "redis" {
     security_group_ids   = [aws_security_group.redis_sg.id]
 }
 
-#data "aws_iam_role" "ec2_container_service_role" {
-#  name = "ecsServiceRole"
-#}
-#
-#data "aws_iam_role" "ecs_task_execution_role" {
-#  name = "ecsTaskExecutionRole"
-#}
-
 terraform {
   backend "s3" {
     bucket  = "terraform-state-corporate-production"
@@ -78,28 +76,40 @@ terraform {
     key     = "services/single-view-api/state"
   }
 }
-#
-#module "development" {
-#  # Delete as appropriate:
-#  source                      = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/fargate"
-#  # source = "github.com/LBHackney-IT/aws-hackney-components-per-service-terraform.git//modules/environment/backend/ec2"
-#  cluster_name                = "production-apis"
-#  ecr_name                    = ecr repository name # Replace with your repository name - pattern: "hackney/YOUR APP NAME"
-#  environment_name            = "production"
-#  application_name            = local.application_name
-#  security_group_name         = back end security group name # Replace with your security group name, WITHOUT SPECIFYING environment. Usually the SG has the name of your API
-#  vpc_name                    = "vpc-production-apis"
-#  host_port                   = port # Replace with the port to use for your api / app
-#  port                        = port # Replace with the port to use for your api / app
-#  desired_number_of_ec2_nodes = number of nodes # Variable will only be used if EC2 is required. Do not remove it.
-#  lb_prefix                   = "nlb-production-apis"
-#  ecs_execution_role          = data.aws_iam_role.ecs_task_execution_role.arn
-#  lb_iam_role_arn             = data.aws_iam_role.ec2_container_service_role.arn
-#  task_definition_environment_variables = {
-#    ASPNETCORE_ENVIRONMENT = "production"
-#  }
-#  task_definition_environment_variable_count = number # This number needs to reflect the number of environment variables provided
-#  cost_code = your project's cost code
-#  task_definition_secrets      = {}
-#  task_definition_secret_count = number # This number needs to reflect the number of environment variables provided
-#}
+
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+data "aws_ssm_parameter" "uh_postgres_db_password" {
+    name = "/single-view/production/postgres-password"
+}
+
+data "aws_ssm_parameter" "uh_postgres_username" {
+    name = "/single-view/production/postgres-username"
+}
+
+#####
+# DB
+#####
+module "postgres_db" {
+    source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
+    environment_name = "production"
+    vpc_id = local.vpc_id
+    db_identifier = "singleview"
+    db_name = "singleview"
+    db_port  = 5302
+    subnet_ids = data.aws_subnet_ids.all.ids
+    db_engine = "postgres"
+    db_engine_version = "12.8" //DMS does not work well with v12
+    db_instance_class = "db.t3.micro"
+    db_allocated_storage = 20
+    maintenance_window = "sun:10:00-sun:10:30"
+    db_username = data.aws_ssm_parameter.uh_postgres_username.value
+    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
+    storage_encrypted = false
+    multi_az = false //only true if production deployment
+    publicly_accessible = false
+    project_name = "single view"
+}

@@ -141,6 +141,27 @@ openssl rsa -pubout -in rsa_dev_priv.pem -out rsa_dev_pub.pem
 Set the values without RSA padding where appropriate
 
 ## Data Migrations
+
+### To create a new migration locally
+Run:
+```bash
+dotnet restore
+```
+
+```bash
+CONNECTION_STRING="Host=localhost;Port=5432;Database=testdb;Username=postgres;Password=mypassword" dotnet ef migrations add YourMigrationName
+```
+
+### To run migrations manually
+Run in docker shell:
+```bash
+make shell
+```
+
+```bash
+dotnet ef database update
+```
+
 ### A good data migration
 - Record failure logs
 - Automated
