@@ -28,7 +28,7 @@ namespace SingleViewApi.V1.UseCase
         {
             var searchText = $"{firstName}+{lastName}";
 
-            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText,  userToken);
+            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
 
             var housingSearchApiId = new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchText };
 
