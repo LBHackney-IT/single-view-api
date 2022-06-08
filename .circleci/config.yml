@@ -88,6 +88,18 @@ commands:
             cd ./SingleViewApi/
             sls deploy --stage <<parameters.stage>> --conceal
 
+  install-dotnet-ef:
+    description: "Install entity framework for DB migrations"
+    steps:
+      - *attach_workspace
+      - checkout
+      - run:
+          name: Install dotnet ef core
+          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - ./dotnet-ef-local
   migrate-database:
     description: "Migrate database"
     parameters:
@@ -115,9 +127,6 @@ commands:
             curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
             dpkg -i session-manager-plugin.deb
       - run:
-          name: Install dotnet ef core
-          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
-      - run:
           name: SSH into RDS and migrate database
           command: |
             aws ssm get-parameter --name "/single-view/<<parameters.stage>>/jump-box-pem-key" --output text --query Parameter.Value > ./private-key.pem
@@ -138,8 +147,9 @@ commands:
 
 jobs:
   check-env:
-    executor: docker-python
+    executor: docker-dotnet
     steps:
+      - install-dotnet-ef
       - run:
           name: print env
           command: echo $TEST
@@ -245,10 +255,9 @@ workflows:
             branches:
               only: development
       - migrate-database-development:
-          context:
-            - api-nuget-token-context
           requires:
             - assume-role-development
+            - check-env
       - terraform-init-and-apply-to-development:
           requires:
             - migrate-database-development
