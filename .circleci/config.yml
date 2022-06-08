@@ -91,7 +91,6 @@ commands:
   install-dotnet-ef:
     description: "Install entity framework for DB migrations"
     steps:
-      - *attach_workspace
       - run:
           name: Install dotnet ef core
           command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
