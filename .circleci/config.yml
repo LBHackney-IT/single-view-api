@@ -99,7 +99,7 @@ commands:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - ./dotnet-ef-local
+            - project/dotnet-ef-local
   migrate-database:
     description: "Migrate database"
     parameters:
