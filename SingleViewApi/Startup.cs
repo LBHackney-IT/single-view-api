@@ -294,8 +294,7 @@ namespace SingleViewApi
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
             services.AddDbContext<SingleViewContext>(
-                opt => opt.UseNpgsql(connectionString)
-                // .AddXRayInterceptor(true)
+                opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true)
                 );
         }
 
@@ -337,11 +336,8 @@ namespace SingleViewApi
                 app.UseHsts();
             }
 
-            // if (!env.IsDevelopment())
-            // {
-            //     // AWS XRay tracing
-            //     app.UseXRay("SingleViewApi");
-            // }
+            // AWS XRay tracing
+            app.UseXRay("SingleViewApi");
 
 
             //Get All ApiVersions,
