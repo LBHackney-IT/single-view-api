@@ -22,10 +22,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
     }
     [LogCall]
-    public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken,
+    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken,
         string redisId)
     {
-        var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, page, userToken);
+        var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
         int total = 0;
 
         List<SearchResult> concatenatedResults;
