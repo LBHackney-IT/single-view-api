@@ -38,7 +38,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var searchTerm = $"{firstName}+{lastName}";
         var redisId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var page = _fixture.Create<int>();
         var expectedSystemIds = new List<SystemId>
         {
             new SystemId() { Id = searchTerm, SystemName = DataSource.HousingSearchApi, Error = SystemId.NotFoundMessage },
@@ -46,7 +45,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
-                x.Execute(firstName, lastName, page, userToken))
+                x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(new SearchResponseObject()
             {
                 SearchResponse = new SearchResponse()
@@ -71,7 +70,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
             });
 
-        var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.SystemIds.Should().BeEquivalentTo(expectedSystemIds);
 
@@ -84,7 +83,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var lastName = _fixture.Create<string>();
         var redisId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var page = _fixture.Create<int>();
         var jigsawResults = _fixture.Create<SearchResponse>();
         var housingResults = _fixture.Create<SearchResponse>();
         var jigsawResponseObject = new SearchResponseObject()
@@ -120,14 +118,14 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
-                x.Execute(firstName, lastName, page, userToken))
+                x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingResponseObject);
 
         _mockGetJigsawCustomersUseCase.Setup(x =>
                 x.Execute(firstName, lastName, redisId, userToken))
             .ReturnsAsync(jigsawResponseObject);
 
-        var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
 
@@ -143,7 +141,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var lastName = _fixture.Create<string>();
         string redisId = null;
         var userToken = _fixture.Create<string>();
-        var page = _fixture.Create<int>();
         var housingResults = _fixture.Create<SearchResponse>();
         var housingResponseObject = new SearchResponseObject()
         {
@@ -168,10 +165,10 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
-                x.Execute(firstName, lastName, page, userToken))
+                x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingResponseObject);
 
-        var results = _classUnderTest.Execute(firstName, lastName, page, userToken, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
 
