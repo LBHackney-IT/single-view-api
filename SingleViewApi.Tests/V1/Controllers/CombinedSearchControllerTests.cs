@@ -27,11 +27,11 @@ namespace SingleViewApi.Tests.V1.Controllers
             const string lastName = "Test";
             const string authorization = "token";
             const string redisId = "Testid";
-            const int page = 1;
 
-            _ = _classUnderTest.SearchByName(firstName, lastName, page, redisId, authorization);
 
-            _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, page, authorization, redisId), Times.Once);
+            _ = _classUnderTest.SearchByName(firstName, lastName, redisId, authorization);
+
+            _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, authorization, redisId), Times.Once);
         }
     }
 }
