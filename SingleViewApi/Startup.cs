@@ -216,7 +216,7 @@ namespace SingleViewApi
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
-            services.AddDynamoDbHealthCheck<DatabaseEntity>();
+            services.AddHealthChecks();
 
             services.AddTokenFactory();
 
@@ -293,15 +293,18 @@ namespace SingleViewApi
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<DatabaseContext>(
-                opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true));
+            services.AddDbContext<SingleViewContext>(
+                opt => opt.UseNpgsql(connectionString)
+                // TODO: re-enable this in the future
+                //.AddXRayInterceptor(true)
+                );
         }
 
 
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddScoped<IExampleGateway, ExampleGateway>();
+            services.AddScoped<IDataSourceGateway, DataSourceGateway>();
 
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             //services.AddScoped<IExampleDynamoGateway, DynamoDbGateway>();
@@ -335,6 +338,7 @@ namespace SingleViewApi
                 app.UseHsts();
             }
 
+            // AWS XRay tracing
             app.UseXRay("SingleViewApi");
 
 

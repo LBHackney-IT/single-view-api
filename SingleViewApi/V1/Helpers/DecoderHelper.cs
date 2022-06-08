@@ -19,7 +19,6 @@ public class DecoderHelper : IDecoderHelper
     }
     public JigsawCredentials DecodeJigsawCredentials(string cipher)
     {
-
         var cipherText = Convert.FromBase64String(cipher);
 
         var decodedJson = Decrypt(cipherText, _privateKey);

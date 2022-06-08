@@ -8,16 +8,16 @@ using SingleViewApi.V1.Gateways;
 namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/redis")]
+    [Route("api/v1/postgres")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    public class RedisController : BaseController
+    public class PostgresController : BaseController
     {
-        private readonly IRedisGateway _redisGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-        public RedisController(IRedisGateway redisGateway)
+        public PostgresController(IDataSourceGateway dataSourceGateway)
         {
-            _redisGateway = redisGateway;
+            _dataSourceGateway = dataSourceGateway;
 
         }
 
@@ -30,19 +30,19 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
 
         [HttpGet]
-        [Route("Add")]
+        [Route("GetAll")]
         [LogCall(LogLevel.Information)]
-        public IActionResult AddToRedis([FromQuery] string value)
+        public IActionResult GetAll()
         {
-            var id = _redisGateway.AddValue(value, 1);
-            return Ok(id);
+            var res = _dataSourceGateway.GetAll();
+            return Ok(res);
         }
         [HttpGet]
         [Route("Get")]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetFromRedis([FromQuery] string id)
+        public IActionResult Get([FromQuery] int id)
         {
-            var value = _redisGateway.GetValue(id);
+            var value = _dataSourceGateway.GetEntityById(id);
             return Ok(value);
         }
     }
