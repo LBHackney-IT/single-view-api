@@ -102,7 +102,7 @@ commands:
           command: apt-get update && apt-get install unzip
       - run:
           name: Install ssh
-          command: apt-get update && apt-get install openssh-server
+          command: apt-get update && apt-get -y install openssh-server
       - run:
           name: Install AWS CLI
           command: |
