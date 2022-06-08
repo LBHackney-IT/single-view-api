@@ -93,7 +93,7 @@ commands:
     steps:
       - run:
           name: Install dotnet ef core
-          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
+          command: dotnet tool install dotnet-ef --tool-path ../dotnet-ef-local/
       - persist_to_workspace:
           root: *workspace_root
           paths:
@@ -146,7 +146,7 @@ commands:
             DATABASE=singleview
             CONN_STR="Host=localhost;Password=${PASSWORD};Port=${PORT};Username=${USERNAME};Database=${DATABASE}"
             cd ./SingleViewApi/
-            CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
+            CONNECTION_STRING=${CONN_STR} ../../dotnet-ef-local/dotnet-ef database update
 
 jobs:
   check-env:
