@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase
@@ -20,24 +21,31 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<IGetJigsawNotesUseCase> _mockGetJigsawNotesUseCase;
         private GetAllNotesUseCase _classUnderTest;
         private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
+
 
         [SetUp]
         public void SetUp()
         {
             _mockGetNotesUseCase = new Mock<IGetNotesUseCase>();
             _mockGetJigsawNotesUseCase = new Mock<IGetJigsawNotesUseCase>();
-            _classUnderTest = new GetAllNotesUseCase(_mockGetNotesUseCase.Object, _mockGetJigsawNotesUseCase.Object);
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+
+            _classUnderTest = new GetAllNotesUseCase(_mockGetNotesUseCase.Object, _mockGetJigsawNotesUseCase.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
         }
 
         [Test]
         public async Task GetsAllNotes()
         {
+            var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+            var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+
             var personApiSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, DataSource.PersonApi).Create();
+                .With(o => o.SystemName, stubbedHousingSearchDataSource.Name).Create();
             var personApiSystemId = personApiSystemIdFixture.Id;
             var jigsawSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, DataSource.Jigsaw).Create();
+                .With(o => o.SystemName, stubbedJigsawDataSource.Name).Create();
             var jigsawSystemId = jigsawSystemIdFixture.Id;
             var systemIdListFixture = new SystemIdList()
             {
@@ -52,9 +60,9 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var notesFixture = new List<NoteResponseObject>();
             var notesApiNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
-                .With(o => o.DataSource, DataSource.NotesApi).CreateMany().ToList();
+                .With(o => o.DataSource, stubbedHousingSearchDataSource).CreateMany().ToList();
             var jigsawNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
-                .With(o => o.DataSource, DataSource.Jigsaw).CreateMany().ToList();
+                .With(o => o.DataSource, stubbedJigsawDataSource).CreateMany().ToList();
             notesFixture.AddRange(notesApiNoteResponseObjectListFixture);
             notesFixture.AddRange(jigsawNoteResponseObjectListFixture);
             var notesResponseFixture = new NotesResponse()
@@ -79,8 +87,11 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public async Task IgnoresJigsawNotesIfRedisKeyIsNull()
         {
+            var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+            var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+
             var jigsawSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, DataSource.Jigsaw).Create();
+                .With(o => o.SystemName, stubbedHousingSearchDataSource.Name).Create();
             var customerIdFixture = jigsawSystemIdFixture.Id;
             var hackneyTokenFixture = _fixture.Create<string>();
 
