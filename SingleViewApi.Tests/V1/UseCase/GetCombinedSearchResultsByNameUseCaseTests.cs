@@ -89,8 +89,8 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var userToken = _fixture.Create<string>();
         var jigsawResults = _fixture.Create<SearchResponse>();
         var housingResults = _fixture.Create<SearchResponse>();
-        var stubbedJigsawDataSource = _fixture.Create<DataSource>();
-        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+        var stubbedJigsawDataSource = new DataSource() { Name = "Jigsaw", Id = 123 };
+        var stubbedHousingSearchDataSource = new DataSource() { Name = "PersonAPI", Id = 123 };
         var jigsawResponseObject = new SearchResponseObject()
         {
             SearchResponse = jigsawResults,
@@ -119,7 +119,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
 

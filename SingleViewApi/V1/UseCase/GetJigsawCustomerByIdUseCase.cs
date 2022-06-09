@@ -19,7 +19,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
     private IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
     private readonly IDataSourceGateway _dataSourceGateway;
 
-    public GetJigsawCustomerByIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase,  IDataSourceGateway dataSourceGateway)
+    public GetJigsawCustomerByIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IDataSourceGateway dataSourceGateway)
     {
         _jigsawGateway = jigsawGateway;
         _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;

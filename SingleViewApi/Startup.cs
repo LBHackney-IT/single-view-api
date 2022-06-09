@@ -199,7 +199,7 @@ namespace SingleViewApi
             {
                 var notesGateway = s.GetService<INotesGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
-                return new GetNotesUseCase(notesGateway,dataSourceGateway);
+                return new GetNotesUseCase(notesGateway, dataSourceGateway);
             });
 
             services.AddTransient<IGetJigsawNotesUseCase>(s =>
