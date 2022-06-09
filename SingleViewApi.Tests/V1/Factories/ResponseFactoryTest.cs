@@ -11,7 +11,7 @@ namespace SingleViewApi.Tests.V1.Factories
         [Test]
         public void CanMapADatabaseEntityToADomainObject()
         {
-            var domain = new DbDataSource();
+            var domain = new DataSource();
             var response = domain.ToResponse();
             //TODO: check here that all of the fields have been mapped correctly. i.e. response.fieldOne.Should().Be("one")
         }
