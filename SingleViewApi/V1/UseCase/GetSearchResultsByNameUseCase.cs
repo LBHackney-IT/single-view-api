@@ -26,11 +26,11 @@ namespace SingleViewApi.V1.UseCase
 
         [LogCall]
 
-        public async Task<SearchResponseObject> Execute(string firstName, string lastName, int page, string userToken)
+        public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
         {
             var searchText = $"{firstName}+{lastName}";
 
-            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, page, userToken);
+            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
 
             var dataSource = _dataSourceGateway.GetEntityById(1);
 

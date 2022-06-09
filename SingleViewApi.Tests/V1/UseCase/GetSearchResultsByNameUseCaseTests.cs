@@ -41,13 +41,12 @@ namespace SingleViewApi.Tests.V1.UseCase
             var stubbedDataSource = _fixture.Create<DataSource>();
 
             _mockHousingSearchGateway.Setup(x =>
-                x.GetSearchResultsBySearchText(searchText, page, userToken))
+                x.GetSearchResultsBySearchText(searchText, userToken))
                     .ReturnsAsync((HousingSearchApiResponse) null);
 
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
 
-
-            var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
+            var results = await _classUnderTest.Execute(firstName, lastName, userToken);
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo(stubbedDataSource.Name);
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
@@ -62,17 +61,16 @@ namespace SingleViewApi.Tests.V1.UseCase
             var lastName = _fixture.Create<string>();
             var searchText = $"{firstName}+{lastName}";
             var userToken = _fixture.Create<string>();
-            var page = _fixture.Create<int>();
             var stubbedEntity = _fixture.Create<HousingSearchApiResponse>();
             var stubbedDataSource = _fixture.Create<DataSource>();
 
 
-            _mockHousingSearchGateway.Setup(x => x.GetSearchResultsBySearchText(searchText, page, userToken))
+            _mockHousingSearchGateway.Setup(x => x.GetSearchResultsBySearchText(searchText, userToken))
                 .ReturnsAsync(stubbedEntity);
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
 
 
-            var results = await _classUnderTest.Execute(firstName, lastName, page, userToken);
+            var results = await _classUnderTest.Execute(firstName, lastName, userToken);
 
             results.SystemIds[^1].SystemName.Should().BeEquivalentTo(stubbedDataSource.Name);
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
