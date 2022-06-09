@@ -148,6 +148,12 @@ Run:
 dotnet restore
 ```
 
+#### Dotnet Entity Framework installation
+```bash
+dotnet tool install -g dotnet-ef
+```
+
+#### Generate a new migration file
 ```bash
 CONNECTION_STRING="Host=localhost;Port=5432;Database=testdb;Username=postgres;Password=mypassword" dotnet ef migrations add YourMigrationName
 ```
