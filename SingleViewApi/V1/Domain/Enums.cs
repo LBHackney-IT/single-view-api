@@ -10,13 +10,4 @@ namespace SingleViewApi.V1.Domain
         Tenure,
         Repair
     }
-
-    // [JsonConverter(typeof(JsonStringEnumConverter))]
-    // public enum DataSource
-    // {
-    //     HousingSearchApi,
-    //     Jigsaw,
-    //     NotesApi,
-    //     PersonApi
-    // }
 }
