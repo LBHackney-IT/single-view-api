@@ -15,11 +15,13 @@ namespace SingleViewApi.V1.UseCase
     public class GetSearchResultsByNameUseCase : IGetSearchResultsByNameUseCase
     {
         private IHousingSearchGateway _housingSearchGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
 
-        public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway)
+        public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway, IDataSourceGateway dataSourceGateway)
         {
             _housingSearchGateway = housingSearchGateway;
+            _dataSourceGateway = dataSourceGateway;
         }
 
         [LogCall]
@@ -30,7 +32,9 @@ namespace SingleViewApi.V1.UseCase
 
             var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
 
-            var housingSearchApiId = new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchText };
+            var dataSource = _dataSourceGateway.GetEntityById(1);
+
+            var housingSearchApiId = new SystemId() { SystemName = dataSource.Name, Id = searchText };
 
             var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { housingSearchApiId } };
 
@@ -52,7 +56,7 @@ namespace SingleViewApi.V1.UseCase
                     var person = new SearchResult()
                     {
                         Id = result.Id.ToString(),
-                        DataSource = DataSource.HousingSearchApi,
+                        DataSource = dataSource.Name,
                         FirstName = result.FirstName,
                         SurName = result.Surname,
                         Title = result.Title,

@@ -10,14 +10,14 @@ namespace SingleViewApi.Tests.V1.Domain
         [Test]
         public void EntitiesHaveAnId()
         {
-            var entity = new DbDataSource();
+            var entity = new DataSource();
             entity.Id.Should().BeGreaterOrEqualTo(0);
         }
 
         [Test]
         public void EntitiesHaveAName()
         {
-            var entity = new DbDataSource();
+            var entity = new DataSource();
             var name = "My Entity";
             entity.Name = name;
 

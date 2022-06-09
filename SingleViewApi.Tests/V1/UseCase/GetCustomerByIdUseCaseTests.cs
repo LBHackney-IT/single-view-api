@@ -20,13 +20,15 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<IContactDetailsGateway> _mockContactDetailsGateway;
         private GetCustomerByIdUseCase _classUnderTest;
         private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
         [SetUp]
         public void SetUp()
         {
             _mockPersonGateway = new Mock<IPersonGateway>();
             _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
-            _classUnderTest = new GetCustomerByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object);
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+            _classUnderTest = new GetCustomerByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
 
         }
@@ -37,13 +39,15 @@ namespace SingleViewApi.Tests.V1.UseCase
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
             var stubbedPerson = _fixture.Create<Person>();
+            var stubbedDataSource = _fixture.Create<DataSource>();
             var stubbedContactDetails = _fixture.Create<ContactDetails>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
             _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
-            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.PersonApi);
+            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(stubbedDataSource.Name);
             result.SystemIds[^1].Id.Should().BeEquivalentTo(id);
 
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
@@ -73,11 +77,14 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var id = _fixture.Create<string>();
             var userToken = _fixture.Create<string>();
+            var stubbedDataSource = _fixture.Create<DataSource>();
+
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync((Person) null);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
-            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(DataSource.PersonApi);
+            result.SystemIds[^1].SystemName.Should().BeEquivalentTo(stubbedDataSource.Name);
             result.SystemIds[^1].Id.Should().BeEquivalentTo(id);
             result.SystemIds[^1].Error.Should().BeEquivalentTo(SystemId.NotFoundMessage);
 

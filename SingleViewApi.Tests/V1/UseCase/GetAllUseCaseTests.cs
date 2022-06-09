@@ -29,7 +29,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public void GetsAllFromTheGateway()
         {
-            var stubbedEntities = _fixture.CreateMany<DbDataSource>().ToList();
+            var stubbedEntities = _fixture.CreateMany<DataSource>().ToList();
             _mockGateway.Setup(x => x.GetAll()).Returns(stubbedEntities);
 
             var expectedResponse = new ResponseObjectList { ResponseObjects = stubbedEntities.ToResponse() };
