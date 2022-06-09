@@ -38,6 +38,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             const int page = 1;
 
             _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}&page={page}&pageSize=12")
+
                 .WithHeaders("Authorization", userToken);
             // Act
             _ = _classUnderTest.GetSearchResultsBySearchText(searchText, userToken);
