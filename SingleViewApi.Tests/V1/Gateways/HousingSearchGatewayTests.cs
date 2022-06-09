@@ -37,7 +37,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             const string userToken = "User token";
 
 
-            _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}&page=1&pageSize=15")
+            _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}&page=1&pageSize=12")
                 .WithHeaders("Authorization", userToken);
             // Act
             _ = _classUnderTest.GetSearchResultsBySearchText(searchText, userToken);
