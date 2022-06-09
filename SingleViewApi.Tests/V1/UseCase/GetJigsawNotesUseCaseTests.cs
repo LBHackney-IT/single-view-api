@@ -20,14 +20,16 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
         private GetJigsawNotesUseCase _classUnderTest;
         private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
         [SetUp]
         public void SetUp()
         {
             _mockJigsawGateway = new Mock<IJigsawGateway>();
             _mockGetJigsawAuthTokenUseCase = new Mock<IGetJigsawAuthTokenUseCase>();
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
             _classUnderTest =
-                new GetJigsawNotesUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object);
+                new GetJigsawNotesUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
         }
 
@@ -42,6 +44,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             var idFixture = _fixture.Create<string>();
             var hackneyTokenFixture = _fixture.Create<string>();
             var jigsawNotesFixture = _fixture.CreateMany<JigsawNotesResponseObject>().ToList();
+            var stubbedDataSource = _fixture.Create<DataSource>();
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
             _mockGetJigsawAuthTokenUseCase.Setup(x =>
                 x.Execute(redisKeyFixture, hackneyTokenFixture)).ReturnsAsync(authGatewayResponseFixture);
@@ -50,7 +55,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 x.GetCustomerNotesByCustomerId(idFixture, authGatewayResponseFixture.Token)).ReturnsAsync(jigsawNotesFixture);
 
             var response = await _classUnderTest.Execute(idFixture, redisKeyFixture, hackneyTokenFixture);
-            Assert.AreEqual(DataSource.Jigsaw, response[^1].DataSource);
+            Assert.AreEqual(stubbedDataSource, response[^1].DataSource);
             Assert.AreEqual(jigsawNotesFixture[^1].Id.ToString(), response[^1].DataSourceId);
             Assert.AreEqual(jigsawNotesFixture[^1].Content, response[^1].Description);
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
+using Bogus.DataSets;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -38,10 +39,13 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var searchTerm = $"{firstName}+{lastName}";
         var redisId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
+        var page = _fixture.Create<int>();
+        var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var expectedSystemIds = new List<SystemId>
         {
-            new SystemId() { Id = searchTerm, SystemName = DataSource.HousingSearchApi, Error = SystemId.NotFoundMessage },
-            new SystemId(){ Id = searchTerm, SystemName = DataSource.Jigsaw, Error = SystemId.NotFoundMessage }
+            new SystemId() { Id = searchTerm, SystemName = stubbedHousingSearchDataSource.Name, Error = SystemId.NotFoundMessage },
+            new SystemId(){ Id = searchTerm, SystemName = stubbedJigsawDataSource.Name, Error = SystemId.NotFoundMessage }
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
@@ -53,7 +57,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.HousingSearchApi, Id = searchTerm, Error = SystemId.NotFoundMessage } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
@@ -66,7 +70,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                     SearchResults = null,
                     Total = 0,
                 },
-                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = DataSource.Jigsaw, Id = searchTerm, Error = SystemId.NotFoundMessage } })
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
 
             });
 
@@ -85,12 +89,14 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var userToken = _fixture.Create<string>();
         var jigsawResults = _fixture.Create<SearchResponse>();
         var housingResults = _fixture.Create<SearchResponse>();
+        var stubbedJigsawDataSource = new DataSource() { Name = "Jigsaw", Id = 123 };
+        var stubbedHousingSearchDataSource = new DataSource() { Name = "PersonAPI", Id = 123 };
         var jigsawResponseObject = new SearchResponseObject()
         {
             SearchResponse = jigsawResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
         var housingResponseObject = new SearchResponseObject()
@@ -98,7 +104,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = housingResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -112,8 +118,8 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
+                new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
 
@@ -128,10 +134,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
-
-
-
-
     }
 
     [Test]
@@ -142,12 +144,13 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         string redisId = null;
         var userToken = _fixture.Create<string>();
         var housingResults = _fixture.Create<SearchResponse>();
+        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var housingResponseObject = new SearchResponseObject()
         {
             SearchResponse = housingResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -160,7 +163,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             },
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = DataSource.HousingSearchApi, Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" }
             }
         };
 
@@ -182,13 +185,14 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     {
         var testFirstName = "testFirstName";
         var testLastName = "testLastName";
+        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var testUnsortedData = new List<SearchResult> {
             new SearchResult() {
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.Jigsaw
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult()
         {
@@ -196,7 +200,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             FirstName = testFirstName,
             SurName = testLastName,
             DateOfBirth = DateTime.Now,
-            DataSource = DataSource.Jigsaw
+            DataSource = stubbedHousingSearchDataSource.Name
 
         },
             new SearchResult() {
@@ -204,7 +208,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.Jigsaw
+                DataSource = stubbedHousingSearchDataSource.Name
             },
         };
         var expectedSortedData = new List<SearchResult>
@@ -215,21 +219,21 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = testFirstName,
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.Jigsaw
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult(){
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.HousingSearchApi
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult() {
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = DataSource.Jigsaw
+                DataSource = stubbedHousingSearchDataSource.Name
             },
         };
 
