@@ -58,6 +58,8 @@ namespace SingleViewApi.Tests.V1.UseCase
             var paginationToken = "";
             var pageSize = 0;
 
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
+
             var notesFixture = new List<NoteResponseObject>();
             var notesApiNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
                 .With(o => o.DataSource, stubbedHousingSearchDataSource).CreateMany().ToList();
@@ -88,10 +90,12 @@ namespace SingleViewApi.Tests.V1.UseCase
         public async Task IgnoresJigsawNotesIfRedisKeyIsNull()
         {
             var stubbedJigsawDataSource = _fixture.Create<DataSource>();
-            var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
 
             var jigsawSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, stubbedHousingSearchDataSource.Name).Create();
+                .With(o => o.SystemName, stubbedJigsawDataSource.Name).Create();
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
+
             var customerIdFixture = jigsawSystemIdFixture.Id;
             var hackneyTokenFixture = _fixture.Create<string>();
 
@@ -118,6 +122,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             var paginationToken = "";
             var pageSize = 0;
             var hackneyTokenFixture = _fixture.Create<string>();
+            var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
 
             _mockGetNotesUseCase.Setup(x =>
                 x.Execute(id, userToken, paginationToken, pageSize)).ReturnsAsync((List<NoteResponseObject>) null);

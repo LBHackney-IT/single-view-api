@@ -38,7 +38,9 @@ public class GetJigsawCustomersUseCaseTests
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         const string hackneyToken = "test-token";
+        var stubbedJigsawDataSource = _fixture.Create<DataSource>();
 
+        _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
         _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
 
         var result = _classUnderTest.Execute(firstName, lastName, redisId, hackneyToken).Result;
