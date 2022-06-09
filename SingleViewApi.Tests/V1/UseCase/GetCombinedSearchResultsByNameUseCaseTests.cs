@@ -192,7 +192,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult()
         {
@@ -200,7 +200,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             FirstName = testFirstName,
             SurName = testLastName,
             DateOfBirth = DateTime.Now,
-            DataSource = stubbedHousingSearchDataSource
+            DataSource = stubbedHousingSearchDataSource.Name
 
         },
             new SearchResult() {
@@ -208,7 +208,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource
+                DataSource = stubbedHousingSearchDataSource.Name
             },
         };
         var expectedSortedData = new List<SearchResult>
@@ -219,21 +219,21 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 FirstName = testFirstName,
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult(){
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource
+                DataSource = stubbedHousingSearchDataSource.Name
             },
             new SearchResult() {
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource
+                DataSource = stubbedHousingSearchDataSource.Name
             },
         };
 

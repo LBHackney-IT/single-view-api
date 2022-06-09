@@ -71,6 +71,6 @@ public class GetJigsawCustomersUseCaseTests
         results.SearchResponse.SearchResults[0].FirstName.Should().BeEquivalentTo(stubbedEntity[0].FirstName);
         results.SearchResponse.SearchResults[0].SurName.Should().BeEquivalentTo(stubbedEntity[0].LastName);
         results.SearchResponse.SearchResults[0].DateOfBirth.Should().Be(stubbedEntity[0].DoB);
-        results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource);
+        results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource.Name);
     }
 }
