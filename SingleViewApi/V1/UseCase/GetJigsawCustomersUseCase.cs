@@ -15,13 +15,15 @@ namespace SingleViewApi.V1.UseCase
 {
     public class GetJigsawCustomersUseCase : IGetJigsawCustomersUseCase
     {
-        private IJigsawGateway _jigsawGateway;
-        private IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
+        private readonly IJigsawGateway _jigsawGateway;
+        private readonly IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-        public GetJigsawCustomersUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+        public GetJigsawCustomersUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IDataSourceGateway dataSourceGateway)
         {
             _jigsawGateway = jigsawGateway;
             _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
+            _dataSourceGateway = dataSourceGateway;
         }
 
 
@@ -31,7 +33,9 @@ namespace SingleViewApi.V1.UseCase
         {
             var authGatewayResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
-            var jigsawApiId = new SystemId() { SystemName = DataSource.Jigsaw, Id = $"{firstName}+{lastName}" };
+            var dataSource = _dataSourceGateway.GetEntityById(2);
+
+            var jigsawApiId = new SystemId() { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
 
             var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { jigsawApiId } };
 
@@ -56,7 +60,7 @@ namespace SingleViewApi.V1.UseCase
                 var person = new SearchResult()
                 {
                     Id = result.Id,
-                    DataSource = DataSource.Jigsaw,
+                    DataSource = dataSource.Name,
                     FirstName = result.FirstName,
                     SurName = result.LastName,
                     DateOfBirth = result.DoB,

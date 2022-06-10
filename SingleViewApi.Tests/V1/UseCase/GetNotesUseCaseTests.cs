@@ -17,12 +17,14 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<INotesGateway> _mockNotesGateway;
         private GetNotesUseCase _classUnderTest;
         private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
         [SetUp]
         public void SetUp()
         {
             _mockNotesGateway = new Mock<INotesGateway>();
-            _classUnderTest = new GetNotesUseCase(_mockNotesGateway.Object);
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+            _classUnderTest = new GetNotesUseCase(_mockNotesGateway.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
         }
 
@@ -32,12 +34,14 @@ namespace SingleViewApi.Tests.V1.UseCase
             var tokenFixture = _fixture.Create<string>();
             var idFixture = _fixture.Create<string>();
             var notesFixture = _fixture.CreateMany<NotesApiResponseObject>().ToList();
+            var stubbedDataSource = _fixture.Create<DataSource>();
 
             _mockNotesGateway.Setup(x =>
                 x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync(notesFixture);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
 
             var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
-            Assert.AreEqual(DataSource.NotesApi, response[^1].DataSource);
+            Assert.AreEqual(stubbedDataSource, response[^1].DataSource);
             Assert.AreEqual(notesFixture[^1].Id.ToString(), response[^1].DataSourceId);
             Assert.AreEqual(notesFixture[^1].Description, response[^1].Description);
         }

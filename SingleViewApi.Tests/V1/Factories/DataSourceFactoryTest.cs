@@ -24,7 +24,7 @@ namespace SingleViewApi.Tests.V1.Factories
         [Test]
         public void CanMapADomainEntityToADatabaseObject()
         {
-            var entity = _fixture.Create<DbDataSource>();
+            var entity = _fixture.Create<DataSource>();
             var databaseEntity = entity.ToDatabase();
 
             Assert.AreEqual(entity.Id, databaseEntity.Id);

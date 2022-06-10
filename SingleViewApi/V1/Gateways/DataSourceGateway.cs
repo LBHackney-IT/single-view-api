@@ -16,14 +16,14 @@ namespace SingleViewApi.V1.Gateways
             _singleViewContext = singleViewContext;
         }
 
-        public DbDataSource GetEntityById(int id)
+        public DataSource GetEntityById(int id)
         {
             var result = _singleViewContext.DataSources.Find(id);
 
             return result?.ToDomain();
         }
 
-        public List<DbDataSource> GetAll()
+        public List<DataSource> GetAll()
         {
             var results = _singleViewContext.DataSources.ToList();
             return results.Map(x => x.ToDomain());

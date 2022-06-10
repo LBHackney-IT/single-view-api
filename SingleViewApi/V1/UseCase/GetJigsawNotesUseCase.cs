@@ -13,10 +13,13 @@ namespace SingleViewApi.V1.UseCase
     {
         private readonly IJigsawGateway _gateway;
         private readonly IGetJigsawAuthTokenUseCase _getAuthTokenUseCase;
-        public GetJigsawNotesUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+        private readonly IDataSourceGateway _dataSourceGateway;
+
+        public GetJigsawNotesUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IDataSourceGateway dataSourceGateway)
         {
             _gateway = jigsawGateway;
             _getAuthTokenUseCase = getJigsawAuthTokenUseCase;
+            _dataSourceGateway = dataSourceGateway;
         }
 
         [LogCall]
@@ -29,7 +32,10 @@ namespace SingleViewApi.V1.UseCase
                 return null;
             }
             var gatewayResponse = await _gateway.GetCustomerNotesByCustomerId(customerId, authResponse.Token);
+
             if (gatewayResponse == null) return null;
+
+            var dataSource = _dataSourceGateway.GetEntityById(2);
 
             var notes = new List<NoteResponseObject>();
             foreach (var note in gatewayResponse)
@@ -44,7 +50,7 @@ namespace SingleViewApi.V1.UseCase
                         IsSensitive = note.IsSensitive,
                         IsPinned = note.IsPinned,
                         DataSourceId = note.Id.ToString(),
-                        DataSource = DataSource.Jigsaw
+                        DataSource = dataSource
                     }
                 );
             }
