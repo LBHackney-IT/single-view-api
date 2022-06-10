@@ -6,7 +6,7 @@ namespace SingleViewApi.V1.Boundary
     {
         public static readonly string NotFoundMessage = "Not found";
         public static readonly string UnauthorisedMessage = "Unauthorised";
-        public DataSource SystemName { get; set; }
+        public string SystemName { get; set; }
         public string Id { get; set; }
 #nullable enable
         public string? Error { get; set; }
