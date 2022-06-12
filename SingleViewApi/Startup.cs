@@ -316,6 +316,7 @@ namespace SingleViewApi
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IDataSourceGateway, DataSourceGateway>();
+            services.AddScoped<ICustomerDataSourceGateway, CustomerDataSourceGateway>();
 
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             //services.AddScoped<IExampleDynamoGateway, DynamoDbGateway>();
