@@ -32,7 +32,7 @@ namespace SingleViewApi.Tests.V1.Gateways
 
             var actual = SingleViewContext.CustomerDataSources.ToList().LastOrDefault();
 
-            Assert.AreEqual(customerDataSource.CustomerId, actual.CustomerId);
+            Assert.AreEqual(customerDataSource.CustomerId, actual.CustomerDbEntityId);
             Assert.AreEqual(customerDataSource.SourceId, actual.SourceId);
             Assert.AreEqual(customerDataSource.DataSourceId, actual.DataSourceId);
 

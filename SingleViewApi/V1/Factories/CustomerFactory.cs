@@ -9,9 +9,6 @@ namespace SingleViewApi.V1.Factories
     {
         public static SavedCustomer ToDomain(this CustomerDbEntity customerDbEntity)
         {
-            // TODO: Map the rest of the fields in the domain object.
-            // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-
             return new SavedCustomer
             {
                 Id = customerDbEntity.Id,
@@ -38,8 +35,6 @@ namespace SingleViewApi.V1.Factories
                 LastName = entity.LastName,
                 DateOfBirth = entity.DateOfBirth,
                 NiNumber = entity.NiNumber
-                // CreatedAt = entity.UpdatedAt,
-                // UpdatedAt = entity.UpdatedAt,
             };
         }
     }

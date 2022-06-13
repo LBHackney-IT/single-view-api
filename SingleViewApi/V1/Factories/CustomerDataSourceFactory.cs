@@ -13,7 +13,7 @@ namespace SingleViewApi.V1.Factories
             return new CustomerDataSource
             {
                 Id = customerDataSourceDbEntity.Id,
-                CustomerId = customerDataSourceDbEntity.CustomerId,
+                CustomerId = customerDataSourceDbEntity.CustomerDbEntityId,
                 DataSourceId = customerDataSourceDbEntity.DataSourceId,
                 SourceId = customerDataSourceDbEntity.SourceId
             };
@@ -23,7 +23,7 @@ namespace SingleViewApi.V1.Factories
         {
             return new CustomerDataSourceDbEntity
             {
-                CustomerId = entity.CustomerId,
+                CustomerDbEntityId = entity.CustomerId,
                 DataSourceId = entity.DataSourceId,
                 SourceId = entity.SourceId
             };
