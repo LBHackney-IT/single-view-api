@@ -1,9 +1,11 @@
+using System;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SingleViewApi.V1.Boundary.Request;
 
 namespace SingleViewApi.V1.Controllers
 {
@@ -34,6 +36,14 @@ namespace SingleViewApi.V1.Controllers
         public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
             return Ok(_getCustomerByIdUseCase.Execute(id, authorization).Result);
+        }
+
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [HttpPost]
+        [LogCall(LogLevel.Information)]
+        public IActionResult SaveCustomer([FromBody] CreateCustomerRequest customer)
+        {
+            return Ok(customer);
         }
     }
 }

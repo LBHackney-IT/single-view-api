@@ -24,8 +24,8 @@ create table customers
   last_name     text                                   not null,
   date_of_birth date                                   not null,
   ni_number     text,
-  created_at    timestamp with time zone default now() not null,
-  updated_at    timestamp with time zone default now() not null
+  created_at    timestamp default now() not null,
+  updated_at    timestamp default now() not null
 );
 
 alter table customers
