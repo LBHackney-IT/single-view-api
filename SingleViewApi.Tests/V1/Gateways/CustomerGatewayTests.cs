@@ -26,7 +26,13 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public void AddsValue()
         {
-            var customer = _fixture.Create<SavedCustomer>();
+            var customer = new SavedCustomer()
+            {
+                FirstName = "Luna",
+                LastName = "Kitty",
+                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
+                NiNumber = "SG00000000B"
+            };
 
             _ = _classUnderTest.Add(customer);
 
@@ -34,7 +40,8 @@ namespace SingleViewApi.Tests.V1.Gateways
 
             Assert.AreEqual(customer.FirstName, actual.FirstName);
             Assert.AreEqual(customer.LastName, actual.LastName);
-
+            Assert.AreEqual(customer.DateOfBirth, actual.DateOfBirth);
+            Assert.AreEqual(customer.NiNumber, actual.NiNumber);
         }
 
     }

@@ -66,12 +66,10 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                     .HasColumnName("ni_number");
 
                 b.Property<DateTime>("CreatedAt")
-                    .ValueGeneratedOnAdd()
                     .HasColumnType("date")
                     .HasColumnName("created_at");
 
                 b.Property<DateTime>("UpdatedAt")
-                    .ValueGeneratedOnUpdate()
                     .HasColumnType("date")
                     .HasColumnName("updated_at");
 
