@@ -269,5 +269,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
         Assert.AreNotEqual(results[1].DataSource, results[0].DataSource);
         Assert.AreNotEqual(results[2].DataSource, results[0].DataSource);
+        Assert.AreNotEqual(results[2].DataSource, results[1].DataSource);
     }
 }
