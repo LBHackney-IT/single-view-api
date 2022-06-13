@@ -20,8 +20,8 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                     last_name = table.Column<string>(type: "text", nullable: false),
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
                     ni_number = table.Column<string>(type: "text", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "now()"),
                 },
                 constraints: table =>
                 {

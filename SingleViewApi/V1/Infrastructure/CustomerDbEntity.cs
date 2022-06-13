@@ -36,5 +36,6 @@ namespace SingleViewApi.V1.Infrastructure
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
+        public List<CustomerDataSourceDbEntity> DataSources { get; set; }
     }
 }
