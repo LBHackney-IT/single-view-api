@@ -18,7 +18,7 @@ namespace SingleViewApi.V1.Infrastructure
         public int Id { get; set; }
 
         [Column("customer_id")]
-        public Guid CustomerId { get; set; }
+        public Guid CustomerDbEntityId { get; set; }
 
         [Column("data_source_id")]
         public int DataSourceId { get; set; }

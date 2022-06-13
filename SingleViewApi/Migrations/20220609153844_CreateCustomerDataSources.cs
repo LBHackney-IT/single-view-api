@@ -16,7 +16,7 @@ namespace SingleViewApi.V1.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    customer_id = table.Column<int>(type: "uuid", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_source_id = table.Column<int>(type: "integer", nullable: false),
                     source_id = table.Column<string>(type: "text", nullable: false),
                 },

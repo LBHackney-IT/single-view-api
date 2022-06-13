@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.Infrastructure
 {
@@ -11,12 +11,12 @@ namespace SingleViewApi.V1.Infrastructure
     //TODO: Pick the attributes for the required data source, delete the others as appropriate
     // Postgres will use the "Table" and "Column" attributes
 
-
     [Table("customers")]
 
     public class CustomerDbEntity
     {
         [Column("id")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Column("first_name")]
