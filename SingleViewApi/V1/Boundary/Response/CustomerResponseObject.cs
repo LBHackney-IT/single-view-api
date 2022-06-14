@@ -51,6 +51,8 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string? NiNo { get; set; }
 
+        public string? NhsNumber { get; set; }
+
         public DateTime? DateOfDeath { get; set; }
 
         public bool? IsAMinor { get; set; }
