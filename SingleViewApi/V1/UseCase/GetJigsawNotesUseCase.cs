@@ -50,7 +50,7 @@ namespace SingleViewApi.V1.UseCase
                         IsSensitive = note.IsSensitive,
                         IsPinned = note.IsPinned,
                         DataSourceId = note.Id.ToString(),
-                        DataSource = dataSource
+                        DataSource = dataSource.Name
                     }
                 );
             }

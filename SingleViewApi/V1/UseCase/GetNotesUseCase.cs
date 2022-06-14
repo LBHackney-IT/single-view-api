@@ -42,7 +42,7 @@ namespace SingleViewApi.V1.UseCase
                         Author = note.Author,
                         Highlight = note.Highlight,
                         DataSourceId = note.Id.ToString(),
-                        DataSource = dataSource
+                        DataSource = dataSource.Name,
                     }
                 );
             }
