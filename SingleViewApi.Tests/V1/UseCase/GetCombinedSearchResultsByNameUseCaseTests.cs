@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using Bogus.DataSets;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -17,18 +16,16 @@ namespace SingleViewApi.Tests.V1.UseCase;
 [TestFixture]
 public class GetCombinedSearchResultsByNameUseCaseTests
 {
-    private Mock<IGetJigsawCustomersUseCase> _mockGetJigsawCustomersUseCase;
-    private Mock<IGetSearchResultsByNameUseCase> _mockGetSearchResultsByNameUseCase;
     private GetCombinedSearchResultsByNameUseCase _classUnderTest;
-    private Fixture _fixture;
+    private readonly Mock<IGetSearchResultsByNameUseCase> _mockGetSearchResultsByNameUseCase = new();
+    private readonly Mock<IGetJigsawCustomersUseCase> _mockGetJigsawCustomersUseCase = new();
+    private readonly Fixture _fixture = new();
 
     [SetUp]
     public void Setup()
     {
-        _mockGetJigsawCustomersUseCase = new Mock<IGetJigsawCustomersUseCase>();
-        _mockGetSearchResultsByNameUseCase = new Mock<IGetSearchResultsByNameUseCase>();
-        _classUnderTest = new GetCombinedSearchResultsByNameUseCase(_mockGetSearchResultsByNameUseCase.Object, _mockGetJigsawCustomersUseCase.Object);
-        _fixture = new Fixture();
+        _classUnderTest = new GetCombinedSearchResultsByNameUseCase(
+            _mockGetSearchResultsByNameUseCase.Object, _mockGetJigsawCustomersUseCase.Object);
     }
 
     [Test]
@@ -174,10 +171,6 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
-
-
-
-
     }
 
     [Test]
@@ -242,5 +235,40 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         results[0].FirstName.Should().BeEquivalentTo(expectedSortedData[0].FirstName);
         results[1].FirstName.Should().BeEquivalentTo(expectedSortedData[1].FirstName);
         results[2].FirstName.Should().BeEquivalentTo(expectedSortedData[2].FirstName);
+    }
+
+    [Test]
+    public void CollatesDataSourcesInSearchResults()
+    {
+        var firstNameFixture = _fixture.Create<string>();
+        var lastNameFixture = _fixture.Create<string>();
+        var dataSourceListFixture = _fixture.CreateMany<DataSource>(3).ToList();
+        var searchResultsListFixture = _fixture.Build<SearchResult>()
+            .With(o => o.DataSource, dataSourceListFixture[0].Name).CreateMany(3).ToList();
+
+        searchResultsListFixture.Add(_fixture.Build<SearchResult>()
+            .With(o => o.FirstName, firstNameFixture)
+            .With(o => o.SurName, lastNameFixture)
+            .With(o => o.DataSource, dataSourceListFixture[2].Name)
+            .Create());
+
+        searchResultsListFixture.Add(_fixture.Build<SearchResult>()
+            .With(o => o.FirstName, firstNameFixture)
+            .With(o => o.SurName, lastNameFixture)
+            .With(o => o.DataSource, dataSourceListFixture[1].Name)
+            .Create());
+
+        searchResultsListFixture.Add(_fixture.Build<SearchResult>()
+            .With(o => o.FirstName, firstNameFixture)
+            .With(o => o.SurName, lastNameFixture)
+            .With(o => o.DataSource, dataSourceListFixture[0].Name)
+            .Create());
+
+        var results = _classUnderTest.SortResultsByRelevance(
+            firstNameFixture, lastNameFixture, searchResultsListFixture);
+
+        Assert.AreNotEqual(results[1].DataSource, results[0].DataSource);
+        Assert.AreNotEqual(results[2].DataSource, results[0].DataSource);
+        Assert.AreNotEqual(results[2].DataSource, results[1].DataSource);
     }
 }

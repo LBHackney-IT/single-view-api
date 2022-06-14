@@ -11,5 +11,12 @@ namespace SingleViewApi.V1.Infrastructure
         }
 
         public DbSet<DataSourceDbEntity> DataSources { get; set; }
+        public DbSet<CustomerDbEntity> Customers { get; set; }
+        public DbSet<CustomerDataSourceDbEntity> CustomerDataSources { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CustomerDbEntity>();
+        }
     }
 }

@@ -1,9 +1,11 @@
+using System;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SingleViewApi.V1.Boundary.Request;
 
 namespace SingleViewApi.V1.Controllers
 {
@@ -16,9 +18,12 @@ namespace SingleViewApi.V1.Controllers
     public class CustomerController : BaseController
     {
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase)
+        private readonly ICreateCustomerUseCase _customerUseCase;
+
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
+            _customerUseCase = customerUseCase;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -34,6 +39,14 @@ namespace SingleViewApi.V1.Controllers
         public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
             return Ok(_getCustomerByIdUseCase.Execute(id, authorization).Result);
+        }
+
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [HttpPost]
+        [LogCall(LogLevel.Information)]
+        public IActionResult SaveCustomer([FromBody] CreateCustomerRequest customer)
+        {
+            return Ok(_customerUseCase.Execute(customer).Id);
         }
     }
 }
