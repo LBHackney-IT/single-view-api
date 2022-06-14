@@ -18,9 +18,12 @@ namespace SingleViewApi.V1.Controllers
     public class CustomerController : BaseController
     {
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase)
+        private readonly ICreateCustomerUseCase _customerUseCase;
+
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
+            _customerUseCase = customerUseCase;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -43,7 +46,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult SaveCustomer([FromBody] CreateCustomerRequest customer)
         {
-            return Ok(customer);
+            return Ok(_customerUseCase.Execute(customer).Id);
         }
     }
 }

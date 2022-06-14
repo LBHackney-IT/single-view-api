@@ -16,9 +16,15 @@ namespace SingleViewApi.V1.Gateways
             _singleViewContext = singleViewContext;
         }
 
-        public SavedCustomer Add(SavedCustomer customer)
+        public SavedCustomer Add(string firstName, string lastName, DateTime dateOfBirth, string niNumber = null)
         {
-            var entity = customer.ToDatabase();
+            var entity = new SavedCustomer()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth,
+                NiNumber = niNumber
+            }.ToDatabase();
             _singleViewContext.Customers.Add(entity);
             _singleViewContext.SaveChanges();
 
