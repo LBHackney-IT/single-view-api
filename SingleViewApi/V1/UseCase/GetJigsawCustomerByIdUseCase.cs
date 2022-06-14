@@ -74,6 +74,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
             };
         }
 
+        Console.WriteLine("Response from Getting Jigsaw Customer: full customer is {0}, NHS number is {1}", response.ToString(), customer.PersonInfo.NhsNumber);
+
         return response;
 
     }
