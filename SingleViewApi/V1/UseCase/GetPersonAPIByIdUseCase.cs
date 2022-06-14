@@ -51,7 +51,6 @@ namespace SingleViewApi.V1.UseCase
                     PreferredMiddleName = person.PreferredMiddleName,
                     PreferredSurname = person.PreferredSurname,
                     FirstName = person.FirstName,
-                    MiddleName = person.MiddleName,
                     Surname = person.Surname,
                     PlaceOfBirth = person.PlaceOfBirth,
                     DateOfBirth = person.DateOfBirth,

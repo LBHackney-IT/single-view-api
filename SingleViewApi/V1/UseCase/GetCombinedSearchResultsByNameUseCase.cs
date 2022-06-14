@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -86,8 +85,9 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
     {
-        return searchResults.OrderBy(x => x.FirstName == firstName ? 0 : 1).ThenBy(x => x.SurName == lastName ? 0 : 1).ToList();
+        return searchResults.OrderBy(result => result.SurName == lastName ? 0 : 1)
+            .ThenBy(result => result.FirstName == firstName ? 0 : 1)
+            .ThenBy(result => result.DataSource)
+            .ToList();
     }
-
-
 }

@@ -60,7 +60,6 @@ namespace SingleViewApi.V1.UseCase
                     DateOfDeath = personApiCustomer.Customer.DateOfDeath,
                     IsAMinor = personApiCustomer.Customer.IsAMinor
                 },
-
             };
         }
     }
