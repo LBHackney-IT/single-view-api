@@ -16,9 +16,9 @@ namespace SingleViewApi.V1.Domain
 
         public string NiNumber { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public List<CustomerDataSource> DataSources { get; set; }
 

@@ -17,7 +17,7 @@ namespace SingleViewApi.V1.Boundary.Request
         public List<DataSourceRequest> DataSources { get; set; }
     }
 
-    public abstract class DataSourceRequest
+    public class DataSourceRequest
     {
         public string DataSource { get; set; }
         public string SourceId { get; set; }

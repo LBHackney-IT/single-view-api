@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SingleViewApi.V1.Domain;
@@ -34,7 +35,9 @@ namespace SingleViewApi.V1.Factories
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 DateOfBirth = entity.DateOfBirth,
-                NiNumber = entity.NiNumber
+                NiNumber = entity.NiNumber,
+                CreatedAt = entity.CreatedAt ?? DateTime.UtcNow,
+                UpdatedAt = entity.UpdatedAt ?? DateTime.UtcNow
             };
         }
     }
