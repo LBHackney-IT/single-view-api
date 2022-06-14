@@ -17,13 +17,14 @@ namespace SingleViewApi.V1.Controllers
     //TODO: rename class to match the API name
     public class CustomerController : BaseController
     {
-        private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
         private readonly ICreateCustomerUseCase _customerUseCase;
+        private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
 
-        public CustomerController(IGetPersonApiByIdUseCase getPersonApiByIdUseCase, ICreateCustomerUseCase customerUseCase)
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
-            _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
+            _getCustomerByIdUseCase = getCustomerByIdUseCase;
             _customerUseCase = customerUseCase;
+
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -36,9 +37,9 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
+        public IActionResult GetCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
+            return Ok(_getCustomerByIdUseCase.Execute(id, authorization, redisId));
         }
 
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]

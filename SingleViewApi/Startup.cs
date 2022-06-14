@@ -140,6 +140,14 @@ namespace SingleViewApi
 
             });
 
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var customerGateway = s.GetService<ICustomerGateway>();
+                var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
+                var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
+
+                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase);
+            });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
                 var redisGateway = s.GetService<IRedisGateway>();
