@@ -1,77 +1,66 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
-using SingleViewApi.V1.Boundary;
-using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.UseCase
 {
     public class GetCustomerByIdUseCase : IGetCustomerByIdUseCase
     {
-        private IPersonGateway _personGateway;
-        private IContactDetailsGateway _contactDetailsGateway;
-        private readonly IDataSourceGateway _dataSourceGateway;
+        private readonly ICustomerGateway _gateway;
+        private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
+        private readonly IGetJigsawCustomerByIdUseCase _jigsawCustomerByIdUseCase;
 
-        public GetCustomerByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway)
+        public GetCustomerByIdUseCase(ICustomerGateway gateway, IGetPersonApiByIdUseCase getPersonApiByIdUseCase, IGetJigsawCustomerByIdUseCase jigsawCustomerByIdUseCase)
         {
-            _personGateway = personGateway;
-            _contactDetailsGateway = contactDetailsGateway;
-            _dataSourceGateway = dataSourceGateway;
+            _gateway = gateway;
+            _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
+            _jigsawCustomerByIdUseCase = jigsawCustomerByIdUseCase;
         }
+
         [LogCall]
-        public async Task<CustomerResponseObject> Execute(string personId, string userToken)
+        public CustomerResponseObject Execute(Guid customerId, string userToken, string redisId = null)
         {
-            var person = await _personGateway.GetPersonById(personId, userToken);
-            var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
-            var dataSource = _dataSourceGateway.GetEntityById(1);
+            var customer = _gateway.Find(customerId);
 
-            var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
-
-            var response = new CustomerResponseObject()
+            CustomerResponseObject personApiCustomer = null;
+            CustomerResponseObject jigsawCustomer = null;
+            foreach (var customerDataSource in customer.DataSources)
             {
-                SystemIds = new List<SystemId>() { personApiId }
-            };
-
-            if (person == null)
-            {
-                personApiId.Error = SystemId.NotFoundMessage;
-            }
-            else
-            {
-                response.Customer = new Customer()
+                switch (customerDataSource.DataSourceId)
                 {
-                    Id = person.Id.ToString(),
-                    Title = person.Title,
-                    DataSource = dataSource,
-                    PreferredTitle = person.PreferredTitle,
-                    PreferredFirstName = person.PreferredFirstName,
-                    PreferredMiddleName = person.PreferredMiddleName,
-                    PreferredSurname = person.PreferredSurname,
-                    FirstName = person.FirstName,
-                    Surname = person.Surname,
-                    PlaceOfBirth = person.PlaceOfBirth,
-                    DateOfBirth = person.DateOfBirth,
-                    DateOfDeath = person.DateOfDeath,
-                    IsAMinor = person.IsAMinor,
-                    PersonTypes = person.PersonTypes?.ToList(),
-                    ContactDetails = contactDetails,
-                    KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
-                    {
-
-                        Id = t.Id,
-                        CurrentAddress = t.IsActive,
-                        StartDate = t.StartDate,
-                        EndDate = t.EndDate,
-                        FullAddress = t.AssetFullAddress
-                    }))
-                };
+                    case 1:
+                        personApiCustomer = _getPersonApiByIdUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        break;
+                    case 2:
+                        jigsawCustomer = _jigsawCustomerByIdUseCase
+                            .Execute(customerDataSource.SourceId, redisId, userToken).Result;
+                        break;
+                }
             }
 
-            return response;
+            return new CustomerResponseObject()
+            {
+                Customer = new Customer()
+                {
+                    Title = personApiCustomer?.Customer.Title ?? jigsawCustomer?.Customer.Title,
+                    PreferredTitle = personApiCustomer?.Customer.PreferredTitle ?? jigsawCustomer?.Customer.PreferredTitle,
+                    PreferredFirstName = $"{personApiCustomer?.Customer.PreferredFirstName} / {jigsawCustomer?.Customer.PreferredFirstName}",
+                    PreferredSurname = $"{personApiCustomer?.Customer.PreferredSurname} / {jigsawCustomer?.Customer.PreferredSurname}",
+                    FirstName = $"{personApiCustomer?.Customer.FirstName} / {jigsawCustomer?.Customer.FirstName}",
+                    Surname = $"{personApiCustomer?.Customer.Surname} / {jigsawCustomer?.Customer.Surname}",
+                    KnownAddresses = personApiCustomer.Customer.KnownAddresses.Concat(jigsawCustomer.Customer.KnownAddresses).ToList(),
+                    ContactDetails = personApiCustomer.Customer.ContactDetails,
+                    PersonTypes = personApiCustomer.Customer.PersonTypes,
+                    DateOfBirth = customer.DateOfBirth,
+                    NiNo = customer.NiNumber,
+                    NhsNumber = jigsawCustomer.Customer.NhsNumber,
+                    DateOfDeath = personApiCustomer.Customer.DateOfDeath,
+                    IsAMinor = personApiCustomer.Customer.IsAMinor
+                },
+            };
         }
     }
 }
