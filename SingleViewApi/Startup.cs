@@ -89,13 +89,13 @@ namespace SingleViewApi
                     );
             });
 
-            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            services.AddTransient<IGetPersonApiByIdUseCase, GetPersonApiByIdUseCase>(s =>
             {
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
 
-                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>

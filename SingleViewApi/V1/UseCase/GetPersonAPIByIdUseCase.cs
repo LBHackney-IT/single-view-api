@@ -6,17 +6,16 @@ using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary;
-using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.UseCase
 {
-    public class GetCustomerByIdUseCase : IGetCustomerByIdUseCase
+    public class GetPersonApiByIdUseCase : IGetPersonApiByIdUseCase
     {
         private IPersonGateway _personGateway;
         private IContactDetailsGateway _contactDetailsGateway;
         private readonly IDataSourceGateway _dataSourceGateway;
 
-        public GetCustomerByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway)
+        public GetPersonApiByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;

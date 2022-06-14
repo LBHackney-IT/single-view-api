@@ -17,12 +17,12 @@ namespace SingleViewApi.V1.Controllers
     //TODO: rename class to match the API name
     public class CustomerController : BaseController
     {
-        private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
+        private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
         private readonly ICreateCustomerUseCase _customerUseCase;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
+        public CustomerController(IGetPersonApiByIdUseCase getPersonApiByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
-            _getCustomerByIdUseCase = getCustomerByIdUseCase;
+            _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
             _customerUseCase = customerUseCase;
         }
 
@@ -38,7 +38,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
-            return Ok(_getCustomerByIdUseCase.Execute(id, authorization).Result);
+            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
         }
 
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]

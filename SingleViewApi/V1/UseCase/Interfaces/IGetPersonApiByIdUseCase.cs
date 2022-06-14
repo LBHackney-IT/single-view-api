@@ -3,7 +3,7 @@ using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.V1.UseCase.Interfaces
 {
-    public interface IGetCustomerByIdUseCase
+    public interface IGetPersonApiByIdUseCase
     {
         Task<CustomerResponseObject> Execute(string personId, string userToken);
     }
