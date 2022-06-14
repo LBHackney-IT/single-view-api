@@ -89,13 +89,13 @@ namespace SingleViewApi
                     );
             });
 
-            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            services.AddTransient<IGetPersonApiByIdUseCase, GetPersonApiByIdUseCase>(s =>
             {
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
 
-                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>
@@ -140,6 +140,14 @@ namespace SingleViewApi
 
             });
 
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var customerGateway = s.GetService<ICustomerGateway>();
+                var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
+                var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
+
+                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase);
+            });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
                 var redisGateway = s.GetService<IRedisGateway>();

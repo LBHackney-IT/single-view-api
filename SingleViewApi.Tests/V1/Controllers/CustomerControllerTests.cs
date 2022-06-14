@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AutoFixture;
 using SingleViewApi.V1.Controllers;
@@ -30,12 +31,13 @@ namespace SingleViewApi.Tests.V1.Controllers
         [Test]
         public void UseCaseGetsCalled()
         {
-            const string id = "test-id";
+            var id = new Guid();
             const string token = "token";
+            const string redisId = "redisId";
 
-            _classUnderTest.GetCustomer(id, token);
+            _classUnderTest.GetCustomer(id, redisId, token);
 
-            _mockGetCustomerByIdUseCase.Verify(x => x.Execute(id, token), Times.Once);
+            _mockGetCustomerByIdUseCase.Verify(x => x.Execute(id, token, redisId), Times.Once);
         }
 
         [Test]

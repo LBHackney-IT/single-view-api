@@ -14,11 +14,11 @@ using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {
-    public class GetPersonByIdUseCaseTests : LogCallAspectFixture
+    public class GetPersonApiByIdUseCaseTests : LogCallAspectFixture
     {
         private Mock<IPersonGateway> _mockPersonGateway;
         private Mock<IContactDetailsGateway> _mockContactDetailsGateway;
-        private GetCustomerByIdUseCase _classUnderTest;
+        private GetPersonApiByIdUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
@@ -28,7 +28,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockPersonGateway = new Mock<IPersonGateway>();
             _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-            _classUnderTest = new GetCustomerByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object);
+            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
 
         }
