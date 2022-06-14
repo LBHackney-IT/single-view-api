@@ -35,7 +35,6 @@ namespace SingleViewApi.Tests.V1.Gateways
             // Arrange
             const string searchText = "Search-Text";
             const string userToken = "User token";
-            const int page = 1;
 
             _mockHttp.Expect($"https://housingsearch.api/search/persons?searchText={searchText}&page=1&pageSize=12")
 
