@@ -44,9 +44,13 @@ namespace SingleViewApi.Tests.V1.UseCase
             var idFixture = _fixture.Create<string>();
             var hackneyTokenFixture = _fixture.Create<string>();
             var jigsawNotesFixture = _fixture.CreateMany<JigsawNotesResponseObject>().ToList();
-            var stubbedDataSource = _fixture.Create<DataSource>();
+            var stubbedDataSourceName = _fixture.Create<string>();
 
-            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(new DataSource()
+            {
+                Id = 2,
+                Name = stubbedDataSourceName
+            });
 
             _mockGetJigsawAuthTokenUseCase.Setup(x =>
                 x.Execute(redisKeyFixture, hackneyTokenFixture)).ReturnsAsync(authGatewayResponseFixture);
@@ -55,7 +59,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 x.GetCustomerNotesByCustomerId(idFixture, authGatewayResponseFixture.Token)).ReturnsAsync(jigsawNotesFixture);
 
             var response = await _classUnderTest.Execute(idFixture, redisKeyFixture, hackneyTokenFixture);
-            Assert.AreEqual(stubbedDataSource, response[^1].DataSource);
+            Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
             Assert.AreEqual(jigsawNotesFixture[^1].Id.ToString(), response[^1].DataSourceId);
             Assert.AreEqual(jigsawNotesFixture[^1].Content, response[^1].Description);
         }

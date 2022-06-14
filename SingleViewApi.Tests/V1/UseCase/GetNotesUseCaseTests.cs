@@ -34,14 +34,18 @@ namespace SingleViewApi.Tests.V1.UseCase
             var tokenFixture = _fixture.Create<string>();
             var idFixture = _fixture.Create<string>();
             var notesFixture = _fixture.CreateMany<NotesApiResponseObject>().ToList();
-            var stubbedDataSource = _fixture.Create<DataSource>();
+            var stubbedDataSourceName = _fixture.Create<string>();
 
             _mockNotesGateway.Setup(x =>
                 x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync(notesFixture);
-            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(new DataSource()
+            {
+                Id = 2,
+                Name = stubbedDataSourceName
+            });
 
             var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
-            Assert.AreEqual(stubbedDataSource, response[^1].DataSource);
+            Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
             Assert.AreEqual(notesFixture[^1].Id.ToString(), response[^1].DataSourceId);
             Assert.AreEqual(notesFixture[^1].Description, response[^1].Description);
         }
