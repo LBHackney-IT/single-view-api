@@ -1,13 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using AutoFixture;
 using SingleViewApi.V1.Gateways;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using ServiceStack.Redis;
-using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.Tests.V1.Gateways
 {
@@ -26,16 +21,17 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public void AddsValue()
         {
-            var customerDataSource = _fixture.Create<CustomerDataSource>();
+            var dummyCustomerId = _fixture.Create<Guid>();
+            var dummyDataSourceId = _fixture.Create<int>();
+            var dummySourceId = _fixture.Create<string>();
 
-            _ = _classUnderTest.Add(customerDataSource);
+            _ = _classUnderTest.Add(dummyCustomerId, dummyDataSourceId, dummySourceId);
 
             var actual = SingleViewContext.CustomerDataSources.ToList().LastOrDefault();
 
-            Assert.AreEqual(customerDataSource.CustomerId, actual.CustomerDbEntityId);
-            Assert.AreEqual(customerDataSource.SourceId, actual.SourceId);
-            Assert.AreEqual(customerDataSource.DataSourceId, actual.DataSourceId);
-
+            Assert.AreEqual(dummyCustomerId, actual.CustomerDbEntityId);
+            Assert.AreEqual(dummySourceId, actual.SourceId);
+            Assert.AreEqual(dummyDataSourceId, actual.DataSourceId);
         }
 
     }

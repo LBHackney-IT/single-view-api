@@ -5,7 +5,7 @@ namespace SingleViewApi.V1.Gateways
 {
     public interface ICustomerGateway
     {
-        SavedCustomer Add(SavedCustomer customer);
+        SavedCustomer Add(string firstName, string lastName, DateTime dateOfBirth, string niNumber);
         SavedCustomer Find(Guid id);
 
     }

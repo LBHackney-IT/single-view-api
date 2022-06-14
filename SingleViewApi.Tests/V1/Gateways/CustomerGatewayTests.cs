@@ -1,13 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using AutoFixture;
 using SingleViewApi.V1.Gateways;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using ServiceStack.Redis;
-using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.Tests.V1.Gateways
 {
@@ -26,23 +21,36 @@ namespace SingleViewApi.Tests.V1.Gateways
         [Test]
         public void AddsValue()
         {
-            var customer = new SavedCustomer()
-            {
-                FirstName = "Luna",
-                LastName = "Kitty",
-                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
-                NiNumber = "SG00000000B"
-            };
+            var dummyFirstName = "Luna";
+            var dummyLastName = "Kitty";
+            var dummyDateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime();
+            var dummyNiNumber = "SG00000000B";
 
-            _ = _classUnderTest.Add(customer);
+            _ = _classUnderTest.Add(dummyFirstName, dummyLastName, dummyDateOfBirth, dummyNiNumber);
 
             var actual = SingleViewContext.Customers.ToList().LastOrDefault();
 
-            Assert.AreEqual(customer.FirstName, actual.FirstName);
-            Assert.AreEqual(customer.LastName, actual.LastName);
-            Assert.AreEqual(customer.DateOfBirth, actual.DateOfBirth);
-            Assert.AreEqual(customer.NiNumber, actual.NiNumber);
+            Assert.AreEqual(dummyFirstName, actual.FirstName);
+            Assert.AreEqual(dummyLastName, actual.LastName);
+            Assert.AreEqual(dummyDateOfBirth, actual.DateOfBirth);
+            Assert.AreEqual(dummyNiNumber, actual.NiNumber);
         }
 
+        [Test]
+        public void AddsValueWithoutNiNumber()
+        {
+            var dummyFirstName = "Luna";
+            var dummyLastName = "Kitty";
+            var dummyDateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime();
+
+            _ = _classUnderTest.Add(dummyFirstName, dummyLastName, dummyDateOfBirth);
+
+            var actual = SingleViewContext.Customers.ToList().LastOrDefault();
+
+            Assert.AreEqual(dummyFirstName, actual.FirstName);
+            Assert.AreEqual(dummyLastName, actual.LastName);
+            Assert.AreEqual(dummyDateOfBirth, actual.DateOfBirth);
+            Assert.AreEqual(null, actual.NiNumber);
+        }
     }
 }
