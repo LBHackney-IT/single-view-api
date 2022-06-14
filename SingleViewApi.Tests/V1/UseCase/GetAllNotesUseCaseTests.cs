@@ -38,14 +38,14 @@ namespace SingleViewApi.Tests.V1.UseCase
         [Test]
         public async Task GetsAllNotes()
         {
-            var stubbedJigsawDataSource = _fixture.Create<DataSource>();
-            var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+            var stubbedJigsawDataSourceName = _fixture.Create<string>();
+            var stubbedHousingSearchDataSourceName = _fixture.Create<string>();
 
             var personApiSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, stubbedHousingSearchDataSource.Name).Create();
+                .With(o => o.SystemName, stubbedHousingSearchDataSourceName).Create();
             var personApiSystemId = personApiSystemIdFixture.Id;
             var jigsawSystemIdFixture = _fixture.Build<SystemId>()
-                .With(o => o.SystemName, stubbedJigsawDataSource.Name).Create();
+                .With(o => o.SystemName, stubbedJigsawDataSourceName).Create();
             var jigsawSystemId = jigsawSystemIdFixture.Id;
             var systemIdListFixture = new SystemIdList()
             {
@@ -58,13 +58,17 @@ namespace SingleViewApi.Tests.V1.UseCase
             var paginationToken = "";
             var pageSize = 0;
 
-            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(new DataSource()
+            {
+                Id = 2,
+                Name = stubbedJigsawDataSourceName
+            });
 
             var notesFixture = new List<NoteResponseObject>();
             var notesApiNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
-                .With(o => o.DataSource, stubbedHousingSearchDataSource).CreateMany().ToList();
+                .With(o => o.DataSource, stubbedHousingSearchDataSourceName).CreateMany().ToList();
             var jigsawNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
-                .With(o => o.DataSource, stubbedJigsawDataSource).CreateMany().ToList();
+                .With(o => o.DataSource, stubbedJigsawDataSourceName).CreateMany().ToList();
             notesFixture.AddRange(notesApiNoteResponseObjectListFixture);
             notesFixture.AddRange(jigsawNoteResponseObjectListFixture);
             var notesResponseFixture = new NotesResponse()
