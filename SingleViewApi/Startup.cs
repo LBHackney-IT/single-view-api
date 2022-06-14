@@ -24,7 +24,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json.Serialization;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -58,7 +57,7 @@ namespace SingleViewApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddMvc();
+                .AddMvc().AddNewtonsoftJson();
             services.AddApiVersioning(o =>
             {
                 o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -97,6 +96,15 @@ namespace SingleViewApi
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
 
                 return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>
+            {
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                var customerGateway = s.GetService<ICustomerGateway>();
+                var customerDataSourceGateway = s.GetService<ICustomerDataSourceGateway>();
+
+                return new CreateCustomerUseCase(customerGateway, customerDataSourceGateway, dataSourceGateway);
             });
 
             services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
