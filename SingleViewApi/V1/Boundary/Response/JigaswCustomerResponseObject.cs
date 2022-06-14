@@ -56,7 +56,7 @@ public class PersonInfo
     public object PreferredName { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string NationalInsuranceNumber { get; set; }
-    public object NhsNumber { get; set; }
+    public string NhsNumber { get; set; }
     public object PregnancyDueDate { get; set; }
     public string AddressString { get; set; }
     public Address Address { get; set; }

@@ -17,11 +17,13 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 {
     private IJigsawGateway _jigsawGateway;
     private IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
+    private readonly IDataSourceGateway _dataSourceGateway;
 
-    public GetJigsawCustomerByIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+    public GetJigsawCustomerByIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IDataSourceGateway dataSourceGateway)
     {
         _jigsawGateway = jigsawGateway;
         _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
+        _dataSourceGateway = dataSourceGateway;
     }
 
     public async Task<CustomerResponseObject> Execute(string customerId, string redisId, string hackneyToken)
@@ -37,7 +39,9 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
-        var jigsawId = new SystemId() { SystemName = DataSource.Jigsaw, Id = customer.Id };
+        var dataSource = _dataSourceGateway.GetEntityById(2);
+
+        var jigsawId = new SystemId() { SystemName = dataSource.Name, Id = customer.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
 
@@ -55,8 +59,9 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 FirstName = customer.PersonInfo.FirstName,
                 Surname = customer.PersonInfo.LastName,
                 DateOfBirth = customer.PersonInfo.DateOfBirth,
-                DataSource = DataSource.Jigsaw,
+                DataSource = dataSource,
                 NiNo = customer.PersonInfo.NationalInsuranceNumber,
+                NhsNumber = customer.PersonInfo.NhsNumber,
                 KnownAddresses = new List<KnownAddress>()
                 {
                     new KnownAddress()

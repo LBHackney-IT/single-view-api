@@ -11,15 +11,19 @@ namespace SingleViewApi.V1.UseCase
     public class GetNotesUseCase : IGetNotesUseCase
     {
         private readonly INotesGateway _notesGateway;
-        public GetNotesUseCase(INotesGateway notesGateway)
+        private readonly IDataSourceGateway _dataSourceGateway;
+
+        public GetNotesUseCase(INotesGateway notesGateway, IDataSourceGateway dataSourceGateway)
         {
             _notesGateway = notesGateway;
+            _dataSourceGateway = dataSourceGateway;
         }
 
         [LogCall]
         public async Task<List<NoteResponseObject>> Execute(string targetId, string userToken, string paginationToken, int pageSize)
         {
             var gatewayResponse = await _notesGateway.GetAllById(targetId, userToken, paginationToken, pageSize);
+            var dataSource = _dataSourceGateway.GetEntityById(1);
             if (gatewayResponse == null) return null;
 
             var notes = new List<NoteResponseObject>();
@@ -38,7 +42,7 @@ namespace SingleViewApi.V1.UseCase
                         Author = note.Author,
                         Highlight = note.Highlight,
                         DataSourceId = note.Id.ToString(),
-                        DataSource = DataSource.NotesApi
+                        DataSource = dataSource
                     }
                 );
             }
