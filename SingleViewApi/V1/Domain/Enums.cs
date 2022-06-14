@@ -11,12 +11,12 @@ namespace SingleViewApi.V1.Domain
         Repair
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum DataSource
-    {
-        HousingSearchApi,
-        Jigsaw,
-        NotesApi,
-        PersonApi
-    }
+    // [JsonConverter(typeof(JsonStringEnumConverter))]
+    // public enum DataSource
+    // {
+    //     HousingSearchApi,
+    //     Jigsaw,
+    //     NotesApi,
+    //     PersonApi
+    // }
 }

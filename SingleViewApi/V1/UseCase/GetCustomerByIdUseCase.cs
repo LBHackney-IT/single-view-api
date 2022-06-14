@@ -14,19 +14,22 @@ namespace SingleViewApi.V1.UseCase
     {
         private IPersonGateway _personGateway;
         private IContactDetailsGateway _contactDetailsGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-        public GetCustomerByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway)
+        public GetCustomerByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;
+            _dataSourceGateway = dataSourceGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
         {
             var person = await _personGateway.GetPersonById(personId, userToken);
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
+            var dataSource = _dataSourceGateway.GetEntityById(1);
 
-            var personApiId = new SystemId() { SystemName = DataSource.PersonApi, Id = personId };
+            var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
 
             var response = new CustomerResponseObject()
             {
@@ -43,7 +46,7 @@ namespace SingleViewApi.V1.UseCase
                 {
                     Id = person.Id.ToString(),
                     Title = person.Title,
-                    DataSource = DataSource.HousingSearchApi,
+                    DataSource = dataSource,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,

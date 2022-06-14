@@ -94,7 +94,9 @@ namespace SingleViewApi
             {
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
-                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
             });
 
             services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
@@ -150,20 +152,25 @@ namespace SingleViewApi
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
                 var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
-                return new GetJigsawCustomersUseCase(jigsawGateway, jigsawAuthUseCase);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetJigsawCustomersUseCase(jigsawGateway, jigsawAuthUseCase, dataSourceGateway);
             });
 
             services.AddTransient<IGetJigsawCustomerByIdUseCase, GetJigsawCustomerByIdUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
                 var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
-                return new GetJigsawCustomerByIdUseCase(jigsawGateway, jigsawAuthUseCase);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetJigsawCustomerByIdUseCase(jigsawGateway, jigsawAuthUseCase, dataSourceGateway);
             });
 
             services.AddTransient<IGetSearchResultsByNameUseCase, GetSearchResultsByNameUseCase>(s =>
             {
                 var housingSearchGateway = s.GetService<IHousingSearchGateway>();
-                return new GetSearchResultsByNameUseCase(housingSearchGateway);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetSearchResultsByNameUseCase(housingSearchGateway, dataSourceGateway);
             });
 
             services.AddTransient<IGetCombinedSearchResultsByNameUseCase, GetCombinedSearchResultsByNameUseCase>(s =>
@@ -191,21 +198,25 @@ namespace SingleViewApi
             services.AddTransient<IGetNotesUseCase>(s =>
             {
                 var notesGateway = s.GetService<INotesGateway>();
-                return new GetNotesUseCase(notesGateway);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetNotesUseCase(notesGateway, dataSourceGateway);
             });
 
             services.AddTransient<IGetJigsawNotesUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
                 var getJigsawAuthTokenUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
-                return new GetJigsawNotesUseCase(jigsawGateway, getJigsawAuthTokenUseCase);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetJigsawNotesUseCase(jigsawGateway, getJigsawAuthTokenUseCase, dataSourceGateway);
             });
 
             services.AddTransient<IGetAllNotesUseCase, GetAllNotesUseCase>(s =>
             {
                 var getNotesUseCase = s.GetService<IGetNotesUseCase>();
                 var getJigsawNotesUseCase = s.GetService<IGetJigsawNotesUseCase>();
-                return new GetAllNotesUseCase(getNotesUseCase, getJigsawNotesUseCase);
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetAllNotesUseCase(getNotesUseCase, getJigsawNotesUseCase, dataSourceGateway);
             });
 
             services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>
