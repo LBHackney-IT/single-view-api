@@ -14,14 +14,14 @@ namespace SingleViewApi.Tests.V1.Controllers
     public class CustomerControllerTests : LogCallAspectFixture
     {
         private CustomerController _classUnderTest;
-        private Mock<IGetCustomerByIdUseCase> _mockGetCustomerByIdUseCase;
+        private Mock<IGetPersonApiByIdUseCase> _mockGetCustomerByIdUseCase;
         private Mock<ICreateCustomerUseCase> _mockCreateCustomerUseCase;
         private Fixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _mockGetCustomerByIdUseCase = new Mock<IGetCustomerByIdUseCase>();
+            _mockGetCustomerByIdUseCase = new Mock<IGetPersonApiByIdUseCase>();
             _mockCreateCustomerUseCase = new Mock<ICreateCustomerUseCase>();
             _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object);
             _fixture = new Fixture();
