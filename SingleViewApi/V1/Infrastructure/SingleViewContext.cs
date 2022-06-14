@@ -16,9 +16,7 @@ namespace SingleViewApi.V1.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CustomerDbEntity>()
-                // .HasMany(x => x.DataSources)
-                ;
+            modelBuilder.Entity<CustomerDbEntity>();
         }
     }
 }
