@@ -61,6 +61,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 DateOfBirth = customer.PersonInfo.DateOfBirth,
                 DataSource = dataSource,
                 NiNo = customer.PersonInfo.NationalInsuranceNumber,
+                NhsNumber = customer.PersonInfo.NhsNumber,
                 KnownAddresses = new List<KnownAddress>()
                 {
                     new KnownAddress()
@@ -72,9 +73,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 }
             };
         }
-
         return response;
-
     }
 
     public static Guid ToGuid(int value)
