@@ -92,19 +92,19 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         int lastNameFormattedLength = lastNameFormatted.Length;
         return searchResults
 
-                // Compare normalised substrings of the search results
+            // Compare normalised substrings of the search results
             .OrderBy(o => !String.Equals(Normalise(o.FirstName, firstNameFormattedLength), firstName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(Normalise(o.SurName, lastNameFormattedLength), lastName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(Normalise(o.FirstName, firstNameFormattedLength), firstName, StringComparison.CurrentCultureIgnoreCase) &&
                         !String.Equals(Normalise(o.SurName, lastNameFormattedLength), lastName, StringComparison.CurrentCultureIgnoreCase))
 
-                // Then compare normalised whole matches
+            // Then compare normalised whole matches
             .ThenBy(o => !String.Equals(Normalise(o.FirstName), firstName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(Normalise(o.FirstName), firstName, StringComparison.CurrentCultureIgnoreCase) &&
                          !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
 
-                // Then compare non normalised whole matches
+            // Then compare non normalised whole matches
             .ThenBy(o => !String.Equals(o.FirstName, firstName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(o.SurName, lastName, StringComparison.CurrentCultureIgnoreCase))
             .ThenBy(o => !String.Equals(o.FirstName, firstName, StringComparison.CurrentCultureIgnoreCase) &&
