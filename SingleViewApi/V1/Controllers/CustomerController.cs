@@ -18,12 +18,14 @@ namespace SingleViewApi.V1.Controllers
     public class CustomerController : BaseController
     {
         private readonly ICreateCustomerUseCase _customerUseCase;
-        private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
+        // private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
+        private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
+        public CustomerController(IGetPersonApiByIdUseCase getPersonApiByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
-            _getCustomerByIdUseCase = getCustomerByIdUseCase;
+            _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
             _customerUseCase = customerUseCase;
+
 
         }
 
@@ -37,9 +39,10 @@ namespace SingleViewApi.V1.Controllers
 
         [HttpGet]
         [LogCall(LogLevel.Information)]
-        public IActionResult GetCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
+        public IActionResult GetCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
-            return Ok(_getCustomerByIdUseCase.Execute(id, authorization, redisId));
+            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
+            // return Ok(_getCustomerByIdUseCase.Execute(id, authorization, redisId));
         }
 
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
