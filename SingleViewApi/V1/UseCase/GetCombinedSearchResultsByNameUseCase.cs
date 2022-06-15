@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -85,9 +86,36 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
     {
-        return searchResults.OrderBy(result => result.SurName == lastName ? 0 : 1)
-            .ThenBy(result => result.FirstName == firstName ? 0 : 1)
-            .ThenBy(result => result.DataSource)
+        string firstNameFormatted = Normalise(firstName);
+        string lastNameFormatted = Normalise(lastName);
+        int firstNameFormattedLength = firstNameFormatted.Length;
+        int lastNameFormattedLength = lastNameFormatted.Length;
+        return searchResults
+
+                // Compare normalised substrings of the search results
+            .OrderBy(o => !String.Equals(Normalise(o.FirstName, firstNameFormattedLength), firstName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(Normalise(o.SurName, lastNameFormattedLength), lastName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(Normalise(o.FirstName, firstNameFormattedLength), firstName, StringComparison.CurrentCultureIgnoreCase) &&
+                        !String.Equals(Normalise(o.SurName, lastNameFormattedLength), lastName, StringComparison.CurrentCultureIgnoreCase))
+
+                // Then compare normalised whole matches
+            .ThenBy(o => !String.Equals(Normalise(o.FirstName), firstName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(Normalise(o.FirstName), firstName, StringComparison.CurrentCultureIgnoreCase) &&
+                         !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
+
+                // Then compare non normalised whole matches
+            .ThenBy(o => !String.Equals(o.FirstName, firstName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(o.SurName, lastName, StringComparison.CurrentCultureIgnoreCase))
+            .ThenBy(o => !String.Equals(o.FirstName, firstName, StringComparison.CurrentCultureIgnoreCase) &&
+                         !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
             .ToList();
+    }
+
+    private string Normalise(string value, int len = 0)
+    {
+        value = value.Replace(" ", "");
+        if (len > 0 && len <= value.Length) value = value.Substring(0, len);
+        return value;
     }
 }
