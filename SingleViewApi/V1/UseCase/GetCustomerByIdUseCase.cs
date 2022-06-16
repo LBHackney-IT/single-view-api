@@ -1,9 +1,12 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person.Domain;
+using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.UseCase
 {
@@ -21,46 +24,82 @@ namespace SingleViewApi.V1.UseCase
         }
 
         [LogCall]
-        public CustomerResponseObject Execute(Guid customerId, string userToken, string redisId = null)
+        public MergedCustomerResponseObject Execute(Guid customerId, string userToken, string redisId)
         {
             var customer = _gateway.Find(customerId);
 
-            CustomerResponseObject personApiCustomer = null;
-            CustomerResponseObject jigsawCustomer = null;
+            List<CustomerResponseObject> foundRecords = new List<CustomerResponseObject>();
             foreach (var customerDataSource in customer.DataSources)
             {
+                CustomerResponseObject res;
                 switch (customerDataSource.DataSourceId)
                 {
                     case 1:
-                        personApiCustomer = _getPersonApiByIdUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        res = _getPersonApiByIdUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        foundRecords.Add(res);
                         break;
                     case 2:
-                        jigsawCustomer = _jigsawCustomerByIdUseCase
+                        res = _jigsawCustomerByIdUseCase
                             .Execute(customerDataSource.SourceId, redisId, userToken).Result;
+                        foundRecords.Add(res);
                         break;
                 }
             }
 
-            return new CustomerResponseObject()
+            return MergeRecords(customer, foundRecords);
+        }
+
+        private static MergedCustomerResponseObject MergeRecords(SavedCustomer customer, List<CustomerResponseObject> records)
+        {
+            var allSystemIds = new List<SystemId>();
+            var allKnownAddresses = new List<KnownAddress>();
+            var allContactDetails = new List<CutomerContactDetails>();
+            var allPersonType = new List<PersonType>();
+            var mergedCustomer = new MergedCustomer()
             {
-                Customer = new Customer()
-                {
-                    Title = personApiCustomer?.Customer.Title ?? jigsawCustomer?.Customer.Title,
-                    PreferredTitle = personApiCustomer?.Customer.PreferredTitle ?? jigsawCustomer?.Customer.PreferredTitle,
-                    PreferredFirstName = $"{personApiCustomer?.Customer.PreferredFirstName} / {jigsawCustomer?.Customer.PreferredFirstName}",
-                    PreferredSurname = $"{personApiCustomer?.Customer.PreferredSurname} / {jigsawCustomer?.Customer.PreferredSurname}",
-                    FirstName = $"{personApiCustomer?.Customer.FirstName} / {jigsawCustomer?.Customer.FirstName}",
-                    Surname = $"{personApiCustomer?.Customer.Surname} / {jigsawCustomer?.Customer.Surname}",
-                    KnownAddresses = personApiCustomer.Customer.KnownAddresses.Concat(jigsawCustomer.Customer.KnownAddresses).ToList(),
-                    ContactDetails = personApiCustomer.Customer.ContactDetails,
-                    PersonTypes = personApiCustomer.Customer.PersonTypes,
-                    DateOfBirth = customer.DateOfBirth,
-                    NiNo = customer.NiNumber,
-                    NhsNumber = jigsawCustomer.Customer.NhsNumber,
-                    DateOfDeath = personApiCustomer.Customer.DateOfDeath,
-                    IsAMinor = personApiCustomer.Customer.IsAMinor
-                },
+                Id = customer.Id.ToString(),
+                FirstName = customer.FirstName,
+                Surname = customer.LastName,
+                DateOfBirth = customer.DateOfBirth,
+                NiNo = customer.NiNumber
             };
+
+            foreach (var r in records)
+            {
+                allSystemIds.AddRange(r.SystemIds);
+                allKnownAddresses.AddRange(r.Customer.KnownAddresses);
+                allContactDetails.Add(new CutomerContactDetails()
+                {
+                    ContactDetails = r.Customer.ContactDetails,
+                    DataSourceName = r.Customer.DataSource.Name
+                });
+
+                if (r.Customer.PersonTypes != null)
+                {
+                    allPersonType.AddRange(r.Customer.PersonTypes);
+                }
+
+                mergedCustomer.Title ??= r.Customer.Title;
+                mergedCustomer.PreferredTitle ??= r.Customer.PreferredTitle;
+                mergedCustomer.PreferredFirstName ??= r.Customer.PreferredFirstName;
+                mergedCustomer.PreferredMiddleName ??= r.Customer.PreferredMiddleName;
+                mergedCustomer.PreferredSurname ??= r.Customer.PreferredSurname;
+                mergedCustomer.PlaceOfBirth ??= r.Customer.PlaceOfBirth;
+                mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
+                mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
+                mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
+            }
+
+            mergedCustomer.KnownAddresses = allKnownAddresses;
+            mergedCustomer.ContactDetails = allContactDetails;
+            mergedCustomer.PersonTypes = allPersonType;
+
+            return new MergedCustomerResponseObject()
+            {
+                SystemIds = allSystemIds,
+                Customer = mergedCustomer
+            };
+
         }
     }
 }
