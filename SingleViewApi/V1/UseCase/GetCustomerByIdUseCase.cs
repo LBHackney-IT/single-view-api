@@ -73,7 +73,11 @@ namespace SingleViewApi.V1.UseCase
                     ContactDetails = r.Customer.ContactDetails,
                     DataSourceName = r.Customer.DataSource.Name
                 });
-                allPersonType.AddRange(r.Customer.PersonTypes);
+
+                if (r.Customer.PersonTypes != null)
+                {
+                    allPersonType.AddRange(r.Customer.PersonTypes);
+                }
 
                 mergedCustomer.Title ??= r.Customer.Title;
                 mergedCustomer.PreferredTitle ??= r.Customer.PreferredTitle;
