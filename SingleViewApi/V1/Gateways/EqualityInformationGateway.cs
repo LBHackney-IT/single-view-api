@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.V1.Gateways;
 
@@ -17,21 +18,21 @@ public class EqualityInformationGateway: IEqualityInformationGateway
         this._baseUrl = baseUrl;
     }
 
-    public async Task<dynamic> GetEqualityInformationById(string id, string userToken)
+    public async Task<EqualityInformationResponseObject> GetEqualityInformationById(string id, string userToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/residentVulnerabilities/{id}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/equality-information?targetId={id}");
         request.Headers.Add("Authorization", userToken);
 
         var response = await _httpClient.SendAsync(request);
 
         #nullable enable
-        dynamic? equalityInformation = null;
+        EqualityInformationResponseObject? equalityInformation = null;
         #nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var jsonBody = response.Content.ReadAsStringAsync().Result;
-            equalityInformation = JsonConvert.DeserializeObject<dynamic>(jsonBody);
+            equalityInformation = JsonConvert.DeserializeObject<EqualityInformationResponseObject>(jsonBody);
         }
 
         return equalityInformation;
