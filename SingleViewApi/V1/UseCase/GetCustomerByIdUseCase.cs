@@ -39,9 +39,28 @@ namespace SingleViewApi.V1.UseCase
                         foundRecords.Add(res);
                         break;
                     case 2:
-                        res = _jigsawCustomerByIdUseCase
-                            .Execute(customerDataSource.SourceId, redisId, userToken).Result;
+                        if (redisId == null)
+                        {
+                            res = _jigsawCustomerByIdUseCase
+                                .Execute(customerDataSource.SourceId, redisId, userToken).Result;
+                        }
+                        else
+                        {
+                            res = new CustomerResponseObject()
+                            {
+                                SystemIds = new List<SystemId>()
+                                {
+                                    new SystemId()
+                                    {
+                                        Error = SystemId.UnauthorisedMessage,
+                                        Id = customerDataSource.SourceId,
+                                        SystemName = "Jigsaw"
+                                    }
+                                }
+                            };
+                        }
                         foundRecords.Add(res);
+
                         break;
                 }
             }
