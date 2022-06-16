@@ -7,7 +7,7 @@ using SingleViewApi.V1.Boundary.Response;
 
 namespace SingleViewApi.V1.Gateways;
 
-public class EqualityInformationGateway: IEqualityInformationGateway
+public class EqualityInformationGateway : IEqualityInformationGateway
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
@@ -25,9 +25,9 @@ public class EqualityInformationGateway: IEqualityInformationGateway
 
         var response = await _httpClient.SendAsync(request);
 
-        #nullable enable
+#nullable enable
         EqualityInformationResponseObject? equalityInformation = null;
-        #nullable disable
+#nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
