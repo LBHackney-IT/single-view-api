@@ -81,7 +81,7 @@ namespace SingleViewApi.V1.UseCase
                 FirstName = customer.FirstName,
                 Surname = customer.LastName,
                 DateOfBirth = customer.DateOfBirth,
-                NiNo = customer.NiNumber
+                NiNo = customer.NiNumber,
             };
 
             foreach (var r in records)
@@ -110,6 +110,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
                     mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
+                    mergedCustomer.EqualityInformation ??= r.Customer.EqualityInformation;
                 }
             }
 
