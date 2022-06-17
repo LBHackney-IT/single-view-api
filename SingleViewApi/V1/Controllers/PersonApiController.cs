@@ -34,7 +34,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult GetPersonApiCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
-            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization));
+            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
         }
 
     }
