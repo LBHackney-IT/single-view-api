@@ -11,17 +11,15 @@ namespace SingleViewApi.V1.UseCase
 {
     public class GetPersonApiByIdUseCase : IGetPersonApiByIdUseCase
     {
-        private readonly IPersonGateway _personGateway;
-        private readonly IContactDetailsGateway _contactDetailsGateway;
+        private IPersonGateway _personGateway;
+        private IContactDetailsGateway _contactDetailsGateway;
         private readonly IDataSourceGateway _dataSourceGateway;
-        private readonly IEqualityInformationGateway _equalityInformationGateway;
 
-        public GetPersonApiByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway, IEqualityInformationGateway equalityInformationGateway)
+        public GetPersonApiByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway, IDataSourceGateway dataSourceGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;
             _dataSourceGateway = dataSourceGateway;
-            _equalityInformationGateway = equalityInformationGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
@@ -29,8 +27,6 @@ namespace SingleViewApi.V1.UseCase
             var person = await _personGateway.GetPersonById(personId, userToken);
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
             var dataSource = _dataSourceGateway.GetEntityById(1);
-            var equalityInformation =
-                await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
 
@@ -62,7 +58,6 @@ namespace SingleViewApi.V1.UseCase
                     IsAMinor = person.IsAMinor,
                     PersonTypes = person.PersonTypes?.ToList(),
                     ContactDetails = contactDetails,
-                    EqualityInformation = equalityInformation,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
 
