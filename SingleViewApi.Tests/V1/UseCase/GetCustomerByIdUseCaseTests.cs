@@ -39,7 +39,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         }
 
         [Test]
-        public void GetsACustomerFromPersonApi()
+        public void GetsACustomerFromPersonApiAndJigsaw()
         {
             var id = new Guid();
             var userToken = _fixture.Create<string>();
@@ -168,6 +168,104 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.PreferredFirstName.Should().BeEquivalentTo(peronsApiCustomer.PreferredFirstName);
             result.Customer.PreferredMiddleName.Should().BeEquivalentTo(null);
             result.Customer.PersonTypes.Should().BeEquivalentTo(peronsApiCustomer.PersonTypes);
+        }
+
+        [Test]
+        public void GetsACustomerFromPersonApi()
+        {
+            var id = new Guid();
+            var userToken = _fixture.Create<string>();
+            string redisId = null;
+            var mockFirstName = "Luna";
+            var mockLastName = "Kitty";
+            var mockPersonApi = new Guid().ToString();
+            var mockPersonApiName = "PersonAPI";
+            var mockJigsawId = "1234";
+            var mockJigsawName = "Jigsaw";
+
+
+            _mockCustomerGateway.Setup(x => x.Find(id)).Returns(new SavedCustomer()
+            {
+                FirstName = mockFirstName,
+                LastName = mockLastName,
+                DataSources = new List<CustomerDataSource>()
+                {
+                    new CustomerDataSource()
+                    {
+                        CustomerId = id, DataSourceId = 2, SourceId = mockJigsawId
+                    }, new CustomerDataSource()
+                    {
+                        CustomerId = id, DataSourceId = 1, SourceId = mockPersonApi
+                    }
+                }
+            });
+
+            var fakeContactDetails = _fixture.Create<ContactDetails>();
+            var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
+
+            var peronsApiCustomer = new Customer()
+            {
+                Id = mockPersonApi,
+                Title = Hackney.Shared.Person.Domain.Title.Miss,
+                FirstName = mockFirstName,
+                Surname = mockLastName,
+                ContactDetails = fakeContactDetails,
+                DataSource = new DataSource() { Id = 1, Name = mockPersonApiName },
+                DateOfBirth = _fixture.Create<DateTime>(),
+                DateOfDeath = null,
+                IsAMinor = false,
+                KnownAddresses = fakeKnownAddresses,
+                NhsNumber = null,
+                NiNo = null,
+                PreferredSurname = mockLastName,
+                PreferredTitle = Hackney.Shared.Person.Domain.Title.Miss,
+                PlaceOfBirth = null,
+                PreferredFirstName = mockFirstName,
+                PreferredMiddleName = null,
+                PersonTypes = new List<PersonType> { Hackney.Shared.Person.Domain.PersonType.Tenant }
+            };
+
+            _mockGetPersonApiByIdUseCase.Setup(x => x.Execute(mockPersonApi, userToken)).ReturnsAsync(new CustomerResponseObject()
+            {
+                Customer = peronsApiCustomer,
+                SystemIds = new List<SystemId>
+                {
+                    new SystemId()
+                    {
+                        Id = mockPersonApi,
+                        SystemName = mockPersonApiName
+                    }
+                }
+            });
+
+            var result = _classUnderTest.Execute(id, userToken, redisId);
+
+            result.SystemIds[0].SystemName.Should().BeEquivalentTo(mockJigsawName);
+            result.SystemIds[0].Id.Should().BeEquivalentTo(mockJigsawId);
+            result.SystemIds[0].Error.Should().BeEquivalentTo("Unauthorised");
+            result.SystemIds[1].SystemName.Should().BeEquivalentTo(mockPersonApiName);
+            result.SystemIds[1].Id.Should().BeEquivalentTo(mockPersonApi);
+
+            result.Customer.Id.Should().BeEquivalentTo(id.ToString());
+            result.Customer.Title.Should().BeEquivalentTo(peronsApiCustomer.Title);
+            result.Customer.FirstName.Should().BeEquivalentTo(mockFirstName);
+            result.Customer.Surname.Should().BeEquivalentTo(mockLastName);
+            result.Customer.ContactDetails.Count.Should().Equals(2);
+            result.Customer.DateOfBirth.Should().Equals(peronsApiCustomer.DateOfBirth);
+            result.Customer.DateOfDeath.Should().Equals(null);
+            result.Customer.IsAMinor.Should().Equals(peronsApiCustomer.IsAMinor);
+            result.Customer.KnownAddresses.Should().Equals(fakeKnownAddresses);
+            result.Customer.NhsNumber.Should().BeEquivalentTo(null);
+            result.Customer.NiNo.Should().BeEquivalentTo(null);
+            result.Customer.PreferredSurname.Should().BeEquivalentTo(peronsApiCustomer.PreferredSurname);
+            result.Customer.PreferredTitle.Should().BeEquivalentTo(peronsApiCustomer.PreferredTitle);
+            result.Customer.PlaceOfBirth.Should().BeEquivalentTo(peronsApiCustomer.PlaceOfBirth);
+            result.Customer.PreferredFirstName.Should().BeEquivalentTo(peronsApiCustomer.PreferredFirstName);
+            result.Customer.PreferredMiddleName.Should().BeEquivalentTo(null);
+            result.Customer.PersonTypes.Should().BeEquivalentTo(peronsApiCustomer.PersonTypes);
+
+            _mockGetJigsawCustomerByIdUseCase.Verify(x => x.Execute(mockJigsawId, redisId, userToken), Times.Never);
+
         }
     }
 }
