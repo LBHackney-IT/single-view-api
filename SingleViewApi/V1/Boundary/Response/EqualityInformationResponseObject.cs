@@ -34,13 +34,6 @@ public class HomeSituation
     public string HomeSituationValueIfOther { get; set; }
 }
 
-public class Language
-{
-    [JsonPropertyName("Language")]
-    public string LanguageName { get; set; }
-    public bool IsPrimary { get; set; }
-}
-
 public class MarriageOrCivilPartnership
 {
     public string Married { get; set; }
