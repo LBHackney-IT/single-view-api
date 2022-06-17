@@ -32,6 +32,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string PlaceOfBirth { get; set; }
+        public EqualityInformationResponseObject EqualityInformation { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
         public List<CutomerContactDetails> ContactDetails { get; set; }
         public List<PersonType> PersonTypes { get; set; }
