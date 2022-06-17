@@ -24,7 +24,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json.Serialization;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -58,7 +57,7 @@ namespace SingleViewApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddMvc();
+                .AddMvc().AddNewtonsoftJson();
             services.AddApiVersioning(o =>
             {
                 o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -90,13 +89,22 @@ namespace SingleViewApi
                     );
             });
 
-            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            services.AddTransient<IGetPersonApiByIdUseCase, GetPersonApiByIdUseCase>(s =>
             {
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
 
-                return new GetCustomerByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>
+            {
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                var customerGateway = s.GetService<ICustomerGateway>();
+                var customerDataSourceGateway = s.GetService<ICustomerDataSourceGateway>();
+
+                return new CreateCustomerUseCase(customerGateway, customerDataSourceGateway, dataSourceGateway);
             });
 
             services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
@@ -132,6 +140,14 @@ namespace SingleViewApi
 
             });
 
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>(s =>
+            {
+                var customerGateway = s.GetService<ICustomerGateway>();
+                var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
+                var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
+
+                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase);
+            });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
                 var redisGateway = s.GetService<IRedisGateway>();
@@ -316,6 +332,8 @@ namespace SingleViewApi
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IDataSourceGateway, DataSourceGateway>();
+            services.AddScoped<ICustomerDataSourceGateway, CustomerDataSourceGateway>();
+            services.AddScoped<ICustomerGateway, CustomerGateway>();
 
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             //services.AddScoped<IExampleDynamoGateway, DynamoDbGateway>();
