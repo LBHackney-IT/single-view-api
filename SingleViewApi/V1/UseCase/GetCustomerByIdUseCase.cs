@@ -5,6 +5,7 @@ using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Domain;
 
@@ -26,7 +27,14 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public MergedCustomerResponseObject Execute(Guid customerId, string userToken, string redisId)
         {
+            Console.WriteLine("--------------------");
+            Console.WriteLine("START CUSTOMER");
+            Console.WriteLine("--------------------");
             var customer = _gateway.Find(customerId);
+            Console.WriteLine("--------------------");
+            Console.WriteLine(customer.ToJson());
+            Console.WriteLine("--------------------");
+
 
             List<CustomerResponseObject> foundRecords = new List<CustomerResponseObject>();
             foreach (var customerDataSource in customer.DataSources)
@@ -35,12 +43,22 @@ namespace SingleViewApi.V1.UseCase
                 switch (customerDataSource.DataSourceId)
                 {
                     case 1:
+                        Console.WriteLine("--------------------");
+                        Console.WriteLine("LOOKING FOR PERSON API");
+                        Console.WriteLine(customerDataSource.SourceId);
+                        Console.WriteLine("--------------------");
+
                         res = _getPersonApiByIdUseCase.Execute(customerDataSource.SourceId, userToken).Result;
                         foundRecords.Add(res);
                         break;
                     case 2:
                         if (redisId != null)
                         {
+                            Console.WriteLine("--------------------");
+                            Console.WriteLine("LOOKING FOR JIGSAW API");
+                            Console.WriteLine(customerDataSource.SourceId);
+                            Console.WriteLine("--------------------");
+
                             res = _jigsawCustomerByIdUseCase
                                 .Execute(customerDataSource.SourceId, redisId, userToken).Result;
                         }
@@ -64,6 +82,9 @@ namespace SingleViewApi.V1.UseCase
                         break;
                 }
             }
+            Console.WriteLine("--------------------");
+            Console.WriteLine("GONNA MERGE NOW");
+            Console.WriteLine("--------------------");
 
             return MergeRecords(customer, foundRecords);
         }
