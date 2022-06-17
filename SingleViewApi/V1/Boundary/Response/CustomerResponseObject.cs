@@ -41,8 +41,6 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public ContactDetails ContactDetails { get; set; }
 
-        public EqualityInformationResponseObject EqualityInformation { get; set; }
-
         public List<PersonType> PersonTypes { get; set; }
 
 #nullable enable
