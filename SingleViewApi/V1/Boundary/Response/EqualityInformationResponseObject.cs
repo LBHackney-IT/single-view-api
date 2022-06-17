@@ -72,7 +72,6 @@ public class EqualityInformationResponseObject
     public MarriageOrCivilPartnership? MarriageOrCivilPartnership { get; set; }
     public List<PregnancyOrMaternity>? PregnancyOrMaternity { get; set; }
     public string? NationalInsuranceNumber { get; set; }
-    public List<Language>? Languages { get; set; }
     public CaringResponsibilities? CaringResponsibilities { get; set; }
     public bool? Disabled { get; set; }
     public List<string>? CommunicationRequirements { get; set; }
