@@ -19,7 +19,6 @@ namespace SingleViewApi.V1.Controllers
     {
         private readonly ICreateCustomerUseCase _customerUseCase;
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
-        // private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
 
         public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
         {
@@ -41,7 +40,6 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult GetCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
         {
-            // return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
             return Ok(_getCustomerByIdUseCase.Execute(id, authorization, redisId));
         }
 
