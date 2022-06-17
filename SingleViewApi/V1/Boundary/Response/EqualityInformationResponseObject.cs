@@ -69,7 +69,7 @@ public class EqualityInformationResponseObject
 {
     public string Id { get; set; }
     public string TargetId { get; set; }
-    #nullable enable
+#nullable enable
     public string? AgeGroup { get; set; }
     public Gender? Gender { get; set; }
     public string? Nationality { get; set; }
@@ -86,7 +86,7 @@ public class EqualityInformationResponseObject
     public EconomicSituation? EconomicSituation { get; set; }
     public HomeSituation? HomeSituation { get; set; }
     public string? ArmedForces { get; set; }
-    #nullable disable
+#nullable disable
 }
 
 
