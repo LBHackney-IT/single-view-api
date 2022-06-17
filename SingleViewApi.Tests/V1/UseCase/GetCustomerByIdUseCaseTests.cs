@@ -54,7 +54,9 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             _mockCustomerGateway.Setup(x => x.Find(id)).Returns(new SavedCustomer()
             {
-                FirstName = mockFirstName, LastName = mockLastName, DataSources = new List<CustomerDataSource>()
+                FirstName = mockFirstName,
+                LastName = mockLastName,
+                DataSources = new List<CustomerDataSource>()
                 {
                     new CustomerDataSource()
                     {
