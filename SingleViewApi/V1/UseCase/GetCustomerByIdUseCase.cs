@@ -54,6 +54,7 @@ namespace SingleViewApi.V1.UseCase
                     KnownAddresses = personApiCustomer.Customer.KnownAddresses.Concat(jigsawCustomer.Customer.KnownAddresses).ToList(),
                     ContactDetails = personApiCustomer.Customer.ContactDetails,
                     PersonTypes = personApiCustomer.Customer.PersonTypes,
+                    EqualityInformation = personApiCustomer.Customer.EqualityInformation,
                     DateOfBirth = customer.DateOfBirth,
                     NiNo = customer.NiNumber,
                     NhsNumber = jigsawCustomer.Customer.NhsNumber,
