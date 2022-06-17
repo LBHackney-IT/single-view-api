@@ -39,7 +39,7 @@ namespace SingleViewApi.V1.UseCase
                         foundRecords.Add(res);
                         break;
                     case 2:
-                        if (redisId == null)
+                        if (redisId != null)
                         {
                             res = _jigsawCustomerByIdUseCase
                                 .Execute(customerDataSource.SourceId, redisId, userToken).Result;
@@ -86,27 +86,30 @@ namespace SingleViewApi.V1.UseCase
             foreach (var r in records)
             {
                 allSystemIds.AddRange(r.SystemIds);
-                allKnownAddresses.AddRange(r.Customer.KnownAddresses);
-                allContactDetails.Add(new CutomerContactDetails()
+                if (r.Customer != null)
                 {
-                    ContactDetails = r.Customer.ContactDetails,
-                    DataSourceName = r.Customer.DataSource.Name
-                });
+                    allKnownAddresses.AddRange(r.Customer.KnownAddresses);
+                    allContactDetails.Add(new CutomerContactDetails()
+                    {
+                        ContactDetails = r.Customer.ContactDetails,
+                        DataSourceName = r.Customer.DataSource.Name
+                    });
 
-                if (r.Customer.PersonTypes != null)
-                {
-                    allPersonType.AddRange(r.Customer.PersonTypes);
+                    if (r.Customer.PersonTypes != null)
+                    {
+                        allPersonType.AddRange(r.Customer.PersonTypes);
+                    }
+
+                    mergedCustomer.Title ??= r.Customer.Title;
+                    mergedCustomer.PreferredTitle ??= r.Customer.PreferredTitle;
+                    mergedCustomer.PreferredFirstName ??= r.Customer.PreferredFirstName;
+                    mergedCustomer.PreferredMiddleName ??= r.Customer.PreferredMiddleName;
+                    mergedCustomer.PreferredSurname ??= r.Customer.PreferredSurname;
+                    mergedCustomer.PlaceOfBirth ??= r.Customer.PlaceOfBirth;
+                    mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
+                    mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
+                    mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
                 }
-
-                mergedCustomer.Title ??= r.Customer.Title;
-                mergedCustomer.PreferredTitle ??= r.Customer.PreferredTitle;
-                mergedCustomer.PreferredFirstName ??= r.Customer.PreferredFirstName;
-                mergedCustomer.PreferredMiddleName ??= r.Customer.PreferredMiddleName;
-                mergedCustomer.PreferredSurname ??= r.Customer.PreferredSurname;
-                mergedCustomer.PlaceOfBirth ??= r.Customer.PlaceOfBirth;
-                mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
-                mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
-                mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
             }
 
             mergedCustomer.KnownAddresses = allKnownAddresses;
