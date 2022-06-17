@@ -10,7 +10,6 @@ using Hackney.Shared.Person;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
-using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.Tests.V1.UseCase
@@ -19,7 +18,6 @@ namespace SingleViewApi.Tests.V1.UseCase
     {
         private Mock<IPersonGateway> _mockPersonGateway;
         private Mock<IContactDetailsGateway> _mockContactDetailsGateway;
-        private Mock<IEqualityInformationGateway> _mockEqualityInformationGateway;
         private GetPersonApiByIdUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
@@ -30,9 +28,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockPersonGateway = new Mock<IPersonGateway>();
             _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-            _mockEqualityInformationGateway = new Mock<IEqualityInformationGateway>();
-
-            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object, _mockEqualityInformationGateway.Object);
+            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
 
         }
@@ -45,12 +41,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             var stubbedPerson = _fixture.Create<Person>();
             var stubbedDataSource = _fixture.Create<DataSource>();
             var stubbedContactDetails = _fixture.Create<ContactDetails>();
-            var stubbedEqualityInformation = _fixture.Create<EqualityInformationResponseObject>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
             _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
-            _mockEqualityInformationGateway.Setup(x => x.GetEqualityInformationById(id, userToken))
-                .ReturnsAsync(stubbedEqualityInformation);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
@@ -77,7 +70,6 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
             result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
-            result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInformation);
         }
         [Test]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
