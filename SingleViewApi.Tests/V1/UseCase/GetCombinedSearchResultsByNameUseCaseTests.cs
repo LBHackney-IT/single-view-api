@@ -27,7 +27,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     public void Setup()
     {
         _mockGetSearchResultsByNameUseCase = new Mock<IGetSearchResultsByNameUseCase>();
-        _mockGetJigsawCustomersUseCase= new  Mock<IGetJigsawCustomersUseCase>();
+        _mockGetJigsawCustomersUseCase = new Mock<IGetJigsawCustomersUseCase>();
         _mockSearchSingleViewUseCase = new Mock<ISearchSingleViewUseCase>();
         _fixture = new Fixture();
         _classUnderTest = new GetCombinedSearchResultsByNameUseCase(

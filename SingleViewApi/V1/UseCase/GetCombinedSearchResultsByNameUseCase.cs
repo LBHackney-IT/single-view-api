@@ -88,10 +88,12 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         else if (jigsawResults == null && singleViewResults == null)
         {
             return housingResults;
-        } else if (singleViewResults == null)
+        }
+        else if (singleViewResults == null)
         {
             return housingResults.Concat(jigsawResults).ToList();
-        } else if (jigsawResults == null)
+        }
+        else if (jigsawResults == null)
         {
             return housingResults.Concat(singleViewResults).ToList();
         }

@@ -47,10 +47,10 @@ namespace SingleViewApi.V1.Gateways
         public List<SavedCustomer> Search(string firstName, string lastName)
         {
             var customers = from c in _singleViewContext.Customers
-                where c.LastName.ToLower().Contains(lastName.ToLower()) && c.FirstName.ToLower().Contains(firstName.ToLower())
-                select c;
+                            where c.LastName.ToLower().Contains(lastName.ToLower()) && c.FirstName.ToLower().Contains(firstName.ToLower())
+                            select c;
 
-            return customers.ToList().Map(c=> c.ToDomain());
+            return customers.ToList().Map(c => c.ToDomain());
         }
 
     }
