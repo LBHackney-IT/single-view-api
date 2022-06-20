@@ -51,7 +51,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var stubbedEntity = _fixture.Create<SavedCustomer>();
 
             _mockCustomerGateway.Setup(x =>
-                x.Search(firstName, lastName)).Returns(new List<SavedCustomer>(){stubbedEntity});
+                x.Search(firstName, lastName)).Returns(new List<SavedCustomer>() { stubbedEntity });
 
             var results = _classUnderTest.Execute(firstName, lastName);
 
