@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using ServiceStack;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Factories;
 using SingleViewApi.V1.Infrastructure;
@@ -40,6 +42,15 @@ namespace SingleViewApi.V1.Gateways
                 .FirstOrDefault(c => c.Id == id);
 
             return result.ToDomain();
+        }
+
+        public List<SavedCustomer> Search(string firstName, string lastName)
+        {
+            var customers = from c in _singleViewContext.Customers
+                where c.LastName.ToLower().Contains(lastName.ToLower()) && c.FirstName.ToLower().Contains(firstName.ToLower())
+                select c;
+
+            return customers.ToList().Map(c=> c.ToDomain());
         }
 
     }
