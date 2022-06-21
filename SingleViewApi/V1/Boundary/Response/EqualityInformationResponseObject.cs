@@ -73,7 +73,7 @@ public class EqualityInformationResponseObject
     public List<PregnancyOrMaternity>? PregnancyOrMaternity { get; set; }
     public string? NationalInsuranceNumber { get; set; }
     public CaringResponsibilities? CaringResponsibilities { get; set; }
-    public bool? Disabled { get; set; }
+    public string? Disabled { get; set; }
     public List<string>? CommunicationRequirements { get; set; }
     public EconomicSituation? EconomicSituation { get; set; }
     public HomeSituation? HomeSituation { get; set; }
