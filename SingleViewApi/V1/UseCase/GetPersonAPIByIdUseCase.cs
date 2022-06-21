@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,8 +30,13 @@ namespace SingleViewApi.V1.UseCase
             var person = await _personGateway.GetPersonById(personId, userToken);
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
             var dataSource = _dataSourceGateway.GetEntityById(1);
+
+            Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
+
             var equalityInformation =
                 await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+
+            Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
 
