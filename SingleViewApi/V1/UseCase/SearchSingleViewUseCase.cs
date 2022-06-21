@@ -27,7 +27,7 @@ namespace SingleViewApi.V1.UseCase
         {
             var searchResults = _customerGateway.Search(firstName, lastName);
 
-            var dataSourceName = "Single View";
+            var dataSourceName = "single-view";
 
             var singleViewId = new SystemId() { SystemName = dataSourceName, Id = $"{firstName} {lastName}" };
 

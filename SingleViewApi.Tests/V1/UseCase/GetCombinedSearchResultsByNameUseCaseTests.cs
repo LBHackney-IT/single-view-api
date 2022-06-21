@@ -131,7 +131,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = singleViewResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "Single View", Id = $"{firstName} {lastName}" }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -147,7 +147,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
                 new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = "Single View", Id = $"{firstName} {lastName}" }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
 
@@ -190,7 +190,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SearchResponse = singleViewResults,
             SystemIds = new List<SystemId>()
             {
-                new SystemId() { SystemName = "Single View", Id = $"{firstName} {lastName}" }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
         var expectedSearchResults = new SearchResponseObject()
@@ -204,7 +204,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = "Single View", Id = $"{firstName} {lastName}" }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
 
