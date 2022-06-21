@@ -27,9 +27,13 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
         {
+            Console.WriteLine("---- DEBUG - Entered Use Case");
             var person = await _personGateway.GetPersonById(personId, userToken);
+            Console.WriteLine("---- DEBUG - Got Person");
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
+            Console.WriteLine("---- DEBUG - Got Contact Details");
             var dataSource = _dataSourceGateway.GetEntityById(1);
+            Console.WriteLine("---- DEBUG - Got Data Source");
 
             Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
 
