@@ -31,49 +31,13 @@ namespace SingleViewApi.V1.UseCase
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
         {
-            Console.WriteLine("---- DEBUG - Entered Use Case - querying for person {0}", personId);
 
-            var person = new Person();
-            var contactDetails = new ContactDetails();
-            var dataSource = new DataSource();
-
-            try
-            {
-                person = await _personGateway.GetPersonById(personId, userToken);
-                Console.WriteLine("---- DEBUG - Got Person with ID {0}", personId);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in person gateway: {0}", e.ToString());
-            }
-
-            try
-            {
-                contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
-                Console.WriteLine("---- DEBUG - Got Contact Details");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in contact details gateway: {0}", e.ToString());
-            }
-
-            try
-            {
-                dataSource = _dataSourceGateway.GetEntityById(1);
-                Console.WriteLine("---- DEBUG - Got Data Source");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in dataSOurce gateway: {0}", e.ToString());
-            }
-
-
-
-
-            Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
+            var person = await _personGateway.GetPersonById(personId, userToken);
+            var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
+            var dataSource = _dataSourceGateway.GetEntityById(1);
             var equalityInformation =
             await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
-            Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
+
 
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
@@ -106,6 +70,7 @@ namespace SingleViewApi.V1.UseCase
                     IsAMinor = person.IsAMinor,
                     PersonTypes = person.PersonTypes?.ToList(),
                     ContactDetails = contactDetails,
+                    EqualityInformation = equalityInformation,
 
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {

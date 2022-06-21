@@ -49,8 +49,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
             _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
-            // _mockEqualityInfoGateway.Setup(x => x.GetEqualityInformationById(id, userToken))
-            //     .ReturnsAsync(stubbedEqualityInfo);
+            _mockEqualityInfoGateway.Setup(x => x.GetEqualityInformationById(id, userToken)).ReturnsAsync(stubbedEqualityInfo);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
@@ -77,7 +76,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
             result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
-            //result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
+            result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
 
         }
         [Test]
