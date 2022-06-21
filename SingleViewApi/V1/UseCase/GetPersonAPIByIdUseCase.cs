@@ -15,8 +15,8 @@ namespace SingleViewApi.V1.UseCase
 {
     public class GetPersonApiByIdUseCase : IGetPersonApiByIdUseCase
     {
-        private IPersonGateway _personGateway;
-        private IContactDetailsGateway _contactDetailsGateway;
+        private readonly IPersonGateway _personGateway;
+        private readonly IContactDetailsGateway _contactDetailsGateway;
         private readonly IDataSourceGateway _dataSourceGateway;
         private readonly IEqualityInformationGateway _equalityInformationGateway;
 
