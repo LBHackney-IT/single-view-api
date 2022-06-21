@@ -37,10 +37,10 @@ namespace SingleViewApi.V1.UseCase
 
             Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
 
-            var equalityInformation =
-                await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+            // var equalityInformation =
+            //     await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
 
-            Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
+            // Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
 
@@ -72,7 +72,7 @@ namespace SingleViewApi.V1.UseCase
                     IsAMinor = person.IsAMinor,
                     PersonTypes = person.PersonTypes?.ToList(),
                     ContactDetails = contactDetails,
-                    EqualityInformation = equalityInformation,
+                    // EqualityInformation = equalityInformation,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
 
