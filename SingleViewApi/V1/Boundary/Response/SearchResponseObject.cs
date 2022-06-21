@@ -42,7 +42,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<Hackney.Shared.Person.Domain.PersonType>? PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
         public bool IsTenureCautionaryAlert { get; set; }
+        public List<KnownAddress>? KnownAddresses { get; set; }
 #nullable disable
-        public List<KnownAddress> KnownAddresses { get; set; }
     }
 }

@@ -13,43 +13,52 @@ namespace SingleViewApi.V1.UseCase;
 public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsByNameUseCase
 {
 
-    private IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
-    private IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
+    private readonly IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
+    private readonly IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
+    private readonly ISearchSingleViewUseCase _searchSingleViewUseCase;
 
-    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase)
+    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase)
     {
         _getSearchResultsByNameUseCase = getSearchResultsByNameUseCase;
+        _searchSingleViewUseCase = searchSingleViewUseCase;
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
     }
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken,
         string redisId)
     {
+        var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        int total = 0;
+        int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
         List<SearchResult> concatenatedResults;
-        List<SystemId> jigsawids = new List<SystemId>();
+        List<SystemId> jigsawIds = new List<SystemId>();
 
         if (redisId != null)
         {
             var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
-            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
-                jigsawResults?.SearchResponse?.SearchResults);
+
+            concatenatedResults = ConcatenateResults(
+                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                jigsawResults: jigsawResults?.SearchResponse?.SearchResults);
+
             total += jigsawResults?.SearchResponse?.Total ?? 0;
 
-            jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
+            jigsawIds = jigsawResults?.SystemIds ?? new List<SystemId>();
         }
         else
         {
-            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults);
+            concatenatedResults = ConcatenateResults(
+                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
+                housingResults: housingResults?.SearchResponse?.SearchResults);
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
 
 
         total += housingResults?.SearchResponse?.Total ?? 0;
-
+        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).ToList();
 
         var collatedResults = new SearchResponseObject
         {
@@ -58,7 +67,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
                 SearchResults = sortedResults,
                 Total = total
             },
-            SystemIds = housingResults?.SystemIds?.Concat(jigsawids).ToList()
+            SystemIds = systemIds.Concat(jigsawIds).ToList()
         };
 
         return collatedResults;
@@ -66,21 +75,29 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults)
+    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults)
     {
-        if (housingResults == null && jigsawResults == null)
+        if (housingResults == null && jigsawResults == null && singleViewResults == null)
         {
             return new List<SearchResult>();
         }
-        else if (housingResults == null)
+        else if (housingResults == null && singleViewResults == null)
         {
             return jigsawResults;
         }
-        else if (jigsawResults == null)
+        else if (jigsawResults == null && singleViewResults == null)
         {
             return housingResults;
         }
-        return housingResults.Concat(jigsawResults).ToList();
+        else if (singleViewResults == null)
+        {
+            return housingResults.Concat(jigsawResults).ToList();
+        }
+        else if (jigsawResults == null)
+        {
+            return housingResults.Concat(singleViewResults).ToList();
+        }
+        return housingResults.Concat(jigsawResults.Concat(singleViewResults)).ToList();
     }
 
     [LogCall]

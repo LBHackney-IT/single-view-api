@@ -189,11 +189,19 @@ namespace SingleViewApi
                 return new GetSearchResultsByNameUseCase(housingSearchGateway, dataSourceGateway);
             });
 
+            services.AddTransient<ISearchSingleViewUseCase, SearchSingleViewUseCase>(s =>
+            {
+                var customerGateway = s.GetService<ICustomerGateway>();
+
+                return new SearchSingleViewUseCase(customerGateway);
+            });
+
             services.AddTransient<IGetCombinedSearchResultsByNameUseCase, GetCombinedSearchResultsByNameUseCase>(s =>
             {
                 var getSearchResultsByNameUseCase = s.GetService<IGetSearchResultsByNameUseCase>();
                 var getJigsawCustomersUseCase = s.GetService<IGetJigsawCustomersUseCase>();
-                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase);
+                var searchSingleViewUseCase = s.GetService<ISearchSingleViewUseCase>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
