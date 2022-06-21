@@ -103,5 +103,71 @@ namespace SingleViewApi.Tests.V1.Gateways
             Assert.AreEqual(jigsaw.DataSourceId, actual.DataSources[1].DataSourceId);
             Assert.AreEqual(jigsaw.SourceId, actual.DataSources[1].SourceId);
         }
+
+        [Test]
+        public void SearchSavedCustomer()
+        {
+            // Set up
+            _ = SingleViewContext.Customers.Add(new SavedCustomer()
+            {
+                FirstName = "Testy",
+                LastName = "McTestFace",
+                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
+                NiNumber = "SG01010101B"
+            }.ToDatabase()).Entity;
+
+            var expectedCustomer = SingleViewContext.Customers.Add(new SavedCustomer()
+            {
+                FirstName = "Luna",
+                LastName = "Kitty",
+                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
+                NiNumber = "SG00000000B"
+            }.ToDatabase()).Entity;
+
+            SingleViewContext.SaveChanges();
+
+            // Act
+            var actual = _classUnderTest.Search("Luna", "Kitty");
+
+            // Assert
+            Assert.AreEqual(1, actual.Count);
+            Assert.AreEqual(expectedCustomer.FirstName, actual[0].FirstName);
+            Assert.AreEqual(expectedCustomer.LastName, actual[0].LastName);
+            Assert.AreEqual(expectedCustomer.DateOfBirth, actual[0].DateOfBirth);
+            Assert.AreEqual(expectedCustomer.NiNumber, actual[0].NiNumber);
+        }
+
+        [Test]
+        public void SearchSavedCustomerIgnoreCase()
+        {
+            // Set up
+            var expectedCustomer = SingleViewContext.Customers.Add(new SavedCustomer()
+            {
+                FirstName = "Testy",
+                LastName = "McTestFace",
+                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
+                NiNumber = "SG01010101B"
+            }.ToDatabase()).Entity;
+
+            _ = SingleViewContext.Customers.Add(new SavedCustomer()
+            {
+                FirstName = "Luna",
+                LastName = "Kitty",
+                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
+                NiNumber = "SG00000000B"
+            }.ToDatabase()).Entity;
+
+            SingleViewContext.SaveChanges();
+
+            // Act
+            var actual = _classUnderTest.Search("testy", "testface");
+
+            // Assert
+            Assert.AreEqual(1, actual.Count);
+            Assert.AreEqual(expectedCustomer.FirstName, actual[0].FirstName);
+            Assert.AreEqual(expectedCustomer.LastName, actual[0].LastName);
+            Assert.AreEqual(expectedCustomer.DateOfBirth, actual[0].DateOfBirth);
+            Assert.AreEqual(expectedCustomer.NiNumber, actual[0].NiNumber);
+        }
     }
 }
