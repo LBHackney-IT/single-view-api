@@ -61,7 +61,8 @@ namespace SingleViewApi.V1.UseCase
             {
                 dataSource = _dataSourceGateway.GetEntityById(1);
                 Console.WriteLine("---- DEBUG - Got Data Source");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("Exception in dataSOurce gateway: {0}", e.ToString());
             }
