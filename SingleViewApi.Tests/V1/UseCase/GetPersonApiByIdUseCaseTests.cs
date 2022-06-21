@@ -19,7 +19,7 @@ namespace SingleViewApi.Tests.V1.UseCase
     {
         private Mock<IPersonGateway> _mockPersonGateway;
         private Mock<IContactDetailsGateway> _mockContactDetailsGateway;
-        //private Mock<IEqualityInformationGateway> _mockEqualityInfoGateway;
+        private Mock<IEqualityInformationGateway> _mockEqualityInfoGateway;
         private GetPersonApiByIdUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
@@ -30,9 +30,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockPersonGateway = new Mock<IPersonGateway>();
             _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-            //_mockEqualityInfoGateway = new Mock<IEqualityInformationGateway>();
+            _mockEqualityInfoGateway = new Mock<IEqualityInformationGateway>();
 
-            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object);
+            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object, _mockEqualityInfoGateway.Object);
             _fixture = new Fixture();
 
         }

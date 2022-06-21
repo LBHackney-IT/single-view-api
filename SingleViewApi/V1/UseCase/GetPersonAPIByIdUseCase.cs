@@ -18,15 +18,15 @@ namespace SingleViewApi.V1.UseCase
         private IPersonGateway _personGateway;
         private IContactDetailsGateway _contactDetailsGateway;
         private readonly IDataSourceGateway _dataSourceGateway;
-        //private readonly IEqualityInformationGateway _equalityInformationGateway;
+        private readonly IEqualityInformationGateway _equalityInformationGateway;
 
         public GetPersonApiByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway,
-            IDataSourceGateway dataSourceGateway)
+            IDataSourceGateway dataSourceGateway, IEqualityInformationGateway equalityInformationGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;
             _dataSourceGateway = dataSourceGateway;
-            //_equalityInformationGateway = equalityInformationGateway;
+            _equalityInformationGateway = equalityInformationGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
@@ -71,9 +71,9 @@ namespace SingleViewApi.V1.UseCase
 
 
             Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
-            //var equalityInformation =
-            // await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
-            //Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
+            var equalityInformation =
+            await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+            Console.WriteLine("----- DEBUG - Equality Information is {0}", equalityInformation.ToString());
 
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
