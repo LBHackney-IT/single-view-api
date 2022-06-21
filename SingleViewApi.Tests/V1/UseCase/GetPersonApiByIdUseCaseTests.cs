@@ -80,7 +80,6 @@ namespace SingleViewApi.Tests.V1.UseCase
 
         }
         [Test]
-        [Ignore("Debug")]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
         {
             var id = _fixture.Create<string>();
