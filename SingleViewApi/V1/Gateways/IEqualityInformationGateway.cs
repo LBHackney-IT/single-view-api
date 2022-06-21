@@ -5,5 +5,5 @@ namespace SingleViewApi.V1.Gateways;
 
 public interface IEqualityInformationGateway
 {
-    Task<EqualityInformationResponseObject> GetEqualityInformationById(string id, string userToken);
+    public Task<EqualityInformationResponseObject> GetEqualityInformationById(string id, string userToken);
 }
