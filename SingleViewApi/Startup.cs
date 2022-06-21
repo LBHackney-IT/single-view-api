@@ -92,9 +92,9 @@ namespace SingleViewApi
             services.AddTransient<IEqualityInformationGateway, EqualityInformationGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
                 return new EqualityInformationGateway(httpClient,
                     Environment.GetEnvironmentVariable("EQUALITY_INFORMATION_API_V1"));
-
             });
 
             services.AddTransient<IGetPersonApiByIdUseCase, GetPersonApiByIdUseCase>(s =>
@@ -102,9 +102,9 @@ namespace SingleViewApi
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
-                var equalityGateway = s.GetService<IEqualityInformationGateway>();
+                var equalityInformationGateway = s.GetService<IEqualityInformationGateway>();
 
-                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityInformationGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>

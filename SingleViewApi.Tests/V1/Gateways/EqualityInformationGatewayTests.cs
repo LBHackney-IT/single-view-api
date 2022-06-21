@@ -39,4 +39,3 @@ public class EqualityInformationGatewayTests
         _mockHttp.VerifyNoOutstandingExpectation();
     }
 }
-
