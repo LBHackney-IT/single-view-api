@@ -80,6 +80,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInformation);
         }
         [Test]
+        [Ignore("Debug")]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
         {
             var id = _fixture.Create<string>();
