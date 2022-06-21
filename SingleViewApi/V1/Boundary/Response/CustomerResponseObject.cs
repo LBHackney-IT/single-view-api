@@ -39,8 +39,6 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public List<KnownAddress> KnownAddresses { get; set; }
 
-        public ContactDetails ContactDetails { get; set; }
-
         public List<PersonType> PersonTypes { get; set; }
 
 #nullable enable
@@ -51,6 +49,8 @@ namespace SingleViewApi.V1.Boundary.Response
         public string? NhsNumber { get; set; }
 
         public DateTime? DateOfDeath { get; set; }
+
+        public ContactDetails? ContactDetails { get; set; }
 
         public EqualityInformationResponseObject? EqualityInformation { get; set; }
 
