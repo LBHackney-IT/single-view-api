@@ -102,9 +102,9 @@ namespace SingleViewApi
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
-                //var equalityInformationGateway = s.GetService<IEqualityInformationGateway>();
+                var equalityInformationGateway = s.GetService<IEqualityInformationGateway>();
 
-                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityInformationGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>
