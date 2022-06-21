@@ -31,15 +31,10 @@ namespace SingleViewApi.V1.Gateways
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                try
-                {
-                    var jsonBody = response.Content.ReadAsStringAsync().Result;
-                    person = JsonConvert.DeserializeObject<Person>(jsonBody);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error returning person: {0}", e.ToString());
-                }
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+                person = JsonConvert.DeserializeObject<Person>(jsonBody);
+
+
 
             }
 
