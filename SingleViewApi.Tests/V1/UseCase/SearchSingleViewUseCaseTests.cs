@@ -38,7 +38,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var results = _classUnderTest.Execute(firstName, lastName);
 
-            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Single View");
+            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("single-view");
             results.SystemIds[^1].Id.Should().BeEquivalentTo($"{firstName} {lastName}");
             results.SystemIds[^1].Error.Should().BeEquivalentTo(SystemId.NotFoundMessage);
         }
@@ -55,7 +55,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var results = _classUnderTest.Execute(firstName, lastName);
 
-            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("Single View");
+            results.SystemIds[^1].SystemName.Should().BeEquivalentTo("single-view");
             results.SystemIds[^1].Id.Should().BeEquivalentTo($"{firstName} {lastName}");
 
             results.SearchResponse.Total.Should().Be(1);
@@ -65,7 +65,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 .BeEquivalentTo(stubbedEntity.LastName);
             results.SearchResponse.SearchResults[0].DateOfBirth.Should()
                 .Be(stubbedEntity.DateOfBirth);
-            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo("Single View");
+            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo("single-view");
         }
     }
 }
