@@ -6,7 +6,10 @@ using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
+using Hackney.Shared.ContactDetail.Domain;
+using Hackney.Shared.Person;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 
 namespace SingleViewApi.V1.UseCase
 {
@@ -29,12 +32,43 @@ namespace SingleViewApi.V1.UseCase
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
         {
             Console.WriteLine("---- DEBUG - Entered Use Case - querying for person {0}", personId);
-            var person = await _personGateway.GetPersonById(personId, userToken);
-            Console.WriteLine("---- DEBUG - Got Person with ID {0}", personId);
-            var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
-            Console.WriteLine("---- DEBUG - Got Contact Details");
-            var dataSource = _dataSourceGateway.GetEntityById(1);
-            Console.WriteLine("---- DEBUG - Got Data Source");
+
+            var person = new Person();
+            var contactDetails = new ContactDetails();
+            var dataSource = new DataSource();
+
+            try
+            {
+                person = await _personGateway.GetPersonById(personId, userToken);
+                Console.WriteLine("---- DEBUG - Got Person with ID {0}", personId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in person gateway: {0}", e.ToString());
+            }
+
+            try
+            {
+                contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
+                Console.WriteLine("---- DEBUG - Got Contact Details");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in contact details gateway: {0}", e.ToString());
+            }
+
+            try
+            {
+                dataSource = _dataSourceGateway.GetEntityById(1);
+                Console.WriteLine("---- DEBUG - Got Data Source");
+            } catch (Exception e)
+            {
+                Console.WriteLine("Exception in dataSOurce gateway: {0}", e.ToString());
+            }
+
+
+
+
             Console.WriteLine("---- DEBUG - GETTING EQUALITY INFORMATION");
             //var equalityInformation =
             // await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
