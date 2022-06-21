@@ -36,7 +36,7 @@ namespace SingleViewApi.V1.Controllers
         public IActionResult GetPersonApiCustomer([FromQuery] string id, [FromHeader] string authorization)
         {
             Console.WriteLine("Entered PersonAPI Controller");
-            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization));
+            return Ok(_getPersonApiByIdUseCase.Execute(id, authorization).Result);
 
         }
 
