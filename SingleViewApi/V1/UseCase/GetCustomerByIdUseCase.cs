@@ -110,6 +110,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
                     mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
+
                 }
             }
 

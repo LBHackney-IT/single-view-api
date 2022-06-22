@@ -89,13 +89,22 @@ namespace SingleViewApi
                     );
             });
 
+            services.AddTransient<IEqualityInformationGateway, EqualityInformationGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new EqualityInformationGateway(httpClient,
+                    Environment.GetEnvironmentVariable("EQUALITY_INFORMATION_API_V1"));
+            });
+
             services.AddTransient<IGetPersonApiByIdUseCase, GetPersonApiByIdUseCase>(s =>
             {
                 var personGateway = s.GetService<IPersonGateway>();
                 var contactDetailsGateway = s.GetService<IContactDetailsGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                var equalityInformationGateway = s.GetService<IEqualityInformationGateway>();
 
-                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityInformationGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>
