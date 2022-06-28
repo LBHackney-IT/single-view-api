@@ -8,6 +8,7 @@ using Hackney.Shared.Person.Domain;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.UseCase
 {

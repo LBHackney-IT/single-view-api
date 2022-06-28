@@ -33,6 +33,7 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 using ServiceStack.Redis;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Helpers;
 using SingleViewApi.V1.Helpers.Interfaces;
 

@@ -3,6 +3,7 @@ using SingleViewApi.V1.Factories;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.UseCase
 {

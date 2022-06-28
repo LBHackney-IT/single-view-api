@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Hackney.Shared.Person;
 
-namespace SingleViewApi.V1.Gateways
+namespace SingleViewApi.V1.Gateways.Interfaces
 {
     public interface IPersonGateway
     {
