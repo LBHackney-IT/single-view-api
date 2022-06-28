@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Gateways;
@@ -17,15 +18,15 @@ public class AcademyGateway: IAcademyGateway
         _baseUrl = baseUrl;
     }
 
-    public async Task<dynamic> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName)
+    public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName)
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
-            $"{_baseUrl}/search?firstName={firstName}&lastName={lastName}");
+            $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-        dynamic? results = null;
+        CouncilTaxSearchResponseObject? results = null;
 #nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
@@ -33,7 +34,7 @@ public class AcademyGateway: IAcademyGateway
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
 
-            results = JsonConvert.DeserializeObject<dynamic>(jsonBody);
+            results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
 
         }
 
