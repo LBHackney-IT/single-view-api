@@ -7,7 +7,7 @@ using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Gateways;
 
-public class AcademyGateway: IAcademyGateway
+public class AcademyGateway : IAcademyGateway
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
