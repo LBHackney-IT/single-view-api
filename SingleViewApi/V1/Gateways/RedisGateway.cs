@@ -1,6 +1,7 @@
 using System;
 using Hackney.Core.Logging;
 using ServiceStack.Redis;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Gateways
 {

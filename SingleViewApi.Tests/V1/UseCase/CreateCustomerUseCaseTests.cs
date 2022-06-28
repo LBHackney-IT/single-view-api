@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {

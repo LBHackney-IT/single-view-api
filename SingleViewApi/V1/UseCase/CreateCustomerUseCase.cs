@@ -4,6 +4,7 @@ using SingleViewApi.V1.Gateways;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase

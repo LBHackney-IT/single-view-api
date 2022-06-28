@@ -6,6 +6,7 @@ using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Request;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase

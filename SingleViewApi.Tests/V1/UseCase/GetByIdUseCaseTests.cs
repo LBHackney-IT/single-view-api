@@ -3,6 +3,7 @@ using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {

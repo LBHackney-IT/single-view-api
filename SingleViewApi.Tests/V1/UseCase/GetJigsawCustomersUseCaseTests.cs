@@ -7,6 +7,7 @@ using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase;
 using SingleViewApi.V1.UseCase.Interfaces;
 
