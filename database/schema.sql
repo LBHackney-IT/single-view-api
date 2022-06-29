@@ -66,3 +66,4 @@ create index ix_data_sources_id
 
 INSERT INTO data_sources (id, name) VALUES (1, 'PersonAPI');
 INSERT INTO data_sources (id, name) VALUES (2, 'Jigsaw');
+INSERT INTO data_sources (id, name) VALUES (3, 'Academy');
