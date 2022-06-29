@@ -1,6 +1,9 @@
+using System.Threading.Tasks;
+using SingleViewApi.V1.Boundary.Response;
+
 namespace SingleViewApi.V1.UseCase.Interfaces;
 
 public interface IGetCouncilTaxAccountsByCustomerNameUseCase
 {
-    dynamic Execute(string firstName, string lastName, string userToken);
+    Task<SearchResponseObject>  Execute(string firstName, string lastName, string userToken);
 }
