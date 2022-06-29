@@ -7,10 +7,10 @@ public class CouncilTaxSearchResponseObject
 {
     public List<CouncilTaxSearchResponse> Customers { get; set; }
 
-    #nullable enable
+#nullable enable
     public string? Error { get; set; }
 
-    #nullable disable
+#nullable disable
 }
 
 public class CouncilTaxSearchResponse

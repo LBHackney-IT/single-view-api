@@ -63,7 +63,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
             };
 
-           searchResults.Add(result);
+            searchResults.Add(result);
         }
 
         response.SearchResponse = new SearchResponse()
