@@ -211,7 +211,8 @@ namespace SingleViewApi
                 var getSearchResultsByNameUseCase = s.GetService<IGetSearchResultsByNameUseCase>();
                 var getJigsawCustomersUseCase = s.GetService<IGetJigsawCustomersUseCase>();
                 var searchSingleViewUseCase = s.GetService<ISearchSingleViewUseCase>();
-                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase);
+                var getCouncilTaxAccountsByCustomerNameUseCase = s.GetService<IGetCouncilTaxAccountsByCustomerNameUseCase>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
@@ -269,7 +270,8 @@ namespace SingleViewApi
                 );
             });
 
-            services.AddTransient<IGetCouncilTaxAccountsByCustomerNameUseCase, GetCouncilTaxAccountsByCustomerNameUseCase>(s => {
+            services.AddTransient<IGetCouncilTaxAccountsByCustomerNameUseCase, GetCouncilTaxAccountsByCustomerNameUseCase>(s =>
+            {
                 var academyGateway = s.GetService<IAcademyGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
 

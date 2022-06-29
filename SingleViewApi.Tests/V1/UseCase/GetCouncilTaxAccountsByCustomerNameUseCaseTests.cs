@@ -12,7 +12,7 @@ using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase;
 
-public class GetCouncilTaxAccountsByCustomerNameUseCaseTests: LogCallAspectFixture
+public class GetCouncilTaxAccountsByCustomerNameUseCaseTests : LogCallAspectFixture
 {
     private Mock<IAcademyGateway> _mockAcademyGateway;
     private Mock<IDataSourceGateway> _mockDataSourceGateway;
@@ -38,7 +38,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCaseTests: LogCallAspectFixtu
         var stubbedDataSource = _fixture.Create<DataSource>();
 
         _mockAcademyGateway.Setup(x => x.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken))
-            .ReturnsAsync(new CouncilTaxSearchResponseObject() { Error = "Test Error"});
+            .ReturnsAsync(new CouncilTaxSearchResponseObject() { Error = "Test Error" });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(stubbedDataSource);
 
         var result = _classUnderTest.Execute(firstName, lastName, userToken).Result;
@@ -55,7 +55,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCaseTests: LogCallAspectFixtu
         var stubbedDataSource = _fixture.Create<DataSource>();
 
         _mockAcademyGateway.Setup(x => x.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken))
-            .ReturnsAsync(new CouncilTaxSearchResponseObject() { Error = null, Customers = new List<CouncilTaxSearchResponse>()});
+            .ReturnsAsync(new CouncilTaxSearchResponseObject() { Error = null, Customers = new List<CouncilTaxSearchResponse>() });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(stubbedDataSource);
 
         var result = _classUnderTest.Execute(firstName, lastName, userToken).Result;
