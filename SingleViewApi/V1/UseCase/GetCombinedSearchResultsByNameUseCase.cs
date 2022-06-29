@@ -56,12 +56,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
-                housingResults: housingResults?.SearchResponse?.SearchResults, councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
-
-
         total += housingResults?.SearchResponse?.Total ?? 0;
         total += councilTaxResults?.SearchResponse?.Total ?? 0;
 
@@ -82,33 +81,15 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults, [Optional] List<SearchResult> councilTaxResults)
+    private List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults, [Optional] List<SearchResult> councilTaxResults)
     {
-        if (housingResults == null && jigsawResults == null && singleViewResults == null && councilTaxResults == null)
-        {
-            return new List<SearchResult>();
-        }
-        else if (housingResults == null && singleViewResults == null)
-        {
-            return jigsawResults;
-        }
-        else if (jigsawResults == null && singleViewResults == null)
-        {
-            return housingResults;
-        }
-        else if (singleViewResults == null)
-        {
-            return housingResults.Concat(jigsawResults).ToList();
-        }
-        else if (jigsawResults == null)
-        {
-            return housingResults.Concat(singleViewResults).ToList();
-        }
-        else if (councilTaxResults == null)
-        {
-            return housingResults.Concat(jigsawResults.Concat(singleViewResults)).ToList();
-        }
-        return housingResults.Concat(jigsawResults.Concat(singleViewResults).Concat(councilTaxResults)).ToList();
+        return NeverNull(singleViewResults).Concat(NeverNull(housingResults)).Concat(NeverNull(jigsawResults)).Concat(NeverNull(councilTaxResults))
+            .ToList();
+    }
+
+    private IEnumerable<T> NeverNull<T>(IEnumerable<T> value)
+    {
+        return value ?? Enumerable.Empty<T>();
     }
 
     [LogCall]
@@ -146,4 +127,6 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         if (len > 0 && len <= value.Length) value = value.Substring(0, len);
         return value;
     }
+
+
 }
