@@ -87,10 +87,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             .ToList();
     }
 
-    private IEnumerable<T> NeverNull<T>(IEnumerable<T> value)
-    {
-        return value ?? Enumerable.Empty<T>();
-    }
+
 
     [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
@@ -126,6 +123,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         value = value.Replace(" ", "");
         if (len > 0 && len <= value.Length) value = value.Substring(0, len);
         return value;
+    }
+
+    private IEnumerable<T> NeverNull<T>(IEnumerable<T> value)
+    {
+        return value ?? Enumerable.Empty<T>();
     }
 
 
