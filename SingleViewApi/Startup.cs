@@ -269,6 +269,14 @@ namespace SingleViewApi
                 );
             });
 
+            services.AddTransient<IGetCouncilTaxAccountsByCustomerNameUseCase, GetCouncilTaxAccountsByCustomerNameUseCase>(s => {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetCouncilTaxAccountsByCustomerNameUseCase(academyGateway, dataSourceGateway);
+
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddHealthChecks();
