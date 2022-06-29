@@ -259,6 +259,16 @@ namespace SingleViewApi
                 return new CreateNoteUseCase(notesGateway);
             });
 
+            services.AddTransient<IAcademyGateway, AcademyGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new AcademyGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("ACADEMY_API_V1")
+                );
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddHealthChecks();
