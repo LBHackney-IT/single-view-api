@@ -34,10 +34,12 @@ public class AcademyGatewayTests
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"https://academy.api/council-tax/search?firstName={firstName}&lastName={lastName}");
+        _mockHttp.Expect($"https://academy.api/council-tax/search?firstName={firstName}&lastName={lastName}")
+            .WithHeaders("Authorization", userToken);
 
-        _ = _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName);
+        _ = _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
         _mockHttp.VerifyNoOutstandingExpectation();
     }
@@ -47,11 +49,13 @@ public class AcademyGatewayTests
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
 
         _mockHttp.Expect($"https://academy.api/council-tax/search?firstName={firstName}&lastName={lastName}")
+            .WithHeaders("Authorization", userToken)
             .Respond(HttpStatusCode.NotFound);
 
-        var results = await _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName);
+        var results = await _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
         results.Should().BeNull();
     }
@@ -61,13 +65,15 @@ public class AcademyGatewayTests
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
         var stubbedResponse = _fixture.Create<CouncilTaxSearchResponseObject>();
 
         _mockHttp.Expect($"https://academy.api/council-tax/search?firstName={firstName}&lastName={lastName}")
+            .WithHeaders("Authorization", userToken)
             .Respond("application/json",
                 JsonSerializer.Serialize<CouncilTaxSearchResponseObject>(stubbedResponse));
 
-        var results = await _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName);
+        var results = await _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
         _mockHttp.VerifyNoOutstandingExpectation();
         Assert.AreEqual(stubbedResponse.Customers[0].Id, results.Customers[0].Id);

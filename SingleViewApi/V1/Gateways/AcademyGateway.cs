@@ -18,11 +18,12 @@ public class AcademyGateway : IAcademyGateway
         _baseUrl = baseUrl;
     }
 
-    public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName)
+    public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
+        request.Headers.Add("Authorization", userToken);
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
