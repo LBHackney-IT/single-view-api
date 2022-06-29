@@ -5,10 +5,12 @@ namespace SingleViewApi.V1.Boundary.Response;
 
 public class CouncilTaxSearchResponseObject
 {
-#nullable enable
-    public List<CouncilTaxSearchResponse>? Customers { get; set; }
-#nullable disable
-    public string Error { get; set; }
+    public List<CouncilTaxSearchResponse> Customers { get; set; }
+
+    #nullable enable
+    public string? Error { get; set; }
+
+    #nullable disable
 }
 
 public class CouncilTaxSearchResponse

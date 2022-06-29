@@ -38,7 +38,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
             return response;
         }
 
-        if (accounts.Customers == null)
+        if (accounts.Customers?.Count == 0)
         {
             academyApiId.Error = SystemId.NotFoundMessage;
             return response;
