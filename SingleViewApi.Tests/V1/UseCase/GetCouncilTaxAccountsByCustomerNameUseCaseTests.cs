@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.Testing.Shared;
-using JetBrains.ReSharper.TestRunner.Abstractions.Extensions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Response;
