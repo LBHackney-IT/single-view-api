@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using ServiceStack.MiniProfiler.Data;
@@ -48,6 +49,8 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
             return response;
         }
 
+        Console.WriteLine("Converting Academy response into search response....");
+
         var searchResults = new List<SearchResult>();
 
         foreach (var account in accounts.Customers)
@@ -70,11 +73,15 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
             searchResults.Add(result);
         }
 
+        Console.WriteLine($"Search results are {JsonSerializer.Serialize(searchResults)}");
+
         response.SearchResponse = new SearchResponse()
         {
             SearchResults = searchResults,
             Total = searchResults.Count
         };
+
+        Console.WriteLine($"returning response...");
 
         return response;
     }
