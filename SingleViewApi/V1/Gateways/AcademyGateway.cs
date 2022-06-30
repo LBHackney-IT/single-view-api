@@ -23,9 +23,6 @@ public class AcademyGateway : IAcademyGateway
     [LogCall]
     public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
-
-        Console.WriteLine("Making request to Academy Council Tax Endpoint");
-
         var request = new HttpRequestMessage(HttpMethod.Get,
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
@@ -38,13 +35,10 @@ public class AcademyGateway : IAcademyGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            Console.WriteLine("Response OK");
+
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-
             results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
-
-            Console.WriteLine($"results are {results?.ToString()}");
 
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -33,6 +34,9 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
         var councilTaxResults =
             await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+
+        Console.WriteLine($"In combined use case - councilResults are {JSON.stringify(councilTaxResults)}");
+
         int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
         List<SearchResult> concatenatedResults;
