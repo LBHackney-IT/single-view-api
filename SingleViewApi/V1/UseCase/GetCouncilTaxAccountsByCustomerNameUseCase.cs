@@ -26,7 +26,6 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
     {
-        Console.WriteLine("Making request to Academy Council Tax Use Case");
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
         var academyApiId = new SystemId() { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
@@ -37,19 +36,16 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
         if (accounts.Error != null)
         {
-            Console.WriteLine($"Error from gateway: {accounts.Error}");
+            Console.WriteLine($"Error from Academy Council Tax Use Case: {accounts.Error}");
             academyApiId.Error = accounts.Error;
             return response;
         }
 
         if (accounts.Customers?.Count == 0)
         {
-            Console.WriteLine($"no results found from Academy");
             academyApiId.Error = SystemId.NotFoundMessage;
             return response;
         }
-
-        Console.WriteLine("Converting Academy response into search response....");
 
         var searchResults = new List<SearchResult>();
 
@@ -73,15 +69,13 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
             searchResults.Add(result);
         }
 
-        Console.WriteLine($"Search results are {JsonSerializer.Serialize(searchResults)}");
-
         response.SearchResponse = new SearchResponse()
         {
             SearchResults = searchResults,
             Total = searchResults.Count
         };
 
-        Console.WriteLine($"returning response...");
+
 
         return response;
     }
