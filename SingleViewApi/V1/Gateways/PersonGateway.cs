@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Hackney.Shared.Person;
 using Newtonsoft.Json;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Gateways
 {

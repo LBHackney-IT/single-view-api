@@ -13,43 +13,58 @@ namespace SingleViewApi.V1.UseCase;
 public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsByNameUseCase
 {
 
-    private IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
-    private IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
+    private readonly IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
+    private readonly IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
+    private readonly ISearchSingleViewUseCase _searchSingleViewUseCase;
+    private readonly IGetCouncilTaxAccountsByCustomerNameUseCase _getCouncilTaxAccountsByCustomerNameUseCase;
 
-    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase)
+    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase, IGetCouncilTaxAccountsByCustomerNameUseCase getCouncilTaxAccountsByCustomerNameUseCase)
     {
         _getSearchResultsByNameUseCase = getSearchResultsByNameUseCase;
+        _searchSingleViewUseCase = searchSingleViewUseCase;
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
+        _getCouncilTaxAccountsByCustomerNameUseCase = getCouncilTaxAccountsByCustomerNameUseCase;
     }
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken,
         string redisId)
     {
+        var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        int total = 0;
+        var councilTaxResults =
+            await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
         List<SearchResult> concatenatedResults;
-        List<SystemId> jigsawids = new List<SystemId>();
+        List<SystemId> jigsawIds = new List<SystemId>();
 
         if (redisId != null)
         {
             var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
-            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults,
-                jigsawResults?.SearchResponse?.SearchResults);
+
+            concatenatedResults = ConcatenateResults(
+                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                jigsawResults: jigsawResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
+
             total += jigsawResults?.SearchResponse?.Total ?? 0;
 
-            jigsawids = jigsawResults?.SystemIds ?? new List<SystemId>();
+            jigsawIds = jigsawResults?.SystemIds ?? new List<SystemId>();
         }
         else
         {
-            concatenatedResults = ConcatenateResults(housingResults?.SearchResponse?.SearchResults);
+            concatenatedResults = ConcatenateResults(
+                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
-
-
         total += housingResults?.SearchResponse?.Total ?? 0;
+        total += councilTaxResults?.SearchResponse?.Total ?? 0;
 
+        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).Concat(councilTaxResults?.SystemIds).ToList();
 
         var collatedResults = new SearchResponseObject
         {
@@ -58,7 +73,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
                 SearchResults = sortedResults,
                 Total = total
             },
-            SystemIds = housingResults?.SystemIds?.Concat(jigsawids).ToList()
+            SystemIds = systemIds.Concat(jigsawIds).ToList()
         };
 
         return collatedResults;
@@ -66,22 +81,13 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults)
+    private List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults, [Optional] List<SearchResult> councilTaxResults)
     {
-        if (housingResults == null && jigsawResults == null)
-        {
-            return new List<SearchResult>();
-        }
-        else if (housingResults == null)
-        {
-            return jigsawResults;
-        }
-        else if (jigsawResults == null)
-        {
-            return housingResults;
-        }
-        return housingResults.Concat(jigsawResults).ToList();
+        return NeverNull(singleViewResults).Concat(NeverNull(housingResults)).Concat(NeverNull(jigsawResults)).Concat(NeverNull(councilTaxResults))
+            .ToList();
     }
+
+
 
     [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
@@ -118,4 +124,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         if (len > 0 && len <= value.Length) value = value.Substring(0, len);
         return value;
     }
+
+    private IEnumerable<T> NeverNull<T>(IEnumerable<T> value)
+    {
+        return value ?? Enumerable.Empty<T>();
+    }
+
+
 }

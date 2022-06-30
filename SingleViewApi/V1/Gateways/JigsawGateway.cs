@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Helpers;
 
 namespace SingleViewApi.V1.Gateways
