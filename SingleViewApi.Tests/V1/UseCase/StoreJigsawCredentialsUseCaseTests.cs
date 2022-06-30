@@ -1,6 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using Amazon.DynamoDBv2.Model;
 using FluentAssertions;
 using Hackney.Core.Testing.Shared;
 using Moq;
