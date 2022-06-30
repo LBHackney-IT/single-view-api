@@ -1,6 +1,8 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Hackney.Core.Logging;
 using Newtonsoft.Json;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -18,8 +20,12 @@ public class AcademyGateway : IAcademyGateway
         _baseUrl = baseUrl;
     }
 
+    [LogCall]
     public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
+
+        Console.WriteLine("Making request to Academy Council Tax Endpoint");
+
         var request = new HttpRequestMessage(HttpMethod.Get,
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
@@ -32,10 +38,13 @@ public class AcademyGateway : IAcademyGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
+            Console.WriteLine("Response OK");
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
 
             results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
+
+            Console.WriteLine($"results are {results?.ToString()}");
 
         }
 
