@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
@@ -24,6 +25,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
     {
+        Console.WriteLine("Making request to Academy Council Tax Use Case");
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
         var academyApiId = new SystemId() { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
@@ -34,12 +36,14 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
         if (accounts.Error != null)
         {
+            Console.WriteLine($"Error from gateway: {accounts.Error}");
             academyApiId.Error = accounts.Error;
             return response;
         }
 
         if (accounts.Customers?.Count == 0)
         {
+            Console.WriteLine($"no results found from Academy");
             academyApiId.Error = SystemId.NotFoundMessage;
             return response;
         }
