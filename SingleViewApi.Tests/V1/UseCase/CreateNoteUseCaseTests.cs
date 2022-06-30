@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using SingleViewApi.V1.Boundary.Response;
-using SingleViewApi.V1.Gateways;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Request;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase

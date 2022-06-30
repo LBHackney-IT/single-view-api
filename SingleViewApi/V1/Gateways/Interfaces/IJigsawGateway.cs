@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Helpers;
 
-namespace SingleViewApi.V1.Gateways
+namespace SingleViewApi.V1.Gateways.Interfaces
 {
     public interface IJigsawGateway
     {
