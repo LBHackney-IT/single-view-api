@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AutoFixture;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Moq;

@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Hackney.Shared.ContactDetail.Domain;

@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using SingleViewApi.V1.Boundary.Response;
-using SingleViewApi.V1.Gateways;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
