@@ -45,14 +45,14 @@ public class AcademyGateway : IAcademyGateway
         return results;
     }
 
-    public async Task<dynamic> GetCouncilTaxAccountById(string id, string userToken)
+    public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountById(string id, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{id}");
         request.Headers.Add("Authorization", userToken);
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-        dynamic? results = null;
+        CouncilTaxRecordResponseObject? result = null;
 #nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
@@ -60,10 +60,10 @@ public class AcademyGateway : IAcademyGateway
 
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-            results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
+            result = JsonConvert.DeserializeObject<CouncilTaxRecordResponseObject>(jsonBody);
 
         }
 
-        return results;
+        return result;
     }
 }
