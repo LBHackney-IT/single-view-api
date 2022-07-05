@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -40,6 +39,30 @@ public class AcademyGateway : IAcademyGateway
 
             results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
 
+        }
+
+        return results;
+    }
+
+    [LogCall]
+    public async Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName, string lastName, string userToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
+
+        request.Headers.Add("Authorization", userToken);
+        var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+        HousingBenefitsSearchResponseObject? results = null;
+#nullable disable
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+            results = JsonConvert.DeserializeObject<HousingBenefitsSearchResponseObject>(jsonBody);
         }
 
         return results;
