@@ -44,4 +44,26 @@ public class AcademyGateway : IAcademyGateway
 
         return results;
     }
+
+    public async Task<dynamic> GetCouncilTaxAccountById(string id, string userToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{id}");
+        request.Headers.Add("Authorization", userToken);
+        var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+        dynamic? results = null;
+#nullable disable
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+            results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
+
+        }
+
+        return results;
+    }
 }
