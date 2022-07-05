@@ -45,6 +45,20 @@ public class AcademyGatewayTests
     }
 
     [Test]
+    public void ARequestIsMadeToGetAccountById()
+    {
+        var id = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"https://academy.api/council-tax/{id}")
+            .WithHeaders("Authorization", userToken);
+
+        _ = _classUnderTest.GetCouncilTaxAccountById(id, userToken);
+
+        _mockHttp.VerifyNoOutstandingExpectation();
+    }
+
+    [Test]
     public async Task SearchEndpointReturnsNullIfCustomerDoesNotExist()
     {
         var firstName = _fixture.Create<string>();
