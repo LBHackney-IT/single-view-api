@@ -80,7 +80,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
         return response;
     }
 
-    public string AddressToString(AcademyAddress address)
+    public string AddressToString(Address address)
     {
         return $"{address?.Line1} {address?.Line2} {address?.Line3} {address?.Line4} {address?.Postcode}";
     }

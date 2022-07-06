@@ -10,10 +10,10 @@ public class CouncilTaxAccountInfo
 
     public decimal AccountBalance { get; set; }
 
-    public AcademyAddress PropertyAddress { get; set; }
+    public Address PropertyAddress { get; set; }
 
 #nullable enable
-    public AcademyAddress? ForwardingAddress { get; set; }
+    public Address? ForwardingAddress { get; set; }
 
 #nullable disable
 }
