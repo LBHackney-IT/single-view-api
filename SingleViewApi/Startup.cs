@@ -215,6 +215,13 @@ namespace SingleViewApi
                 return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase);
             });
 
+            services.AddTransient<IGetCouncilTaxAccountByIdUseCase, GetCouncilTaxAccountByIdUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetCouncilTaxAccountByIdUseCase(academyGateway, dataSourceGateway);
+            });
+
             services.AddTransient<INotesGateway, NotesGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
