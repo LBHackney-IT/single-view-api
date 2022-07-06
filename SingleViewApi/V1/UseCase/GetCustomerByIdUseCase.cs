@@ -17,15 +17,15 @@ namespace SingleViewApi.V1.UseCase
         private readonly ICustomerGateway _gateway;
         private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
         private readonly IGetJigsawCustomerByIdUseCase _jigsawCustomerByIdUseCase;
-        private readonly IGetCouncilTaxAccountByIdUseCase _getCouncilTaxAccountByIdUseCase;
+        private readonly IGetCouncilTaxAccountByAccountRefUseCase _getCouncilTaxAccountByAccountRefUseCase;
 
         public GetCustomerByIdUseCase(ICustomerGateway gateway, IGetPersonApiByIdUseCase getPersonApiByIdUseCase, IGetJigsawCustomerByIdUseCase jigsawCustomerByIdUseCase,
-        IGetCouncilTaxAccountByIdUseCase getCouncilTaxAccountByIdUseCase)
+        IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase)
         {
             _gateway = gateway;
             _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
             _jigsawCustomerByIdUseCase = jigsawCustomerByIdUseCase;
-            _getCouncilTaxAccountByIdUseCase = getCouncilTaxAccountByIdUseCase;
+            _getCouncilTaxAccountByAccountRefUseCase = getCouncilTaxAccountByAccountRefUseCase;
         }
 
         [LogCall]
@@ -67,7 +67,7 @@ namespace SingleViewApi.V1.UseCase
                         foundRecords.Add(res);
                         break;
                     case 3:
-                        res = _getCouncilTaxAccountByIdUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        res = _getCouncilTaxAccountByAccountRefUseCase.Execute(customerDataSource.SourceId, userToken).Result;
                         foundRecords.Add(res);
                         break;
                 }

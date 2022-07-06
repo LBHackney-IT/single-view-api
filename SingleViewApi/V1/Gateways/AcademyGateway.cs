@@ -45,9 +45,9 @@ public class AcademyGateway : IAcademyGateway
         return results;
     }
 
-    public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountById(string id, string userToken)
+    public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{id}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{accountRef}");
         request.Headers.Add("Authorization", userToken);
         var response = await _httpClient.SendAsync(request);
 

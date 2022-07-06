@@ -10,14 +10,14 @@ namespace SingleViewApi.Tests.V1.Controllers
     public class AcademyControllerTests : LogCallAspectFixture
     {
         private AcademyController _classUnderTest;
-        private Mock<IGetCouncilTaxAccountByIdUseCase> _mockGetCouncilTaxAccountByIdUseCase;
+        private Mock<IGetCouncilTaxAccountByAccountRefUseCase> _mockGetCouncilTaxAccountByAccountRefUseCase;
 
 
         [SetUp]
         public void SetUp()
         {
-            _mockGetCouncilTaxAccountByIdUseCase = new Mock<IGetCouncilTaxAccountByIdUseCase>();
-            _classUnderTest = new AcademyController(_mockGetCouncilTaxAccountByIdUseCase.Object);
+            _mockGetCouncilTaxAccountByAccountRefUseCase = new Mock<IGetCouncilTaxAccountByAccountRefUseCase>();
+            _classUnderTest = new AcademyController(_mockGetCouncilTaxAccountByAccountRefUseCase.Object);
         }
 
 
@@ -30,7 +30,7 @@ namespace SingleViewApi.Tests.V1.Controllers
 
             _ = _classUnderTest.GetCouncilTaxAccount(id, authorization);
 
-            _mockGetCouncilTaxAccountByIdUseCase.Verify(x => x.Execute(id, authorization), Times.Once);
+            _mockGetCouncilTaxAccountByAccountRefUseCase.Verify(x => x.Execute(id, authorization), Times.Once);
         }
     }
 }
