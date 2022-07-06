@@ -49,7 +49,6 @@ public class AcademyGateway : IAcademyGateway
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
             $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
-
         request.Headers.Add("Authorization", userToken);
         var response = await _httpClient.SendAsync(request);
 
@@ -59,9 +58,7 @@ public class AcademyGateway : IAcademyGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-
             var jsonBody = response.Content.ReadAsStringAsync().Result;
-
             results = JsonConvert.DeserializeObject<HousingBenefitsSearchResponseObject>(jsonBody);
         }
 
