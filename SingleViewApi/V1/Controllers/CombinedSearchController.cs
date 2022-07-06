@@ -1,7 +1,5 @@
-using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
