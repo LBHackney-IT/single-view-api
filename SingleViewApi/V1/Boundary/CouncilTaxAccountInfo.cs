@@ -12,5 +12,8 @@ public class CouncilTaxAccountInfo
 
     public AcademyAddress PropertyAddress { get; set; }
 
-    public AcademyAddress ForwardingAddress { get; set; }
+#nullable enable
+    public AcademyAddress? ForwardingAddress { get; set; }
+
+#nullable disable
 }

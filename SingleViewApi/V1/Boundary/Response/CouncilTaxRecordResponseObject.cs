@@ -16,9 +16,14 @@ public class CouncilTaxRecordResponseObject
 
     public decimal AccountBalance { get; set; }
 
+
     public AcademyAddress PropertyAddress { get; set; }
 
-    public AcademyAddress ForwardingAddress { get; set; }
+#nullable enable
+
+    public AcademyAddress? ForwardingAddress { get; set; }
+
+#nullable disable
 }
 
 
