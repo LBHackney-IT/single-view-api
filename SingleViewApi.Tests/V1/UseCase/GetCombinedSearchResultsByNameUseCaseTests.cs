@@ -23,6 +23,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     private Mock<IGetJigsawCustomersUseCase> _mockGetJigsawCustomersUseCase;
     private Mock<ISearchSingleViewUseCase> _mockSearchSingleViewUseCase;
     private Mock<IGetCouncilTaxAccountsByCustomerNameUseCase> _mockGetCouncilTaxAccountsByCustomerNameUseCase;
+    private Mock<IGetHousingBenefitsAccountsByCustomerNameUseCase> _mockGetHousingBenefitsAccountsByCustomerNameUseCase;
 
     [SetUp]
     public void Setup()
@@ -31,9 +32,14 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         _mockGetJigsawCustomersUseCase = new Mock<IGetJigsawCustomersUseCase>();
         _mockSearchSingleViewUseCase = new Mock<ISearchSingleViewUseCase>();
         _mockGetCouncilTaxAccountsByCustomerNameUseCase = new Mock<IGetCouncilTaxAccountsByCustomerNameUseCase>();
+        _mockGetHousingBenefitsAccountsByCustomerNameUseCase = new Mock<IGetHousingBenefitsAccountsByCustomerNameUseCase>();
         _fixture = new Fixture();
         _classUnderTest = new GetCombinedSearchResultsByNameUseCase(
-            _mockGetSearchResultsByNameUseCase.Object, _mockGetJigsawCustomersUseCase.Object, _mockSearchSingleViewUseCase.Object, _mockGetCouncilTaxAccountsByCustomerNameUseCase.Object);
+            _mockGetSearchResultsByNameUseCase.Object,
+            _mockGetJigsawCustomersUseCase.Object,
+            _mockSearchSingleViewUseCase.Object,
+            _mockGetCouncilTaxAccountsByCustomerNameUseCase.Object,
+            _mockGetHousingBenefitsAccountsByCustomerNameUseCase.Object);
     }
 
     [Test]
