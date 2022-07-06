@@ -9,7 +9,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase;
 
-public class GetCouncilTaxAccountByIdUseCase: IGetCouncilTaxAccountByIdUseCase
+public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByIdUseCase
 {
     private readonly IAcademyGateway _academyGateway;
     private readonly IDataSourceGateway _dataSourceGateway;
