@@ -89,6 +89,16 @@ namespace SingleViewApi
                     );
             });
 
+            services.AddTransient<ICautionaryAlertsGateway, CautionaryAlertsGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new CautionaryAlertsGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("CAUTIONARY_ALERTS_API")
+                    );
+            });
+
             services.AddTransient<IEqualityInformationGateway, EqualityInformationGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
