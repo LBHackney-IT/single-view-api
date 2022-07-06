@@ -30,6 +30,7 @@ services:
       - JIGSAW_CUSTOMER_API=${JIGSAW_CUSTOMER_API}
       - AES_KEY=${AES_KEY}
       - AES_IV=${AES_IV}
+      - CAUTIONARY_ALERTS_API=${CAUTIONARY_ALERTS_API}
 
 # TODO: If using DynamoDb remove the line above and uncomment the section below.
 #      - DynamoDb_LocalMode=true
