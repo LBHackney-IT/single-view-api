@@ -33,7 +33,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var stubDataSource = new DataSource() {Id = 4, Name = "Academy - Housing Benefits"};
+        var stubDataSource = new DataSource() { Id = 4, Name = "Academy - Housing Benefits" };
 
         _mockDataSourceGateway.Setup(x => x.GetEntityById(4)).Returns(stubDataSource);
         _mockAcademyGateway.Setup(x => x.GetHousingBenefitsAccountsByCustomerName(firstName, lastName, userToken))
@@ -50,7 +50,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var stubDataSource = new DataSource() {Id = 4, Name = "Academy - Housing Benefits"};
+        var stubDataSource = new DataSource() { Id = 4, Name = "Academy - Housing Benefits" };
         var stubEntity = _fixture.Build<HousingBenefitsSearchResponseObject>()
             .Without(x => x.Error).Create();
 
