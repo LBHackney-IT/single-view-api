@@ -1,7 +1,7 @@
 using System;
 
 namespace SingleViewApi.V1.Boundary.Response;
-public class Address
+public class JigsawAddress
 {
     public int Id { get; set; }
     public string Aapartment { get; set; }
