@@ -34,8 +34,11 @@ namespace SingleViewApi.V1.Boundary.Response
         public string PlaceOfBirth { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
         public List<CutomerContactDetails> ContactDetails { get; set; }
+
         public List<PersonType> PersonTypes { get; set; }
 #nullable enable
+
+        public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? NiNo { get; set; }
         public string? NhsNumber { get; set; }
