@@ -26,7 +26,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<ICustomerGateway> _mockCustomerGateway;
         private Mock<IGetPersonApiByIdUseCase> _mockGetPersonApiByIdUseCase;
         private Mock<IGetJigsawCustomerByIdUseCase> _mockGetJigsawCustomerByIdUseCase;
-        private Mock<IGetCouncilTaxAccountByIdUseCase> _mockGetCouncilTaxAccountByIdUseCase;
+        private Mock<IGetCouncilTaxAccountByAccountRefUseCase> _mockGetCouncilTaxAccountByAccountRefUseCase;
         private GetCustomerByIdUseCase _classUnderTest;
         private Fixture _fixture;
 
@@ -36,8 +36,8 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockCustomerGateway = new Mock<ICustomerGateway>();
             _mockGetPersonApiByIdUseCase = new Mock<IGetPersonApiByIdUseCase>();
             _mockGetJigsawCustomerByIdUseCase = new Mock<IGetJigsawCustomerByIdUseCase>();
-            _mockGetCouncilTaxAccountByIdUseCase = new Mock<IGetCouncilTaxAccountByIdUseCase>();
-            _classUnderTest = new GetCustomerByIdUseCase(_mockCustomerGateway.Object, _mockGetPersonApiByIdUseCase.Object, _mockGetJigsawCustomerByIdUseCase.Object, _mockGetCouncilTaxAccountByIdUseCase.Object);
+            _mockGetCouncilTaxAccountByAccountRefUseCase = new Mock<IGetCouncilTaxAccountByAccountRefUseCase>();
+            _classUnderTest = new GetCustomerByIdUseCase(_mockCustomerGateway.Object, _mockGetPersonApiByIdUseCase.Object, _mockGetJigsawCustomerByIdUseCase.Object, _mockGetCouncilTaxAccountByAccountRefUseCase.Object);
             _fixture = new Fixture();
 
         }
@@ -182,7 +182,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
 
 
-            _mockGetCouncilTaxAccountByIdUseCase.Setup(x => x.Execute(mockAcademyId, userToken))
+            _mockGetCouncilTaxAccountByAccountRefUseCase.Setup(x => x.Execute(mockAcademyId, userToken))
                 .ReturnsAsync(new CustomerResponseObject()
                 {
                     Customer = councilTaxAccount,

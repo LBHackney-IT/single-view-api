@@ -46,15 +46,15 @@ public class AcademyGatewayTests
     }
 
     [Test]
-    public void ARequestIsMadeToGetAccountById()
+    public void ARequestIsMadeToGetAccountByAccountRef()
     {
-        var id = _fixture.Create<string>();
+        var accountRef = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
 
-        _mockHttp.Expect($"https://academy.api/council-tax/{id}")
+        _mockHttp.Expect($"https://academy.api/council-tax/{accountRef}")
             .WithHeaders("Authorization", userToken);
 
-        _ = _classUnderTest.GetCouncilTaxAccountById(id, userToken);
+        _ = _classUnderTest.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
 
         _mockHttp.VerifyNoOutstandingExpectation();
     }
@@ -104,16 +104,16 @@ public class AcademyGatewayTests
     [Test]
     public async Task CouncilTaxRecordResponseObjectWhenGotById()
     {
-        var id = _fixture.Create<string>();
+        var accountRef = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
         var stubbedResponse = _fixture.Create<CouncilTaxRecordResponseObject>();
 
-        _mockHttp.Expect($"https://academy.api/council-tax/{id}")
+        _mockHttp.Expect($"https://academy.api/council-tax/{accountRef}")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json",
                 JsonSerializer.Serialize<CouncilTaxRecordResponseObject>(stubbedResponse));
 
-        var result = await _classUnderTest.GetCouncilTaxAccountById(id, userToken);
+        var result = await _classUnderTest.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
 
         _mockHttp.VerifyNoOutstandingExpectation();
 

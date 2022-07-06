@@ -17,12 +17,12 @@ namespace SingleViewApi.V1.Controllers
     //TODO: rename class to match the API name
     public class AcademyController : BaseController
     {
-        private readonly IGetCouncilTaxAccountByIdUseCase _getCouncilTaxAccountByIdUseCase;
+        private readonly IGetCouncilTaxAccountByAccountRefUseCase _getCouncilTaxAccountByAccountRefUseCase;
 
 
-        public AcademyController(IGetCouncilTaxAccountByIdUseCase getCouncilTaxAccountByIdUseCase)
+        public AcademyController(IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase)
         {
-            _getCouncilTaxAccountByIdUseCase = getCouncilTaxAccountByIdUseCase;
+            _getCouncilTaxAccountByAccountRefUseCase = getCouncilTaxAccountByAccountRefUseCase;
 
         }
 
@@ -38,7 +38,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult GetCouncilTaxAccount([FromQuery] string id, [FromHeader] string authorization)
         {
-            return Ok(_getCouncilTaxAccountByIdUseCase.Execute(id, authorization).Result);
+            return Ok(_getCouncilTaxAccountByAccountRefUseCase.Execute(id, authorization).Result);
         }
 
 

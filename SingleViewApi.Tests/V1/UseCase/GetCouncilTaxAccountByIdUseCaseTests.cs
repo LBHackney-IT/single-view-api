@@ -35,7 +35,7 @@ public class GetCouncilTaxAccountByIdUseCaseTests : LogCallAspectFixture
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCouncilTaxAccount = _fixture.Create<CouncilTaxRecordResponseObject>();
 
-        _mockAcademyGateway.Setup(x => x.GetCouncilTaxAccountById(id, userToken))
+        _mockAcademyGateway.Setup(x => x.GetCouncilTaxAccountByAccountRef(id, userToken))
             .ReturnsAsync(stubbedCouncilTaxAccount);
         _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(stubbedDataSource);
 

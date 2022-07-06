@@ -9,7 +9,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase;
 
-public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByIdUseCase
+public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRefUseCase
 {
     private readonly IAcademyGateway _academyGateway;
     private readonly IDataSourceGateway _dataSourceGateway;
@@ -21,9 +21,9 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByIdUseCase
     }
 
     [LogCall]
-    public async Task<CustomerResponseObject> Execute(string id, string userToken)
+    public async Task<CustomerResponseObject> Execute(string accountRef, string userToken)
     {
-        var account = await _academyGateway.GetCouncilTaxAccountById(id, userToken);
+        var account = await _academyGateway.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
         var academyCtId = new SystemId() { SystemName = dataSource.Name, Id = account.AccountReference.ToString() };

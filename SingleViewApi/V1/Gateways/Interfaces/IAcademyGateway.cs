@@ -6,5 +6,5 @@ namespace SingleViewApi.V1.Gateways.Interfaces;
 public interface IAcademyGateway
 {
     Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName, string userToken);
-    Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountById(string id, string userToken);
+    Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken);
 }
