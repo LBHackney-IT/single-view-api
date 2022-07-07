@@ -155,8 +155,9 @@ namespace SingleViewApi
                 var customerGateway = s.GetService<ICustomerGateway>();
                 var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
                 var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
+                var getCouncilTaxAccountByIdAccountRefUseCase = s.GetService<IGetCouncilTaxAccountByAccountRefUseCase>();
 
-                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase);
+                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase, getCouncilTaxAccountByIdAccountRefUseCase);
             });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
@@ -214,6 +215,13 @@ namespace SingleViewApi
                 var getCouncilTaxAccountsByCustomerNameUseCase = s.GetService<IGetCouncilTaxAccountsByCustomerNameUseCase>();
                 var getHousingBenefitsAccountsByCustomerNameUseCase = s.GetService<IGetHousingBenefitsAccountsByCustomerNameUseCase>();
                 return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase, getHousingBenefitsAccountsByCustomerNameUseCase);
+            });
+
+            services.AddTransient<IGetCouncilTaxAccountByAccountRefUseCase, IGetCouncilTaxAccountByAccountRefUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetCouncilTaxAccountByIdUseCase(academyGateway, dataSourceGateway);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>

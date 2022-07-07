@@ -22,15 +22,8 @@ public class CouncilTaxSearchResponse
     public DateTime? DateOfBirth { get; set; }
     public string? NiNumber { get; set; }
 #nullable disable
-    public AcademyAddress FullAddress { get; set; }
+    public Address FullAddress { get; set; }
     public string PostCode { get; set; }
 }
 
-public class AcademyAddress
-{
-    public string Line1 { get; set; }
-    public string Line2 { get; set; }
-    public string Line3 { get; set; }
-    public string Line4 { get; set; }
-    public string Postcode { get; set; }
-}
+
