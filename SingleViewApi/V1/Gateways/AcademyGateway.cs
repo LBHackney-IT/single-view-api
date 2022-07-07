@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -45,6 +44,27 @@ public class AcademyGateway : IAcademyGateway
         return results;
     }
 
+    [LogCall]
+    public async Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName, string lastName, string userToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
+        request.Headers.Add("Authorization", userToken);
+        var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+        HousingBenefitsSearchResponseObject? results = null;
+#nullable disable
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+            results = JsonConvert.DeserializeObject<HousingBenefitsSearchResponseObject>(jsonBody);
+        }
+
+        return results;
+    }
+
+    [LogCall]
     public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{accountRef}");
@@ -57,11 +77,8 @@ public class AcademyGateway : IAcademyGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-
             var jsonBody = response.Content.ReadAsStringAsync().Result;
-
             result = JsonConvert.DeserializeObject<CouncilTaxRecordResponseObject>(jsonBody);
-
         }
 
         return result;
