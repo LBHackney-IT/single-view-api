@@ -22,5 +22,5 @@ public class HousingBenefitsSearchResponse
     public DateTime? DateOfBirth { get; set; }
     public string? NiNumber { get; set; }
 #nullable disable
-    public AcademyAddress FullAddress { get; set; }
+    public Address FullAddress { get; set; }
 }
