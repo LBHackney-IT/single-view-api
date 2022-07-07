@@ -20,14 +20,20 @@ namespace SingleViewApi.V1.UseCase
         private readonly IContactDetailsGateway _contactDetailsGateway;
         private readonly IDataSourceGateway _dataSourceGateway;
         private readonly IEqualityInformationGateway _equalityInformationGateway;
+        private readonly ICautionaryAlertsGateway _cautionaryAlertsGateway;
 
-        public GetPersonApiByIdUseCase(IPersonGateway personGateway, IContactDetailsGateway contactDetailsGateway,
-            IDataSourceGateway dataSourceGateway, IEqualityInformationGateway equalityInformationGateway)
+        public GetPersonApiByIdUseCase(
+            IPersonGateway personGateway,
+            IContactDetailsGateway contactDetailsGateway,
+            IDataSourceGateway dataSourceGateway,
+            IEqualityInformationGateway equalityInformationGateway,
+            ICautionaryAlertsGateway cautionaryAlertsGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;
             _dataSourceGateway = dataSourceGateway;
             _equalityInformationGateway = equalityInformationGateway;
+            _cautionaryAlertsGateway = cautionaryAlertsGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
@@ -37,7 +43,8 @@ namespace SingleViewApi.V1.UseCase
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
             var dataSource = _dataSourceGateway.GetEntityById(1);
             var equalityInformation =
-            await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+                await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+            var cautionaryAlerts = await _cautionaryAlertsGateway.GetCautionaryAlertsById(personId, userToken);
 
 
 
@@ -72,7 +79,7 @@ namespace SingleViewApi.V1.UseCase
                     PersonTypes = person.PersonTypes?.ToList(),
                     ContactDetails = contactDetails,
                     EqualityInformation = equalityInformation,
-
+                    CautionaryAlerts = cautionaryAlerts,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
 
