@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Factories;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Infrastructure;
 
 namespace SingleViewApi.V1.Gateways
