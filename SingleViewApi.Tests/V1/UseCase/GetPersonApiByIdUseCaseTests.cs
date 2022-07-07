@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Hackney.Shared.ContactDetail.Domain;
@@ -12,6 +11,7 @@ using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase
 {

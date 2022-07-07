@@ -1,6 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using Amazon.DynamoDBv2.Model;
 using FluentAssertions;
 using Hackney.Core.Testing.Shared;
 using Moq;
@@ -8,6 +6,7 @@ using NUnit.Framework;
 using ServiceStack.Redis;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Gateways;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Helpers;
 using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase;
