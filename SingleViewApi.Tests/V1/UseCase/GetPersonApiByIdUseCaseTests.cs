@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -23,6 +24,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         private GetPersonApiByIdUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
+        private Mock<ICautionaryAlertsGateway> _mockCautionaryAlertsGateway;
 
         [SetUp]
         public void SetUp()
@@ -31,8 +33,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockContactDetailsGateway = new Mock<IContactDetailsGateway>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
             _mockEqualityInfoGateway = new Mock<IEqualityInformationGateway>();
+            _mockCautionaryAlertsGateway = new Mock<ICautionaryAlertsGateway>();
 
-            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object, _mockEqualityInfoGateway.Object);
+            _classUnderTest = new GetPersonApiByIdUseCase(_mockPersonGateway.Object, _mockContactDetailsGateway.Object, _mockDataSourceGateway.Object, _mockEqualityInfoGateway.Object, _mockCautionaryAlertsGateway.Object);
             _fixture = new Fixture();
 
         }
@@ -46,10 +49,12 @@ namespace SingleViewApi.Tests.V1.UseCase
             var stubbedDataSource = _fixture.Create<DataSource>();
             var stubbedContactDetails = _fixture.Create<ContactDetails>();
             var stubbedEqualityInfo = _fixture.Create<EqualityInformationResponseObject>();
+            var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
             _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
             _mockEqualityInfoGateway.Setup(x => x.GetEqualityInformationById(id, userToken)).ReturnsAsync(stubbedEqualityInfo);
+            _mockCautionaryAlertsGateway.Setup(x => x.GetCautionaryAlertsById(id, userToken)).ReturnsAsync(stubbedCautionaryAlerts);
 
             var result = await _classUnderTest.Execute(id, userToken);
 
@@ -77,8 +82,9 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
             result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
             result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
-
+            result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts);
         }
+
         [Test]
         public async Task ReturnsErrorWhenPersonNotfoundInPersonApi()
         {

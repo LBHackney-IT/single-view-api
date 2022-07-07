@@ -61,6 +61,7 @@ public class CautionaryAlertsGatewayTests
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
         Assert.AreEqual(stubbedCautionaryAlerts[0].DateModified, cautionaryAlerts[0].DateModified);
+        Assert.AreEqual(stubbedCautionaryAlerts[0].ModifiedBy, cautionaryAlerts[0].ModifiedBy);
         Assert.AreEqual(stubbedCautionaryAlerts[0].StartDate, cautionaryAlerts[0].StartDate);
         Assert.AreEqual(stubbedCautionaryAlerts[0].EndDate, cautionaryAlerts[0].EndDate);
         Assert.AreEqual(stubbedCautionaryAlerts[0].AlertCode, cautionaryAlerts[0].AlertCode);
