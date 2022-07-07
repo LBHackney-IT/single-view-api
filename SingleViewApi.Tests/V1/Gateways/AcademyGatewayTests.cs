@@ -5,6 +5,7 @@ using FluentAssertions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
+using ServiceStack;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 
@@ -138,5 +139,52 @@ public class AcademyGatewayTests
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line2, results.Customers[0].FullAddress.Line2);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line3, results.Customers[0].FullAddress.Line3);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Postcode, results.Customers[0].FullAddress.Postcode);
+    }
+
+    [Test]
+    public void ARequestIsMadeToGetAccountByAccountRef()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"https://academy.api/council-tax/{accountRef}")
+            .WithHeaders("Authorization", userToken);
+
+        _ = _classUnderTest.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
+
+        _mockHttp.VerifyNoOutstandingExpectation();
+    }
+
+    [Test]
+    public async Task CouncilTaxRecordResponseObjectWhenGotById()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+        var stubbedResponse = _fixture.Create<CouncilTaxRecordResponseObject>();
+
+        _mockHttp.Expect($"https://academy.api/council-tax/{accountRef}")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json",
+                JsonSerializer.Serialize<CouncilTaxRecordResponseObject>(stubbedResponse));
+
+        var result = await _classUnderTest.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
+
+        _mockHttp.VerifyNoOutstandingExpectation();
+
+        Assert.AreEqual(stubbedResponse.Title, result.Title);
+        Assert.AreEqual(stubbedResponse.AccountBalance, result.AccountBalance);
+        Assert.AreEqual(stubbedResponse.AccountReference, result.AccountReference);
+        Assert.AreEqual(stubbedResponse.FirstName, result.FirstName);
+        AreEqualByJson(stubbedResponse.ForwardingAddress, result.ForwardingAddress);
+        Assert.AreEqual(stubbedResponse.LastName, result.LastName);
+        AreEqualByJson(stubbedResponse.PropertyAddress, result.PropertyAddress);
+        Assert.AreEqual(stubbedResponse.AccountCheckDigit, result.AccountCheckDigit);
+    }
+
+    public static void AreEqualByJson(object expected, object actual)
+    {
+        var expectedJson = JSON.stringify(expected);
+        var actualJson = JSON.stringify(actual);
+        Assert.AreEqual(expectedJson, actualJson);
     }
 }
