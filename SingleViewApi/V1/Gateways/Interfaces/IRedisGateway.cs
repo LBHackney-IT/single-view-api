@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-
-namespace SingleViewApi.V1.Gateways
+namespace SingleViewApi.V1.Gateways.Interfaces
 {
     public interface IRedisGateway
     {

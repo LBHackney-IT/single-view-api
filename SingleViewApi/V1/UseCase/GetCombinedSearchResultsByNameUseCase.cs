@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -16,12 +17,14 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     private readonly IGetSearchResultsByNameUseCase _getSearchResultsByNameUseCase;
     private readonly IGetJigsawCustomersUseCase _getJigsawCustomersUseCase;
     private readonly ISearchSingleViewUseCase _searchSingleViewUseCase;
+    private readonly IGetCouncilTaxAccountsByCustomerNameUseCase _getCouncilTaxAccountsByCustomerNameUseCase;
 
-    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase)
+    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase, IGetCouncilTaxAccountsByCustomerNameUseCase getCouncilTaxAccountsByCustomerNameUseCase)
     {
         _getSearchResultsByNameUseCase = getSearchResultsByNameUseCase;
         _searchSingleViewUseCase = searchSingleViewUseCase;
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
+        _getCouncilTaxAccountsByCustomerNameUseCase = getCouncilTaxAccountsByCustomerNameUseCase;
     }
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken,
@@ -29,6 +32,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     {
         var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
+        var councilTaxResults =
+            await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+
+        Console.WriteLine($"In combined use case - councilResults are {JSON.stringify(councilTaxResults)}");
+
         int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
         List<SearchResult> concatenatedResults;
@@ -41,7 +49,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
                 housingResults: housingResults?.SearchResponse?.SearchResults,
-                jigsawResults: jigsawResults?.SearchResponse?.SearchResults);
+                jigsawResults: jigsawResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
 
             total += jigsawResults?.SearchResponse?.Total ?? 0;
 
@@ -51,14 +60,15 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
-                housingResults: housingResults?.SearchResponse?.SearchResults);
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults);
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
-
-
         total += housingResults?.SearchResponse?.Total ?? 0;
-        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).ToList();
+        total += councilTaxResults?.SearchResponse?.Total ?? 0;
+
+        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).Concat(councilTaxResults?.SystemIds).ToList();
 
         var collatedResults = new SearchResponseObject
         {
@@ -75,30 +85,13 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults)
+    private List<SearchResult> ConcatenateResults([Optional] List<SearchResult> singleViewResults, [Optional] List<SearchResult> housingResults, [Optional] List<SearchResult> jigsawResults, [Optional] List<SearchResult> councilTaxResults)
     {
-        if (housingResults == null && jigsawResults == null && singleViewResults == null)
-        {
-            return new List<SearchResult>();
-        }
-        else if (housingResults == null && singleViewResults == null)
-        {
-            return jigsawResults;
-        }
-        else if (jigsawResults == null && singleViewResults == null)
-        {
-            return housingResults;
-        }
-        else if (singleViewResults == null)
-        {
-            return housingResults.Concat(jigsawResults).ToList();
-        }
-        else if (jigsawResults == null)
-        {
-            return housingResults.Concat(singleViewResults).ToList();
-        }
-        return housingResults.Concat(jigsawResults.Concat(singleViewResults)).ToList();
+        return NeverNull(singleViewResults).Concat(NeverNull(housingResults)).Concat(NeverNull(jigsawResults)).Concat(NeverNull(councilTaxResults))
+            .ToList();
     }
+
+
 
     [LogCall]
     public List<SearchResult> SortResultsByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
@@ -135,4 +128,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         if (len > 0 && len <= value.Length) value = value.Substring(0, len);
         return value;
     }
+
+    private IEnumerable<T> NeverNull<T>(IEnumerable<T> value)
+    {
+        return value ?? Enumerable.Empty<T>();
+    }
+
+
 }

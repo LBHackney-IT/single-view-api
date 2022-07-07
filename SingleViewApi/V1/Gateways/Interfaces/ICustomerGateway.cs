@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SingleViewApi.V1.Domain;
 
-namespace SingleViewApi.V1.Gateways
+namespace SingleViewApi.V1.Gateways.Interfaces
 {
     public interface ICustomerGateway
     {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Gateways
 {
