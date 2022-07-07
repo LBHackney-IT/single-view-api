@@ -12,7 +12,7 @@ public class CautionaryAlertsGateway : ICautionaryAlertsGateway
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    public CautionaryAlertsGateway(HttpClient httpClient ,string baseUrl)
+    public CautionaryAlertsGateway(HttpClient httpClient, string baseUrl)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;
@@ -31,8 +31,8 @@ public class CautionaryAlertsGateway : ICautionaryAlertsGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-           var jsonBody = response.Content.ReadAsStringAsync().Result;
-           cautionaryAlerts = JsonConvert.DeserializeObject<List<CautionaryAlert>>(jsonBody);
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+            cautionaryAlerts = JsonConvert.DeserializeObject<List<CautionaryAlert>>(jsonBody);
         }
 
         return cautionaryAlerts;
