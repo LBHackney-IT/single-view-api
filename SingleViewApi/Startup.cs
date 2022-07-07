@@ -33,6 +33,7 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.JWT;
 using Hackney.Core.Middleware.Exception;
 using ServiceStack.Redis;
+using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Helpers;
 using SingleViewApi.V1.Helpers.Interfaces;
 
@@ -154,8 +155,9 @@ namespace SingleViewApi
                 var customerGateway = s.GetService<ICustomerGateway>();
                 var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
                 var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
+                var getCouncilTaxAccountByIdAccountRefUseCase = s.GetService<IGetCouncilTaxAccountByAccountRefUseCase>();
 
-                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase);
+                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase, getCouncilTaxAccountByIdAccountRefUseCase);
             });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
@@ -210,7 +212,15 @@ namespace SingleViewApi
                 var getSearchResultsByNameUseCase = s.GetService<IGetSearchResultsByNameUseCase>();
                 var getJigsawCustomersUseCase = s.GetService<IGetJigsawCustomersUseCase>();
                 var searchSingleViewUseCase = s.GetService<ISearchSingleViewUseCase>();
-                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase);
+                var getCouncilTaxAccountsByCustomerNameUseCase = s.GetService<IGetCouncilTaxAccountsByCustomerNameUseCase>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase);
+            });
+
+            services.AddTransient<IGetCouncilTaxAccountByAccountRefUseCase, IGetCouncilTaxAccountByAccountRefUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetCouncilTaxAccountByIdUseCase(academyGateway, dataSourceGateway);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
@@ -256,6 +266,25 @@ namespace SingleViewApi
             {
                 var notesGateway = s.GetService<INotesGateway>();
                 return new CreateNoteUseCase(notesGateway);
+            });
+
+            services.AddTransient<IAcademyGateway, AcademyGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new AcademyGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("ACADEMY_API_V1")
+                );
+            });
+
+            services.AddTransient<IGetCouncilTaxAccountsByCustomerNameUseCase, GetCouncilTaxAccountsByCustomerNameUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+
+                return new GetCouncilTaxAccountsByCustomerNameUseCase(academyGateway, dataSourceGateway);
+
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
@@ -330,7 +359,6 @@ namespace SingleViewApi
             //services.ConfigureDynamoDB();
 
             RegisterGateways(services);
-            RegisterUseCases(services);
         }
 
         private static void ConfigureDbContext(IServiceCollection services)
@@ -354,12 +382,6 @@ namespace SingleViewApi
 
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             //services.AddScoped<IExampleDynamoGateway, DynamoDbGateway>();
-        }
-
-        private static void RegisterUseCases(IServiceCollection services)
-        {
-            services.AddScoped<IGetAllUseCase, GetAllUseCase>();
-            services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

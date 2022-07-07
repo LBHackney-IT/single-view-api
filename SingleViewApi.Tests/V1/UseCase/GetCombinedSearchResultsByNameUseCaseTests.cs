@@ -22,6 +22,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     private Mock<IGetSearchResultsByNameUseCase> _mockGetSearchResultsByNameUseCase;
     private Mock<IGetJigsawCustomersUseCase> _mockGetJigsawCustomersUseCase;
     private Mock<ISearchSingleViewUseCase> _mockSearchSingleViewUseCase;
+    private Mock<IGetCouncilTaxAccountsByCustomerNameUseCase> _mockGetCouncilTaxAccountsByCustomerNameUseCase;
 
     [SetUp]
     public void Setup()
@@ -29,9 +30,10 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         _mockGetSearchResultsByNameUseCase = new Mock<IGetSearchResultsByNameUseCase>();
         _mockGetJigsawCustomersUseCase = new Mock<IGetJigsawCustomersUseCase>();
         _mockSearchSingleViewUseCase = new Mock<ISearchSingleViewUseCase>();
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase = new Mock<IGetCouncilTaxAccountsByCustomerNameUseCase>();
         _fixture = new Fixture();
         _classUnderTest = new GetCombinedSearchResultsByNameUseCase(
-            _mockGetSearchResultsByNameUseCase.Object, _mockGetJigsawCustomersUseCase.Object, _mockSearchSingleViewUseCase.Object);
+            _mockGetSearchResultsByNameUseCase.Object, _mockGetJigsawCustomersUseCase.Object, _mockSearchSingleViewUseCase.Object, _mockGetCouncilTaxAccountsByCustomerNameUseCase.Object);
     }
 
     [Test]
@@ -46,11 +48,13 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var stubbedJigsawDataSource = _fixture.Create<DataSource>();
         var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var stubbedSingleViewDataSource = _fixture.Create<DataSource>();
+        var stubbedAcademyDataSource = _fixture.Create<DataSource>();
         var expectedSystemIds = new List<SystemId>
         {
             new SystemId() { Id = searchTerm, SystemName = stubbedHousingSearchDataSource.Name, Error = SystemId.NotFoundMessage },
             new SystemId(){ Id = searchTerm, SystemName = stubbedJigsawDataSource.Name, Error = SystemId.NotFoundMessage },
-            new SystemId(){ Id = searchTerm, SystemName = stubbedSingleViewDataSource.Name, Error = SystemId.NotFoundMessage }
+            new SystemId(){ Id = searchTerm, SystemName = stubbedSingleViewDataSource.Name, Error = SystemId.NotFoundMessage },
+            new SystemId() { Id = searchTerm, SystemName = stubbedAcademyDataSource.Name, Error = SystemId.NotFoundMessage }
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
@@ -92,6 +96,19 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
             });
 
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+        x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(new SearchResponseObject()
+            {
+                SearchResponse = new SearchResponse()
+                {
+                    SearchResults = null,
+                    Total = 0,
+                },
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedAcademyDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
+            });
+
+
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.SystemIds.Should().BeEquivalentTo(expectedSystemIds);
@@ -108,8 +125,10 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var jigsawResults = _fixture.Create<SearchResponse>();
         var housingResults = _fixture.Create<SearchResponse>();
         var singleViewResults = _fixture.Create<SearchResponse>();
-        var stubbedJigsawDataSource = new DataSource() { Name = "Jigsaw", Id = 123 };
-        var stubbedHousingSearchDataSource = new DataSource() { Name = "PersonAPI", Id = 123 };
+        var councilTaxResults = _fixture.Create<SearchResponse>();
+        var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+        var stubbedAcademyDataSource = _fixture.Create<DataSource>();
         var jigsawResponseObject = new SearchResponseObject()
         {
             SearchResponse = jigsawResults,
@@ -134,20 +153,32 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
+        var councilTaxResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = councilTaxResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId()
+                {
+                    SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+                }
+            }
+        };
         var expectedSearchResults = new SearchResponseObject()
         {
             SearchResponse = new SearchResponse()
             {
                 SearchResults =
                     housingResults.SearchResults
-                        .Concat(jigsawResults.SearchResults.Concat(singleViewResults.SearchResults)).ToList(),
-                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total
+                        .Concat(jigsawResults.SearchResults.Concat(singleViewResults.SearchResults.Concat(councilTaxResults.SearchResults))).ToList(),
+                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total + councilTaxResults.Total
             },
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
                 new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" },
+                new SystemId() { SystemName = stubbedAcademyDataSource.Name ,Id = $"{firstName}+{lastName}" }
             }
         };
 
@@ -163,20 +194,26 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 x.Execute(firstName, lastName))
             .Returns(singleViewResponseObject);
 
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(councilTaxResponseObject);
+
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
     }
 
     [Test]
-    public void ReturnsOnlyHousingSearchResultsAndSingleViewWhenNoRedisIdIsGiven()
+    public void ReturnsHousingSearchResultsAndSingleViewandAcademyCouncilTaxWhenNoRedisIdIsGiven()
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
         var housingResults = _fixture.Create<SearchResponse>();
         var singleViewResults = _fixture.Create<SearchResponse>();
-        var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
+        var councilTaxResults = _fixture.Create<SearchResponse>();
+        var stubbedHousingSearchDataSource = _fixture.Build<DataSource>().With(x => x.Name, "PersonAPI").Create();
+        var stubbedAcademyDataSource = _fixture.Build<DataSource>().With(x => x.Name, "Academy").Create();
         var housingResponseObject = new SearchResponseObject()
         {
             SearchResponse = housingResults,
@@ -193,19 +230,33 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
+        var councilTaxResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = councilTaxResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId()
+                {
+                    SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+                }
+            }
+        };
+
         var expectedSearchResults = new SearchResponseObject()
         {
             SearchResponse = new SearchResponse()
             {
                 SearchResults =
-                    housingResults.SearchResults.Concat(singleViewResults.SearchResults).ToList(),
-                Total = housingResults.Total + singleViewResults.Total
+                    housingResults.SearchResults.Concat(singleViewResults.SearchResults.Concat(councilTaxResults.SearchResults)).ToList(),
+                Total = housingResults.Total + singleViewResults.Total + councilTaxResults.Total
             },
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
-                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
-            }
+                new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" },
+                new SystemId() {
+                SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+            }}
         };
 
         _mockSearchSingleViewUseCase.Setup(x =>
@@ -215,6 +266,10 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         _mockGetSearchResultsByNameUseCase.Setup(x =>
                 x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingResponseObject);
+
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(councilTaxResponseObject);
 
         var results = _classUnderTest.Execute(firstName, lastName, userToken, null).Result;
 
@@ -313,6 +368,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             .With(o => o.SurName, lastNameFixture)
             .With(o => o.DataSource, dataSourceListFixture[0].Name)
             .Create());
+
 
         var results = _classUnderTest.SortResultsByRelevance(
             firstNameFixture, lastNameFixture, searchResultsListFixture);
