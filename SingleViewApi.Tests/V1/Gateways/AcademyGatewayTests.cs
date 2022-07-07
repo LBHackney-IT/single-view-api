@@ -181,6 +181,61 @@ public class AcademyGatewayTests
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Postcode, results.Customers[0].FullAddress.Postcode);
     }
 
+    [Test]
+    public void GetHousingBenefitsAccountByAccountRefMakesRequestToBenefits()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{accountRef}")
+            .WithHeaders("Authorization", userToken);
+
+        _ = _classUnderTest.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
+
+        _mockHttp.VerifyNoOutstandingExpectation();
+    }
+
+    [Test]
+    public async Task GetHousingBenefitsAccountByAccountRefReturnsNullIfNotFound()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{accountRef}")
+            .WithHeaders("Authorization", userToken)
+            .Respond(HttpStatusCode.NotFound);
+
+        var result = await _classUnderTest.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetHousingBenefitsAccountByAccountRefReturnsHousingBenefitsRecordResponseObject()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+        var stubbedResponse = _fixture.Create<HousingBenefitsRecordResponseObject>();
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{accountRef}")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json",
+                JsonSerializer.Serialize<HousingBenefitsRecordResponseObject>(stubbedResponse));
+
+        var result = await _classUnderTest.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
+
+        _mockHttp.VerifyNoOutstandingExpectation();
+
+        Assert.AreEqual(stubbedResponse.Title, result.Title);
+        Assert.AreEqual(stubbedResponse.AccountBalance, result.AccountBalance);
+        Assert.AreEqual(stubbedResponse.AccountReference, result.AccountReference);
+        Assert.AreEqual(stubbedResponse.FirstName, result.FirstName);
+        AreEqualByJson(stubbedResponse.ForwardingAddress, result.ForwardingAddress);
+        Assert.AreEqual(stubbedResponse.LastName, result.LastName);
+        AreEqualByJson(stubbedResponse.PropertyAddress, result.PropertyAddress);
+        Assert.AreEqual(stubbedResponse.AccountCheckDigit, result.AccountCheckDigit);
+    }
+
     private static void AreEqualByJson(object expected, object actual)
     {
         var expectedJson = JSON.stringify(expected);
