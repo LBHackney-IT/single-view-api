@@ -54,6 +54,8 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public EqualityInformationResponseObject? EqualityInformation { get; set; }
 
+        public List<CautionaryAlert>? CautionaryAlerts { get; set; }
+
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
 
         public bool? IsAMinor { get; set; }
