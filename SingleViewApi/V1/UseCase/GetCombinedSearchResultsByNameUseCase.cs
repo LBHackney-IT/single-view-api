@@ -36,8 +36,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
         var councilTaxResults =
             await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
-        var housingBenefitsResults =
-            await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        // var housingBenefitsResults =
+        //     await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
 
         Console.WriteLine($"In combined use case - councilResults are {JSON.stringify(councilTaxResults)}");
 
@@ -54,8 +54,9 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
                 housingResults: housingResults?.SearchResponse?.SearchResults,
                 jigsawResults: jigsawResults?.SearchResponse?.SearchResults,
-                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults,
-                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults);
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
+                // housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
+                );
 
             total += jigsawResults?.SearchResponse?.Total ?? 0;
 
@@ -66,8 +67,9 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
                 housingResults: housingResults?.SearchResponse?.SearchResults,
-                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults,
-                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults);
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
+                // housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
+                );
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
