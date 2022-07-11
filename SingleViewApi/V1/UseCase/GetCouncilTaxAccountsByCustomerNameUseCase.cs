@@ -34,7 +34,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
         var accounts = await _academyGateway.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
-        if (accounts.Error != null)
+        if (!String.IsNullOrEmpty(accounts.Error))
         {
             Console.WriteLine($"Error from Academy Council Tax Use Case: {accounts.Error}");
             academyApiId.Error = accounts.Error;
