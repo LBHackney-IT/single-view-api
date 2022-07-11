@@ -39,7 +39,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         // var housingBenefitsResults =
         //     await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
 
-       int total = singleViewResults?.SearchResponse?.Total ?? 0;
+        int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
         List<SearchResult> concatenatedResults;
         List<SystemId> jigsawIds = new List<SystemId>();
