@@ -5,10 +5,10 @@ namespace SingleViewApi.V1.Boundary.Response;
 
 public class CaringResponsibilities
 {
-    #nullable enable
+#nullable enable
     public string? ProvideUnpaidCare { get; set; }
     public string? HoursSpentProvidingUnpaidCare { get; set; }
-    #nullable disable
+#nullable disable
 }
 
 public class EconomicSituation
