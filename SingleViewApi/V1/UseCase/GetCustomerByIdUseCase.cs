@@ -66,10 +66,10 @@ namespace SingleViewApi.V1.UseCase
                         }
                         foundRecords.Add(res);
                         break;
-                    // case 3:
-                    //     res = _getCouncilTaxAccountByAccountRefUseCase.Execute(customerDataSource.SourceId, userToken).Result;
-                    //     foundRecords.Add(res);
-                    //     break;
+                        // case 3:
+                        //     res = _getCouncilTaxAccountByAccountRefUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        //     foundRecords.Add(res);
+                        //     break;
                 }
             }
 
@@ -117,7 +117,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
                     mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
-                   //mergedCustomer.CouncilTaxAccount ??= r.Customer.CouncilTaxAccount;
+                    //mergedCustomer.CouncilTaxAccount ??= r.Customer.CouncilTaxAccount;
 
                 }
             }
