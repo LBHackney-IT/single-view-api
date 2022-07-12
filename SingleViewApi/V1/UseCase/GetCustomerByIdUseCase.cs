@@ -36,9 +36,6 @@ namespace SingleViewApi.V1.UseCase
 
             List<CustomerResponseObject> foundRecords = new List<CustomerResponseObject>();
 
-            Console.WriteLine("------@@@@@@----DEBUG-----GetCustomerById");
-            Console.Write($"Data source is {JsonSerializer.Serialize(customer.DataSources)}");
-
             foreach (var customerDataSource in customer.DataSources)
             {
                 CustomerResponseObject res;
@@ -96,8 +93,12 @@ namespace SingleViewApi.V1.UseCase
                 NiNo = customer.NiNumber
             };
 
+
+
             foreach (var r in records)
             {
+                Console.WriteLine("------@@@@@@----DEBUG-----GetCustomerById");
+                Console.Write($"Customer response object is {JsonSerializer.Serialize(r)}");
                 allSystemIds.AddRange(r.SystemIds);
                 if (r.Customer != null)
                 {

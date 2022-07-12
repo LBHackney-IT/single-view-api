@@ -28,9 +28,6 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
         var account = await _academyGateway.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
-        Console.WriteLine("------@@@@@@----DEBUG-----CouncilTax");
-        Console.Write($"Data source is {JsonSerializer.Serialize(dataSource)}");
-
         var academyCtId = new SystemId() { SystemName = dataSource.Name, Id = account.AccountReference.ToString() };
 
         var response = new CustomerResponseObject()
