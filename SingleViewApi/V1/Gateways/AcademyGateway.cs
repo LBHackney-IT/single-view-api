@@ -12,11 +12,13 @@ public class AcademyGateway : IAcademyGateway
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly string _apiKey;
 
-    public AcademyGateway(HttpClient httpClient, string baseUrl)
+    public AcademyGateway(HttpClient httpClient, string baseUrl, string apiKey)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;
+        _apiKey = apiKey;
     }
 
     [LogCall]
@@ -26,6 +28,7 @@ public class AcademyGateway : IAcademyGateway
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
         request.Headers.Add("Authorization", userToken);
+
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
