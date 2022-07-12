@@ -202,8 +202,8 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.SystemIds[0].Id.Should().BeEquivalentTo(mockJigsawId);
             result.SystemIds[1].SystemName.Should().BeEquivalentTo(mockPersonApiName);
             result.SystemIds[1].Id.Should().BeEquivalentTo(mockPersonApi);
-//            result.SystemIds[2].SystemName.Should().BeEquivalentTo(mockAcademyName);
-//            result.SystemIds[2].Id.Should().BeEquivalentTo(mockAcademyId);
+            //            result.SystemIds[2].SystemName.Should().BeEquivalentTo(mockAcademyName);
+            //            result.SystemIds[2].Id.Should().BeEquivalentTo(mockAcademyId);
 
             result.Customer.Id.Should().BeEquivalentTo(id.ToString());
             result.Customer.Title.Should().BeEquivalentTo(peronsApiCustomer.Title);
