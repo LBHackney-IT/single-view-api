@@ -102,9 +102,10 @@ namespace SingleViewApi.V1.UseCase
                 allSystemIds.AddRange(r.SystemIds);
                 if (r.Customer != null)
                 {
-
-                    allKnownAddresses.AddRange(r.Customer.KnownAddresses);
-
+                    if (r.Customer.KnownAddresses != null)
+                    {
+                        allKnownAddresses.AddRange(r.Customer.KnownAddresses);
+                    }
                     if (r.Customer.ContactDetails != null)
                     {
                         allContactDetails.Add(new CutomerContactDetails()
@@ -113,8 +114,6 @@ namespace SingleViewApi.V1.UseCase
                             DataSourceName = r.Customer.DataSource.Name
                         });
                     }
-
-
                     if (r.Customer.PersonTypes != null)
                     {
                         allPersonType.AddRange(r.Customer.PersonTypes);
