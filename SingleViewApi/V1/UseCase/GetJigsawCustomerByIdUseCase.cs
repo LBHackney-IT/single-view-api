@@ -40,13 +40,11 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
-        var dataSource = new DataSource();
 
-        dataSource = _dataSourceGateway.GetEntityById(2);
+        var dataSource = _dataSourceGateway.GetEntityById(2);
 
-
-
-
+        Console.WriteLine("------@@@@@@----DEBUG-----");
+        Console.Write($"Data source is {dataSource}");
 
         var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
 
