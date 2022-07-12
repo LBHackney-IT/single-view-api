@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
@@ -43,8 +44,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var dataSource = _dataSourceGateway.GetEntityById(2);
 
-        Console.WriteLine("------@@@@@@----DEBUG-----");
-        Console.Write($"Data source is {dataSource}");
+        Console.WriteLine("------@@@@@@----DEBUG-----Jigsaw");
+        Console.Write($"Data source is {JsonSerializer.Serialize(dataSource)}");
 
         var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
 
