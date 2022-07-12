@@ -35,8 +35,6 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
             SystemIds = new List<SystemId>() { academyCtId }
         };
 
-        Console.Write($"Account  is {JsonSerializer.Serialize(account)}");
-
         if (account == null)
         {
             academyCtId.Error = SystemId.NotFoundMessage;
