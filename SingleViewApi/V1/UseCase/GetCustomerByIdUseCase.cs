@@ -98,16 +98,22 @@ namespace SingleViewApi.V1.UseCase
             foreach (var r in records)
             {
                 Console.WriteLine("------@@@@@@----DEBUG-----GetCustomerById");
-                Console.Write($"Customer response object is {JsonSerializer.Serialize(r)}");
+                Console.Write($"Customer records are  is {JsonSerializer.Serialize(records)}");
                 allSystemIds.AddRange(r.SystemIds);
                 if (r.Customer != null)
                 {
+
                     allKnownAddresses.AddRange(r.Customer.KnownAddresses);
-                    allContactDetails.Add(new CutomerContactDetails()
+
+                    if (r.Customer.ContactDetails != null)
                     {
-                        ContactDetails = r.Customer.ContactDetails,
-                        DataSourceName = r.Customer.DataSource.Name
-                    });
+                        allContactDetails.Add(new CutomerContactDetails()
+                        {
+                            ContactDetails = r.Customer.ContactDetails,
+                            DataSourceName = r.Customer.DataSource.Name
+                        });
+                    }
+
 
                     if (r.Customer.PersonTypes != null)
                     {
