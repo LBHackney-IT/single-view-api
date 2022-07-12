@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
@@ -27,8 +28,8 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
         var account = await _academyGateway.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
-        Console.WriteLine("------@@@@@@----DEBUG-----");
-        Console.Write($"Data source is {dataSource}");
+        Console.WriteLine("------@@@@@@----DEBUG-----CouncilTax");
+        Console.Write($"Data source is {JsonSerializer.Serialize(dataSource)}");
 
         var academyCtId = new SystemId() { SystemName = dataSource.Name, Id = account.AccountReference.ToString() };
 
