@@ -54,13 +54,13 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var stubbedJigsawDataSource = _fixture.Create<DataSource>();
         var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var stubbedSingleViewDataSource = _fixture.Create<DataSource>();
-        //var stubbedAcademyDataSource = _fixture.Create<DataSource>();
+        var stubbedAcademyDataSource = _fixture.Create<DataSource>();
         var expectedSystemIds = new List<SystemId>
         {
             new SystemId() { Id = searchTerm, SystemName = stubbedHousingSearchDataSource.Name, Error = SystemId.NotFoundMessage },
             new SystemId(){ Id = searchTerm, SystemName = stubbedJigsawDataSource.Name, Error = SystemId.NotFoundMessage },
-            new SystemId(){ Id = searchTerm, SystemName = stubbedSingleViewDataSource.Name, Error = SystemId.NotFoundMessage }
-           // new SystemId() { Id = searchTerm, SystemName = stubbedAcademyDataSource.Name, Error = SystemId.NotFoundMessage }
+            new SystemId(){ Id = searchTerm, SystemName = stubbedSingleViewDataSource.Name, Error = SystemId.NotFoundMessage },
+            new SystemId() { Id = searchTerm, SystemName = stubbedAcademyDataSource.Name, Error = SystemId.NotFoundMessage }
         };
 
         _mockGetSearchResultsByNameUseCase.Setup(x =>
@@ -102,17 +102,17 @@ public class GetCombinedSearchResultsByNameUseCaseTests
 
             });
 
-        // _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
-        // x.Execute(firstName, lastName, userToken))
-        //     .ReturnsAsync(new SearchResponseObject()
-        //     {
-        //         SearchResponse = new SearchResponse()
-        //         {
-        //             SearchResults = null,
-        //             Total = 0,
-        //         },
-        //         SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedAcademyDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
-        //     });
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+        x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(new SearchResponseObject()
+            {
+                SearchResponse = new SearchResponse()
+                {
+                    SearchResults = null,
+                    Total = 0,
+                },
+                SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedAcademyDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
+            });
 
 
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
@@ -131,7 +131,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var jigsawResults = _fixture.Create<SearchResponse>();
         var housingResults = _fixture.Create<SearchResponse>();
         var singleViewResults = _fixture.Create<SearchResponse>();
-        //var councilTaxResults = _fixture.Create<SearchResponse>();
+        var councilTaxResults = _fixture.Create<SearchResponse>();
         var stubbedJigsawDataSource = _fixture.Create<DataSource>();
         var stubbedHousingSearchDataSource = _fixture.Create<DataSource>();
         var stubbedAcademyDataSource = _fixture.Create<DataSource>();
@@ -159,32 +159,32 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
-        // var councilTaxResponseObject = new SearchResponseObject()
-        // {
-        //     SearchResponse = councilTaxResults,
-        //     SystemIds = new List<SystemId>()
-        //     {
-        //         new SystemId()
-        //         {
-        //             SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
-        //         }
-        //     }
-        // };
+        var councilTaxResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = councilTaxResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId()
+                {
+                    SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+                }
+            }
+        };
         var expectedSearchResults = new SearchResponseObject()
         {
             SearchResponse = new SearchResponse()
             {
                 SearchResults =
                     housingResults.SearchResults
-                        .Concat(jigsawResults.SearchResults.Concat(singleViewResults.SearchResults)).ToList(),
-                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total
+                        .Concat(jigsawResults.SearchResults.Concat(singleViewResults.SearchResults.Concat(councilTaxResults.SearchResults))).ToList(),
+                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total + councilTaxResults.Total
             },
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
                 new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = $"{firstName}+{lastName}" },
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" },
-               // new SystemId() { SystemName = stubbedAcademyDataSource.Name ,Id = $"{firstName}+{lastName}" }
+                new SystemId() { SystemName = stubbedAcademyDataSource.Name ,Id = $"{firstName}+{lastName}" }
             }
         };
 
@@ -200,9 +200,9 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 x.Execute(firstName, lastName))
             .Returns(singleViewResponseObject);
 
-        // _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
-        //         x.Execute(firstName, lastName, userToken))
-        //     .ReturnsAsync(councilTaxResponseObject);
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(councilTaxResponseObject);
 
         var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
 
@@ -217,7 +217,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         var userToken = _fixture.Create<string>();
         var housingResults = _fixture.Create<SearchResponse>();
         var singleViewResults = _fixture.Create<SearchResponse>();
-        //var councilTaxResults = _fixture.Create<SearchResponse>();
+        var councilTaxResults = _fixture.Create<SearchResponse>();
         var stubbedHousingSearchDataSource = _fixture.Build<DataSource>().With(x => x.Name, "PersonAPI").Create();
         var stubbedAcademyDataSource = _fixture.Build<DataSource>().With(x => x.Name, "Academy").Create();
         var housingResponseObject = new SearchResponseObject()
@@ -236,34 +236,33 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" }
             }
         };
-        // var councilTaxResponseObject = new SearchResponseObject()
-        // {
-        //     SearchResponse = councilTaxResults,
-        //     SystemIds = new List<SystemId>()
-        //     {
-        //         new SystemId()
-        //         {
-        //             SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
-        //         }
-        //     }
-        // };
+        var councilTaxResponseObject = new SearchResponseObject()
+        {
+            SearchResponse = councilTaxResults,
+            SystemIds = new List<SystemId>()
+            {
+                new SystemId()
+                {
+                    SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+                }
+            }
+        };
 
         var expectedSearchResults = new SearchResponseObject()
         {
             SearchResponse = new SearchResponse()
             {
                 SearchResults =
-                    housingResults.SearchResults.Concat(singleViewResults.SearchResults).ToList(),
-                Total = housingResults.Total + singleViewResults.Total
+                    housingResults.SearchResults.Concat(singleViewResults.SearchResults.Concat(councilTaxResults.SearchResults)).ToList(),
+                Total = housingResults.Total + singleViewResults.Total + councilTaxResults.Total
             },
             SystemIds = new List<SystemId>()
             {
                 new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = $"{firstName}+{lastName}" },
                 new SystemId() { SystemName = "single-view", Id = $"{firstName} {lastName}" },
-            //     new SystemId() {
-            //     SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
-            // }}
-            }
+                new SystemId() {
+                SystemName = stubbedAcademyDataSource.Name, Id = $"{firstName}+{lastName}"
+            }}
         };
 
         _mockSearchSingleViewUseCase.Setup(x =>
@@ -274,9 +273,9 @@ public class GetCombinedSearchResultsByNameUseCaseTests
                 x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingResponseObject);
 
-        // _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
-        //         x.Execute(firstName, lastName, userToken))
-        //     .ReturnsAsync(councilTaxResponseObject);
+        _mockGetCouncilTaxAccountsByCustomerNameUseCase.Setup(x =>
+                x.Execute(firstName, lastName, userToken))
+            .ReturnsAsync(councilTaxResponseObject);
 
         var results = _classUnderTest.Execute(firstName, lastName, userToken, null).Result;
 
