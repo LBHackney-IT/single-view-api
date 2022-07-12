@@ -34,8 +34,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     {
         var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        // var councilTaxResults =
-        //     await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        var councilTaxResults =
+          await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
         // var housingBenefitsResults =
         //     await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
 
@@ -51,8 +51,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
                 housingResults: housingResults?.SearchResponse?.SearchResults,
-                jigsawResults: jigsawResults?.SearchResponse?.SearchResults
-                //councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
+                jigsawResults: jigsawResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
                 // housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
                 );
 
@@ -64,18 +64,17 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             concatenatedResults = ConcatenateResults(
                 singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
-                housingResults: housingResults?.SearchResponse?.SearchResults
-                //councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
+                housingResults: housingResults?.SearchResponse?.SearchResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults
                 // housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
                 );
         }
 
         var sortedResults = SortResultsByRelevance(firstName, lastName, concatenatedResults);
         total += housingResults?.SearchResponse?.Total ?? 0;
-        //total += councilTaxResults?.SearchResponse?.Total ?? 0;
+        total += councilTaxResults?.SearchResponse?.Total ?? 0;
 
-        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).ToList();
-        //concat(councilTaxResults.systemsIds)
+        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds).Concat(councilTaxResults?.SystemIds).ToList();
 
         var collatedResults = new SearchResponseObject
         {

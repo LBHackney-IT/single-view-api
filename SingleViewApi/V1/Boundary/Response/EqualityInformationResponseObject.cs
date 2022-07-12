@@ -5,57 +5,75 @@ namespace SingleViewApi.V1.Boundary.Response;
 
 public class CaringResponsibilities
 {
-    public string ProvideUnpaidCare { get; set; }
-    public string HoursSpentProvidingUnpaidCare { get; set; }
+#nullable enable
+    public string? ProvideUnpaidCare { get; set; }
+    public string? HoursSpentProvidingUnpaidCare { get; set; }
+#nullable disable
 }
 
 public class EconomicSituation
 {
-    public string EconomicSituationValue { get; set; }
-    public string EconomicSituationValueIfOther { get; set; }
+#nullable enable
+    public string? EconomicSituationValue { get; set; }
+    public string? EconomicSituationValueIfOther { get; set; }
+#nullable disable
 }
 
 public class Ethnicity
 {
-    public string EthnicGroupValue { get; set; }
-    public string EthnicGroupValueIfOther { get; set; }
+#nullable enable
+    public string? EthnicGroupValue { get; set; }
+    public string? EthnicGroupValueIfOther { get; set; }
+#nullable disable
 }
 
 public class Gender
 {
-    public string GenderValue { get; set; }
-    public string GenderValueIfOther { get; set; }
-    public bool GenderDifferentToBirthSex { get; set; }
+#nullable enable
+    public string? GenderValue { get; set; }
+    public string? GenderValueIfOther { get; set; }
+    public bool? GenderDifferentToBirthSex { get; set; }
+#nullable disable
 }
 
 public class HomeSituation
 {
-    public string HomeSituationValue { get; set; }
-    public string HomeSituationValueIfOther { get; set; }
+#nullable enable
+    public string? HomeSituationValue { get; set; }
+    public string? HomeSituationValueIfOther { get; set; }
+#nullable disable
 }
 
 public class MarriageOrCivilPartnership
 {
-    public string Married { get; set; }
-    public string CivilPartnership { get; set; }
+#nullable enable
+    public string? Married { get; set; }
+    public string? CivilPartnership { get; set; }
+#nullable disable
 }
 
 public class PregnancyOrMaternity
 {
-    public string PregnancyDate { get; set; }
-    public string PregnancyValidUntil { get; set; }
+#nullable enable
+    public string? PregnancyDate { get; set; }
+    public string? PregnancyValidUntil { get; set; }
+#nullable disable
 }
 
 public class ReligionOrBelief
 {
-    public string ReligionOrBeliefValue { get; set; }
-    public string ReligionOrBeliefValueIfOther { get; set; }
+#nullable enable
+    public string? ReligionOrBeliefValue { get; set; }
+    public string? ReligionOrBeliefValueIfOther { get; set; }
+#nullable disable
 }
 
 public class SexualOrientation
 {
-    public string SexualOrientationValue { get; set; }
-    public string SexualOrientationValueIfOther { get; set; }
+#nullable enable
+    public string? SexualOrientationValue { get; set; }
+    public string? SexualOrientationValueIfOther { get; set; }
+#nullable disable
 }
 
 public class EqualityInformationResponseObject
