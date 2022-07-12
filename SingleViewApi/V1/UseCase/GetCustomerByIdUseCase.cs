@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -34,6 +35,10 @@ namespace SingleViewApi.V1.UseCase
             var customer = _gateway.Find(customerId);
 
             List<CustomerResponseObject> foundRecords = new List<CustomerResponseObject>();
+
+            Console.WriteLine("------@@@@@@----DEBUG-----GetCustomerById");
+            Console.Write($"Data source is {JsonSerializer.Serialize(customer.DataSources)}");
+
             foreach (var customerDataSource in customer.DataSources)
             {
                 CustomerResponseObject res;
