@@ -286,7 +286,8 @@ namespace SingleViewApi
 
                 return new AcademyGateway(
                     httpClient,
-                    Environment.GetEnvironmentVariable("ACADEMY_API_V1")
+                    Environment.GetEnvironmentVariable("ACADEMY_API_V1"),
+                    Environment.GetEnvironmentVariable("ACADEMY_API_KEY")
                 );
             });
 

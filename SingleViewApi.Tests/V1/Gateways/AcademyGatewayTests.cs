@@ -18,6 +18,7 @@ public class AcademyGatewayTests
     private AcademyGateway _classUnderTest;
     private MockHttpMessageHandler _mockHttp;
     private string _baseUrl;
+    private string _apiKey;
 
     [SetUp]
     public void Setup()
@@ -25,8 +26,10 @@ public class AcademyGatewayTests
         _fixture = new Fixture();
         _mockHttp = new MockHttpMessageHandler();
         _baseUrl = "https://academy.api";
+        _apiKey = "mock-api-key";
+
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new AcademyGateway(mockClient, _baseUrl);
+        _classUnderTest = new AcademyGateway(mockClient, _baseUrl, _apiKey);
     }
 
     [Test]
