@@ -42,19 +42,13 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var dataSource = new DataSource();
 
-        try
-        {
-            dataSource = _dataSourceGateway.GetEntityById(2);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error getting data source from API: {0}", e.ToString());
-            return null;
-        }
+        dataSource = _dataSourceGateway.GetEntityById(2);
 
 
 
-        var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer.Id };
+
+
+        var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
 
