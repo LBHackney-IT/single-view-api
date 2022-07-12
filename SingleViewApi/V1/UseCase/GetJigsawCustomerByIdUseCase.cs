@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
@@ -40,9 +41,10 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
+
         var dataSource = _dataSourceGateway.GetEntityById(2);
 
-        var jigsawId = new SystemId() { SystemName = dataSource.Name, Id = customer.Id };
+        var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
 
