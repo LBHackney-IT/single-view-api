@@ -8,6 +8,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
+using Microsoft.OpenApi.Extensions;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -64,7 +65,7 @@ namespace SingleViewApi.V1.UseCase
                 response.Customer = new Customer()
                 {
                     Id = person.Id.ToString(),
-                    Title = person.Title,
+                    Title = person.Title.GetDisplayName(),
                     DataSource = dataSource,
                     PreferredTitle = person.PreferredTitle,
                     PreferredFirstName = person.PreferredFirstName,
