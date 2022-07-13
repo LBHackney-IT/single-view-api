@@ -44,6 +44,9 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var dataSource = _dataSourceGateway.GetEntityById(2);
 
+        Console.WriteLine("------@@@@@@----DEBUG-----Jigsaw");
+        Console.Write($"Data source is {JsonSerializer.Serialize(dataSource)}");
+
         var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
