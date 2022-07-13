@@ -97,8 +97,6 @@ namespace SingleViewApi.V1.UseCase
 
             foreach (var r in records)
             {
-                Console.WriteLine("------@@@@@@----DEBUG-----GetCustomerById");
-                Console.Write($"Customer records are  is {JsonSerializer.Serialize(records)}");
                 allSystemIds.AddRange(r.SystemIds);
                 if (r.Customer != null)
                 {
