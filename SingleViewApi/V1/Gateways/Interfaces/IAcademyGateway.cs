@@ -10,4 +10,5 @@ public interface IAcademyGateway
     Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName, string lastName, string userToken);
 
     Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken);
+    Task<HousingBenefitsRecordResponseObject> GetHousingBenefitsAccountByAccountRef(string accountRef, string userToken);
 }

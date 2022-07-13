@@ -83,4 +83,24 @@ public class AcademyGateway : IAcademyGateway
 
         return result;
     }
+
+    [LogCall]
+    public async Task<HousingBenefitsRecordResponseObject> GetHousingBenefitsAccountByAccountRef(string accountRef, string userToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/{accountRef}");
+        request.Headers.Add("Authorization", userToken);
+        var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+        HousingBenefitsRecordResponseObject? result = null;
+#nullable disable
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+            result = JsonConvert.DeserializeObject<HousingBenefitsRecordResponseObject>(jsonBody);
+        }
+
+        return result;
+    }
 }

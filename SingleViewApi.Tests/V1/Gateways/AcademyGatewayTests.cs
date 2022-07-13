@@ -26,7 +26,7 @@ public class AcademyGatewayTests
         _mockHttp = new MockHttpMessageHandler();
         _baseUrl = "https://academy.api";
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new AcademyGateway(mockClient, _baseUrl);
+        _classUnderTest = new AcademyGateway(mockClient, "https://academy.api");
     }
 
     [Test]
@@ -179,6 +179,66 @@ public class AcademyGatewayTests
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line2, results.Customers[0].FullAddress.Line2);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line3, results.Customers[0].FullAddress.Line3);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Postcode, results.Customers[0].FullAddress.Postcode);
+    }
+
+    [Test]
+    public async Task GetHousingBenefitsAccountsByIdReturnsHousingBenefitsRecordResponseObject()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+        var stubbedJson = @"{
+          ""claimId"": ""ABC123"",
+          ""checkDigit"": ""D"",
+          ""personReference"": ""PER0"",
+          ""title"": ""Miss"",
+          ""firstName"": ""Luna"",
+          ""lastName"": ""Kitty"",
+          ""dateOfBirth"": ""2021-01-07T14:32:34.511Z"",
+          ""fullAddress"": {
+            ""line1"": ""123 Cute Street"",
+            ""line2"": """",
+            ""line3"": ""London"",
+            ""line4"": ""string"",
+            ""postcode"": ""M3 0W""
+          },
+          ""postCode"": ""M3 0W"",
+          ""householdMembers"": [
+            {
+              ""title"": ""Mr"",
+              ""firstName"": ""Felis"",
+              ""lastName"": ""Catus"",
+              ""dateOfBirth"": ""2020-03-12T14:32:34.511Z""
+            }
+          ],
+          ""benefits"": [
+            {
+              ""amount"": 12.30,
+              ""description"": ""Cat treats"",
+              ""period"": ""2020-2022"",
+              ""frequency"": ""Weekly""
+            }
+          ]
+        }";
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{accountRef}")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json", stubbedJson);
+
+        var results = await _classUnderTest.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
+
+        Assert.AreEqual("ABC123", results.ClaimId);
+        Assert.AreEqual("Luna", results.FirstName);
+        Assert.AreEqual("Kitty", results.LastName);
+        if (results?.FullAddress != null)
+        {
+            Assert.AreEqual("123 Cute Street", results.FullAddress.Line1);
+            Assert.AreEqual("London", results.FullAddress.Line3);
+            Assert.AreEqual("M3 0W", results.FullAddress.Postcode);
+        }
+        Assert.AreEqual("Felis", results.HouseholdMembers[0].FirstName);
+        Assert.AreEqual("Catus", results.HouseholdMembers[0].LastName);
+        Assert.AreEqual(12.30, results.Benefits[0].Amount);
+        Assert.AreEqual("Weekly", results.Benefits[0].Frequency);
     }
 
     private static void AreEqualByJson(object expected, object actual)
