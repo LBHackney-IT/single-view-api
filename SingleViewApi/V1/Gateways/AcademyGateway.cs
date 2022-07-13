@@ -12,11 +12,13 @@ public class AcademyGateway : IAcademyGateway
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly string _apiKey;
 
-    public AcademyGateway(HttpClient httpClient, string baseUrl)
+    public AcademyGateway(HttpClient httpClient, string baseUrl, string apiKey)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;
+        _apiKey = apiKey;
     }
 
     [LogCall]
@@ -26,6 +28,8 @@ public class AcademyGateway : IAcademyGateway
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
 
         request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _apiKey);
+
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
@@ -49,6 +53,7 @@ public class AcademyGateway : IAcademyGateway
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
         request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _apiKey);
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
@@ -69,6 +74,7 @@ public class AcademyGateway : IAcademyGateway
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{accountRef}");
         request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _apiKey);
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
