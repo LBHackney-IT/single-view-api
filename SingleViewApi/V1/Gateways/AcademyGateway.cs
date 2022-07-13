@@ -51,14 +51,15 @@ public class AcademyGateway : IAcademyGateway
     [LogCall]
     public async Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
-        request.Headers.Add("Authorization", userToken);
-        request.Headers.Add("x-api-key", _apiKey);
-        var response = await _httpClient.SendAsync(request);
-
 #nullable enable
         HousingBenefitsSearchResponseObject? results = null;
 #nullable disable
+
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
+        request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _apiKey);
+        var response = await _httpClient.SendAsync(request);
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
