@@ -70,6 +70,6 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
 
     public string AddressToString(Address address)
     {
-        return $"{address?.Line1} {address?.Line2} {address?.Line3} {address?.Line4} {address?.Postcode}";
+        return $"{address?.AddressLine1} {address?.AddressLine2} {address?.AddressLine3} {address?.AddressLine4} {address?.Postcode}";
     }
 }

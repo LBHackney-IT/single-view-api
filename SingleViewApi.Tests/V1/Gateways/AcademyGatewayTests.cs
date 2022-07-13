@@ -81,9 +81,9 @@ public class AcademyGatewayTests
         Assert.AreEqual(stubbedResponse.Customers[0].Id, results.Customers[0].Id);
         Assert.AreEqual(stubbedResponse.Customers[0].FirstName, results.Customers[0].FirstName);
         Assert.AreEqual(stubbedResponse.Customers[0].LastName, results.Customers[0].LastName);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line1, results.Customers[0].FullAddress.Line1);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line2, results.Customers[0].FullAddress.Line2);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line3, results.Customers[0].FullAddress.Line3);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine1, results.Customers[0].FullAddress.AddressLine1);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine2, results.Customers[0].FullAddress.AddressLine2);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine3, results.Customers[0].FullAddress.AddressLine3);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Postcode, results.Customers[0].FullAddress.Postcode);
     }
 
@@ -178,9 +178,9 @@ public class AcademyGatewayTests
         Assert.AreEqual(stubbedResponse.Customers[0].LastName, results.Customers[0].LastName);
         Assert.AreEqual(stubbedResponse.Customers[0].DateOfBirth, results.Customers[0].DateOfBirth);
         Assert.AreEqual(stubbedResponse.Customers[0].NiNumber, results.Customers[0].NiNumber);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line1, results.Customers[0].FullAddress.Line1);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line2, results.Customers[0].FullAddress.Line2);
-        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Line3, results.Customers[0].FullAddress.Line3);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine1, results.Customers[0].FullAddress.AddressLine1);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine2, results.Customers[0].FullAddress.AddressLine2);
+        Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.AddressLine3, results.Customers[0].FullAddress.AddressLine3);
         Assert.AreEqual(stubbedResponse.Customers[0].FullAddress.Postcode, results.Customers[0].FullAddress.Postcode);
     }
 
