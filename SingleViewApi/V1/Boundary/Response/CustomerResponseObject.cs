@@ -57,11 +57,9 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<CautionaryAlert>? CautionaryAlerts { get; set; }
 
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
+        public HousingBenefitsAccountInfo? HousingBenefitsAccount { get; set; }
 
         public bool? IsAMinor { get; set; }
-
 #nullable disable
-
-
     }
 }
