@@ -7,6 +7,7 @@ using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
+using Microsoft.OpenApi.Extensions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
@@ -64,7 +65,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
-            result.Customer.Title.Should().BeEquivalentTo(stubbedPerson.Title);
+            result.Customer.Title.Should().BeEquivalentTo(stubbedPerson.Title.GetDisplayName());
             result.Customer.PreferredTitle.Should().BeEquivalentTo(stubbedPerson.PreferredTitle);
             result.Customer.PreferredFirstName.Should().BeEquivalentTo(stubbedPerson.PreferredFirstName);
             result.Customer.PreferredMiddleName.Should().BeEquivalentTo(stubbedPerson.PreferredMiddleName);
