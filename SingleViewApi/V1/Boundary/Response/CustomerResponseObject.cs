@@ -18,7 +18,7 @@ namespace SingleViewApi.V1.Boundary.Response
     public class Customer
     {
         public string Id { get; set; }
-        public Hackney.Shared.Person.Domain.Title? Title { get; set; }
+        public string Title { get; set; }
 
         public DataSource DataSource { get; set; }
 
