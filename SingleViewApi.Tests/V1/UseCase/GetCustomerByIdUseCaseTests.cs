@@ -10,6 +10,7 @@ using Hackney.Core.Testing.Shared;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
 using Hackney.Shared.Person.Domain;
+using Microsoft.OpenApi.Extensions;
 using Moq;
 using NUnit.Framework;
 using ServiceStack;
@@ -87,7 +88,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var peronsApiCustomer = new Customer()
             {
                 Id = mockPersonApi,
-                Title = Hackney.Shared.Person.Domain.Title.Miss,
+                Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
                 ContactDetails = fakeContactDetails,
@@ -259,7 +260,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var peronsApiCustomer = new Customer()
             {
                 Id = mockPersonApi,
-                Title = Hackney.Shared.Person.Domain.Title.Miss,
+                Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
                 ContactDetails = fakeContactDetails,
