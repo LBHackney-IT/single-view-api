@@ -217,8 +217,8 @@ public class AcademyGatewayTests
             {
               ""amount"": 12.30,
               ""description"": ""Cat treats"",
-              ""period"": ""2020-2022"",
-              ""frequency"": ""Weekly""
+              ""period"": ""Weekly"",
+              ""frequency"": 1
             }
           ]
         }";
@@ -241,7 +241,8 @@ public class AcademyGatewayTests
         Assert.AreEqual("Felis", results.HouseholdMembers[0].FirstName);
         Assert.AreEqual("Catus", results.HouseholdMembers[0].LastName);
         Assert.AreEqual(12.30, results.Benefits[0].Amount);
-        Assert.AreEqual("Weekly", results.Benefits[0].Frequency);
+        Assert.AreEqual(1, results.Benefits[0].Frequency);
+        Assert.AreEqual("Weekly", results.Benefits[0].Period);
     }
 
     private static void AreEqualByJson(object expected, object actual)
