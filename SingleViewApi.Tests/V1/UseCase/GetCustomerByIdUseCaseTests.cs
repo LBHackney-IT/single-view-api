@@ -29,6 +29,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         private Mock<IGetJigsawCustomerByIdUseCase> _mockGetJigsawCustomerByIdUseCase;
         private Mock<IGetCouncilTaxAccountByAccountRefUseCase> _mockGetCouncilTaxAccountByAccountRefUseCase;
         private GetCustomerByIdUseCase _classUnderTest;
+        private Mock<IGetHousingBenefitsAccountByAccountRefUseCase> _mockGetHousingBenefitsAccountByAccountRefUseCase;
         private Fixture _fixture;
 
         [SetUp]
@@ -38,7 +39,13 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockGetPersonApiByIdUseCase = new Mock<IGetPersonApiByIdUseCase>();
             _mockGetJigsawCustomerByIdUseCase = new Mock<IGetJigsawCustomerByIdUseCase>();
             _mockGetCouncilTaxAccountByAccountRefUseCase = new Mock<IGetCouncilTaxAccountByAccountRefUseCase>();
-            _classUnderTest = new GetCustomerByIdUseCase(_mockCustomerGateway.Object, _mockGetPersonApiByIdUseCase.Object, _mockGetJigsawCustomerByIdUseCase.Object, _mockGetCouncilTaxAccountByAccountRefUseCase.Object);
+            _mockGetHousingBenefitsAccountByAccountRefUseCase = new Mock<IGetHousingBenefitsAccountByAccountRefUseCase>();
+            _classUnderTest = new GetCustomerByIdUseCase(
+                _mockCustomerGateway.Object,
+                _mockGetPersonApiByIdUseCase.Object,
+                _mockGetJigsawCustomerByIdUseCase.Object,
+                _mockGetCouncilTaxAccountByAccountRefUseCase.Object,
+                _mockGetHousingBenefitsAccountByAccountRefUseCase.Object);
             _fixture = new Fixture();
 
         }
@@ -55,13 +62,11 @@ namespace SingleViewApi.Tests.V1.UseCase
             var mockPersonApiName = "PersonAPI";
             var mockJigsawId = "1234";
             var mockJigsawName = "Jigsaw";
-            var mockAcademyId = _fixture.Create<string>();
-            var mockAcademyName = "AcademyCouncilTax";
+            var mockCouncilTaxId = _fixture.Create<string>();
+            var mockCouncilTaxName = "AcademyCouncilTax";
+            var mockHousingBenefitsId = _fixture.Create<string>();
+            var mockHousingBenefitsName = "AcademyHousingBenefits";
             var mockCouncilTaxAccount = _fixture.Create<CouncilTaxAccountInfo>();
-            var mockCouncilTaxCustomer =
-                _fixture.Build<Customer>().With(x => x.CouncilTaxAccount, mockCouncilTaxAccount);
-
-
 
             _mockCustomerGateway.Setup(x => x.Find(id)).Returns(new SavedCustomer()
             {
@@ -77,7 +82,10 @@ namespace SingleViewApi.Tests.V1.UseCase
                         CustomerId = id, DataSourceId = 1, SourceId = mockPersonApi
                     }, new CustomerDataSource()
                     {
-                        CustomerId = id, DataSourceId = 3, SourceId = mockAcademyId
+                        CustomerId = id, DataSourceId = 3, SourceId = mockCouncilTaxId
+                    }, new CustomerDataSource()
+                    {
+                        CustomerId = id, DataSourceId = 4, SourceId = mockHousingBenefitsId
                     }
                 }
             });
@@ -165,7 +173,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 FirstName = mockFirstName,
                 Surname = mockLastName,
                 ContactDetails = fakeContactDetails,
-                DataSource = new DataSource() { Id = 3, Name = mockAcademyName },
+                DataSource = new DataSource() { Id = 3, Name = mockCouncilTaxName },
                 DateOfBirth = null,
                 DateOfDeath = null,
                 IsAMinor = false,
@@ -181,7 +189,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 CouncilTaxAccount = mockCouncilTaxAccount
             };
 
-            _mockGetCouncilTaxAccountByAccountRefUseCase.Setup(x => x.Execute(mockAcademyId, userToken))
+            _mockGetCouncilTaxAccountByAccountRefUseCase.Setup(x => x.Execute(mockCouncilTaxId, userToken))
                 .ReturnsAsync(new CustomerResponseObject()
                 {
                     Customer = councilTaxAccount,
@@ -189,8 +197,34 @@ namespace SingleViewApi.Tests.V1.UseCase
                     {
                         new SystemId()
                         {
-                            Id = mockAcademyId,
-                            SystemName = mockAcademyName
+                            Id = mockCouncilTaxId,
+                            SystemName = mockCouncilTaxName
+                        }
+                    }
+                });
+
+            var mockHousingBenefitsAccount = _fixture.Create<HousingBenefitsAccountInfo>();
+
+            var housingBenefitsCustomer = new Customer()
+            {
+                Id = mockHousingBenefitsId,
+                Title = null,
+                FirstName = mockFirstName,
+                Surname = mockLastName,
+                DataSource = new DataSource() { Id = 4, Name = mockHousingBenefitsName },
+                HousingBenefitsAccount = mockHousingBenefitsAccount
+            };
+
+            _mockGetHousingBenefitsAccountByAccountRefUseCase.Setup(x => x.Execute(mockHousingBenefitsId, userToken))
+                .ReturnsAsync(new CustomerResponseObject()
+                {
+                    Customer = housingBenefitsCustomer,
+                    SystemIds = new List<SystemId>
+                    {
+                        new SystemId()
+                        {
+                            Id = mockCouncilTaxId,
+                            SystemName = mockCouncilTaxName
                         }
                     }
                 });
@@ -201,9 +235,8 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.SystemIds[0].Id.Should().BeEquivalentTo(mockJigsawId);
             result.SystemIds[1].SystemName.Should().BeEquivalentTo(mockPersonApiName);
             result.SystemIds[1].Id.Should().BeEquivalentTo(mockPersonApi);
-            result.SystemIds[2].SystemName.Should().BeEquivalentTo(mockAcademyName);
-            result.SystemIds[2].Id.Should().BeEquivalentTo(mockAcademyId);
-
+            result.SystemIds[2].SystemName.Should().BeEquivalentTo(mockCouncilTaxName);
+            result.SystemIds[2].Id.Should().BeEquivalentTo(mockCouncilTaxId);
             result.Customer.Id.Should().BeEquivalentTo(id.ToString());
             result.Customer.Title.Should().BeEquivalentTo(peronsApiCustomer.Title);
             result.Customer.FirstName.Should().BeEquivalentTo(mockFirstName);
@@ -222,6 +255,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.PreferredMiddleName.Should().BeEquivalentTo(null);
             result.Customer.PersonTypes.Should().BeEquivalentTo(peronsApiCustomer.PersonTypes);
             result.Customer.CouncilTaxAccount.Should().BeEquivalentTo(mockCouncilTaxAccount);
+            result.Customer.HousingBenefitsAccount.Should().BeEquivalentTo(mockHousingBenefitsAccount);
         }
 
         [Test]
