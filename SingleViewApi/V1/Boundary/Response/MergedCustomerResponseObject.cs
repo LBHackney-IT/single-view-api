@@ -35,7 +35,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public List<KnownAddress> KnownAddresses { get; set; }
         public List<CutomerContactDetails> ContactDetails { get; set; }
 
-        public List<PersonType> PersonTypes { get; set; }
+        public List<String> PersonTypes { get; set; }
 #nullable enable
 
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }

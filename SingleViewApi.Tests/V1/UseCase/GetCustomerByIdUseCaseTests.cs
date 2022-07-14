@@ -104,7 +104,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,
-                PersonTypes = new List<PersonType> { Hackney.Shared.Person.Domain.PersonType.Tenant }
+                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() }
             };
 
             _mockGetPersonApiByIdUseCase.Setup(x => x.Execute(mockPersonApi, userToken)).ReturnsAsync(new CustomerResponseObject()
@@ -276,7 +276,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,
-                PersonTypes = new List<PersonType> { Hackney.Shared.Person.Domain.PersonType.Tenant }
+                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() }
             };
 
             _mockGetPersonApiByIdUseCase.Setup(x => x.Execute(mockPersonApi, userToken)).ReturnsAsync(new CustomerResponseObject()
