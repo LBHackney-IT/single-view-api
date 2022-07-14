@@ -9,6 +9,7 @@ using Hackney.Core.Logging;
 using Hackney.Shared.ContactDetail.Domain;
 using Hackney.Shared.Person;
 using Microsoft.OpenApi.Extensions;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -62,6 +63,14 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
+
+                var personTypes = new List<string>();
+
+                foreach (var personType in person.PersonTypes)
+                {
+                    personTypes.Add(personType.ToDescription());
+                }
+
                 response.Customer = new Customer()
                 {
                     Id = person.Id.ToString(),
@@ -77,7 +86,7 @@ namespace SingleViewApi.V1.UseCase
                     DateOfBirth = person.DateOfBirth,
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
-                    PersonTypes = person.PersonTypes?.ToList(),
+                    PersonTypes = personTypes,
                     ContactDetails = contactDetails,
                     EqualityInformation = equalityInformation,
                     CautionaryAlerts = cautionaryAlerts,
