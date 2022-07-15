@@ -60,17 +60,8 @@ public class AcademyGateway : IAcademyGateway
             $"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}");
         request.Headers.Add("Authorization", userToken);
         request.Headers.Add("x-api-key", _apiKey);
-        HttpResponseMessage response = new();
 
-        try
-        {
-            response = await _httpClient.SendAsync(request);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Error from AcademyGateway.GetHousingBenefitsAccountsByCustomerName: {e.Message}");
-            Console.WriteLine(e);
-        }
+        var response = await _httpClient.SendAsync(request);
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
