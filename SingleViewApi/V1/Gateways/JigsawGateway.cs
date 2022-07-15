@@ -206,14 +206,14 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-            dynamic? caseOverview = null;
+           JigsawCaseOverviewResponseObject? caseOverview = null;
 #nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-                caseOverview = JsonConvert.DeserializeObject<dynamic>(jsonBody);
+                caseOverview = JsonConvert.DeserializeObject<JigsawCaseOverviewResponseObject>(jsonBody);
 
             }
             return caseOverview;
