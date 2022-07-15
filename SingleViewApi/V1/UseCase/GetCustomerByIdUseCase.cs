@@ -89,7 +89,7 @@ namespace SingleViewApi.V1.UseCase
             var allSystemIds = new List<SystemId>();
             var allKnownAddresses = new List<KnownAddress>();
             var allContactDetails = new List<CutomerContactDetails>();
-            var allPersonType = new List<PersonType>();
+            var allPersonType = new List<string>();
             var mergedCustomer = new MergedCustomer()
             {
                 Id = customer.Id.ToString(),
