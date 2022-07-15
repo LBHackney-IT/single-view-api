@@ -15,10 +15,10 @@ namespace SingleViewApi.V1.Gateways.Interfaces
 
         Task<List<JigsawNotesResponseObject>> GetCustomerNotesByCustomerId(string id, string bearerToken);
 
-        Task<dynamic> GetCasesByCustomerId(string id, string bearerToken);
+        Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken);
 
-        Task<dynamic> GetCaseOverviewByCaseId(string caseId, string bearerToken);
+        Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken);
 
-        Task<List<dynamic>> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken);
+        Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken);
     }
 }
