@@ -6,12 +6,11 @@ namespace SingleViewApi.V1.Boundary.Response;
 
 public class HousingBenefitsRecordResponseObject
 {
-    public string ClaimId { get; set; }
+    public int ClaimId { get; set; }
 
 #nullable enable
 
     public string? CheckDigit { get; set; }
-    public string? NiNumber { get; set; }
 
     public string? PersonReference { get; set; }
 
@@ -23,7 +22,11 @@ public class HousingBenefitsRecordResponseObject
 
     public DateTime? DateOfBirth { get; set; }
 
+    public string? NiNumber { get; set; }
+
     public Address? FullAddress { get; set; }
+
+    public string? PostCode { get; set; }
 
     public List<HouseholdMember>? HouseholdMembers { get; set; }
 

@@ -5,7 +5,7 @@ namespace SingleViewApi.V1.Boundary;
 
 public class HousingBenefitsAccountInfo
 {
-    public string ClaimId { get; set; }
+    public int ClaimId { get; set; }
 #nullable enable
     public string? CheckDigit { get; set; }
     public string? PersonReference { get; set; }
