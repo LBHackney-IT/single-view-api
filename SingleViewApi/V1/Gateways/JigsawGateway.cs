@@ -173,7 +173,7 @@ namespace SingleViewApi.V1.Gateways
             return notes;
         }
 
-        public async Task<dynamic> GetCasesByCustomerId(string id, string bearerToken)
+        public async Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken)
         {
             var requestUrl = $"{_homelessnessBaseUrl}/casecheck/{id}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -183,19 +183,19 @@ namespace SingleViewApi.V1.Gateways
 
             var response = await _httpClient.SendAsync(request);
 
-            #nullable enable
-            dynamic? cases = null;
-            #nullable disable
+#nullable enable
+            JigsawCasesResponseObject? cases = null;
+#nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-                cases = JsonConvert.DeserializeObject<dynamic>(jsonBody);
+                cases = JsonConvert.DeserializeObject<JigsawCasesResponseObject>(jsonBody);
             }
             return cases;
         }
 
-        public async Task<dynamic> GetCaseOverviewByCaseId(string caseId, string bearerToken)
+        public async Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken)
         {
             var requestUrl = $"{_homelessnessBaseUrl}/caseoverview/{caseId}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -206,7 +206,7 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-           dynamic? caseOverview = null;
+            dynamic? caseOverview = null;
 #nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -220,7 +220,7 @@ namespace SingleViewApi.V1.Gateways
 
         }
 
-        public async Task<List<dynamic>> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken)
+        public async Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken)
         {
             var requestUrl = $"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -231,14 +231,14 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-            dynamic? placementInfo = null;
+            JigsawCasePlacementInformationResponseObject? placementInfo = null;
 #nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-                placementInfo = JsonConvert.DeserializeObject<List<dynamic>>(jsonBody);
+                placementInfo = JsonConvert.DeserializeObject<JigsawCasePlacementInformationResponseObject>(jsonBody);
 
             }
             return placementInfo;
