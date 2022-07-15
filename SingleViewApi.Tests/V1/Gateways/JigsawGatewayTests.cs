@@ -217,4 +217,148 @@ public class JigsawGatewayTests
         Assert.AreEqual(jigsawNotesResponseObject[0].CustomerId, customerNotes[0].CustomerId);
     }
 
+    [Test]
+    public async Task GetCasesByCustomerIdReturnsNullIfUnauthorised()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/casecheck/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.Unauthorized);
+
+        var cases = await _classUnderTest.GetCasesByCustomerId(id, bearerToken);
+
+        cases.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetCasesByCustomerIdReturnsNullIfApiIsUnavailable()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/casecheck/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        var cases = await _classUnderTest.GetCasesByCustomerId(id, bearerToken);
+
+        cases.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DataFromGetCasesByCustomerIdApiIsReturned()
+    {
+        var id = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var mockCasesResponseObject = _fixture.Create<JigsawCasesResponseObject>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/casecheck/{id}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", mockCasesResponseObject.ToJson());
+
+        var casesObject = await _classUnderTest.GetCasesByCustomerId(id, bearerToken);
+
+        Assert.AreEqual(mockCasesResponseObject.Cases[0].Id, casesObject.Cases[0].Id);
+        Assert.AreEqual(mockCasesResponseObject.Cases[0].StatusName, casesObject.Cases[0].StatusName);
+        Assert.AreEqual(mockCasesResponseObject.Cases[0].AssignedTo, casesObject.Cases[0].AssignedTo);
+    }
+
+    [Test]
+    public async Task GetCaseOverviewByCaseIdReturnsNullIfUnauthorised()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseoverview/{caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.Unauthorized);
+
+        var caseOverview = await _classUnderTest.GetCaseOverviewByCaseId(caseId, bearerToken);
+
+        caseOverview.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetCaseOverviewByCaseIdReturnsNullIfApiIsUnavailable()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseoverview/{caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        var cases = await _classUnderTest.GetCaseOverviewByCaseId(caseId, bearerToken);
+
+        cases.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DataFromGetCaseOverviewByCaseIdApiIsReturned()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var mockCaseOverview = _fixture.Create<JigsawCaseOverviewResponseObject>();
+
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseoverview/{caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", mockCaseOverview.ToJson());
+
+        var casesOverview = await _classUnderTest.GetCaseOverviewByCaseId(caseId, bearerToken);
+
+        Assert.AreEqual(mockCaseOverview.Id, casesOverview.Id);
+        Assert.AreEqual(mockCaseOverview.CurrentDecision, casesOverview.CurrentDecision);
+        Assert.AreEqual(mockCaseOverview.HouseholdComposition, casesOverview.HouseholdComposition);
+    }
+
+    [Test]
+    public async Task GetCaseAccommodationPlacementsByCaseIdReturnsNullIfUnauthorised()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.Unauthorized);
+
+        var casePlacementInfo = await _classUnderTest.GetCaseAccommodationPlacementsByCaseId(caseId, bearerToken);
+
+        casePlacementInfo.Should().BeNull();
+    }
+
+    [Test]
+    public async Task GetCaseAccommodationPlacementsByCaseIdReturnsNullIfApiIsUnavailable()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+
+        _mockHttp.Expect($"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        var casePlacementInfo = await _classUnderTest.GetCaseAccommodationPlacementsByCaseId(caseId, bearerToken);
+
+        casePlacementInfo.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DataFromGetCaseAccommodationPlacementsByCaseIdApiIsReturned()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var mockCasePlacementInfo = _fixture.Create<JigsawCasePlacementInformationResponseObject>();
+
+        _mockHttp.Expect($"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", mockCasePlacementInfo.ToJson());
+
+        var casePlacementInfo = await _classUnderTest.GetCaseAccommodationPlacementsByCaseId(caseId, bearerToken);
+
+        Assert.AreEqual(mockCasePlacementInfo.IsCurrentlyInPlacement, casePlacementInfo.IsCurrentlyInPlacement);
+        Assert.AreEqual(mockCasePlacementInfo.Placements[0].Address, casePlacementInfo.Placements[0].Address);
+        Assert.AreEqual(mockCasePlacementInfo.Placements[0].Usage, casePlacementInfo.Placements[0].Usage);
+    }
+
 }
