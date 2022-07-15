@@ -206,7 +206,7 @@ namespace SingleViewApi.V1.Gateways
             var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-           JigsawCaseOverviewResponseObject? caseOverview = null;
+            JigsawCaseOverviewResponseObject? caseOverview = null;
 #nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
