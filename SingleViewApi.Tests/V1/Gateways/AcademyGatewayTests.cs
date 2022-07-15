@@ -190,7 +190,7 @@ public class AcademyGatewayTests
         var accountRef = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
         var stubbedJson = @"{
-          ""claimId"": ""ABC123"",
+          ""claimId"": 1234,
           ""checkDigit"": ""D"",
           ""personReference"": ""PER0"",
           ""title"": ""Miss"",
@@ -229,7 +229,7 @@ public class AcademyGatewayTests
 
         var results = await _classUnderTest.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
 
-        Assert.AreEqual("ABC123", results.ClaimId);
+        Assert.AreEqual(1234, results.ClaimId);
         Assert.AreEqual("Luna", results.FirstName);
         Assert.AreEqual("Kitty", results.LastName);
         if (results?.FullAddress != null)
