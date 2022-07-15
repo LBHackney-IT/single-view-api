@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/academy")]
+    [Route("api/v1")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
     public class AcademyController : BaseController
@@ -30,6 +30,7 @@ namespace SingleViewApi.V1.Controllers
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(CustomerResponseObject), StatusCodes.Status200OK)]
         [HttpGet("council-tax")]
+        [HttpGet("academy/council-tax")]
         [LogCall(LogLevel.Information)]
         public IActionResult GetCouncilTaxAccount([FromQuery] string id, [FromHeader] string authorization)
         {
@@ -43,7 +44,7 @@ namespace SingleViewApi.V1.Controllers
         /// <response code="200">...</response>
         /// <response code="400">Invalid Query Parameter.</response>
         [ProducesResponseType(typeof(CustomerResponseObject), StatusCodes.Status200OK)]
-        [HttpGet("benefits")]
+        [HttpGet("academy/benefits")]
         [LogCall(LogLevel.Information)]
         public IActionResult GetHousingBenefitsAccount([FromQuery] string id, [FromHeader] string authorization)
         {
