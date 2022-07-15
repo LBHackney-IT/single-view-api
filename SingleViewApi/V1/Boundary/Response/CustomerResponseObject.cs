@@ -39,7 +39,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public List<KnownAddress> KnownAddresses { get; set; }
 
-        public List<PersonType> PersonTypes { get; set; }
+        public List<string> PersonTypes { get; set; }
 
 #nullable enable
         public DateTime? DateOfBirth { get; set; }
