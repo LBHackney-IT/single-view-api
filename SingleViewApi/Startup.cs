@@ -157,7 +157,7 @@ namespace SingleViewApi
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
 
-                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"));
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"), Environment.GetEnvironmentVariable("JIGSAW_HOMELESSNESS_API"), Environment.GetEnvironmentVariable("JIGSAW_ACCOMMODATION_API"));
 
             });
 

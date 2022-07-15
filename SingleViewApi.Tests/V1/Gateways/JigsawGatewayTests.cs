@@ -17,6 +17,8 @@ public class JigsawGatewayTests
     private MockHttpMessageHandler _mockHttp;
     private string _authUrl;
     private string _customerBaseUrl;
+    private string _homelessnessBaseUrl;
+    private string _accommodationBaseUrl;
     private Fixture _fixture;
 
     [SetUp]
@@ -25,9 +27,11 @@ public class JigsawGatewayTests
         _fixture = new Fixture();
         _authUrl = "https://api.jigsaw-auth";
         _customerBaseUrl = "https://api.jigsaw-customer";
+        _homelessnessBaseUrl = "https://api.jigsaw-homelessness";
+        _accommodationBaseUrl = "https://api.jigsaw-accommodation";
         _mockHttp = new MockHttpMessageHandler();
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _customerBaseUrl);
+        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _customerBaseUrl, _homelessnessBaseUrl, _accommodationBaseUrl);
     }
 
     [Test]
