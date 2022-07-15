@@ -98,6 +98,7 @@ public class AcademyGateway : IAcademyGateway
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/{accountRef}");
         request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _apiKey);
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
