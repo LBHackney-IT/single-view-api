@@ -21,7 +21,7 @@ public static class Extensions
         if (dateFmt == null)
         {
             var dateInfo = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat;
-            dateFmt=dateInfo.GetAllDateTimePatterns();
+            dateFmt = dateInfo.GetAllDateTimePatterns();
         }
         var result = DateTime.TryParseExact(dateTimeStr, dateFmt, CultureInfo.InvariantCulture,
             style, out var dt) ? dt : null as DateTime?;
