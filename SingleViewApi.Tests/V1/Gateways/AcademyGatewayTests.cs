@@ -245,6 +245,70 @@ public class AcademyGatewayTests
         Assert.AreEqual("Weekly", results.Benefits[0].Period);
     }
 
+    [Test]
+    public async Task GetHousingBenefitsNnotesReturnsHousingBenefitsNotesResponseObject()
+    {
+        var accountRef = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        var stubbedJson = @"[
+            {
+              ""date"": ""31.03.2022 15:39:37  1017585577"",
+              ""userId"": ""Diane"",
+              ""note"": ""Lorem ipsum dolor sit amet.""
+            },{
+              ""date"": ""02.04.2022 15:39:37  1017585577"",
+              ""userId"": ""Mr Peanutbutter"",
+              ""note"": ""Donec et tortor et nisi vehicula maximus.""
+            }
+        ]";
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{accountRef}/notes")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json", stubbedJson);
+
+        var results = await _classUnderTest.GetHousingBenefitsNotes(accountRef, userToken);
+
+        Assert.AreEqual("31.03.2022 15:39:37  1017585577", results[0].Date);
+        Assert.AreEqual("Diane", results[0].UserId);
+        Assert.AreEqual("Lorem ipsum dolor sit amet.", results[0].Note);
+        Assert.AreEqual("02.04.2022 15:39:37  1017585577", results[1].Date);
+        Assert.AreEqual("Mr Peanutbutter", results[1].UserId);
+        Assert.AreEqual("Donec et tortor et nisi vehicula maximus.", results[1].Note);
+    }
+
+    [Test]
+    public async Task GetCouncilTaxNnotesReturnsHousingBenefitsNotesResponseObject()
+    {
+        var councilTaxId = _fixture.Create<string>();
+        var userToken = _fixture.Create<string>();
+
+        var stubbedJson = @"[
+            {
+              ""date"": ""31.03.2022 15:39:37  1017585577"",
+              ""userId"": ""Diane"",
+              ""note"": ""Lorem ipsum dolor sit amet.""
+            },{
+              ""date"": ""02.04.2022 15:39:37  1017585577"",
+              ""userId"": ""Mr Peanutbutter"",
+              ""note"": ""Donec et tortor et nisi vehicula maximus.""
+            }
+        ]";
+
+        _mockHttp.Expect($"{_baseUrl}/benefits/{councilTaxId}/notes")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json", stubbedJson);
+
+        var results = await _classUnderTest.GetCouncilTaxNotes(councilTaxId, userToken);
+
+        Assert.AreEqual("31.03.2022 15:39:37  1017585577", results[0].Date);
+        Assert.AreEqual("Diane", results[0].UserId);
+        Assert.AreEqual("Lorem ipsum dolor sit amet.", results[0].Note);
+        Assert.AreEqual("02.04.2022 15:39:37  1017585577", results[1].Date);
+        Assert.AreEqual("Mr Peanutbutter", results[1].UserId);
+        Assert.AreEqual("Donec et tortor et nisi vehicula maximus.", results[1].Note);
+    }
+
     private static void AreEqualByJson(object expected, object actual)
     {
         var expectedJson = JSON.stringify(expected);
