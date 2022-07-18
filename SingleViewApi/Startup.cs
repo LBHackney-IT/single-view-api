@@ -248,6 +248,20 @@ namespace SingleViewApi
                 return new GetHousingBenefitsAccountByAccountRefUseCase(academyGateway, dataSourceGateway);
             });
 
+            services.AddTransient<IGetCouncilTaxNotesUseCase, GetCouncilTaxNotesUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetCouncilTaxNotesUseCase(academyGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<IGetHousingBenefitsNotesUseCase, GetHousingBenefitsNotesUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetHousingBenefitsNotesUseCase(academyGateway, dataSourceGateway);
+            });
+
             services.AddTransient<INotesGateway, NotesGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
@@ -283,8 +297,10 @@ namespace SingleViewApi
                 var getNotesUseCase = s.GetService<IGetNotesUseCase>();
                 var getJigsawNotesUseCase = s.GetService<IGetJigsawNotesUseCase>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                var getCouncilTaxNotesUseCase = s.GetService<IGetCouncilTaxNotesUseCase>();
+                var getHousingBenefitsNotesUseCase = s.GetService<IGetHousingBenefitsNotesUseCase>();
 
-                return new GetAllNotesUseCase(getNotesUseCase, getJigsawNotesUseCase, dataSourceGateway);
+                return new GetAllNotesUseCase(getNotesUseCase, getJigsawNotesUseCase, getCouncilTaxNotesUseCase, getHousingBenefitsNotesUseCase, dataSourceGateway);
             });
 
             services.AddTransient<ICreateNoteUseCase, CreateNoteUseCase>(s =>
