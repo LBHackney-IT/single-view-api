@@ -278,7 +278,7 @@ public class AcademyGatewayTests
     }
 
     [Test]
-    public async Task GetCouncilTaxNnotesReturnsHousingBenefitsNotesResponseObject()
+    public async Task GetCouncilTaxNotesReturnsAcademyNotesResponseObject()
     {
         var councilTaxId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
@@ -295,7 +295,7 @@ public class AcademyGatewayTests
             }
         ]";
 
-        _mockHttp.Expect($"{_baseUrl}/benefits/{councilTaxId}/notes")
+        _mockHttp.Expect($"{_baseUrl}/council-tax/{councilTaxId}/notes")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json", stubbedJson);
 

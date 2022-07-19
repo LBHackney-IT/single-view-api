@@ -139,7 +139,7 @@ public class AcademyGateway : IAcademyGateway
     [LogCall]
     public async Task<List<AcademyNotesResponseObject>> GetCouncilTaxNotes(string councilTaxId, string userToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}//api/v1/council-tax/{councilTaxId}/{councilTaxId}/notes");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{councilTaxId}/notes");
         request.Headers.Add("Authorization", userToken);
         request.Headers.Add("x-api-key", _apiKey);
         var response = await _httpClient.SendAsync(request);
