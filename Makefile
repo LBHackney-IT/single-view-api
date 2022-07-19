@@ -18,6 +18,10 @@ shell:
 test:
 	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test
 
+.PHONY: test-db
+test-db:
+	docker-compose up test-database
+
 .PHONY: lint
 lint:
 	-dotnet tool install -g dotnet-format
