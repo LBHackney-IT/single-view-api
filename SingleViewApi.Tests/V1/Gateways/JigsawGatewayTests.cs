@@ -357,8 +357,8 @@ public class JigsawGatewayTests
         var casePlacementInfo = await _classUnderTest.GetCaseAccommodationPlacementsByCaseId(caseId, bearerToken);
 
         Assert.AreEqual(mockCasePlacementInfo.IsCurrentlyInPlacement, casePlacementInfo.IsCurrentlyInPlacement);
-        Assert.AreEqual(mockCasePlacementInfo.Placements[0].Address, casePlacementInfo.Placements[0].Address);
-        Assert.AreEqual(mockCasePlacementInfo.Placements[0].Usage, casePlacementInfo.Placements[0].Usage);
+        Assert.AreEqual(mockCasePlacementInfo.Placement.Address, casePlacementInfo.Placement.Address);
+        Assert.AreEqual(mockCasePlacementInfo.Placement.Usage, casePlacementInfo.Placement.Usage);
     }
 
 }
