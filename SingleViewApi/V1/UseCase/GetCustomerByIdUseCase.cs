@@ -19,14 +19,16 @@ namespace SingleViewApi.V1.UseCase
         private readonly IGetPersonApiByIdUseCase _getPersonApiByIdUseCase;
         private readonly IGetJigsawCustomerByIdUseCase _jigsawCustomerByIdUseCase;
         private readonly IGetCouncilTaxAccountByAccountRefUseCase _getCouncilTaxAccountByAccountRefUseCase;
+        private readonly IGetHousingBenefitsAccountByAccountRefUseCase _getHousingBenefitsAccountByAccountRefUseCase;
 
         public GetCustomerByIdUseCase(ICustomerGateway gateway, IGetPersonApiByIdUseCase getPersonApiByIdUseCase, IGetJigsawCustomerByIdUseCase jigsawCustomerByIdUseCase,
-        IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase)
+        IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase, IGetHousingBenefitsAccountByAccountRefUseCase getHousingBenefitsAccountByAccountRefUseCase)
         {
             _gateway = gateway;
             _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
             _jigsawCustomerByIdUseCase = jigsawCustomerByIdUseCase;
             _getCouncilTaxAccountByAccountRefUseCase = getCouncilTaxAccountByAccountRefUseCase;
+            _getHousingBenefitsAccountByAccountRefUseCase = getHousingBenefitsAccountByAccountRefUseCase;
         }
 
         [LogCall]
@@ -70,6 +72,10 @@ namespace SingleViewApi.V1.UseCase
                         break;
                     case 3:
                         res = _getCouncilTaxAccountByAccountRefUseCase.Execute(customerDataSource.SourceId, userToken).Result;
+                        foundRecords.Add(res);
+                        break;
+                    case 4:
+                        res = _getHousingBenefitsAccountByAccountRefUseCase.Execute(customerDataSource.SourceId, userToken).Result;
                         foundRecords.Add(res);
                         break;
                 }
@@ -127,7 +133,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
                     mergedCustomer.CouncilTaxAccount ??= r.Customer.CouncilTaxAccount;
-
+                    mergedCustomer.HousingBenefitsAccount ??= r.Customer.HousingBenefitsAccount;
                 }
             }
 

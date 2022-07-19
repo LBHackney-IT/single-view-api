@@ -46,7 +46,7 @@ namespace SingleViewApi.V1.UseCase
             var dataSource = _dataSourceGateway.GetEntityById(1);
             var equalityInformation =
                 await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
-            var cautionaryAlerts = await _cautionaryAlertsGateway.GetCautionaryAlertsById(personId, userToken);
+            //var cautionaryAlerts = await _cautionaryAlertsGateway.GetCautionaryAlertsById(personId, userToken);
 
 
 
@@ -89,7 +89,7 @@ namespace SingleViewApi.V1.UseCase
                     PersonTypes = personTypes,
                     ContactDetails = contactDetails,
                     EqualityInformation = equalityInformation,
-                    CautionaryAlerts = cautionaryAlerts,
+                    //CautionaryAlerts = cautionaryAlerts,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
 
