@@ -19,7 +19,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
     [LogCall]
     public async Task<dynamic> Execute(string customerId, string bearerToken)
     {
-        var cases= await _jigsawGateway.GetCasesByCustomerId(customerId, bearerToken);
+        var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, bearerToken);
 
         var customerCaseOverviews = new List<dynamic>();
         var customerAccommodationPlacements = new List<dynamic>();
