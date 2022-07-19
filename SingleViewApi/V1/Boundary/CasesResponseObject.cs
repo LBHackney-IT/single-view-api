@@ -6,9 +6,9 @@ namespace SingleViewApi.V1.Boundary;
 
 public class CasesResponseObject
 {
-    #nullable enable
+#nullable enable
     public List<Case>? Cases { get; set; }
-    #nullable disable
+#nullable disable
     public CurrentPlacement CurrentPlacement { get; set; }
 
 }
