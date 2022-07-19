@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,25 +11,35 @@ namespace SingleViewApi.V1.UseCase;
 public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseCase
 {
     private readonly IJigsawGateway _jigsawGateway;
+    private IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
 
-    public GetJigsawCasesByCustomerIdUseCase(IJigsawGateway jigsawGateway)
+
+    public GetJigsawCasesByCustomerIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
     {
         _jigsawGateway = jigsawGateway;
+        _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
     }
 
     [LogCall]
-    public async Task<dynamic> Execute(string customerId, string bearerToken)
+    public async Task<dynamic> Execute(string customerId, string redisId, string hackneyToken)
     {
-        var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, bearerToken);
+        var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
+
+        if (!String.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
+        {
+            Console.WriteLine($"Error getting Jigsaw token for CustomerById: {jigsawAuthResponse.ExceptionMessage}");
+            return null;
+        }
+        var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, jigsawAuthResponse.Token);
 
         var customerCaseOverviews = new List<dynamic>();
         var customerAccommodationPlacements = new List<dynamic>();
 
         foreach (var customerCase in cases.Cases)
         {
-            var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(customerCase.Id.ToString(), bearerToken);
+            var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(customerCase.Id.ToString(), jigsawAuthResponse.Token);
             var customerAccommodationPlacement =
-                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(customerCase.Id.ToString(), bearerToken);
+                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(customerCase.Id.ToString(), jigsawAuthResponse.Token);
 
             customerCaseOverviews.Add(customerCaseOverview);
             customerAccommodationPlacements.Add(customerAccommodationPlacement);

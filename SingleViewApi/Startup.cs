@@ -323,7 +323,8 @@ namespace SingleViewApi
             services.AddTransient<IGetJigsawCasesByCustomerIdUseCase, GetJigsawCasesByCustomerIdUseCase>(s =>
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
-                return new GetJigsawCasesByCustomerIdUseCase(jigsawGateway);
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCasesByCustomerIdUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
