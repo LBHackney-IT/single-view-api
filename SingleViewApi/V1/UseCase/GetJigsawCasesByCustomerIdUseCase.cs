@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -21,7 +23,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
     }
 
     [LogCall]
-    public async Task<dynamic> Execute(string customerId, string redisId, string hackneyToken)
+    public async Task<CasesResponseObject> Execute(string customerId, string redisId, string hackneyToken)
     {
         var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
@@ -32,8 +34,8 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
         var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, jigsawAuthResponse.Token);
 
-        var customerCaseOverviews = new List<dynamic>();
-        var customerAccommodationPlacements = new List<dynamic>();
+        var customerCaseOverviews = new List<JigsawCaseOverviewResponseObject>();
+        var customerAccommodationPlacements = new List<JigsawCasePlacementInformationResponseObject>();
 
         foreach (var customerCase in cases.Cases)
         {
@@ -45,8 +47,26 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             customerAccommodationPlacements.Add(customerAccommodationPlacement);
         }
 
-        //what do we want our response object to look like?
-        return customerCaseOverviews.Append(customerAccommodationPlacements);
+        var currentPlacement = GetCurrentPlacement(customerAccommodationPlacements);
 
+        var newCaseResponseObject = new CasesResponseObject()
+        {
+            CurrentPlacement = new CurrentPlacement()
+            {
+                Address = currentPlacement.Placement.Address,
+                PlacementType = currentPlacement.Placement.PropertyType,
+                RentCostCustomer = currentPlacement.Placement.RentCostCustomer,
+                StartDate = currentPlacement.Placement.StartDate
+            },
+            Cases = cases.Cases,
+        };
+
+        return newCaseResponseObject;
+
+    }
+
+    public JigsawCasePlacementInformationResponseObject GetCurrentPlacement(List<JigsawCasePlacementInformationResponseObject> placements)
+    {
+        return placements.First(s => s.IsCurrentlyInPlacement);
     }
 }
