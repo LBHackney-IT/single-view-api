@@ -320,6 +320,12 @@ namespace SingleViewApi
                 return new GetHousingBenefitsAccountsByCustomerNameUseCase(academyGateway, dataSourceGateway);
             });
 
+            services.AddTransient<IGetJigsawCasesByCustomerIdUseCase, GetJigsawCasesByCustomerIdUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                return new GetJigsawCasesByCustomerIdUseCase(jigsawGateway);
+            });
+
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddHealthChecks();
