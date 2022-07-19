@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Response;
 
@@ -11,4 +12,8 @@ public interface IAcademyGateway
 
     Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken);
     Task<HousingBenefitsRecordResponseObject> GetHousingBenefitsAccountByAccountRef(string accountRef, string userToken);
+
+    Task<List<AcademyNotesResponseObject>> GetHousingBenefitsNotes(string accountRef, string userToken);
+    Task<List<AcademyNotesResponseObject>> GetCouncilTaxNotes(string councilTaxId, string userToken);
+
 }
