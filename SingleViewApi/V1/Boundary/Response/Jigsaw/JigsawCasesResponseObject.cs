@@ -6,10 +6,6 @@ namespace SingleViewApi.V1.Boundary.Response;
 public class JigsawCasesResponseObject
 {
     public List<Case> Cases { get; set; }
-#nullable enable
-    public Case? LegacyCase { get; set; }
-#nullable disable
-
 }
 
 public class Case

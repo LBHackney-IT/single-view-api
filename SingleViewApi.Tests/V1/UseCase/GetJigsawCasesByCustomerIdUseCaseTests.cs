@@ -1,5 +1,6 @@
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
@@ -10,7 +11,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.Tests.V1.UseCase;
 
-public class GetJigsawCasesByCustomerIdUseCaseTests
+public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 {
     private Mock<IJigsawGateway> _mockJigsawGateway;
     private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
@@ -37,9 +38,9 @@ public class GetJigsawCasesByCustomerIdUseCaseTests
         _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
             .ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" });
 
-        var result = _classUnderTest.Execute(customerId, redisId, hackneyToken);
+        var result = _classUnderTest.Execute(customerId, redisId, hackneyToken).Result;
 
-        Assert.That(result, null);
+        Assert.IsNull(result);
     }
 
     [Test]
@@ -50,25 +51,25 @@ public class GetJigsawCasesByCustomerIdUseCaseTests
         var hackneyToken = _fixture.Create<string>();
         var jigsawToken = _fixture.Create<string>();
         var mockCustomerCases = _fixture.Create<JigsawCasesResponseObject>();
-        var mockCurrentCustomerCaseId = mockCustomerCases.Cases[0].Id.ToString();
-        var mockCustomerCaseOverviews = _fixture.Create<JigsawCaseOverviewResponseObject>();
+        var mockCurrentCustomerCaseId = mockCustomerCases.Cases[0].Id;
+        var mockCustomerCaseOverviews = _fixture.Build<JigsawCaseOverviewResponseObject>()
+            .With(x => x.CustomerId, mockCurrentCustomerCaseId).Create();
         var mockCustomerPlacements = _fixture.Create<JigsawCasePlacementInformationResponseObject>();
 
         _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
         _mockJigsawGateway.Setup(x => x.GetCasesByCustomerId(customerId, jigsawToken)).ReturnsAsync(mockCustomerCases);
-        _mockJigsawGateway.Setup(x => x.GetCaseOverviewByCaseId(mockCurrentCustomerCaseId, jigsawToken))
+        _mockJigsawGateway.Setup(x => x.GetCaseOverviewByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockCustomerCaseOverviews);
-        _mockJigsawGateway.Setup(x => x.GetCaseAccommodationPlacementsByCaseId(mockCurrentCustomerCaseId, jigsawToken))
+        _mockJigsawGateway.Setup(x => x.GetCaseAccommodationPlacementsByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockCustomerPlacements);
 
         var result = _classUnderTest.Execute(customerId, redisId, hackneyToken).Result;
 
-        result.CurrentPlacement.Address.Should().BeEquivalentTo(mockCustomerPlacements.Placement.Address);
-        result.CurrentPlacement.PlacementType.Should().BeEquivalentTo(mockCustomerPlacements.Placement.PlacementType);
-        result.CurrentPlacement.StartDate.Should().Be(mockCustomerPlacements.Placement.StartDate);
-        result.Cases.Should().BeEquivalentTo(mockCustomerCaseOverviews);
-
-
+        result.Cases[0].Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
+        result.CaseOverviews[0].Id.Should().BeEquivalentTo(mockCustomerCaseOverviews.Id.ToString());
+        result.CaseOverviews[0].HouseHoldComposition.Should().BeEquivalentTo(mockCustomerCaseOverviews.HouseholdComposition);
+        result.PlacementInformation[0].DclgClassificationType.Should()
+            .BeEquivalentTo(mockCustomerPlacements.Placements[0].DclgClassificationType);
 
     }
 }

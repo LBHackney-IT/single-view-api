@@ -133,7 +133,7 @@ public class Placement
 public class JigsawCasePlacementInformationResponseObject
 {
     [JsonProperty("placements")]
-    public Placement Placement { get; set; }
+    public List<Placement> Placements { get; set; }
 
     [JsonProperty("isCurrentlyInPlacement")]
     public bool IsCurrentlyInPlacement { get; set; }
