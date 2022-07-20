@@ -11,7 +11,7 @@ public class CasesResponseObject
 #nullable disable
     public List<AccommodationPlacementInfo> PlacementInformation { get; set; }
 
-    public List<CaseOverview> CaseOverviews { get; set; }
+    public CaseOverview CaseOverview { get; set; }
 
 }
 
