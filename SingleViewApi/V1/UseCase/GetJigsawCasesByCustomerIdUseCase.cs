@@ -40,18 +40,18 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var currentCase = cases.Cases.First(x => x.IsCurrent);
 
         var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
-            var customerAccommodationPlacementList =
-                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+        var customerAccommodationPlacementList =
+            await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
 
-            if (customerCaseOverview != null)
-            {
-                customerCaseOverviews.Add(customerCaseOverview);
-            }
+        if (customerCaseOverview != null)
+        {
+            customerCaseOverviews.Add(customerCaseOverview);
+        }
 
-            if (customerAccommodationPlacementList != null)
-            {
-                customerAccommodationPlacements.Add(customerAccommodationPlacementList);
-            }
+        if (customerAccommodationPlacementList != null)
+        {
+            customerAccommodationPlacements.Add(customerAccommodationPlacementList);
+        }
 
 
 
