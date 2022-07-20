@@ -37,11 +37,11 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var customerCaseOverviews = new List<JigsawCaseOverviewResponseObject>();
         var customerAccommodationPlacements = new List<JigsawCasePlacementInformationResponseObject>();
 
-        foreach (var customerCase in cases.Cases)
-        {
-            var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(customerCase.Id.ToString(), jigsawAuthResponse.Token);
+        var currentCase = cases.Cases.First(x => x.IsCurrent);
+
+        var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
             var customerAccommodationPlacementList =
-                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(customerCase.Id.ToString(), jigsawAuthResponse.Token);
+                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
 
             if (customerCaseOverview != null)
             {
@@ -53,7 +53,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
                 customerAccommodationPlacements.Add(customerAccommodationPlacementList);
             }
 
-        }
+
 
         var caseOverviews = new List<CaseOverview>();
 
@@ -92,7 +92,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
         var newCaseResponseObject = new CasesResponseObject()
         {
-            Cases = cases.Cases,
+            CurrentCase = currentCase,
             CaseOverviews = caseOverviews,
             PlacementInformation = placementsList
         };

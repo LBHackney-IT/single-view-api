@@ -65,7 +65,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 
         var result = _classUnderTest.Execute(customerId, redisId, hackneyToken).Result;
 
-        result.Cases[0].Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
+        result.CurrentCase.Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
         result.CaseOverviews[0].Id.Should().BeEquivalentTo(mockCustomerCaseOverviews.Id.ToString());
         result.CaseOverviews[0].HouseHoldComposition.Should().BeEquivalentTo(mockCustomerCaseOverviews.HouseholdComposition);
         result.PlacementInformation[0].DclgClassificationType.Should()
