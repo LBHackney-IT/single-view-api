@@ -11,5 +11,6 @@ namespace SingleViewApi.V1.Boundary
         public string? StartDate { get; set; }
         public string? EndDate { get; set; }
 #nullable disable
+        public string DataSourceName { get; set; }
     }
 }
