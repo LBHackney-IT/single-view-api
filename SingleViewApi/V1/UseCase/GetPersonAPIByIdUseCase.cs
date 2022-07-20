@@ -92,12 +92,12 @@ namespace SingleViewApi.V1.UseCase
                     //CautionaryAlerts = cautionaryAlerts,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
-
                         Id = t.Id,
                         CurrentAddress = t.IsActive,
                         StartDate = t.StartDate,
                         EndDate = t.EndDate,
-                        FullAddress = t.AssetFullAddress
+                        FullAddress = t.AssetFullAddress,
+                        DataSourceName = dataSource.Name
                     }))
                 };
             }
