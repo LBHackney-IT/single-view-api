@@ -35,6 +35,12 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
         var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, jigsawAuthResponse.Token);
 
+        if (cases == null)
+        {
+            Console.WriteLine($"No Cases found for id {customerId}");
+            return null;
+        }
+
         Console.WriteLine("----- DEBUG ---- CASES ARE {0}", JSON.stringify(cases));
 
         var customerAccommodationPlacements = new List<JigsawCasePlacementInformationResponseObject>();
