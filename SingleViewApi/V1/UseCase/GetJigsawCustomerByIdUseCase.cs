@@ -39,18 +39,18 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
             return null;
         }
 
-        var customer = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
+        var jigsawResponse = await _jigsawGateway.GetCustomerById(customerId, jigsawAuthResponse.Token);
 
 
         var dataSource = _dataSourceGateway.GetEntityById(2);
 
-        var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = customer?.Id };
+        var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = jigsawResponse?.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
 
         var response = new CustomerResponseObject() { SystemIds = systemIdList };
 
-        if (customer == null)
+        if (jigsawResponse == null)
         {
             jigsawId.Error = "Not found";
         }
@@ -58,20 +58,21 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
         {
             response.Customer = new Customer()
             {
-                Id = customer.Id,
-                FirstName = customer.PersonInfo.FirstName,
-                Surname = customer.PersonInfo.LastName,
-                DateOfBirth = customer.PersonInfo.DateOfBirth,
+                Id = jigsawResponse.Id,
+                FirstName = jigsawResponse.PersonInfo.FirstName,
+                Surname = jigsawResponse.PersonInfo.LastName,
+                DateOfBirth = jigsawResponse.PersonInfo.DateOfBirth,
                 DataSource = dataSource,
-                NiNo = customer.PersonInfo.NationalInsuranceNumber,
-                NhsNumber = customer.PersonInfo.NhsNumber,
+                NiNo = jigsawResponse.PersonInfo.NationalInsuranceNumber,
+                NhsNumber = jigsawResponse.PersonInfo.NhsNumber,
                 KnownAddresses = new List<KnownAddress>()
                 {
                     new KnownAddress()
                     {
 
-                        FullAddress = customer.PersonInfo.AddressString,
-                        CurrentAddress = true
+                        FullAddress = jigsawResponse.PersonInfo.AddressString,
+                        CurrentAddress = true,
+                        DataSourceName = dataSource.Name
                     }
                 }
             };
