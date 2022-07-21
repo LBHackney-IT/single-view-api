@@ -39,6 +39,8 @@ namespace SingleViewApi.V1.Boundary.Response
 #nullable enable
 
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
+
+        public HousingBenefitsAccountInfo? HousingBenefitsAccount { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? NiNo { get; set; }
         public string? NhsNumber { get; set; }

@@ -157,7 +157,7 @@ namespace SingleViewApi
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
 
-                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"));
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"), Environment.GetEnvironmentVariable("JIGSAW_HOMELESSNESS_API"), Environment.GetEnvironmentVariable("JIGSAW_ACCOMMODATION_API"));
 
             });
 
@@ -167,8 +167,14 @@ namespace SingleViewApi
                 var getPersonApiByIdUseCase = s.GetService<IGetPersonApiByIdUseCase>();
                 var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
                 var getCouncilTaxAccountByIdAccountRefUseCase = s.GetService<IGetCouncilTaxAccountByAccountRefUseCase>();
+                var getHousingBenefitsAccountByAccountRefUseCase = s.GetService<IGetHousingBenefitsAccountByAccountRefUseCase>();
 
-                return new GetCustomerByIdUseCase(customerGateway, getPersonApiByIdUseCase, getJigsawCustomerByIdUseCase, getCouncilTaxAccountByIdAccountRefUseCase);
+                return new GetCustomerByIdUseCase(
+                    customerGateway,
+                    getPersonApiByIdUseCase,
+                    getJigsawCustomerByIdUseCase,
+                    getCouncilTaxAccountByIdAccountRefUseCase,
+                    getHousingBenefitsAccountByAccountRefUseCase);
             });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
@@ -233,6 +239,13 @@ namespace SingleViewApi
                 var academyGateway = s.GetService<IAcademyGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
                 return new GetCouncilTaxAccountByIdUseCase(academyGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<IGetHousingBenefitsAccountByAccountRefUseCase, IGetHousingBenefitsAccountByAccountRefUseCase>(s =>
+            {
+                var academyGateway = s.GetService<IAcademyGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
+                return new GetHousingBenefitsAccountByAccountRefUseCase(academyGateway, dataSourceGateway);
             });
 
             services.AddTransient<INotesGateway, NotesGateway>(s =>
@@ -305,6 +318,13 @@ namespace SingleViewApi
                 var academyGateway = s.GetService<IAcademyGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
                 return new GetHousingBenefitsAccountsByCustomerNameUseCase(academyGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<IGetJigsawCasesByCustomerIdUseCase, GetJigsawCasesByCustomerIdUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCasesByCustomerIdUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
