@@ -79,7 +79,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
                     DclgClassificationType = placement.DclgClassificationType,
                     FullAddressDetails = placement.FullAddressDetails,
                     PlacementDuty = placement.PlacementDuty,
-                    PLacementDutyFullName = placement.PlacementDutyFullName,
+                    PlacementDutyFullName = placement.PlacementDutyFullName,
                     PlacementType = placement.PlacementType,
                     Usage = placement.Usage
                 };
