@@ -41,14 +41,9 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             return null;
         }
 
-        Console.WriteLine("----- DEBUG ---- CASES ARE {0}", JSON.stringify(cases));
-
         var customerAccommodationPlacements = new List<JigsawCasePlacementInformationResponseObject>();
 
         var currentCase = cases.Cases.First(x => x.IsCurrent);
-
-        Console.WriteLine("----- DEBUG ---- CURRENT CASE IS {0}", JSON.stringify(currentCase));
-
 
         var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
         var customerAccommodationPlacementList =
