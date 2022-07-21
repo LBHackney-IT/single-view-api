@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -34,9 +35,14 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
         var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, jigsawAuthResponse.Token);
 
+        Console.WriteLine("----- DEBUG ---- CASES ARE {0}", JSON.stringify(cases));
+
         var customerAccommodationPlacements = new List<JigsawCasePlacementInformationResponseObject>();
 
         var currentCase = cases.Cases.First(x => x.IsCurrent);
+
+        Console.WriteLine("----- DEBUG ---- CURRENT CASE IS {0}", JSON.stringify(currentCase));
+
 
         var customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
         var customerAccommodationPlacementList =
