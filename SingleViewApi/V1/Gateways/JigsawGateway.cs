@@ -20,11 +20,15 @@ namespace SingleViewApi.V1.Gateways
 
         private readonly string _authUrl;
         private readonly string _customerBaseUrl;
+        private readonly string _homelessnessBaseUrl;
+        private readonly string _accommodationBaseUrl;
         private readonly HttpClient _httpClient;
-        public JigsawGateway(HttpClient httpClient, string authUrl, string customerBaseUrl)
+        public JigsawGateway(HttpClient httpClient, string authUrl, string customerBaseUrl, string homelessnessBaseUrl, string accommodationBaseUrl)
         {
             _authUrl = authUrl;
             _customerBaseUrl = customerBaseUrl;
+            _homelessnessBaseUrl = homelessnessBaseUrl;
+            _accommodationBaseUrl = accommodationBaseUrl;
             _httpClient = httpClient;
         }
 
@@ -167,6 +171,77 @@ namespace SingleViewApi.V1.Gateways
             }
 
             return notes;
+        }
+
+        public async Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken)
+        {
+            var requestUrl = $"{_homelessnessBaseUrl}/casecheck/{id}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCasesResponseObject? cases = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+                cases = JsonConvert.DeserializeObject<JigsawCasesResponseObject>(jsonBody);
+            }
+            return cases;
+        }
+
+        public async Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken)
+        {
+            var requestUrl = $"{_homelessnessBaseUrl}/caseoverview/{caseId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCaseOverviewResponseObject? caseOverview = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                caseOverview = JsonConvert.DeserializeObject<JigsawCaseOverviewResponseObject>(jsonBody);
+
+            }
+            return caseOverview;
+
+        }
+
+        public async Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken)
+        {
+            var requestUrl = $"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCasePlacementInformationResponseObject? placementInfo = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                placementInfo = JsonConvert.DeserializeObject<JigsawCasePlacementInformationResponseObject>(jsonBody);
+
+            }
+            return placementInfo;
         }
 
 

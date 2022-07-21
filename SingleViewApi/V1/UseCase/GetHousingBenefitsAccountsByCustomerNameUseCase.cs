@@ -28,7 +28,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
         var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { academyApiId } };
         var accounts = await _academyGateway.GetHousingBenefitsAccountsByCustomerName(firstName, lastName, userToken);
 
-        if (accounts == null || accounts.Customers.Count == 0)
+        if (accounts?.Customers == null || accounts.Customers.Count == 0)
         {
             academyApiId.Error = SystemId.NotFoundMessage;
             return response;
