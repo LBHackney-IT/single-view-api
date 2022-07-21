@@ -350,7 +350,7 @@ public class JigsawGatewayTests
         var bearerToken = _fixture.Create<string>();
         var mockCasePlacementInfo = _fixture.Create<JigsawCasePlacementInformationResponseObject>();
 
-        _mockHttp.Expect($"{_accommodationBaseUrl}/CaseAccommodationPlacements?caseId={caseId}")
+        _mockHttp.Expect($"{_accommodationBaseUrl}/CaseAccommodationPlacement?caseId={caseId}")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", mockCasePlacementInfo.ToJson());
 
