@@ -32,7 +32,7 @@ public class AccommodationPlacementInfo
     public string PlacementType { get; set; }
     public FullAddressDetails FullAddressDetails { get; set; }
     public string PlacementDuty { get; set; }
-    public string PLacementDutyFullName { get; set; }
+    public string PlacementDutyFullName { get; set; }
     public string Usage { get; set; }
     public string DclgClassificationType { get; set; }
 
