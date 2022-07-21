@@ -183,15 +183,19 @@ namespace SingleViewApi.V1.Gateways
 
             var response = await _httpClient.SendAsync(request);
 
+            Console.WriteLine("---- DEBUG ---- Response from Jigsaw Gateway is {0}", JSON.stringify(response));
+
 #nullable enable
             JigsawCasesResponseObject? cases = null;
 #nullable disable
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
+                Console.WriteLine("---- DEBUG ---- Response is ok");
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
                 cases = JsonConvert.DeserializeObject<JigsawCasesResponseObject>(jsonBody);
             }
+            Console.WriteLine("---- DEBUG ---- Cases from Jigsaw Gateway is {0}", JSON.stringify(cases));
             return cases;
         }
 
