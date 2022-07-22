@@ -88,7 +88,7 @@ namespace SingleViewApi.V1.UseCase
         {
             var allSystemIds = new List<SystemId>();
             var allKnownAddresses = new List<KnownAddress>();
-            var allContactDetails = new List<CutomerContactDetails>();
+            var allContactDetails = new List<CustomerContactDetails>();
             var allPersonType = new List<string>();
             var mergedCustomer = new MergedCustomer()
             {
@@ -112,7 +112,7 @@ namespace SingleViewApi.V1.UseCase
                     }
                     if (r.Customer.ContactDetails != null)
                     {
-                        allContactDetails.Add(new CutomerContactDetails()
+                        allContactDetails.Add(new CustomerContactDetails()
                         {
                             ContactDetails = r.Customer.ContactDetails,
                             DataSourceName = r.Customer.DataSource.Name
