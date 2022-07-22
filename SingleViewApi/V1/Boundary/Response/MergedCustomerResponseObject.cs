@@ -15,10 +15,10 @@ namespace SingleViewApi.V1.Boundary.Response
 
     }
 
-    public class CutomerContactDetails
+    public class CustomerContactDetails
     {
         public string DataSourceName { get; set; }
-        public ContactDetails ContactDetails { get; set; }
+        public List<ContactDetails> ContactDetails { get; set; }
     }
 
     public class MergedCustomer
@@ -33,7 +33,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public string Surname { get; set; }
         public string PlaceOfBirth { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
-        public List<CutomerContactDetails> ContactDetails { get; set; }
+        public List<CustomerContactDetails> ContactDetails { get; set; }
 
         public List<String> PersonTypes { get; set; }
 #nullable enable

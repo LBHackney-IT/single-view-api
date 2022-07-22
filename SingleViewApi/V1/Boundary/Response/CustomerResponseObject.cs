@@ -50,7 +50,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public DateTime? DateOfDeath { get; set; }
 
-        public ContactDetails? ContactDetails { get; set; }
+        public List<ContactDetails>? ContactDetails { get; set; }
 
         public EqualityInformationResponseObject? EqualityInformation { get; set; }
 
