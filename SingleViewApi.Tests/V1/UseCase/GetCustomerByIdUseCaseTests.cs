@@ -90,7 +90,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = _fixture.Create<ContactDetails>();
+            var fakeContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
@@ -130,7 +130,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeJigsawContactDetails = _fixture.Create<ContactDetails>();
+            var fakeJigsawContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeJigsawKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeJigsawCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
@@ -293,7 +293,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = _fixture.Create<ContactDetails>();
+            var fakeContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
