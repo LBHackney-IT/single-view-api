@@ -92,6 +92,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var fakeContactDetails = _fixture.Create<ContactDetails>();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
+            var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
             var peronsApiCustomer = new Customer()
             {
@@ -112,7 +113,8 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,
-                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() }
+                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() },
+                CautionaryAlerts = fakeCautionaryAlerts
             };
 
             _mockGetPersonApiByIdUseCase.Setup(x => x.Execute(mockPersonApi, userToken)).ReturnsAsync(new CustomerResponseObject()
@@ -130,6 +132,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var fakeJigsawContactDetails = _fixture.Create<ContactDetails>();
             var fakeJigsawKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
+            var fakeJigsawCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
             var jigsawApiCustomer = new Customer()
             {
@@ -150,7 +153,8 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PlaceOfBirth = null,
                 PreferredFirstName = null,
                 PreferredMiddleName = null,
-                PersonTypes = null
+                PersonTypes = null,
+                CautionaryAlerts = fakeCautionaryAlerts
             };
 
             _mockGetJigsawCustomerByIdUseCase.Setup(x => x.Execute(mockJigsawId, redisId, userToken)).ReturnsAsync(new CustomerResponseObject()
@@ -256,6 +260,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.PersonTypes.Should().BeEquivalentTo(peronsApiCustomer.PersonTypes);
             result.Customer.CouncilTaxAccount.Should().BeEquivalentTo(mockCouncilTaxAccount);
             result.Customer.HousingBenefitsAccount.Should().BeEquivalentTo(mockHousingBenefitsAccount);
+            result.Customer.CautionaryAlerts.Should().Equals(fakeCautionaryAlerts.Count + fakeJigsawCautionaryAlerts.Count);
         }
 
         [Test]
@@ -290,6 +295,7 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             var fakeContactDetails = _fixture.Create<ContactDetails>();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
+            var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
             var peronsApiCustomer = new Customer()
             {
@@ -310,7 +316,8 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,
-                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() }
+                PersonTypes = new List<string> { Hackney.Shared.Person.Domain.PersonType.Tenant.ToDescription() },
+                CautionaryAlerts = fakeCautionaryAlerts
             };
 
             _mockGetPersonApiByIdUseCase.Setup(x => x.Execute(mockPersonApi, userToken)).ReturnsAsync(new CustomerResponseObject()
@@ -351,6 +358,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.PreferredFirstName.Should().BeEquivalentTo(peronsApiCustomer.PreferredFirstName);
             result.Customer.PreferredMiddleName.Should().BeEquivalentTo(null);
             result.Customer.PersonTypes.Should().BeEquivalentTo(peronsApiCustomer.PersonTypes);
+            result.Customer.CautionaryAlerts.Should().Equals(fakeCautionaryAlerts);
 
             _mockGetJigsawCustomerByIdUseCase.Verify(x => x.Execute(mockJigsawId, redisId, userToken), Times.Never);
 
