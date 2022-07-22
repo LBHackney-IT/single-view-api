@@ -90,7 +90,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = _fixture.Create<ContactDetails>();
+            var fakeContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
 
             var peronsApiCustomer = new Customer()
@@ -99,7 +99,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                // ContactDetails = fakeContactDetails,
+                ContactDetails = fakeContactDetails,
                 DataSource = new DataSource() { Id = 1, Name = mockPersonApiName },
                 DateOfBirth = _fixture.Create<DateTime>(),
                 DateOfDeath = null,
@@ -128,7 +128,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeJigsawContactDetails = _fixture.Create<ContactDetails>();
+            var fakeJigsawContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeJigsawKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
 
             var jigsawApiCustomer = new Customer()
@@ -137,7 +137,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = null,
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                // ContactDetails = fakeJigsawContactDetails,
+                ContactDetails = fakeJigsawContactDetails,
                 DataSource = new DataSource() { Id = 2, Name = mockJigsawName },
                 DateOfBirth = null,
                 DateOfDeath = null,
@@ -172,7 +172,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = null,
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                // ContactDetails = fakeContactDetails,
+                ContactDetails = fakeContactDetails,
                 DataSource = new DataSource() { Id = 3, Name = mockCouncilTaxName },
                 DateOfBirth = null,
                 DateOfDeath = null,
@@ -288,7 +288,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = _fixture.Create<ContactDetails>();
+            var fakeContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
 
             var peronsApiCustomer = new Customer()
@@ -297,7 +297,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                // ContactDetails = fakeContactDetails,
+                ContactDetails = fakeContactDetails,
                 DataSource = new DataSource() { Id = 1, Name = mockPersonApiName },
                 DateOfBirth = _fixture.Create<DateTime>(),
                 DateOfDeath = null,
