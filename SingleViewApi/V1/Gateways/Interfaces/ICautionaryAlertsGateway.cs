@@ -6,5 +6,5 @@ namespace SingleViewApi.V1.Gateways;
 
 public interface ICautionaryAlertsGateway
 {
-    public Task<List<CautionaryAlert>> GetCautionaryAlertsById(string id, string userToken);
+    public Task<CautionaryAlertResponseObject> GetCautionaryAlertsById(string id, string userToken);
 }

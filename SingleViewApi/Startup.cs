@@ -157,7 +157,7 @@ namespace SingleViewApi
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient("JigsawClient");
 
-                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"));
+                return new JigsawGateway(httpClient, Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"), Environment.GetEnvironmentVariable("JIGSAW_CUSTOMER_API"), Environment.GetEnvironmentVariable("JIGSAW_HOMELESSNESS_API"), Environment.GetEnvironmentVariable("JIGSAW_ACCOMMODATION_API"));
 
             });
 
@@ -334,6 +334,13 @@ namespace SingleViewApi
                 var academyGateway = s.GetService<IAcademyGateway>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
                 return new GetHousingBenefitsAccountsByCustomerNameUseCase(academyGateway, dataSourceGateway);
+            });
+
+            services.AddTransient<IGetJigsawCasesByCustomerIdUseCase, GetJigsawCasesByCustomerIdUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                var jigsawAuthUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                return new GetJigsawCasesByCustomerIdUseCase(jigsawGateway, jigsawAuthUseCase);
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
