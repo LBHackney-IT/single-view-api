@@ -14,5 +14,11 @@ namespace SingleViewApi.V1.Gateways.Interfaces
         Task<JigsawCustomerResponseObject> GetCustomerById(string customerId, string bearerToken);
 
         Task<List<JigsawNotesResponseObject>> GetCustomerNotesByCustomerId(string id, string bearerToken);
+
+        Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken);
+
+        Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken);
+
+        Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken);
     }
 }

@@ -41,6 +41,8 @@ functions:
       NOTES_API_V2: ${ssm:/single-view/${self:provider.stage}/notes-v2}
       EQUALITY_INFORMATION_API_V1: ${ssm:/single-view/${self:provider.stage}/equality-v1}
       JIGSAW_CUSTOMER_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-customer} #this replaced with prototype API in dev and staging
+      JIGSAW_HOMELESSNESS_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-homelessness}
+      JIGSAW_ACCOMMODATION_API: ${ssm:/single-view/${self:provider.stage}/jigsaw-accommodation}
       RSA_PRIVATE_KEY: ${ssm:/single-view/${self:provider.stage}/RSA_PRIVATE_KEY}
       ACADEMY_API_V1: ${ssm:/single-view/${self:provider.stage}/academy-v1}
       CAUTIONARY_ALERTS_API: ${ssm:/single-view/${self:provider.stage}/cautionary-alerts-v1}
