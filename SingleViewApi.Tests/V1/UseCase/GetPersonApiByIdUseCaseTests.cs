@@ -51,7 +51,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var stubbedDataSource = _fixture.Create<DataSource>();
             var stubbedContactDetails = _fixture.Create<ContactDetails>();
             var stubbedEqualityInfo = _fixture.Create<EqualityInformationResponseObject>();
-            var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
+            var stubbedCautionaryAlerts = _fixture.Create<CautionaryAlertResponseObject>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
             _mockContactDetailsGateway.Setup(x => x.GetContactDetailsById(id, userToken)).ReturnsAsync(stubbedContactDetails);
             _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(stubbedDataSource);
@@ -84,7 +84,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
             result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
             result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
-            //result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts);
+            result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts.Alerts);
         }
 
         [Test]

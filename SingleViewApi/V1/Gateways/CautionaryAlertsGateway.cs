@@ -18,7 +18,7 @@ public class CautionaryAlertsGateway : ICautionaryAlertsGateway
         _baseUrl = baseUrl;
     }
 
-    public async Task<List<CautionaryAlert>> GetCautionaryAlertsById(string id, string userToken)
+    public async Task<CautionaryAlertResponseObject> GetCautionaryAlertsById(string id, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/cautionary-alerts/persons/{id}");
         request.Headers.Add("Authorization", userToken);
@@ -26,13 +26,13 @@ public class CautionaryAlertsGateway : ICautionaryAlertsGateway
         var response = await _httpClient.SendAsync(request);
 
 #nullable enable
-        List<CautionaryAlert>? cautionaryAlerts = null;
+        CautionaryAlertResponseObject? cautionaryAlerts = null;
 #nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var jsonBody = response.Content.ReadAsStringAsync().Result;
-            cautionaryAlerts = JsonConvert.DeserializeObject<List<CautionaryAlert>>(jsonBody);
+            cautionaryAlerts = JsonConvert.DeserializeObject<CautionaryAlertResponseObject>(jsonBody);
         }
 
         return cautionaryAlerts;
