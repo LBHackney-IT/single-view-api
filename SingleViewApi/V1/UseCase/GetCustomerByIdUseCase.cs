@@ -90,6 +90,7 @@ namespace SingleViewApi.V1.UseCase
             var allKnownAddresses = new List<KnownAddress>();
             var allContactDetails = new List<CutomerContactDetails>();
             var allPersonType = new List<string>();
+            var allCautionaryAlerts = new List<CautionaryAlert>();
             var mergedCustomer = new MergedCustomer()
             {
                 Id = customer.Id.ToString(),
@@ -123,6 +124,11 @@ namespace SingleViewApi.V1.UseCase
                         allPersonType.AddRange(r.Customer.PersonTypes);
                     }
 
+                    if (r.Customer.CautionaryAlerts != null)
+                    {
+                        allCautionaryAlerts.AddRange(r.Customer.CautionaryAlerts);
+                    }
+
                     mergedCustomer.Title ??= r.Customer.Title;
                     mergedCustomer.PreferredTitle ??= r.Customer.PreferredTitle;
                     mergedCustomer.PreferredFirstName ??= r.Customer.PreferredFirstName;
@@ -140,6 +146,7 @@ namespace SingleViewApi.V1.UseCase
             mergedCustomer.KnownAddresses = allKnownAddresses;
             mergedCustomer.ContactDetails = allContactDetails;
             mergedCustomer.PersonTypes = allPersonType;
+            mergedCustomer.CautionaryAlerts = allCautionaryAlerts;
 
             return new MergedCustomerResponseObject()
             {
