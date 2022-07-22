@@ -14,3 +14,9 @@ public class CautionaryAlert
     public string Reason { get; set; }
 }
 
+public class CautionaryAlertResponseObject
+{
+    public string PersonId { get; set; }
+    public List<CautionaryAlert> Alerts { get; set; }
+}
+

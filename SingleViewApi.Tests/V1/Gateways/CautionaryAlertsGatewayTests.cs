@@ -23,7 +23,7 @@ public class CautionaryAlertsGatewayTests
     {
         _mockHttp = new MockHttpMessageHandler();
         var mockHttpClient = _mockHttp.ToHttpClient();
-        const string baseUrl = "https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1";
+        const string baseUrl = "https://cautionary-alerts.api";
 
         _classUnderTest = new CautionaryAlertsGateway(mockHttpClient, baseUrl);
     }
@@ -36,7 +36,7 @@ public class CautionaryAlertsGatewayTests
         const string userToken = "User token";
 
         // Act
-        _classUnderTest.GetCautionaryAlertsById(id, userToken);
+        _ = _classUnderTest.GetCautionaryAlertsById(id, userToken).Result;
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
@@ -48,25 +48,25 @@ public class CautionaryAlertsGatewayTests
         // Arrange
         const string id = "0123";
         const string userToken = "User token";
-        var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
+        var stubbedCautionaryAlerts = _fixture.Create<CautionaryAlertResponseObject>();
 
-        _mockHttp.Expect($"https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1/cautionary-alerts/persons/{id}")
+        _mockHttp.Expect($"https://cautionary-alerts.api/cautionary-alerts/persons/{id}")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json",
-                JsonSerializer.Serialize<List<CautionaryAlert>>(stubbedCautionaryAlerts));
+                JsonSerializer.Serialize<CautionaryAlertResponseObject>(stubbedCautionaryAlerts));
 
         // Act
         var cautionaryAlerts = await _classUnderTest.GetCautionaryAlertsById(id, userToken);
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
-        Assert.AreEqual(stubbedCautionaryAlerts[0].DateModified, cautionaryAlerts[0].DateModified);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].ModifiedBy, cautionaryAlerts[0].ModifiedBy);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].StartDate, cautionaryAlerts[0].StartDate);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].EndDate, cautionaryAlerts[0].EndDate);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].AlertCode, cautionaryAlerts[0].AlertCode);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].Description, cautionaryAlerts[0].Description);
-        Assert.AreEqual(stubbedCautionaryAlerts[0].Reason, cautionaryAlerts[0].Reason);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].DateModified, cautionaryAlerts.Alerts[0].DateModified);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].ModifiedBy, cautionaryAlerts.Alerts[0].ModifiedBy);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].StartDate, cautionaryAlerts.Alerts[0].StartDate);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].EndDate, cautionaryAlerts.Alerts[0].EndDate);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].AlertCode, cautionaryAlerts.Alerts[0].AlertCode);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].Description, cautionaryAlerts.Alerts[0].Description);
+        Assert.AreEqual(stubbedCautionaryAlerts.Alerts[0].Reason, cautionaryAlerts.Alerts[0].Reason);
     }
 
     [Test]
@@ -77,7 +77,7 @@ public class CautionaryAlertsGatewayTests
         const string userToken = "User token";
         var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
 
-        _mockHttp.Expect($"https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1/cautionary-alerts/persons/{id}")
+        _mockHttp.Expect($"https://cautionary-alerts.api/cautionary-alerts/persons/{id}")
             .WithHeaders("Authorization", userToken)
             .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
 
@@ -96,7 +96,7 @@ public class CautionaryAlertsGatewayTests
         const string userToken = "User token";
         var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
 
-        _mockHttp.Expect($"https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1/cautionary-alerts/persons/{id}")
+        _mockHttp.Expect($"https://cautionary-alerts.api/cautionary-alerts/persons/{id}")
             .WithHeaders("Authorization", userToken)
             .Respond(HttpStatusCode.NotFound, x => new StringContent(id));
 
