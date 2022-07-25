@@ -144,7 +144,7 @@ namespace SingleViewApi.V1.UseCase
             }
 
             mergedCustomer.KnownAddresses = allKnownAddresses;
-            mergedCustomer.ContactDetails = allContactDetails;
+            mergedCustomer.AllContactDetails = allContactDetails;
             mergedCustomer.PersonTypes = allPersonType;
             mergedCustomer.CautionaryAlerts = allCautionaryAlerts;
 

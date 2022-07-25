@@ -245,7 +245,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.Title.Should().BeEquivalentTo(peronsApiCustomer.Title);
             result.Customer.FirstName.Should().BeEquivalentTo(mockFirstName);
             result.Customer.Surname.Should().BeEquivalentTo(mockLastName);
-            result.Customer.ContactDetails.Count.Should().Equals(2);
+            result.Customer.AllContactDetails.Count.Should().Equals(2);
             result.Customer.DateOfBirth.Should().Equals(peronsApiCustomer.DateOfBirth);
             result.Customer.DateOfDeath.Should().Equals(null);
             result.Customer.IsAMinor.Should().Equals(peronsApiCustomer.IsAMinor);
@@ -345,7 +345,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.Title.Should().BeEquivalentTo(peronsApiCustomer.Title);
             result.Customer.FirstName.Should().BeEquivalentTo(mockFirstName);
             result.Customer.Surname.Should().BeEquivalentTo(mockLastName);
-            result.Customer.ContactDetails.Count.Should().Equals(2);
+            result.Customer.AllContactDetails.Count.Should().Equals(2);
             result.Customer.DateOfBirth.Should().Equals(peronsApiCustomer.DateOfBirth);
             result.Customer.DateOfDeath.Should().Equals(null);
             result.Customer.IsAMinor.Should().Equals(peronsApiCustomer.IsAMinor);
