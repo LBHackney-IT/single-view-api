@@ -30,119 +30,121 @@ public class JigsawCaseOverviewResponseObject
     [JsonProperty("assignedTo")]
     public string? AssignedTo { get; set; }
 
-#nullable disable
-
     [JsonProperty("notesCount")]
-    public int NotesCount { get; set; }
+    public int? NotesCount { get; set; }
 
     [JsonProperty("meetingsCount")]
-    public int MeetingsCount { get; set; }
+    public int? MeetingsCount { get; set; }
 
     [JsonProperty("actionsCount")]
-    public int ActionsCount { get; set; }
+    public int? ActionsCount { get; set; }
 
     [JsonProperty("actionsCompletedCount")]
-    public int ActionsCompletedCount { get; set; }
+    public int? ActionsCompletedCount { get; set; }
 
     [JsonProperty("phpActionsCustomerCount")]
-    public int PhpActionsCustomerCount { get; set; }
+    public int? PhpActionsCustomerCount { get; set; }
 
     [JsonProperty("phpActionsLACount")]
-    public int PhpActionsLaCount { get; set; }
+    public int? PhpActionsLaCount { get; set; }
 
     [JsonProperty("phpActionsThirdPartyCount")]
-    public int PhpActionsThirdPartyCount { get; set; }
+    public int? PhpActionsThirdPartyCount { get; set; }
 
     [JsonProperty("phpActionsCompleteLACount")]
-    public int PhpActionsCompleteLaCount { get; set; }
+    public int? PhpActionsCompleteLaCount { get; set; }
 
     [JsonProperty("phpActionsCompleteCustomerCount")]
-    public int PhpActionsCompleteCustomerCount { get; set; }
+    public int? PhpActionsCompleteCustomerCount { get; set; }
 
     [JsonProperty("phpActionsCompleteThirdPartyCount")]
-    public int PhpActionsCompleteThirdPartyCount { get; set; }
+    public int? PhpActionsCompleteThirdPartyCount { get; set; }
 
     [JsonProperty("requiredDocumentsCount")]
-    public int RequiredDocumentsCount { get; set; }
+    public int? RequiredDocumentsCount { get; set; }
 
     [JsonProperty("requiredDocumentsSuppliedCount")]
-    public int RequiredDocumentsSuppliedCount { get; set; }
+    public int? RequiredDocumentsSuppliedCount { get; set; }
 
     [JsonProperty("documentsUploadedCount")]
-    public int DocumentsUploadedCount { get; set; }
+    public int? DocumentsUploadedCount { get; set; }
 
     [JsonProperty("officerIdAssignedTo")]
-    public int OfficerIdAssignedTo { get; set; }
+    public int? OfficerIdAssignedTo { get; set; }
 
     [JsonProperty("currentFlowchartPosition")]
-    public string CurrentFlowchartPosition { get; set; }
+    public string? CurrentFlowchartPosition { get; set; }
 
     [JsonProperty("currentDecision")]
-    public string CurrentDecision { get; set; }
+    public string? CurrentDecision { get; set; }
 
     [JsonProperty("hasBeenInApproach")]
-    public bool HasBeenInApproach { get; set; }
+    public bool? HasBeenInApproach { get; set; }
 
     [JsonProperty("hasBeenInApplicationTriggered")]
-    public bool HasBeenInApplicationTriggered { get; set; }
+    public bool? HasBeenInApplicationTriggered { get; set; }
 
     [JsonProperty("hasBeenInPrevention")]
-    public bool HasBeenInPrevention { get; set; }
+    public bool? HasBeenInPrevention { get; set; }
 
     [JsonProperty("hasBeenInRelief")]
-    public bool HasBeenInRelief { get; set; }
+    public bool? HasBeenInRelief { get; set; }
 
     [JsonProperty("hasBeenInReliefPendingOutcome")]
-    public bool HasBeenInReliefPendingOutcome { get; set; }
+    public bool? HasBeenInReliefPendingOutcome { get; set; }
 
     [JsonProperty("hasBeenInMainDutyDecisionPending")]
-    public bool HasBeenInMainDutyDecisionPending { get; set; }
+    public bool? HasBeenInMainDutyDecisionPending { get; set; }
 
     [JsonProperty("hasBeenInMainDutyNotOwed")]
-    public bool HasBeenInMainDutyNotOwed { get; set; }
+    public bool? HasBeenInMainDutyNotOwed { get; set; }
 
     [JsonProperty("hasBeenInMainDutyAccepted")]
-    public bool HasBeenInMainDutyAccepted { get; set; }
+    public bool? HasBeenInMainDutyAccepted { get; set; }
 
     [JsonProperty("hasBeenClosed")]
-    public bool HasBeenClosed { get; set; }
+    public bool? HasBeenClosed { get; set; }
 
     [JsonProperty("daysRemaining")]
-    public int DaysRemaining { get; set; }
+    public int? DaysRemaining { get; set; }
 
     [JsonProperty("householdComposition")]
-    public string HouseholdComposition { get; set; }
+    public string? HouseholdComposition { get; set; }
 
     [JsonProperty("localAuthorityId")]
-    public int LocalAuthorityId { get; set; }
+    public int? LocalAuthorityId { get; set; }
 
     [JsonProperty("caseReviews")]
-    public List<object> CaseReviews { get; set; }
+    public List<dynamic>? CaseReviews { get; set; }
 
     [JsonProperty("hideDeleteButton")]
-    public bool HideDeleteButton { get; set; }
+    public bool? HideDeleteButton { get; set; }
 
     [JsonProperty("isV2LegacyCase")]
-    public bool IsV2LegacyCase { get; set; }
+    public bool? IsV2LegacyCase { get; set; }
 
     [JsonProperty("isLegacyCase")]
-    public bool IsLegacyCase { get; set; }
+    public bool? IsLegacyCase { get; set; }
 
     [JsonProperty("isLegacyDeleted")]
-    public bool IsLegacyDeleted { get; set; }
+    public bool? IsLegacyDeleted { get; set; }
 
 
     [JsonProperty("whenAppliedOrApproached")]
-    public DateTime WhenAppliedOrApproached { get; set; }
+    public DateTime? WhenAppliedOrApproached { get; set; }
 
     [JsonProperty("appliedOrApproachedMaxDate")]
-    public DateTime AppliedOrApproachedMaxDate { get; set; }
+    public DateTime? AppliedOrApproachedMaxDate { get; set; }
 
     [JsonProperty("sensitiveNotesCount")]
-    public int SensitiveNotesCount { get; set; }
+    public int? SensitiveNotesCount { get; set; }
 
     [JsonProperty("pinnedNotesCount")]
-    public int PinnedNotesCount { get; set; }
+    public int? PinnedNotesCount { get; set; }
+
+#nullable disable
+
+
 }
 
 public class JigsawPersonInfo
