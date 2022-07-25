@@ -33,7 +33,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public string Surname { get; set; }
         public string PlaceOfBirth { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
-        public List<CustomerContactDetails> ContactDetails { get; set; }
+        public List<CustomerContactDetails> AllContactDetails { get; set; }
 
         public List<String> PersonTypes { get; set; }
 #nullable enable
