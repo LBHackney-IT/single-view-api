@@ -130,6 +130,17 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             .ToList();
     }
 
+    [LogCall]
+    public List<List<SearchResult>> GroupByFirstName(List<SearchResult> searchResults)
+    {
+        var result =  searchResults
+                                    .GroupBy(x => x.FirstName)
+                                    .Select(g => g.ToList())
+                                    .ToList();
+
+        return result;
+    }
+
     private string Normalise(string value, int len = 0)
     {
         value = value.Replace(" ", "");
