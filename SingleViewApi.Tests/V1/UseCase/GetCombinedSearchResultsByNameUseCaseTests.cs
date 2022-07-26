@@ -48,6 +48,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var dateOfBirth = _fixture.Create<string>();
         var searchTerm = $"{firstName}+{lastName}";
         var redisId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
@@ -129,7 +130,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
             });
 
 
-        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId, dateOfBirth).Result;
 
         results.SystemIds.Should().BeEquivalentTo(expectedSystemIds);
 
@@ -140,6 +141,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var dateOfBirth = _fixture.Create<string>();
         var redisId = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
         var jigsawResults = _fixture.Create<SearchResponse>();
@@ -236,7 +238,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
                 x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingBenefitsResponseObject);
 
-        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, redisId, dateOfBirth).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
     }
@@ -246,6 +248,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
     {
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
+        var dateOfBirth = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
         var housingResults = _fixture.Create<SearchResponse>();
         var singleViewResults = _fixture.Create<SearchResponse>();
@@ -326,7 +329,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
                 x.Execute(firstName, lastName, userToken))
             .ReturnsAsync(housingBenefitsResponseObject);
 
-        var results = _classUnderTest.Execute(firstName, lastName, userToken, null).Result;
+        var results = _classUnderTest.Execute(firstName, lastName, userToken, null, dateOfBirth).Result;
 
         results.Should().BeEquivalentTo(expectedSearchResults);
     }
@@ -453,7 +456,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
             }
         };
 
-        var result = _classUnderTest.GroupByRelevance("Adam", "Smith", searchResults);
+        var result = _classUnderTest.GroupByRelevance("Adam", "Smith", "01/05/1990", searchResults);
 
         Assert.AreEqual(result[0].FirstName, "Adam");
         Assert.AreEqual(result[0].SurName, "Smith");
@@ -495,5 +498,86 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
         // Assert
         result.Count.Should().Be(1);
         result[0].Id.Should().Be("111");
+    }
+
+    [Test]
+    public void FilterSearchResultsWithDateOfBirthWhenGiven()
+    {
+        // Arrange
+        var searchResults = new List<SearchResult>()
+        {
+            new SearchResult()
+            {
+                FirstName = "Bryan",
+                SurName = "Jones",
+                DateOfBirth = new DateTime(1990, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Adam",
+                SurName = "Smith",
+                DateOfBirth = new DateTime(1989, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Tony",
+                SurName = "Brown",
+                DateOfBirth = new DateTime(1988, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Adam",
+                SurName = "Smith",
+                MiddleName = "John",
+                DateOfBirth = new DateTime(1989, 5, 1)
+            },
+        };
+
+        // Act
+        var result = _classUnderTest.GroupByRelevance("Adam", "Smith", "01/05/1989", searchResults);
+
+        // Assert
+        result.Count.Should().Be(2);
+        result[0].DateOfBirth.Should().Be(new DateTime(1989, 5, 1));
+    }
+
+    [Test]
+    public void FilterSearchResultsWithOnlyNameWhenDateOfBirthNotGiven()
+    {
+        // Arrange
+        var searchResults = new List<SearchResult>()
+        {
+            new SearchResult()
+            {
+                FirstName = "Bryan",
+                SurName = "Jones",
+                DateOfBirth = new DateTime(1990, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Adam",
+                SurName = "Smith",
+                DateOfBirth = new DateTime(1989, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Tony",
+                SurName = "Brown",
+                DateOfBirth = new DateTime(1988, 5, 1)
+            },
+            new SearchResult()
+            {
+                FirstName = "Adam",
+                SurName = "Smith",
+                MiddleName = "John",
+                DateOfBirth = new DateTime(1989, 5, 1)
+            }
+        };
+
+        // Act
+        var result = _classUnderTest.GroupByRelevance("Tony", "Brown","", searchResults);
+
+        // Assert
+        result.Count.Should().Be(1);
     }
 }
