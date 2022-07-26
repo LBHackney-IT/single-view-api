@@ -112,7 +112,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Testy",
                 LastName = "McTestFace",
-                DateOfBirth = DateTime.Parse("18/08/1996").ToUniversalTime(),
+                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
                 NiNumber = "SG01010101B"
             }.ToDatabase()).Entity;
 
@@ -145,7 +145,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Testy",
                 LastName = "McTestFace",
-                DateOfBirth = DateTime.Parse("18/08/1996").ToUniversalTime(),
+                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
                 NiNumber = "SG01010101B"
             }.ToDatabase()).Entity;
 
