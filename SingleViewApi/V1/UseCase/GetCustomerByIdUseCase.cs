@@ -113,11 +113,20 @@ namespace SingleViewApi.V1.UseCase
                     }
                     if (r.Customer.ContactDetails != null)
                     {
-                        allContactDetails.Add(new CustomerContactDetails()
+                        foreach (var contactDetail in r.Customer.ContactDetails)
                         {
-                            ContactDetails = r.Customer.ContactDetails,
-                            DataSourceName = r.Customer.DataSource.Name
-                        });
+                            allContactDetails.Add(new CustomerContactDetails()
+                            {
+                                DataSourceName = r.Customer.DataSource.Name,
+                                IsActive = contactDetail.IsActive,
+                                SourceServiceArea = contactDetail.SourceServiceArea?.Area,
+                                ContactType = contactDetail.ContactInformation?.ContactType.ToString(),
+                                SubType = contactDetail.ContactInformation?.SubType.ToString(),
+                                Value = contactDetail.ContactInformation.Value,
+                                Description = contactDetail.ContactInformation.Description,
+                                AddressExtended = contactDetail.ContactInformation.AddressExtended
+                            });
+                        }
                     }
                     if (r.Customer.PersonTypes != null)
                     {
