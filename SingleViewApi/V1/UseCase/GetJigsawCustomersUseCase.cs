@@ -82,7 +82,7 @@ namespace SingleViewApi.V1.UseCase
 
             response.SearchResponse = new SearchResponse()
             {
-                SearchResults = personResults,
+                UngroupedResults = personResults,
                 Total = personResults.Count
             };
 

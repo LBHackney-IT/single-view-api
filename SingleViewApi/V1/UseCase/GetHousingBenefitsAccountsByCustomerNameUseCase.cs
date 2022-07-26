@@ -62,7 +62,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
         }
         response.SearchResponse = new SearchResponse()
         {
-            SearchResults = searchResults,
+            UngroupedResults = searchResults,
             Total = searchResults.Count
         };
         return response;

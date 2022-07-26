@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
@@ -14,7 +15,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 namespace SingleViewApi.Tests.V1.UseCase;
 
 [TestFixture]
-public class GetCombinedSearchResultsByNameUseCaseTests
+public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
 {
     private GetCombinedSearchResultsByNameUseCase _classUnderTest;
 
@@ -70,7 +71,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 SearchResponse = new SearchResponse()
                 {
-                    SearchResults = null,
+                    UngroupedResults = null,
                     Total = 0,
                 },
                 SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedHousingSearchDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
@@ -83,7 +84,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 SearchResponse = new SearchResponse()
                 {
-                    SearchResults = null,
+                    UngroupedResults = null,
                     Total = 0,
                 },
                 SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedSingleViewDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
@@ -96,7 +97,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 SearchResponse = new SearchResponse()
                 {
-                    SearchResults = null,
+                    UngroupedResults = null,
                     Total = 0,
                 },
                 SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedJigsawDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
@@ -109,7 +110,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 SearchResponse = new SearchResponse()
                 {
-                    SearchResults = null,
+                    UngroupedResults = null,
                     Total = 0,
                 },
                 SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedAcademyDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
@@ -121,7 +122,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests
             {
                 SearchResponse = new SearchResponse()
                 {
-                    SearchResults = null,
+                    UngroupedResults = null,
                     Total = 0,
                 },
                 SystemIds = new List<SystemId>(new[] { new SystemId() { SystemName = stubbedAcademyDataSource.Name, Id = searchTerm, Error = SystemId.NotFoundMessage } })
@@ -199,10 +200,11 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         {
             SearchResponse = new SearchResponse()
             {
-                SearchResults =
-                    housingResults.SearchResults
-                        .Concat(jigsawResults.SearchResults.Concat(singleViewResults.SearchResults.Concat(councilTaxResults.SearchResults.Concat(housingBenefitsResults.SearchResults)))).ToList(),
-                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total + councilTaxResults.Total + housingBenefitsResults.Total
+                UngroupedResults =
+                    housingResults.UngroupedResults
+                        .Concat(jigsawResults.UngroupedResults.Concat(singleViewResults.UngroupedResults.Concat(councilTaxResults.UngroupedResults.Concat(housingBenefitsResults.UngroupedResults)))).ToList(),
+                Total = housingResults.Total + jigsawResults.Total + singleViewResults.Total + councilTaxResults.Total + housingBenefitsResults.Total,
+                GroupedResults = new List<SearchResult>()
             },
             SystemIds = new List<SystemId>()
             {
@@ -294,9 +296,10 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         {
             SearchResponse = new SearchResponse()
             {
-                SearchResults = housingResults.SearchResults.Concat(singleViewResults.SearchResults
-                    .Concat(councilTaxResults.SearchResults.Concat(housingBenefitsResults.SearchResults))).ToList(),
-                Total = housingResults.Total + singleViewResults.Total + councilTaxResults.Total + housingBenefitsResults.Total
+                UngroupedResults = housingResults.UngroupedResults.Concat(singleViewResults.UngroupedResults
+                    .Concat(councilTaxResults.UngroupedResults.Concat(housingBenefitsResults.UngroupedResults))).ToList(),
+                Total = housingResults.Total + singleViewResults.Total + councilTaxResults.Total + housingBenefitsResults.Total,
+                GroupedResults = new List<SearchResult>()
             },
             SystemIds = new List<SystemId>()
             {
@@ -429,26 +432,68 @@ public class GetCombinedSearchResultsByNameUseCaseTests
     }
 
     [Test]
-    public void GroupByFirstName()
+    public void GroupByName()
     {
         var searchResults = new List<SearchResult>()
         {
             new SearchResult()
             {
-                FirstName = "Bryan"
+                FirstName = "Bryan",
+                SurName = "Jones"
             },
             new SearchResult()
             {
-                FirstName = "Adam"
+                FirstName = "Adam",
+                SurName = "Smith"
             },
             new SearchResult()
             {
-                FirstName = "Tony"
+                FirstName = "Tony",
+                SurName = "Brown"
             }
         };
 
-        var result = _classUnderTest.GroupByFirstName(searchResults);
+        var result = _classUnderTest.GroupByRelevance("Adam", "Smith", searchResults);
 
-        result[2][0].FirstName.Should().Be("Bryan");
+        Assert.AreEqual(result[0].FirstName, "Adam");
+        Assert.AreEqual(result[0].SurName, "Smith");
+        result.Count.Should().Be(1);
+    }
+
+    [Test]
+    public void RemoveDuplicateItemsFromSearchResults()
+    {
+        // Arrange
+        var searchResults = new List<SearchResult>()
+        {
+            new SearchResult()
+            {
+                Id = "111",
+                FirstName = "Adam",
+            },
+            new SearchResult()
+            {
+                Id = "222",
+                FirstName = "James",
+            },
+            new SearchResult()
+            {
+                Id = "333",
+                FirstName = "Alan",
+            }
+        };
+
+        var groupedResults = new List<SearchResult>()
+        {
+            new SearchResult() {Id = "222", FirstName = "James",},
+            new SearchResult() {Id = "333", FirstName = "Alan",}
+        };
+
+        // Act
+        var result = _classUnderTest.RemoveDuplicates(groupedResults, searchResults);
+
+        // Assert
+        result.Count.Should().Be(1);
+        result[0].Id.Should().Be("111");
     }
 }
