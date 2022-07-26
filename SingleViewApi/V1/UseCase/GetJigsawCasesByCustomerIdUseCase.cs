@@ -88,16 +88,53 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             }
         }
 
+        var healthAndWellBeingInfo =
+            await _jigsawGateway.GetCaseHealthAndWellBeing(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+
+        var additionalFactorsInfo =
+            await _jigsawGateway.GetCaseAdditionalFactors(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+
         var newCaseResponseObject = new CasesResponseObject()
         {
             CurrentCase = currentCase,
             CaseOverview = newCaseOverview,
-            PlacementInformation = placementsList
+            PlacementInformation = placementsList,
+            HealthAndWellBeing = ProcessAdditionalInfo(healthAndWellBeingInfo),
+            AdditionalFactors = ProcessAdditionalInfo(additionalFactorsInfo)
         };
 
         return newCaseResponseObject;
-
     }
 
+    private List<AdditionalInfo> ProcessAdditionalInfo(JigsawCaseAdditionalFactorsResponseObject additionalInformation)
+    {
+        if (additionalInformation?.QuestionGroups == null)
+        {
+            return null;
+        }
 
+        var processedInformation = new List<AdditionalInfo>();
+
+        foreach (var questionGroup in additionalInformation.QuestionGroups)
+        {
+            var information = new List<Information>();
+
+            foreach (var question in questionGroup.Questions)
+            {
+                information.Add(new Information()
+                {
+                    Question = question.Label,
+                    Answer = question.GetAnswer(question.SelectedValue)
+                });
+            }
+
+            processedInformation.Add(new AdditionalInfo()
+            {
+                Info = information,
+                Legend = questionGroup.Legend
+            });
+        }
+
+        return processedInformation;
+    }
 }
