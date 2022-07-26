@@ -575,7 +575,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
         };
 
         // Act
-        var result = _classUnderTest.GroupByRelevance("Tony", "Brown","", searchResults);
+        var result = _classUnderTest.GroupByRelevance("Tony", "Brown", "", searchResults);
 
         // Assert
         result.Count.Should().Be(1);
