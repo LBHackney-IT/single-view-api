@@ -18,9 +18,14 @@ namespace SingleViewApi.V1.Boundary.Response
     public class CustomerContactDetails
     {
         public string DataSourceName { get; set; }
-        public List<ContactDetails> ContactDetails { get; set; }
+        public bool IsActive { get; set; }
+        public string SourceServiceArea { get; set; }
+        public string ContactType { get; set; }
+        public string SubType { get; set; }
+        public string Value { get; set; }
+        public string Description { get; set; }
+        public AddressExtended AddressExtended { get; set; }
     }
-
     public class MergedCustomer
     {
         public string Id { get; set; }
