@@ -20,5 +20,10 @@ namespace SingleViewApi.V1.Gateways.Interfaces
         Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken);
 
         Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken);
+
+        Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseAdditionalFactors(string caseId, string bearerToken);
+
+        Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseHealthAndWellBeing(string caseId, string bearerToken);
+
     }
 }
