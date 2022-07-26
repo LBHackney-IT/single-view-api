@@ -71,7 +71,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
         response.SearchResponse = new SearchResponse()
         {
-            SearchResults = searchResults,
+            UngroupedResults = searchResults,
             Total = searchResults.Count
         };
 
