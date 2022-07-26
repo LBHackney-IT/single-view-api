@@ -504,32 +504,34 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
     public void FilterSearchResultsWithDateOfBirthWhenGiven()
     {
         // Arrange
+        System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-GB");
+
         var searchResults = new List<SearchResult>()
         {
             new SearchResult()
             {
                 FirstName = "Bryan",
                 SurName = "Jones",
-                DateOfBirth = new DateTime(1990, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1990", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Adam",
                 SurName = "Smith",
-                DateOfBirth = new DateTime(1989, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1989", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Tony",
                 SurName = "Brown",
-                DateOfBirth = new DateTime(1988, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1988", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Adam",
                 SurName = "Smith",
                 MiddleName = "John",
-                DateOfBirth = new DateTime(1989, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1989", cultureinfo)
             },
         };
 
@@ -545,32 +547,34 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
     public void FilterSearchResultsWithOnlyNameWhenDateOfBirthNotGiven()
     {
         // Arrange
+        System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-GB");
+
         var searchResults = new List<SearchResult>()
         {
             new SearchResult()
             {
                 FirstName = "Bryan",
                 SurName = "Jones",
-                DateOfBirth = new DateTime(1990, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1990", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Adam",
                 SurName = "Smith",
-                DateOfBirth = new DateTime(1989, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1989", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Tony",
                 SurName = "Brown",
-                DateOfBirth = new DateTime(1988, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1988", cultureinfo)
             },
             new SearchResult()
             {
                 FirstName = "Adam",
                 SurName = "Smith",
                 MiddleName = "John",
-                DateOfBirth = new DateTime(1989, 5, 1)
+                DateOfBirth = DateTime.Parse("01/05/1989", cultureinfo)
             }
         };
 
