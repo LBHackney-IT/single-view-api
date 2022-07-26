@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SingleViewApi.V1.Boundary.Response;
@@ -27,9 +28,9 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(SearchResponseObject), StatusCodes.Status200OK)]
 
         [HttpGet]
-        public IActionResult SearchByName([FromQuery] string firstName, string lastName, string redisId, [FromHeader] string authorization)
+        public IActionResult SearchByName([FromQuery] string firstName, string lastName, [Optional] string dateOfBirth, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId).Result);
+            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId, dateOfBirth).Result);
         }
     }
 }

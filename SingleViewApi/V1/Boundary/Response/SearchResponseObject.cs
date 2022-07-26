@@ -21,8 +21,8 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResponse
 
     {
-        public List<SearchResult> UngroupedResults { get; set; }
         public List<SearchResult> GroupedResults { get; set; }
+        public List<SearchResult> UngroupedResults { get; set; }
         public int Total { get; set; }
     }
 

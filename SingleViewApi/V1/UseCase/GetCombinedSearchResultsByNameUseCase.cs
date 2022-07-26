@@ -29,7 +29,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId)
+    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId, string dateOfBirth)
     {
         var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
@@ -77,7 +77,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds)
             .Concat(councilTaxResults?.SystemIds).Concat(housingBenefitsResults?.SystemIds).ToList();
 
-        var groupedResults = GroupByRelevance(firstName, lastName, sortedResults);
+        var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
 
         var ungroupedResults = RemoveDuplicates(groupedResults, sortedResults);
 
@@ -136,9 +136,16 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public List<SearchResult> GroupByRelevance(string firstName, string lastName, List<SearchResult> searchResults)
+    public List<SearchResult> GroupByRelevance(string firstName, string lastName, string dateOfBirth, List<SearchResult> searchResults)
     {
-        return searchResults.Where(s => s.FirstName == firstName && s.SurName == lastName).ToList();
+        var groupedByName = searchResults.Where(s => s.FirstName == firstName && s.SurName == lastName).ToList();
+
+        if (!string.IsNullOrEmpty(dateOfBirth))
+        {
+            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd/MM/yyyy") == dateOfBirth).ToList();
+        }
+
+        return groupedByName;
     }
 
     [LogCall]
