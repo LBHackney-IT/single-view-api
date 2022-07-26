@@ -427,4 +427,28 @@ public class GetCombinedSearchResultsByNameUseCaseTests
         Assert.AreNotEqual(results[2].DataSource, results[0].DataSource);
         Assert.AreNotEqual(results[2].DataSource, results[1].DataSource);
     }
+
+    [Test]
+    public void GroupByFirstName()
+    {
+        var searchResults = new List<SearchResult>()
+        {
+            new SearchResult()
+            {
+                FirstName = "Bryan"
+            },
+            new SearchResult()
+            {
+                FirstName = "Adam"
+            },
+            new SearchResult()
+            {
+                FirstName = "Tony"
+            }
+        };
+
+        var result = _classUnderTest.GroupByFirstName(searchResults);
+
+        result[2][0].FirstName.Should().Be("Bryan");
+    }
 }
