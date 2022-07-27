@@ -49,7 +49,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var userToken = _fixture.Create<string>();
             var stubbedPerson = _fixture.Create<Person>();
             var stubbedDataSource = _fixture.Create<DataSource>();
-            var stubbedContactDetails = _fixture.CreateMany<ContactDetails>().ToList();
+            var stubbedContactDetails = new List<ContactDetails>() {_fixture.Create<ContactDetails>()};
             var stubbedEqualityInfo = _fixture.Create<EqualityInformationResponseObject>();
             var stubbedCautionaryAlerts = _fixture.Create<CautionaryAlertResponseObject>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
@@ -83,7 +83,13 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
             result.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
-            result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
+            result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.AddressExtended);
+            result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.ContactType.ToString());
+            result.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+            result.Customer.AllContactDetails[0].Description.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.Description);
+            result.Customer.AllContactDetails[0].IsActive.Should().Be(stubbedContactDetails[0].IsActive);
+            result.Customer.AllContactDetails[0].SourceServiceArea.Should().BeEquivalentTo(stubbedContactDetails[0].SourceServiceArea.Area);
+            result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.SubType.ToString());
             //result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
             result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts.Alerts);
         }
