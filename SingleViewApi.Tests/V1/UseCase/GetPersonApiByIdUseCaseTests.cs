@@ -90,6 +90,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.AllContactDetails[0].IsActive.Should().Be(stubbedContactDetails[0].IsActive);
             result.Customer.AllContactDetails[0].SourceServiceArea.Should().BeEquivalentTo(stubbedContactDetails[0].SourceServiceArea.Area);
             result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.SubType.ToString());
+            result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.Value.ToString());
             //result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
             result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts.Alerts);
         }

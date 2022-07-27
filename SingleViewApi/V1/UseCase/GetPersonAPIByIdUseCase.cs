@@ -95,7 +95,8 @@ namespace SingleViewApi.V1.UseCase
                         Description = c.ContactInformation.Description,
                         IsActive = c.IsActive,
                         SourceServiceArea = c.SourceServiceArea.Area,
-                        SubType = c.ContactInformation.SubType.ToString()
+                        SubType = c.ContactInformation.SubType.ToString(),
+                        Value = c.ContactInformation.Value,
                     }),
                     EqualityInformation = equalityInformation,
                     CautionaryAlerts = cautionaryAlerts.Alerts,
