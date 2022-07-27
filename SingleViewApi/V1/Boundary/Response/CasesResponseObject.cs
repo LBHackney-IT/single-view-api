@@ -8,11 +8,13 @@ public class CasesResponseObject
 {
 #nullable enable
     public Case? CurrentCase { get; set; }
+    public List<AdditionalInfo>? AdditionalFactors { get; set; }
+
+    public List<AdditionalInfo>? HealthAndWellBeing { get; set; }
 #nullable disable
     public List<AccommodationPlacementInfo> PlacementInformation { get; set; }
 
     public CaseOverview CaseOverview { get; set; }
-
 }
 
 
@@ -38,3 +40,14 @@ public class AccommodationPlacementInfo
 
 }
 
+public class AdditionalInfo
+{
+    public string Legend { get; set; }
+    public List<Information> Info { get; set; }
+}
+
+public class Information
+{
+    public string Question { get; set; }
+    public string Answer { get; set; }
+}
