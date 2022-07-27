@@ -361,4 +361,46 @@ public class JigsawGatewayTests
         Assert.AreEqual(mockCasePlacementInfo.Placements[0].Usage, casePlacementInfo.Placements[0].Usage);
     }
 
+
+    [Test]
+    public async Task DataFromGetCaseAdditionalFactorsByCaseIdApiIsReturned()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
+
+        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", mockData.ToJson());
+
+        var result = await _classUnderTest.GetCaseAdditionalFactors(caseId, bearerToken);
+
+        Assert.AreEqual(mockData.Title, result.Title);
+        Assert.AreEqual(mockData.Header, result.Header);
+        Assert.AreEqual(mockData.Footer, result.Footer);
+        Assert.AreEqual(mockData.FormTitle, result.FormTitle);
+        Assert.AreEqual(mockData.IsBuddyForm, result.IsBuddyForm);
+        Assert.AreEqual(mockData.MapCode, result.MapCode);
+    }
+
+    [Test]
+    public async Task DataFromCaseHealthAndWellBeingByCaseIdApiIsReturned()
+    {
+        var caseId = _fixture.Create<string>();
+        var bearerToken = _fixture.Create<string>();
+        var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
+
+        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+            .WithHeaders("Authorization", $"Bearer {bearerToken}")
+            .Respond("application/json", mockData.ToJson());
+
+        var result = await _classUnderTest.GetCaseAdditionalFactors(caseId, bearerToken);
+
+        Assert.AreEqual(mockData.Title, result.Title);
+        Assert.AreEqual(mockData.Header, result.Header);
+        Assert.AreEqual(mockData.Footer, result.Footer);
+        Assert.AreEqual(mockData.FormTitle, result.FormTitle);
+        Assert.AreEqual(mockData.IsBuddyForm, result.IsBuddyForm);
+        Assert.AreEqual(mockData.MapCode, result.MapCode);
+    }
 }
