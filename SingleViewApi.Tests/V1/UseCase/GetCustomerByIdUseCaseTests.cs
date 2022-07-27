@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Hackney.Shared.ContactDetail.Domain;
-using Hackney.Shared.Person;
-using Hackney.Shared.Person.Domain;
 using Microsoft.OpenApi.Extensions;
 using Moq;
 using NUnit.Framework;
@@ -92,7 +88,10 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = new List<ContactDetails>() { _fixture.Create<ContactDetails>() };
+            var fakeContactDetails = new List<CustomerContactDetails>()
+            {
+                _fixture.Create<CustomerContactDetails>()
+            };
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
@@ -102,7 +101,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                ContactDetails = fakeContactDetails,
+                AllContactDetails = fakeContactDetails,
                 DataSource = new DataSource() { Id = 1, Name = mockPersonApiName },
                 DateOfDeath = null,
                 IsAMinor = false,
@@ -131,7 +130,10 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeJigsawContactDetails = new List<ContactDetails>() { _fixture.Create<ContactDetails>() };
+            var fakeJigsawContactDetails = new List<CustomerContactDetails>()
+            {
+                _fixture.Create<CustomerContactDetails>()
+            };
             var fakeJigsawKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeJigsawCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
@@ -141,7 +143,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = null,
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                ContactDetails = fakeJigsawContactDetails,
+                AllContactDetails = fakeJigsawContactDetails,
                 DataSource = new DataSource() { Id = 2, Name = mockJigsawName },
                 DateOfBirth = null,
                 DateOfDeath = null,
@@ -246,23 +248,23 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.Surname.Should().BeEquivalentTo(mockLastName);
             result.Customer.AllContactDetails.Count.Should().Be(2);
 
-            result.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(mockJigsawName);
+            result.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(fakeJigsawContactDetails[0].DataSourceName);
             result.Customer.AllContactDetails[0].IsActive.Should().Be(fakeJigsawContactDetails[0].IsActive);
-            result.Customer.AllContactDetails[0].SourceServiceArea.Should().BeEquivalentTo(fakeJigsawContactDetails[0].SourceServiceArea.Area);
-            result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactInformation.ContactType.ToString());
-            result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactInformation.SubType.ToString());
-            result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactInformation.Value);
-            result.Customer.AllContactDetails[0].Description.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactInformation.Description);
-            result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactInformation.AddressExtended);
+            result.Customer.AllContactDetails[0].SourceServiceArea.Should().BeEquivalentTo(fakeJigsawContactDetails[0].SourceServiceArea);
+            result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(fakeJigsawContactDetails[0].ContactType);
+            result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(fakeJigsawContactDetails[0].SubType);
+            result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(fakeJigsawContactDetails[0].Value);
+            result.Customer.AllContactDetails[0].Description.Should().BeEquivalentTo(fakeJigsawContactDetails[0].Description);
+            result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(fakeJigsawContactDetails[0].AddressExtended);
 
-            result.Customer.AllContactDetails[1].DataSourceName.Should().BeEquivalentTo(mockPersonApiName);
+            result.Customer.AllContactDetails[1].DataSourceName.Should().BeEquivalentTo(fakeContactDetails[0].DataSourceName);
             result.Customer.AllContactDetails[1].IsActive.Should().Be(fakeContactDetails[0].IsActive);
-            result.Customer.AllContactDetails[1].SourceServiceArea.Should().BeEquivalentTo(fakeContactDetails[0].SourceServiceArea.Area);
-            result.Customer.AllContactDetails[1].ContactType.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.ContactType.ToString());
-            result.Customer.AllContactDetails[1].SubType.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.SubType.ToString());
-            result.Customer.AllContactDetails[1].Value.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.Value);
-            result.Customer.AllContactDetails[1].Description.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.Description);
-            result.Customer.AllContactDetails[1].AddressExtended.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.AddressExtended);
+            result.Customer.AllContactDetails[1].SourceServiceArea.Should().BeEquivalentTo(fakeContactDetails[0].SourceServiceArea);
+            result.Customer.AllContactDetails[1].ContactType.Should().BeEquivalentTo(fakeContactDetails[0].ContactType);
+            result.Customer.AllContactDetails[1].SubType.Should().BeEquivalentTo(fakeContactDetails[0].SubType);
+            result.Customer.AllContactDetails[1].Value.Should().BeEquivalentTo(fakeContactDetails[0].Value);
+            result.Customer.AllContactDetails[1].Description.Should().BeEquivalentTo(fakeContactDetails[0].Description);
+            result.Customer.AllContactDetails[1].AddressExtended.Should().BeEquivalentTo(fakeContactDetails[0].AddressExtended);
 
 
             result.Customer.DateOfBirth.Should().Be(mockDateOfBirth);
@@ -314,13 +316,11 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            var fakeContactDetails = new List<ContactDetails>(){new ContactDetails()
+            var fakeContactDetails = new List<CustomerContactDetails>()
             {
-                ContactInformation = new ContactInformation()
-                {
-                    Value = "something not useful"
-                }
-            }};
+                _fixture.Create<CustomerContactDetails>()
+            };
+
             var fakeKnownAddresses = _fixture.CreateMany<KnownAddress>().ToList();
             var fakeCautionaryAlerts = _fixture.CreateMany<CautionaryAlert>().ToList();
 
@@ -330,7 +330,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Title = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 FirstName = mockFirstName,
                 Surname = mockLastName,
-                ContactDetails = fakeContactDetails,
+                AllContactDetails = fakeContactDetails,
                 DataSource = new DataSource() { Id = 1, Name = mockPersonApiName },
                 DateOfDeath = null,
                 IsAMinor = false,
@@ -373,13 +373,13 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.Surname.Should().BeEquivalentTo(mockLastName);
 
             result.Customer.AllContactDetails.Count.Should().Be(1);
-            result.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(mockPersonApiName);
+            result.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(fakeContactDetails[0].DataSourceName);
             result.Customer.AllContactDetails[0].IsActive.Should().Be(fakeContactDetails[0].IsActive);
-            result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.ContactType.ToString());
-            result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.SubType.ToString());
-            result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.Value);
-            result.Customer.AllContactDetails[0].Description.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.Description);
-            result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(fakeContactDetails[0].ContactInformation.AddressExtended);
+            result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(fakeContactDetails[0].ContactType);
+            result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(fakeContactDetails[0].SubType);
+            result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(fakeContactDetails[0].Value);
+            result.Customer.AllContactDetails[0].Description.Should().BeEquivalentTo(fakeContactDetails[0].Description);
+            result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(fakeContactDetails[0].AddressExtended);
 
             result.Customer.DateOfBirth.Should().Be(mockDateOfBirth);
             result.Customer.DateOfDeath.Should().Be(null);
