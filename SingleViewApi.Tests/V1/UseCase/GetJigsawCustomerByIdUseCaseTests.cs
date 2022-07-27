@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
@@ -52,7 +51,24 @@ public class GetJigsawCustomerByIdUseCaseTest
         var redisId = _fixture.Create<string>();
         var jigsawToken = _fixture.Create<string>();
         const string hackneyToken = "test-token";
+        const string stubbedCorrespondenceAddress = "123 Some St, E8 3YD";
+        const string stubbedEmailAddress = "some@example.com";
+        const string stubbedHomePhoneNumber = "020 123 1234";
+        const string stubbedMobilePhoneNumber = "070 123 1234";
+        const string stubbedWorkPhoneNumber = "070 321 4321";
+
         var stubbedEntity = _fixture.Create<JigsawCustomerResponseObject>();
+
+        stubbedEntity.PersonInfo.OkToContactOnEmail = true;
+        stubbedEntity.PersonInfo.EmailAddress = stubbedEmailAddress;
+        stubbedEntity.PersonInfo.OkToContactOnHomePhoneNumber = true;
+        stubbedEntity.PersonInfo.HomePhoneNumber = stubbedHomePhoneNumber;
+        stubbedEntity.PersonInfo.OkToContactOnMobilePhoneNumber = true;
+        stubbedEntity.PersonInfo.MobilePhoneNumber = stubbedMobilePhoneNumber;
+        stubbedEntity.PersonInfo.OkToContactOnWorkPhoneNumber = true;
+        stubbedEntity.PersonInfo.WorkPhoneNumber = stubbedWorkPhoneNumber;
+        stubbedEntity.PersonInfo.CorrespondenceAddressString = stubbedCorrespondenceAddress;
+
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCustomerId = _fixture.Create<string>();
 
@@ -74,5 +90,24 @@ public class GetJigsawCustomerByIdUseCaseTest
         results.Customer.KnownAddresses[0].FullAddress.Should().BeEquivalentTo(stubbedEntity.PersonInfo.AddressString);
         results.Customer.KnownAddresses[0].CurrentAddress.Should().Be(true);
         results.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+
+        results.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo("Email");
+        results.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(stubbedEmailAddress);
+
+        results.Customer.AllContactDetails[1].ContactType.Should().BeEquivalentTo("Phone");
+        results.Customer.AllContactDetails[1].SubType.Should().BeEquivalentTo("Home");
+        results.Customer.AllContactDetails[1].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.Customer.AllContactDetails[1].Value.Should().BeEquivalentTo(stubbedHomePhoneNumber);
+
+        results.Customer.AllContactDetails[2].ContactType.Should().BeEquivalentTo("Phone");
+        results.Customer.AllContactDetails[2].SubType.Should().BeEquivalentTo("Mobile");
+        results.Customer.AllContactDetails[2].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.Customer.AllContactDetails[2].Value.Should().BeEquivalentTo(stubbedMobilePhoneNumber);
+
+        results.Customer.AllContactDetails[3].ContactType.Should().BeEquivalentTo("Phone");
+        results.Customer.AllContactDetails[3].SubType.Should().BeEquivalentTo("Work Phone");
+        results.Customer.AllContactDetails[3].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.Customer.AllContactDetails[3].Value.Should().BeEquivalentTo(stubbedWorkPhoneNumber);
     }
 }

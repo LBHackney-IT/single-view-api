@@ -111,22 +111,9 @@ namespace SingleViewApi.V1.UseCase
                     {
                         allKnownAddresses.AddRange(r.Customer.KnownAddresses);
                     }
-                    if (r.Customer.ContactDetails != null)
+                    if (r.Customer.AllContactDetails != null)
                     {
-                        foreach (var contactDetail in r.Customer.ContactDetails)
-                        {
-                            allContactDetails.Add(new CustomerContactDetails()
-                            {
-                                DataSourceName = r.Customer.DataSource.Name,
-                                IsActive = contactDetail.IsActive,
-                                SourceServiceArea = contactDetail.SourceServiceArea?.Area,
-                                ContactType = contactDetail.ContactInformation?.ContactType.ToString(),
-                                SubType = contactDetail.ContactInformation?.SubType.ToString(),
-                                Value = contactDetail.ContactInformation.Value,
-                                Description = contactDetail.ContactInformation.Description,
-                                AddressExtended = contactDetail.ContactInformation.AddressExtended
-                            });
-                        }
+                        allContactDetails.AddRange(r.Customer.AllContactDetails);
                     }
                     if (r.Customer.PersonTypes != null)
                     {
