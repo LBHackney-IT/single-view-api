@@ -87,7 +87,16 @@ namespace SingleViewApi.V1.UseCase
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
                     PersonTypes = personTypes,
-                    ContactDetails = contactDetails,
+                    AllContactDetails = contactDetails.Map(c => new CustomerContactDetails()
+                    {
+                        AddressExtended = c.ContactInformation.AddressExtended,
+                        ContactType = c.ContactInformation.ContactType.ToString(),
+                        DataSourceName = dataSource.Name,
+                        Description = c.ContactInformation.Description,
+                        IsActive = c.IsActive,
+                        SourceServiceArea = c.SourceServiceArea.Area,
+                        SubType = c.ContactInformation.SubType.ToString()
+                    }),
                     EqualityInformation = equalityInformation,
                     CautionaryAlerts = cautionaryAlerts.Alerts,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
