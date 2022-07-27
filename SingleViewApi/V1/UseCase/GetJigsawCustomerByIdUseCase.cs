@@ -74,10 +74,67 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                         CurrentAddress = true,
                         DataSourceName = dataSource.Name
                     }
-                }
+                },
+                AllContactDetails = GetContacts(jigsawResponse, dataSource.Name)
             };
         }
         return response;
+    }
+
+    private List<CustomerContactDetails> GetContacts(JigsawCustomerResponseObject jigsawResponse, string dataSourceName)
+    {
+        var res = new List<CustomerContactDetails>();
+        if (jigsawResponse.PersonInfo.OkToContactOnEmail && !jigsawResponse.PersonInfo.EmailAddress.IsNullOrEmpty())
+        {
+            res.Add(new CustomerContactDetails()
+            {
+                ContactType = "Email",
+                DataSourceName = dataSourceName,
+                Value = jigsawResponse.PersonInfo.EmailAddress
+            });
+        }
+        if (jigsawResponse.PersonInfo.OkToContactOnHomePhoneNumber && !jigsawResponse.PersonInfo.HomePhoneNumber.IsNullOrEmpty())
+        {
+            res.Add(new CustomerContactDetails()
+            {
+                ContactType = "Phone",
+                SubType = "Home",
+                DataSourceName = dataSourceName,
+                Value = jigsawResponse.PersonInfo.HomePhoneNumber
+            });
+        }
+        if (jigsawResponse.PersonInfo.OkToContactOnMobilePhoneNumber && !jigsawResponse.PersonInfo.MobilePhoneNumber.IsNullOrEmpty())
+        {
+            res.Add(new CustomerContactDetails()
+            {
+                ContactType = "Phone",
+                SubType = "Mobile",
+                DataSourceName = dataSourceName,
+                Value = jigsawResponse.PersonInfo.MobilePhoneNumber
+            });
+        }
+        if (jigsawResponse.PersonInfo.OkToContactOnWorkPhoneNumber && !jigsawResponse.PersonInfo.WorkPhoneNumber.IsNullOrEmpty())
+        {
+            res.Add(new CustomerContactDetails()
+            {
+                ContactType = "Phone",
+                SubType = "Work Phone",
+                DataSourceName = dataSourceName,
+                Value = jigsawResponse.PersonInfo.WorkPhoneNumber
+            });
+        }
+        if (jigsawResponse.PersonInfo.CorrespondenceAddressString.IsNullOrEmpty())
+        {
+            res.Add(new CustomerContactDetails()
+            {
+                ContactType = "Address",
+                SubType = "Correspondence Address",
+                DataSourceName = dataSourceName,
+                Value = jigsawResponse.PersonInfo.CorrespondenceAddressString
+            });
+        }
+
+        return res.Count == 0 ? null : res;
     }
 
     public static Guid ToGuid(int value)

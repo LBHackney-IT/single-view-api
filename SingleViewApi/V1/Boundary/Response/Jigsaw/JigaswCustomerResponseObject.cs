@@ -66,12 +66,12 @@ public class PersonInfo
     public bool IsSettled { get; set; }
     public object AccommodationProvider { get; set; }
     public object CorrespondenceAddress { get; set; }
-    public object CorrespondenceAddressString { get; set; }
-    public object HomePhoneNumber { get; set; }
+    public string CorrespondenceAddressString { get; set; }
+    public string HomePhoneNumber { get; set; }
     public bool OkToContactOnHomePhoneNumber { get; set; }
     public string MobilePhoneNumber { get; set; }
     public bool OkToContactOnMobilePhoneNumber { get; set; }
-    public object WorkPhoneNumber { get; set; }
+    public string WorkPhoneNumber { get; set; }
     public bool OkToContactOnWorkPhoneNumber { get; set; }
     public string EmailAddress { get; set; }
     public bool OkToContactOnEmail { get; set; }
