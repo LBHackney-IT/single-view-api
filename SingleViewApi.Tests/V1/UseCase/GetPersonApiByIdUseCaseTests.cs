@@ -49,7 +49,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var userToken = _fixture.Create<string>();
             var stubbedPerson = _fixture.Create<Person>();
             var stubbedDataSource = _fixture.Create<DataSource>();
-            var stubbedContactDetails = new List<ContactDetails>() {_fixture.Create<ContactDetails>()};
+            var stubbedContactDetails = new List<ContactDetails>() { _fixture.Create<ContactDetails>() };
             var stubbedEqualityInfo = _fixture.Create<EqualityInformationResponseObject>();
             var stubbedCautionaryAlerts = _fixture.Create<CautionaryAlertResponseObject>();
             _mockPersonGateway.Setup(x => x.GetPersonById(id, userToken)).ReturnsAsync(stubbedPerson);
