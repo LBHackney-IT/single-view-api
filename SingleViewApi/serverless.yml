@@ -140,7 +140,6 @@ custom:
       - functionErrors
       - functionThrottles
       - functionInvocations
-      - functionDuration
   vpc:
     development:
       securityGroupIds:
