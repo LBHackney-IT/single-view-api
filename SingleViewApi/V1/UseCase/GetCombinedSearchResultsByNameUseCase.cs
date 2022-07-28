@@ -142,7 +142,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
 
         if (!string.IsNullOrEmpty(dateOfBirth))
         {
-            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd/MM/yyyy") == dateOfBirth).ToList();
+            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd-MM-yyyy") == dateOfBirth).ToList();
         }
 
         return groupedByName;
