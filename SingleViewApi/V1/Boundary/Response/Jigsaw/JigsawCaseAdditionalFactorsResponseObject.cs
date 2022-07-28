@@ -35,7 +35,7 @@ public class Question
 {
     [JsonProperty("selectedValue")]
     public string SelectedValue { get; set; }
-    [JsonProperty("option")]
+    [JsonProperty("options")]
     public List<Option> Options { get; set; }
     [JsonProperty("triggerQuestions")]
     public List<object> TriggerQuestions { get; set; }
