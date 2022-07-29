@@ -25,13 +25,14 @@ namespace SingleViewApi.Tests.V1.Controllers
         {
             const string firstName = "Test";
             const string lastName = "Test";
+            const string dateOfBirth = "01/01/1990";
             const string authorization = "token";
             const string redisId = "Testid";
 
 
-            _ = _classUnderTest.SearchByName(firstName, lastName, redisId, authorization);
+            _ = _classUnderTest.SearchByName(firstName, lastName, dateOfBirth, redisId, authorization);
 
-            _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, authorization, redisId), Times.Once);
+            _mockGetCombinedSearchResultsByNameUseCase.Verify(x => x.Execute(firstName, lastName, authorization, redisId, dateOfBirth), Times.Once);
         }
     }
 }

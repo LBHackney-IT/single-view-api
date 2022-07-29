@@ -76,17 +76,17 @@ namespace SingleViewApi.Tests.V1.UseCase
             results.SystemIds[^1].Id.Should().BeEquivalentTo(searchText);
 
             results.SearchResponse.Total.Should().Be(stubbedEntity.Total);
-            results.SearchResponse.SearchResults[0].FirstName.Should()
+            results.SearchResponse.UngroupedResults[0].FirstName.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].FirstName);
-            results.SearchResponse.SearchResults[0].SurName.Should()
+            results.SearchResponse.UngroupedResults[0].SurName.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Surname);
-            results.SearchResponse.SearchResults[0].PersonTypes[0].Should()
+            results.SearchResponse.UngroupedResults[0].PersonTypes[0].Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].PersonTypes.ToList()[0]);
-            results.SearchResponse.SearchResults[0].DateOfBirth.Should()
+            results.SearchResponse.UngroupedResults[0].DateOfBirth.Should()
                 .Be(stubbedEntity.Results.Persons[0].DateOfBirth);
-            results.SearchResponse.SearchResults[0].KnownAddresses[0].FullAddress.Should()
+            results.SearchResponse.UngroupedResults[0].KnownAddresses[0].FullAddress.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures.ToList()[0].AssetFullAddress);
-            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource.Name);
+            results.SearchResponse.UngroupedResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource.Name);
         }
     }
 }
