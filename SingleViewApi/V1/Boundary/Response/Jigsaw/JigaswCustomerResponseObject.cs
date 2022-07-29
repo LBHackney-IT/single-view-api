@@ -57,12 +57,12 @@ public class PersonInfo
     public DateTime DateOfBirth { get; set; }
     public string NationalInsuranceNumber { get; set; }
     public string NhsNumber { get; set; }
-    public object PregnancyDueDate { get; set; }
+    public string PregnancyDueDate { get; set; }
     public string AddressString { get; set; }
     public Address Address { get; set; }
     public object MoveInDate { get; set; }
-    public object AccommodationTypeId { get; set; }
-    public object HousingCircumstanceId { get; set; }
+    public string AccommodationTypeId { get; set; }
+    public string HousingCircumstanceId { get; set; }
     public bool IsSettled { get; set; }
     public object AccommodationProvider { get; set; }
     public object CorrespondenceAddress { get; set; }
@@ -75,7 +75,7 @@ public class PersonInfo
     public bool OkToContactOnWorkPhoneNumber { get; set; }
     public string EmailAddress { get; set; }
     public bool OkToContactOnEmail { get; set; }
-    public object SupportWorker { get; set; }
+    public string SupportWorker { get; set; }
     public object SupportWorkerId { get; set; }
     public string Gender { get; set; }
     public object HouseholdMemberType { get; set; }
