@@ -59,13 +59,13 @@ namespace SingleViewApi.Tests.V1.UseCase
             results.SystemIds[^1].Id.Should().BeEquivalentTo($"{firstName} {lastName}");
 
             results.SearchResponse.Total.Should().Be(1);
-            results.SearchResponse.SearchResults[0].FirstName.Should()
+            results.SearchResponse.UngroupedResults[0].FirstName.Should()
                 .BeEquivalentTo(stubbedEntity.FirstName);
-            results.SearchResponse.SearchResults[0].SurName.Should()
+            results.SearchResponse.UngroupedResults[0].SurName.Should()
                 .BeEquivalentTo(stubbedEntity.LastName);
-            results.SearchResponse.SearchResults[0].DateOfBirth.Should()
+            results.SearchResponse.UngroupedResults[0].DateOfBirth.Should()
                 .Be(stubbedEntity.DateOfBirth);
-            results.SearchResponse.SearchResults[0].DataSource.Should().BeEquivalentTo("single-view");
+            results.SearchResponse.UngroupedResults[0].DataSource.Should().BeEquivalentTo("single-view");
         }
     }
 }

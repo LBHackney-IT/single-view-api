@@ -29,7 +29,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     }
 
     [LogCall]
-    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId)
+    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId, string dateOfBirth)
     {
         var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
         var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
@@ -48,11 +48,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             var jigsawResults = await _getJigsawCustomersUseCase.Execute(firstName, lastName, redisId, userToken);
 
             concatenatedResults = ConcatenateResults(
-                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
-                housingResults: housingResults?.SearchResponse?.SearchResults,
-                jigsawResults: jigsawResults?.SearchResponse?.SearchResults,
-                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults,
-                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
+                singleViewResults: singleViewResults?.SearchResponse?.UngroupedResults,
+                housingResults: housingResults?.SearchResponse?.UngroupedResults,
+                jigsawResults: jigsawResults?.SearchResponse?.UngroupedResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.UngroupedResults,
+                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.UngroupedResults
                 );
 
             total += jigsawResults?.SearchResponse?.Total ?? 0;
@@ -62,10 +62,10 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         else
         {
             concatenatedResults = ConcatenateResults(
-                singleViewResults: singleViewResults?.SearchResponse?.SearchResults,
-                housingResults: housingResults?.SearchResponse?.SearchResults,
-                councilTaxResults: councilTaxResults?.SearchResponse?.SearchResults,
-                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.SearchResults
+                singleViewResults: singleViewResults?.SearchResponse?.UngroupedResults,
+                housingResults: housingResults?.SearchResponse?.UngroupedResults,
+                councilTaxResults: councilTaxResults?.SearchResponse?.UngroupedResults,
+                housingBenefitsResults: housingBenefitsResults?.SearchResponse?.UngroupedResults
                 );
         }
 
@@ -77,12 +77,17 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds)
             .Concat(councilTaxResults?.SystemIds).Concat(housingBenefitsResults?.SystemIds).ToList();
 
+        var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
+
+        var ungroupedResults = RemoveDuplicates(groupedResults, sortedResults);
+
         var collatedResults = new SearchResponseObject
         {
             SearchResponse = new SearchResponse
             {
-                SearchResults = sortedResults,
-                Total = total
+                UngroupedResults = ungroupedResults,
+                Total = total,
+                GroupedResults = groupedResults
             },
             SystemIds = systemIds.Concat(jigsawIds).ToList()
         };
@@ -128,6 +133,25 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
             .ThenBy(o => !String.Equals(o.FirstName, firstName, StringComparison.CurrentCultureIgnoreCase) &&
                          !String.Equals(Normalise(o.SurName), lastName, StringComparison.CurrentCultureIgnoreCase))
             .ToList();
+    }
+
+    [LogCall]
+    public List<SearchResult> GroupByRelevance(string firstName, string lastName, string dateOfBirth, List<SearchResult> searchResults)
+    {
+        var groupedByName = searchResults.Where(s => s.FirstName == firstName && s.SurName == lastName).ToList();
+
+        if (!string.IsNullOrEmpty(dateOfBirth))
+        {
+            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd-MM-yyyy") == dateOfBirth).ToList();
+        }
+
+        return groupedByName;
+    }
+
+    [LogCall]
+    public List<SearchResult> RemoveDuplicates(List<SearchResult> groupedResults, List<SearchResult> searchResults)
+    {
+        return searchResults.Where(s => groupedResults.All(g => g.Id != s.Id)).ToList();
     }
 
     private string Normalise(string value, int len = 0)

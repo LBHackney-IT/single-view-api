@@ -60,6 +60,6 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
 
         var results = _classUnderTest.Execute(firstName, lastName, userToken).Result;
 
-        results.SearchResponse.SearchResults[^1].Should().Equals(stubEntity);
+        results.SearchResponse.UngroupedResults[^1].Should().Equals(stubEntity);
     }
 }
