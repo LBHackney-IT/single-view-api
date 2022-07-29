@@ -64,6 +64,11 @@ namespace SingleViewApi.Tests.V1.UseCase
             var mockHousingBenefitsName = "AcademyHousingBenefits";
             var mockCouncilTaxAccount = _fixture.Create<CouncilTaxAccountInfo>();
             var mockDateOfBirth = _fixture.Create<DateTime>();
+            var mockPregnancyDueDate = "2000-12-01T00:00:00Z";
+            var mockAccommodationTypeId = _fixture.Create<string>();
+            var mockHousingCircumstanceId = _fixture.Create<string>();
+            var mockSupportWorker = "Adam Smith";
+            var mockGender = "Male";
 
             _mockCustomerGateway.Setup(x => x.Find(id)).Returns(new SavedCustomer()
             {
@@ -157,7 +162,13 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PreferredFirstName = null,
                 PreferredMiddleName = null,
                 PersonTypes = null,
-                CautionaryAlerts = fakeCautionaryAlerts
+                CautionaryAlerts = fakeCautionaryAlerts,
+                PregnancyDueDate = mockPregnancyDueDate,
+                AccommodationTypeId = mockAccommodationTypeId,
+                HousingCircumstanceId = mockHousingCircumstanceId,
+                IsSettled = true,
+                SupportWorker = mockSupportWorker,
+                Gender = mockGender
             };
 
             _mockGetJigsawCustomerByIdUseCase.Setup(x => x.Execute(mockJigsawId, redisId, userToken)).ReturnsAsync(new CustomerResponseObject()
@@ -269,6 +280,12 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             result.Customer.DateOfBirth.Should().Be(mockDateOfBirth);
             result.Customer.DateOfDeath.Should().BeNull();
+            result.Customer.PregnancyDueDate.Should().Be(mockPregnancyDueDate);
+            result.Customer.AccommodationTypeId.Should().Be(mockAccommodationTypeId);
+            result.Customer.HousingCircumstanceId.Should().Be(mockHousingCircumstanceId);
+            result.Customer.IsSettled.Should().BeTrue();
+            result.Customer.SupportWorker.Should().Be(mockSupportWorker);
+            result.Customer.Gender.Should().Be(mockGender);
             result.Customer.IsAMinor.Should().Be(peronsApiCustomer.IsAMinor);
             result.Customer.KnownAddresses.Count.Should().Be(fakeKnownAddresses.Count + fakeJigsawKnownAddresses.Count);
             result.Customer.NhsNumber.Should().BeEquivalentTo(jigsawApiCustomer.NhsNumber);
