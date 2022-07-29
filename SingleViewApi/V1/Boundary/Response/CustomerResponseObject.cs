@@ -54,7 +54,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string? HousingCircumstanceId { get; set; }
 
-        public bool IsSettled { get; set; }
+        public bool? IsSettled { get; set; }
 
         public string? SupportWorker { get; set; }
 
