@@ -64,6 +64,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var mockHousingBenefitsName = "AcademyHousingBenefits";
             var mockCouncilTaxAccount = _fixture.Create<CouncilTaxAccountInfo>();
             var mockDateOfBirth = _fixture.Create<DateTime>();
+            var mockNiNumber = "SL203040";
             var mockPregnancyDueDate = "2000-12-01T00:00:00Z";
             var mockAccommodationTypeId = _fixture.Create<string>();
             var mockHousingCircumstanceId = _fixture.Create<string>();
@@ -155,7 +156,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 IsAMinor = false,
                 KnownAddresses = fakeJigsawKnownAddresses,
                 NhsNumber = _fixture.Create<string>(),
-                NiNo = null,
+                NiNo = mockNiNumber,
                 PreferredSurname = null,
                 PreferredTitle = null,
                 PlaceOfBirth = null,
@@ -289,7 +290,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.IsAMinor.Should().Be(peronsApiCustomer.IsAMinor);
             result.Customer.KnownAddresses.Count.Should().Be(fakeKnownAddresses.Count + fakeJigsawKnownAddresses.Count);
             result.Customer.NhsNumber.Should().BeEquivalentTo(jigsawApiCustomer.NhsNumber);
-            result.Customer.NiNo.Should().BeNull();
+            result.Customer.NiNo.Should().Be(mockNiNumber);
             result.Customer.PreferredSurname.Should().BeEquivalentTo(peronsApiCustomer.PreferredSurname);
             result.Customer.PreferredTitle.Should().BeEquivalentTo(peronsApiCustomer.PreferredTitle);
             result.Customer.PlaceOfBirth.Should().BeEquivalentTo(peronsApiCustomer.PlaceOfBirth);
