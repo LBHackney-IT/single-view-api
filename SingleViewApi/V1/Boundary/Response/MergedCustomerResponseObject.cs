@@ -48,6 +48,12 @@ namespace SingleViewApi.V1.Boundary.Response
         public DateTime? DateOfBirth { get; set; }
         public string? NiNo { get; set; }
         public string? NhsNumber { get; set; }
+        public string? PregnancyDueDate { get; set; }
+        public string? AccommodationTypeId { get; set; }
+        public string? HousingCircumstanceId { get; set; }
+        public bool? IsSettled { get; set; }
+        public string? SupportWorker { get; set; }
+        public string? Gender { get; set; }
         public DateTime? DateOfDeath { get; set; }
         public bool? IsAMinor { get; set; }
 #nullable disable

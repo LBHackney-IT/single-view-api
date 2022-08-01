@@ -56,6 +56,11 @@ public class GetJigsawCustomerByIdUseCaseTest
         const string stubbedHomePhoneNumber = "020 123 1234";
         const string stubbedMobilePhoneNumber = "070 123 1234";
         const string stubbedWorkPhoneNumber = "070 321 4321";
+        const string stubbedPregnancyDueDate = "2022-10-01T00:00:00Z";
+        const string stubbedAccommodationTypeId = "111";
+        const string stubbedHousingCircumstanceId = "112";
+        const bool stubbedIsSettled = true;
+        const string stubbedSupportWorker = "Adam Smith";
 
         var stubbedEntity = _fixture.Create<JigsawCustomerResponseObject>();
 
@@ -68,6 +73,11 @@ public class GetJigsawCustomerByIdUseCaseTest
         stubbedEntity.PersonInfo.OkToContactOnWorkPhoneNumber = true;
         stubbedEntity.PersonInfo.WorkPhoneNumber = stubbedWorkPhoneNumber;
         stubbedEntity.PersonInfo.CorrespondenceAddressString = stubbedCorrespondenceAddress;
+        stubbedEntity.PersonInfo.PregnancyDueDate = stubbedPregnancyDueDate;
+        stubbedEntity.PersonInfo.AccommodationTypeId = stubbedAccommodationTypeId;
+        stubbedEntity.PersonInfo.HousingCircumstanceId = stubbedHousingCircumstanceId;
+        stubbedEntity.PersonInfo.IsSettled = stubbedIsSettled;
+        stubbedEntity.PersonInfo.SupportWorker = stubbedSupportWorker;
 
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCustomerId = _fixture.Create<string>();
@@ -90,6 +100,12 @@ public class GetJigsawCustomerByIdUseCaseTest
         results.Customer.KnownAddresses[0].FullAddress.Should().BeEquivalentTo(stubbedEntity.PersonInfo.AddressString);
         results.Customer.KnownAddresses[0].CurrentAddress.Should().Be(true);
         results.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.Customer.PregnancyDueDate.Should().Be(stubbedEntity.PersonInfo.PregnancyDueDate);
+        results.Customer.AccommodationTypeId.Should().Be(stubbedEntity.PersonInfo.AccommodationTypeId);
+        results.Customer.HousingCircumstanceId.Should().Be(stubbedEntity.PersonInfo.HousingCircumstanceId);
+        results.Customer.IsSettled.Should().BeTrue();
+        results.Customer.SupportWorker.Should().Be(stubbedEntity.PersonInfo.SupportWorker);
+        results.Customer.Gender.Should().Be(stubbedEntity.PersonInfo.Gender);
 
         results.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo("Email");
         results.Customer.AllContactDetails[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);

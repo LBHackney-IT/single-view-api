@@ -65,6 +65,12 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 DataSource = dataSource,
                 NiNo = jigsawResponse.PersonInfo.NationalInsuranceNumber,
                 NhsNumber = jigsawResponse.PersonInfo.NhsNumber,
+                PregnancyDueDate = jigsawResponse.PersonInfo.PregnancyDueDate,
+                AccommodationTypeId = jigsawResponse.PersonInfo.AccommodationTypeId,
+                HousingCircumstanceId = jigsawResponse.PersonInfo.HousingCircumstanceId,
+                IsSettled = jigsawResponse.PersonInfo.IsSettled,
+                SupportWorker = jigsawResponse.PersonInfo.SupportWorker,
+                Gender = jigsawResponse.PersonInfo.Gender,
                 KnownAddresses = new List<KnownAddress>()
                 {
                     new KnownAddress()
