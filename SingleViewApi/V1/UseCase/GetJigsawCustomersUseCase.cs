@@ -62,8 +62,8 @@ namespace SingleViewApi.V1.UseCase
                 {
                     Id = result.Id,
                     DataSource = dataSource.Name,
-                    FirstName = result.FirstName,
-                    SurName = result.LastName,
+                    FirstName = result.FirstName.Upcase(),
+                    SurName = result.LastName.Upcase(),
                     DateOfBirth = result.DoB,
                     NiNumber = result.NiNumber,
                     KnownAddresses = new List<KnownAddress>()
