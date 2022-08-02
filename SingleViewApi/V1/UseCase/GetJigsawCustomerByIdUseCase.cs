@@ -59,8 +59,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
             response.Customer = new Customer()
             {
                 Id = jigsawResponse.Id,
-                FirstName = jigsawResponse.PersonInfo.FirstName,
-                Surname = jigsawResponse.PersonInfo.LastName,
+                FirstName = jigsawResponse.PersonInfo.FirstName.Upcase(),
+                Surname = jigsawResponse.PersonInfo.LastName.Upcase(),
                 DateOfBirth = jigsawResponse.PersonInfo.DateOfBirth,
                 DataSource = dataSource,
                 NiNo = jigsawResponse.PersonInfo.NationalInsuranceNumber,

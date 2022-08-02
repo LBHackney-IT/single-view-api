@@ -45,8 +45,8 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
                 DateOfDeath = account.DateOfBirth,
                 NiNo = account.NiNumber,
                 DataSource = dataSource,
-                FirstName = account.FirstName,
-                Surname = account.LastName,
+                FirstName = account.FirstName.Upcase(),
+                Surname = account.LastName.Upcase(),
                 HousingBenefitsAccount = new HousingBenefitsAccountInfo()
                 {
                     ClaimId = account.ClaimId,

@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 
 public static class Extensions
 {
@@ -26,5 +27,10 @@ public static class Extensions
         var result = DateTime.TryParseExact(dateTimeStr, dateFmt, CultureInfo.InvariantCulture,
             style, out var dt) ? dt : null as DateTime?;
         return result;
+    }
+
+    public static string Upcase(this string str)
+    {
+        return str?.First().ToString().ToUpper() + str?.Substring(1).ToLower();
     }
 }
