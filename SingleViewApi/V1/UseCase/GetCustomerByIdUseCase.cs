@@ -88,8 +88,9 @@ namespace SingleViewApi.V1.UseCase
         {
             var allSystemIds = new List<SystemId>();
             var allKnownAddresses = new List<KnownAddress>();
-            var allContactDetails = new List<CutomerContactDetails>();
+            var allContactDetails = new List<CustomerContactDetails>();
             var allPersonType = new List<string>();
+            var allCautionaryAlerts = new List<CautionaryAlert>();
             var mergedCustomer = new MergedCustomer()
             {
                 Id = customer.Id.ToString(),
@@ -110,17 +111,18 @@ namespace SingleViewApi.V1.UseCase
                     {
                         allKnownAddresses.AddRange(r.Customer.KnownAddresses);
                     }
-                    if (r.Customer.ContactDetails != null)
+                    if (r.Customer.AllContactDetails != null)
                     {
-                        allContactDetails.Add(new CutomerContactDetails()
-                        {
-                            ContactDetails = r.Customer.ContactDetails,
-                            DataSourceName = r.Customer.DataSource.Name
-                        });
+                        allContactDetails.AddRange(r.Customer.AllContactDetails);
                     }
                     if (r.Customer.PersonTypes != null)
                     {
                         allPersonType.AddRange(r.Customer.PersonTypes);
+                    }
+
+                    if (r.Customer.CautionaryAlerts != null)
+                    {
+                        allCautionaryAlerts.AddRange(r.Customer.CautionaryAlerts);
                     }
 
                     mergedCustomer.Title ??= r.Customer.Title;
@@ -130,6 +132,13 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.PreferredSurname ??= r.Customer.PreferredSurname;
                     mergedCustomer.PlaceOfBirth ??= r.Customer.PlaceOfBirth;
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
+                    mergedCustomer.NiNo ??= r.Customer.NiNo;
+                    mergedCustomer.PregnancyDueDate ??= r.Customer.PregnancyDueDate;
+                    mergedCustomer.AccommodationTypeId ??= r.Customer.AccommodationTypeId;
+                    mergedCustomer.HousingCircumstanceId ??= r.Customer.HousingCircumstanceId;
+                    mergedCustomer.IsSettled ??= r.Customer.IsSettled;
+                    mergedCustomer.SupportWorker ??= r.Customer.SupportWorker;
+                    mergedCustomer.Gender ??= r.Customer.Gender;
                     mergedCustomer.IsAMinor ??= r.Customer.IsAMinor;
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
                     mergedCustomer.CouncilTaxAccount ??= r.Customer.CouncilTaxAccount;
@@ -138,8 +147,9 @@ namespace SingleViewApi.V1.UseCase
             }
 
             mergedCustomer.KnownAddresses = allKnownAddresses;
-            mergedCustomer.ContactDetails = allContactDetails;
+            mergedCustomer.AllContactDetails = allContactDetails;
             mergedCustomer.PersonTypes = allPersonType;
+            mergedCustomer.CautionaryAlerts = allCautionaryAlerts;
 
             return new MergedCustomerResponseObject()
             {

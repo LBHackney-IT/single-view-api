@@ -44,8 +44,7 @@ namespace SingleViewApi.V1.UseCase
             var person = await _personGateway.GetPersonById(personId, userToken);
             var contactDetails = await _contactDetailsGateway.GetContactDetailsById(personId, userToken);
             var dataSource = _dataSourceGateway.GetEntityById(1);
-            var equalityInformation =
-                await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
+            // var equalityInformation = await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
             var cautionaryAlerts = await _cautionaryAlertsGateway.GetCautionaryAlertsById(personId, userToken);
 
 
@@ -87,17 +86,27 @@ namespace SingleViewApi.V1.UseCase
                     DateOfDeath = person.DateOfDeath,
                     IsAMinor = person.IsAMinor,
                     PersonTypes = personTypes,
-                    ContactDetails = contactDetails,
-                    EqualityInformation = equalityInformation,
+                    AllContactDetails = contactDetails.Map(c => new CustomerContactDetails()
+                    {
+                        AddressExtended = c.ContactInformation.AddressExtended,
+                        ContactType = c.ContactInformation.ContactType.ToString(),
+                        DataSourceName = dataSource.Name,
+                        Description = c.ContactInformation.Description,
+                        IsActive = c.IsActive,
+                        SourceServiceArea = c.SourceServiceArea.Area,
+                        SubType = c.ContactInformation.SubType.ToString(),
+                        Value = c.ContactInformation.Value,
+                    }),
+                    // EqualityInformation = equalityInformation,
                     CautionaryAlerts = cautionaryAlerts.Alerts,
                     KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
                     {
-
                         Id = t.Id,
                         CurrentAddress = t.IsActive,
                         StartDate = t.StartDate,
                         EndDate = t.EndDate,
-                        FullAddress = t.AssetFullAddress
+                        FullAddress = t.AssetFullAddress,
+                        DataSourceName = dataSource.Name
                     }))
                 };
             }

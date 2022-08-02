@@ -45,8 +45,8 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
             {
                 Id = account.AccountReference.ToString(),
                 DataSource = dataSource,
-                FirstName = account.FirstName,
-                Surname = account.LastName,
+                FirstName = account.FirstName.Upcase(),
+                Surname = account.LastName.Upcase(),
                 CouncilTaxAccount = new CouncilTaxAccountInfo()
                 {
                     AccountBalance = account.AccountBalance,

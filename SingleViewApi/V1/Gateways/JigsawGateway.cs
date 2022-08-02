@@ -148,6 +148,7 @@ namespace SingleViewApi.V1.Gateways
             return customer;
         }
 
+        [LogCall]
         public async Task<List<JigsawNotesResponseObject>> GetCustomerNotesByCustomerId(string id, string bearerToken)
         {
             var requestUrl = $"{_customerBaseUrl}/customer/{id}/notes";
@@ -173,6 +174,7 @@ namespace SingleViewApi.V1.Gateways
             return notes;
         }
 
+        [LogCall]
         public async Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken)
         {
             var requestUrl = $"{_homelessnessBaseUrl}/casecheck/{id}";
@@ -196,6 +198,7 @@ namespace SingleViewApi.V1.Gateways
             return cases;
         }
 
+        [LogCall]
         public async Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken)
         {
             var requestUrl = $"{_homelessnessBaseUrl}/caseoverview/{caseId}";
@@ -221,6 +224,7 @@ namespace SingleViewApi.V1.Gateways
 
         }
 
+        [LogCall]
         public async Task<JigsawCasePlacementInformationResponseObject> GetCaseAccommodationPlacementsByCaseId(string caseId, string bearerToken)
         {
             var requestUrl = $"{_accommodationBaseUrl}/CaseAccommodationPlacement?caseId={caseId}";
@@ -245,8 +249,53 @@ namespace SingleViewApi.V1.Gateways
             return placementInfo;
         }
 
+        [LogCall]
+        public async Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseAdditionalFactors(string caseId, string bearerToken)
+        {
+            var requestUrl = $"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCaseAdditionalFactorsResponseObject? additionalFactors = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+            }
+            return additionalFactors;
+        }
+
+        [LogCall]
+        public async Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseHealthAndWellBeing(string caseId, string bearerToken)
+        {
+            var requestUrl = $"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=2&pageId=11";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawCaseAdditionalFactorsResponseObject? additionalFactors = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+
+                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+            }
+            return additionalFactors;
+        }
 
         private async Task<CsrfTokenResponse> GetCsrfTokens()
         {
@@ -267,7 +316,6 @@ namespace SingleViewApi.V1.Gateways
 
             return new CsrfTokenResponse() { Token = token, Cookies = cookies };
         }
-
 
     }
 }
