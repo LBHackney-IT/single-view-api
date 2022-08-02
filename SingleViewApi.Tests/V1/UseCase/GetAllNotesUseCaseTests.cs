@@ -22,6 +22,8 @@ namespace SingleViewApi.Tests.V1.UseCase
         private GetAllNotesUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
+        private Mock<IGetCouncilTaxNotesUseCase> _mockGetCouncilTaxNotesUseCase;
+        private Mock<IGetHousingBenefitsNotesUseCase> _mockGetHousingBenefitsNotesUseCase;
 
 
         [SetUp]
@@ -29,9 +31,11 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             _mockGetNotesUseCase = new Mock<IGetNotesUseCase>();
             _mockGetJigsawNotesUseCase = new Mock<IGetJigsawNotesUseCase>();
+            _mockGetCouncilTaxNotesUseCase = new Mock<IGetCouncilTaxNotesUseCase>();
+            _mockGetHousingBenefitsNotesUseCase = new Mock<IGetHousingBenefitsNotesUseCase>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
 
-            _classUnderTest = new GetAllNotesUseCase(_mockGetNotesUseCase.Object, _mockGetJigsawNotesUseCase.Object, _mockDataSourceGateway.Object);
+            _classUnderTest = new GetAllNotesUseCase(_mockGetNotesUseCase.Object, _mockGetJigsawNotesUseCase.Object, _mockGetCouncilTaxNotesUseCase.Object, _mockGetHousingBenefitsNotesUseCase.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
         }
 
@@ -40,6 +44,8 @@ namespace SingleViewApi.Tests.V1.UseCase
         {
             var stubbedJigsawDataSourceName = _fixture.Create<string>();
             var stubbedHousingSearchDataSourceName = _fixture.Create<string>();
+            var stubbedCouncilTaxDataSourceName = _fixture.Create<string>();
+            var stubbedHousingBenefitsDataSourceName = _fixture.Create<string>();
 
             var personApiSystemIdFixture = _fixture.Build<SystemId>()
                 .With(o => o.SystemName, stubbedHousingSearchDataSourceName).Create();
@@ -47,9 +53,25 @@ namespace SingleViewApi.Tests.V1.UseCase
             var jigsawSystemIdFixture = _fixture.Build<SystemId>()
                 .With(o => o.SystemName, stubbedJigsawDataSourceName).Create();
             var jigsawSystemId = jigsawSystemIdFixture.Id;
+
+            var councilTaxSystemIdFixture = _fixture.Build<SystemId>()
+                .With(o => o.SystemName, stubbedCouncilTaxDataSourceName).Create();
+
+            var housingBenefitsSystemIdFixture = _fixture.Build<SystemId>()
+                .With(o => o.SystemName, stubbedHousingBenefitsDataSourceName).Create();
+
+            var councilTaxSystemId = councilTaxSystemIdFixture.Id;
+            var housingBenefitsSystemId = housingBenefitsSystemIdFixture.Id;
+
             var systemIdListFixture = new SystemIdList()
             {
-                SystemIds = new List<SystemId>() { personApiSystemIdFixture, jigsawSystemIdFixture }
+                SystemIds = new List<SystemId>()
+                {
+                    personApiSystemIdFixture,
+                    jigsawSystemIdFixture,
+                    councilTaxSystemIdFixture,
+                    housingBenefitsSystemIdFixture
+                }
             };
             var systemIds = systemIdListFixture.ToJson();
 
@@ -64,13 +86,32 @@ namespace SingleViewApi.Tests.V1.UseCase
                 Name = stubbedJigsawDataSourceName
             });
 
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(new DataSource()
+            {
+                Id = 3,
+                Name = stubbedCouncilTaxDataSourceName
+            });
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(4)).Returns(new DataSource()
+            {
+                Id = 4,
+                Name = stubbedHousingBenefitsDataSourceName
+            });
+
             var notesFixture = new List<NoteResponseObject>();
             var notesApiNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
                 .With(o => o.DataSource, stubbedHousingSearchDataSourceName).CreateMany().ToList();
             var jigsawNoteResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
                 .With(o => o.DataSource, stubbedJigsawDataSourceName).CreateMany().ToList();
+            var councilTaxResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
+                .With(o => o.DataSource, stubbedCouncilTaxDataSourceName).CreateMany().ToList();
+            var housingBenefitsResponseObjectListFixture = _fixture.Build<NoteResponseObject>()
+                .With(o => o.DataSource, stubbedHousingBenefitsDataSourceName).CreateMany().ToList();
             notesFixture.AddRange(notesApiNoteResponseObjectListFixture);
             notesFixture.AddRange(jigsawNoteResponseObjectListFixture);
+            notesFixture.AddRange(councilTaxResponseObjectListFixture);
+            notesFixture.AddRange(housingBenefitsResponseObjectListFixture);
+
             var notesResponseFixture = new NotesResponse()
             {
                 Notes = notesFixture,
@@ -83,6 +124,12 @@ namespace SingleViewApi.Tests.V1.UseCase
 
             _mockGetJigsawNotesUseCase.Setup(x =>
                 x.Execute(jigsawSystemId, redisKey, userToken)).ReturnsAsync(jigsawNoteResponseObjectListFixture);
+
+            _mockGetCouncilTaxNotesUseCase.Setup(x =>
+                x.Execute(councilTaxSystemId, userToken)).ReturnsAsync(councilTaxResponseObjectListFixture);
+
+            _mockGetHousingBenefitsNotesUseCase.Setup(x =>
+                x.Execute(housingBenefitsSystemId, userToken)).ReturnsAsync(housingBenefitsResponseObjectListFixture);
 
             var response = await _classUnderTest.Execute(systemIds, userToken, redisKey, paginationToken, pageSize);
             // Assert.AreEqual(systemIdListFixture.SystemIds[^1].Id, response.SystemIds[^1].Id);
@@ -127,14 +174,26 @@ namespace SingleViewApi.Tests.V1.UseCase
             var pageSize = 0;
             var hackneyTokenFixture = _fixture.Create<string>();
             var stubbedJigsawDataSource = _fixture.Create<DataSource>();
+            var stubbedCouncilTaxDataSource = _fixture.Create<DataSource>();
+            var stubbedHousingBenefitsDataSource = _fixture.Create<DataSource>();
 
             _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(stubbedCouncilTaxDataSource);
+
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(4)).Returns(stubbedHousingBenefitsDataSource);
 
             _mockGetNotesUseCase.Setup(x =>
                 x.Execute(id, userToken, paginationToken, pageSize)).ReturnsAsync((List<NoteResponseObject>) null);
 
             _mockGetJigsawNotesUseCase.Setup(x =>
                 x.Execute(id, redisKey, hackneyTokenFixture)).ReturnsAsync((List<NoteResponseObject>) null);
+
+            _mockGetCouncilTaxNotesUseCase.Setup(x =>
+                x.Execute(id, hackneyTokenFixture)).ReturnsAsync((List<NoteResponseObject>) null);
+
+            _mockGetHousingBenefitsNotesUseCase.Setup(x =>
+                x.Execute(id, hackneyTokenFixture)).ReturnsAsync((List<NoteResponseObject>) null);
 
             var response = await _classUnderTest.Execute(systemIds, userToken, redisKey, paginationToken, pageSize);
             response.SystemIds[^1].Id.Should().BeEquivalentTo(systemIdListFixture.SystemIds[^1].Id);

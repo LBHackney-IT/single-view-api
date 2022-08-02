@@ -138,7 +138,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     [LogCall]
     public List<SearchResult> GroupByRelevance(string firstName, string lastName, string dateOfBirth, List<SearchResult> searchResults)
     {
-        var groupedByName = searchResults.Where(s => s.FirstName == firstName && s.SurName == lastName).ToList();
+        var groupedByName = searchResults.Where(s => s.FirstName.ToLower() == firstName.ToLower() && s.SurName.ToLower() == lastName.ToLower()).ToList();
 
         if (!string.IsNullOrEmpty(dateOfBirth))
         {

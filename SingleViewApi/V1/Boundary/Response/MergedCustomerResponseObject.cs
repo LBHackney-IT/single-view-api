@@ -15,12 +15,17 @@ namespace SingleViewApi.V1.Boundary.Response
 
     }
 
-    public class CutomerContactDetails
+    public class CustomerContactDetails
     {
         public string DataSourceName { get; set; }
-        public ContactDetails ContactDetails { get; set; }
+        public bool IsActive { get; set; }
+        public string SourceServiceArea { get; set; }
+        public string ContactType { get; set; }
+        public string SubType { get; set; }
+        public string Value { get; set; }
+        public string Description { get; set; }
+        public AddressExtended AddressExtended { get; set; }
     }
-
     public class MergedCustomer
     {
         public string Id { get; set; }
@@ -33,17 +38,22 @@ namespace SingleViewApi.V1.Boundary.Response
         public string Surname { get; set; }
         public string PlaceOfBirth { get; set; }
         public List<KnownAddress> KnownAddresses { get; set; }
-        public List<CutomerContactDetails> ContactDetails { get; set; }
+        public List<CustomerContactDetails> AllContactDetails { get; set; }
 
         public List<String> PersonTypes { get; set; }
 #nullable enable
-
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
-
         public HousingBenefitsAccountInfo? HousingBenefitsAccount { get; set; }
+        public List<CautionaryAlert>? CautionaryAlerts { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? NiNo { get; set; }
         public string? NhsNumber { get; set; }
+        public string? PregnancyDueDate { get; set; }
+        public string? AccommodationTypeId { get; set; }
+        public string? HousingCircumstanceId { get; set; }
+        public bool? IsSettled { get; set; }
+        public string? SupportWorker { get; set; }
+        public string? Gender { get; set; }
         public DateTime? DateOfDeath { get; set; }
         public bool? IsAMinor { get; set; }
 #nullable disable

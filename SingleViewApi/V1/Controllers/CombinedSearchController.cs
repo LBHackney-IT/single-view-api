@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,16 @@ namespace SingleViewApi.V1.Controllers
         [HttpGet]
         public IActionResult SearchByName([FromQuery] string firstName, string lastName, [Optional] string dateOfBirth, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId, dateOfBirth).Result);
+            try
+            {
+                return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId, dateOfBirth).Result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("search error ---------------");
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

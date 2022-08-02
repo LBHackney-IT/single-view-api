@@ -3,6 +3,7 @@ provider:
   name: aws
   runtime: dotnet6
   memorySize: 2048
+  timeout: 30
   tracing:
     lambda: true
     apiGateway: true
@@ -19,6 +20,10 @@ provider:
         throttle:
           burstLimit: 200
           rateLimit: 100
+
+
+plugins:
+  - serverless-plugin-aws-alerts
 
 package:
 # TODO: Rename zipfile in build.sh and build.cmd to match this
@@ -123,6 +128,19 @@ resources:
                     - "lambda:InvokeFunction"
                   Resource: "*"
 custom:
+  alerts:
+    stages:
+      - ${self:provider.stage}
+    topics:
+      alarm:
+        topic: ${self:service}-${self:provider.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${ssm:/single-view/${self:provider.stage}/alerts-email}
+    alarms:
+      - functionErrors
+      - functionThrottles
+      - functionInvocations
   vpc:
     development:
       securityGroupIds:

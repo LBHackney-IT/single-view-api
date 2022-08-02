@@ -41,10 +41,10 @@ namespace SingleViewApi.V1.Controllers
         [HttpGet]
         [Route("Get")]
         [LogCall(LogLevel.Information)]
-        public IActionResult Get([FromQuery] int id)
+        public IActionResult Get([FromQuery] string id)
         {
-            var value = _dataSourceGateway.GetEntityById(id);
-            return Ok(value);
+            // var value = _dataSourceGateway.GetEntityById(id);
+            return Ok(id.Upcase());
         }
     }
 }
