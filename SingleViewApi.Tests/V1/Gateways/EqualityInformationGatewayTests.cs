@@ -128,7 +128,7 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
 
         _mockHttp.Expect($"https://equality.api/equality-information?targetId={id}")
             .WithHeaders("Authorization", userToken)
-            .Respond(HttpStatusCode.ServiceUnavailable, x=> x.Content );
+            .Respond(HttpStatusCode.ServiceUnavailable, x => x.Content);
 
         // Act
         var result = await _classUnderTest.GetEqualityInformationById(id, userToken);
@@ -146,7 +146,7 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
 
         _mockHttp.Expect($"https://equality.api/equality-information?targetId={id}")
             .WithHeaders("Authorization", userToken)
-            .Respond(HttpStatusCode.NotFound, x=> x.Content );
+            .Respond(HttpStatusCode.NotFound, x => x.Content);
 
         // Act
         var result = await _classUnderTest.GetEqualityInformationById(id, userToken);
@@ -164,7 +164,7 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
 
         _mockHttp.Expect($"https://equality.api/equality-information?targetId={id}")
             .WithHeaders("Authorization", userToken)
-            .Respond(HttpStatusCode.Unauthorized, x=> x.Content );
+            .Respond(HttpStatusCode.Unauthorized, x => x.Content);
 
         // Act
         var result = await _classUnderTest.GetEqualityInformationById(id, userToken);
