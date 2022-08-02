@@ -82,7 +82,6 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].StartDate.Should().Be(stubbedPerson.Tenures.ToList()[0].StartDate);
             result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
-            result.Customer.ContactDetails.Should().BeEquivalentTo(stubbedContactDetails);
             result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
             result.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
             result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.AddressExtended);

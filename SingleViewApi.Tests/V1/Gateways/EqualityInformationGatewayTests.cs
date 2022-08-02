@@ -58,7 +58,7 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
             {
                 GenderValue = "Female",
                 GenderValueIfOther = null,
-                GenderDifferentToBirthSex = false
+                GenderDifferentToBirthSex = "No"
             },
             Ethnicity = new Ethnicity()
             {
@@ -102,7 +102,7 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
         // Assert
         result.Gender?.GenderValue.Should().Be("Female");
         result.Gender?.GenderValueIfOther.Should().BeNull();
-        result.Gender?.GenderDifferentToBirthSex.Should().BeFalse();
+        result.Gender?.GenderDifferentToBirthSex.Should().Be("No");
         result.Ethnicity?.EthnicGroupValue.Should().Be("Other");
         result.Ethnicity?.EthnicGroupValueIfOther.Should().Be("Other ethnicity");
         result.ReligionOrBelief?.ReligionOrBeliefValue.Should().Be("Other");
