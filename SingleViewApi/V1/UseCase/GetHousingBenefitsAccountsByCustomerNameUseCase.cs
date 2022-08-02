@@ -48,8 +48,8 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
             var result = new SearchResult()
             {
                 Id = account.Id,
-                DataSource = dataSource.Name,
-                FirstName = account.FirstName,
+                DataSource = dataSource.Name.Upcase(),
+                FirstName = account.FirstName.Upcase(),
                 SurName = account.LastName,
                 DateOfBirth = account?.DateOfBirth,
                 NiNumber = account?.NiNumber,
