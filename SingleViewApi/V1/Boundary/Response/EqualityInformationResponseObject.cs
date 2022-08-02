@@ -32,7 +32,7 @@ public class Gender
 #nullable enable
     public string? GenderValue { get; set; }
     public string? GenderValueIfOther { get; set; }
-    public bool? GenderDifferentToBirthSex { get; set; }
+    public string? GenderDifferentToBirthSex { get; set; }
 #nullable disable
 }
 
