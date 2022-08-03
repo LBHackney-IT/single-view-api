@@ -22,7 +22,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public DataSource DataSource { get; set; }
 
-        public Hackney.Shared.Person.Domain.Title? PreferredTitle { get; set; }
+        public string PreferredTitle { get; set; }
 
         public string PreferredFirstName { get; set; }
 
