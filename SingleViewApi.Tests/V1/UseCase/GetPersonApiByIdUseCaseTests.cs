@@ -66,7 +66,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
             result.Customer.Surname.Should().BeEquivalentTo(stubbedPerson.Surname);
             result.Customer.Title.Should().BeEquivalentTo(stubbedPerson.Title.GetDisplayName());
-            result.Customer.PreferredTitle.Should().BeEquivalentTo(stubbedPerson.PreferredTitle);
+            result.Customer.PreferredTitle.Should().BeEquivalentTo(stubbedPerson.PreferredTitle.GetDisplayName());
             result.Customer.PreferredFirstName.Should().BeEquivalentTo(stubbedPerson.PreferredFirstName);
             result.Customer.PreferredMiddleName.Should().BeEquivalentTo(stubbedPerson.PreferredMiddleName);
             result.Customer.PreferredSurname.Should().BeEquivalentTo(stubbedPerson.PreferredSurname);

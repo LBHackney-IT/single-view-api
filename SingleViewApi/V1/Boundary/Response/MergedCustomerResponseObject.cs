@@ -30,7 +30,7 @@ namespace SingleViewApi.V1.Boundary.Response
     {
         public string Id { get; set; }
         public string Title { get; set; }
-        public Hackney.Shared.Person.Domain.Title? PreferredTitle { get; set; }
+        public string PreferredTitle { get; set; }
         public string PreferredFirstName { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
