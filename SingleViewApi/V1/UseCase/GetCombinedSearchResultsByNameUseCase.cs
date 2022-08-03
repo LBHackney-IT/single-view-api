@@ -138,14 +138,20 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     [LogCall]
     public List<SearchResult> GroupByRelevance(string firstName, string lastName, string dateOfBirth, List<SearchResult> searchResults)
     {
-        var groupedByName = searchResults.Where(s => s.FirstName.ToLower() == firstName.ToLower() && s.SurName.ToLower() == lastName.ToLower()).ToList();
+        var groupedByName = searchResults.Where(s => MatchByName(firstName, lastName, s)).ToList();
 
         if (!string.IsNullOrEmpty(dateOfBirth))
         {
-            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd-MM-yyyy") == dateOfBirth).ToList();
+            return groupedByName.Where(s => s.DateOfBirth?.ToString("dd-MM-yyyy") == dateOfBirth ||
+                                            (MatchByName(firstName, lastName, s) && s.DateOfBirth == null)).ToList();
         }
 
-        return groupedByName;
+        return groupedByName.OrderBy(s => s.DateOfBirth).ToList();
+    }
+
+    private static bool MatchByName(string firstName, string lastName, SearchResult searchResult)
+    {
+        return searchResult.FirstName.ToLower() == firstName.ToLower() && searchResult.SurName.ToLower() == lastName.ToLower();
     }
 
     [LogCall]
