@@ -34,7 +34,3 @@ restart-db:
 	-docker rm $$(docker ps -q --filter ancestor=test-database -a)
 	docker rmi test-database
 	docker-compose up -d test-database
-
-.PHONY: mydock
-mydock:
-	docker-compose down
