@@ -35,11 +35,10 @@ namespace SingleViewApi.V1.Boundary.Response
 #nullable enable
         public Hackney.Shared.Person.Domain.Title? Title { get; set; }
         public string? MiddleName { get; set; }
-        public string? PreferredTitle {get; set; }
+        public string? PreferredTitle { get; set; }
         public string? PreferredFirstName { get; set; }
         public string? PreferredSurname { get; set; }
         public DateTime? DateOfBirth { get; set; }
-
         public string? NiNumber { get; set; }
         public List<Hackney.Shared.Person.Domain.PersonType>? PersonTypes { get; set; }
         public bool IsPersonCautionaryAlert { get; set; }
