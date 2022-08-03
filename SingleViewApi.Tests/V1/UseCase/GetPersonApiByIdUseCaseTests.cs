@@ -82,6 +82,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.KnownAddresses[0].StartDate.Should().Be(stubbedPerson.Tenures.ToList()[0].StartDate);
             result.Customer.KnownAddresses[0].FullAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].AssetFullAddress);
             result.Customer.KnownAddresses[0].CurrentAddress.Should().Be(stubbedPerson.Tenures.ToList()[0].IsActive);
+            result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
             result.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
             result.Customer.AllContactDetails[0].AddressExtended.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.AddressExtended);
             result.Customer.AllContactDetails[0].ContactType.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.ContactType.ToString());
@@ -91,7 +92,6 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.AllContactDetails[0].SourceServiceArea.Should().BeEquivalentTo(stubbedContactDetails[0].SourceServiceArea.Area);
             result.Customer.AllContactDetails[0].SubType.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.SubType.ToString());
             result.Customer.AllContactDetails[0].Value.Should().BeEquivalentTo(stubbedContactDetails[0].ContactInformation.Value.ToString());
-            //result.Customer.EqualityInformation.Should().BeEquivalentTo(stubbedEqualityInfo);
             result.Customer.CautionaryAlerts.Should().BeEquivalentTo(stubbedCautionaryAlerts.Alerts);
         }
 
