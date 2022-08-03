@@ -8,7 +8,7 @@ build:
 
 .PHONY: serve
 serve:
-	docker-compose build SingleViewApi && docker-compose up SingleViewApi
+	docker-compose build SingleViewApi && docker-compose up SingleViewApi; docker-compose down
 
 .PHONY: shell
 shell:
@@ -16,7 +16,7 @@ shell:
 
 .PHONY: test
 test:
-	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test
+	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test; docker-compose down
 
 .PHONY: test-db
 test-db:
@@ -34,3 +34,7 @@ restart-db:
 	-docker rm $$(docker ps -q --filter ancestor=test-database -a)
 	docker rmi test-database
 	docker-compose up -d test-database
+
+.PHONY: mydock
+mydock:
+	docker-compose down
