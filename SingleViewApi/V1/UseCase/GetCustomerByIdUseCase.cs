@@ -143,6 +143,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.DateOfDeath ??= r.Customer.DateOfDeath;
                     mergedCustomer.CouncilTaxAccount ??= r.Customer.CouncilTaxAccount;
                     mergedCustomer.HousingBenefitsAccount ??= r.Customer.HousingBenefitsAccount;
+                    mergedCustomer.EqualityInformation ??= r.Customer.EqualityInformation;
                 }
             }
 
