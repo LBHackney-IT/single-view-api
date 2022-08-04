@@ -129,7 +129,7 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 Value = jigsawResponse.PersonInfo.WorkPhoneNumber
             });
         }
-        if (jigsawResponse.PersonInfo.CorrespondenceAddressString.IsNullOrEmpty())
+        if (!jigsawResponse.PersonInfo.CorrespondenceAddressString.IsNullOrEmpty())
         {
             res.Add(new CustomerContactDetails()
             {
