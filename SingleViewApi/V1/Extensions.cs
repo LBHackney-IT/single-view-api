@@ -36,6 +36,6 @@ public static class Extensions
         {
             return "";
         }
-        return str?.First().ToString().ToUpper() + str?.Substring(1).ToLower();
+        return str.First().ToString().ToUpper() + str.Substring(1)?.ToLower();
     }
 }
