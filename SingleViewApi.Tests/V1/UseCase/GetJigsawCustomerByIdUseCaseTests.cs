@@ -126,4 +126,35 @@ public class GetJigsawCustomerByIdUseCaseTest
         results.Customer.AllContactDetails[3].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
         results.Customer.AllContactDetails[3].Value.Should().BeEquivalentTo(stubbedWorkPhoneNumber);
     }
+
+    [Test]
+    public void DoesNotReturnInvalidContactDetails()
+    {
+        var redisId = _fixture.Create<string>();
+        var jigsawToken = _fixture.Create<string>();
+        const string hackneyToken = "test-token";
+
+        var stubbedEntity = _fixture.Build<JigsawCustomerResponseObject>()
+            .With(o => o.PersonInfo, new PersonInfo()
+            {
+                CorrespondenceAddress = "",
+                OkToContactOnEmail = false,
+                OkToContactOnHomePhoneNumber = false,
+                OkToContactOnMobilePhoneNumber = false,
+                OkToContactOnWorkPhoneNumber = false
+            }).Create();
+
+
+        var stubbedDataSource = _fixture.Create<DataSource>();
+        var stubbedCustomerId = _fixture.Create<string>();
+
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
+        _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
+
+        _mockJigsawGateway.Setup(x => x.GetCustomerById(stubbedCustomerId, jigsawToken)).ReturnsAsync(stubbedEntity);
+
+        var results = _classUnderTest.Execute(stubbedCustomerId, redisId, hackneyToken).Result;
+
+        results.Customer.AllContactDetails.Should().BeNull();
+    }
 }
