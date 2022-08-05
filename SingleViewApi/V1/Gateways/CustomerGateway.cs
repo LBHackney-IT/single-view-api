@@ -54,5 +54,16 @@ namespace SingleViewApi.V1.Gateways
             return customers.ToList().Map(c => c.ToDomain());
         }
 
+        public Guid? Delete(Guid id)
+        {
+            var result = _singleViewContext.Customers
+                .Include(c => c.DataSources)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (result != null) _singleViewContext.Customers.Remove(result);
+            _singleViewContext.SaveChanges();
+
+            return result.Id;
+        }
     }
 }

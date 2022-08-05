@@ -9,6 +9,6 @@ namespace SingleViewApi.V1.Gateways.Interfaces
         SavedCustomer Add(string firstName, string lastName, DateTime dateOfBirth, string niNumber);
         SavedCustomer Find(Guid id);
         List<SavedCustomer> Search(string firstName, string lastName);
-
+        Guid? Delete(Guid id);
     }
 }
