@@ -132,7 +132,7 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.PreferredSurname ??= r.Customer.PreferredSurname;
                     mergedCustomer.PlaceOfBirth ??= r.Customer.PlaceOfBirth;
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
-                    mergedCustomer.NiNo ??= r.Customer.NiNo;
+                    mergedCustomer.NiNo ??= r.Customer.NiNo ??= r.Customer?.EqualityInformation?.NationalInsuranceNumber;
                     mergedCustomer.PregnancyDueDate ??= r.Customer.PregnancyDueDate;
                     mergedCustomer.AccommodationTypeId ??= r.Customer.AccommodationTypeId;
                     mergedCustomer.HousingCircumstanceId ??= r.Customer.HousingCircumstanceId;
