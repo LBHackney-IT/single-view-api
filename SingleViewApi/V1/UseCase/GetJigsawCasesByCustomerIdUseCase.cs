@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using ServiceStack;
@@ -123,8 +124,8 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             {
                 information.Add(new Information()
                 {
-                    Question = question.Label,
-                    Answer = question.GetAnswer(question.SelectedValue)
+                    Question = RemoveAsterisks(question.Label),
+                    Answer = RemoveAsterisks(question.GetAnswer(question.SelectedValue))
                 });
             }
 
@@ -136,5 +137,10 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
 
         return processedInformation;
+    }
+
+    private static string RemoveAsterisks(string data)
+    {
+        return Regex.Replace(data, "[*]", "").Trim();
     }
 }

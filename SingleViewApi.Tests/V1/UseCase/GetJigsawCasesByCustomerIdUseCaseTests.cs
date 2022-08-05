@@ -104,7 +104,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
                         new Question()
                         {
                             SelectedValue = "AN_YES",
-                            Label = "Do you or any of your household members have any self-reported vulnerabilities?",
+                            Label = "* Do you or any of your household members have any self-reported vulnerabilities?",
                             Options = new List<Option>()
                             {
                                 new Option()
@@ -147,7 +147,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
         result.PlacementInformation[0].DclgClassificationType.Should()
             .BeEquivalentTo(mockCustomerPlacements.Placements[0].DclgClassificationType);
         result.AdditionalFactors[0].Legend.Should().BeEquivalentTo("Overview of additional factors");
-        result.AdditionalFactors[0].Info[0].Question.Should().BeEquivalentTo("* Drug/alcohol use?");
+        result.AdditionalFactors[0].Info[0].Question.Should().BeEquivalentTo("Drug/alcohol use?");
         result.AdditionalFactors[0].Info[0].Answer.Should().BeEquivalentTo("No");
         result.AdditionalFactors[0].Info[1].Question.Should().BeEquivalentTo("Detail current medication and dosage for all household members");
         result.AdditionalFactors[0].Info[1].Answer.Should().BeEquivalentTo("Paracetamol");
