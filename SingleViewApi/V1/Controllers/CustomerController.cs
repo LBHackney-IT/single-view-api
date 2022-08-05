@@ -52,7 +52,7 @@ namespace SingleViewApi.V1.Controllers
             return Ok(_customerUseCase.Execute(customer).Id);
         }
 
-        [HttpGet]
+        [HttpDelete]
         [LogCall(LogLevel.Information)]
         public IActionResult DeleteCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
         {
