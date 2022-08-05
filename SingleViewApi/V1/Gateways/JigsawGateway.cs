@@ -193,7 +193,18 @@ namespace SingleViewApi.V1.Gateways
             {
 
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-                cases = JsonConvert.DeserializeObject<JigsawCasesResponseObject>(jsonBody);
+                try
+                {
+                    cases = JsonConvert.DeserializeObject<JigsawCasesResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCasesByCustomerId");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return cases;
+                }
             }
             return cases;
         }
@@ -217,7 +228,18 @@ namespace SingleViewApi.V1.Gateways
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
 
-                caseOverview = JsonConvert.DeserializeObject<JigsawCaseOverviewResponseObject>(jsonBody);
+                try
+                {
+                    caseOverview = JsonConvert.DeserializeObject<JigsawCaseOverviewResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseOverviewByCaseId");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return caseOverview;
+                }
 
             }
             return caseOverview;
@@ -242,9 +264,18 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
-                placementInfo = JsonConvert.DeserializeObject<JigsawCasePlacementInformationResponseObject>(jsonBody);
-
+                try
+                {
+                    placementInfo = JsonConvert.DeserializeObject<JigsawCasePlacementInformationResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseAccommodationPlacementsByCaseId");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return placementInfo;
+                }
             }
             return placementInfo;
         }
@@ -267,8 +298,18 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
-                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                try
+                {
+                    additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseAdditionalFactors");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return additionalFactors;
+                }
             }
             return additionalFactors;
         }
@@ -291,8 +332,18 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
-                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                try
+                {
+                    additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseHealthAndWellBeing");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return additionalFactors;
+                }
             }
             return additionalFactors;
         }
