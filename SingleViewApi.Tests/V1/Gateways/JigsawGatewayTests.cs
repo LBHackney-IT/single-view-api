@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.Testing.Shared;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using ServiceStack;
@@ -11,7 +12,7 @@ using SingleViewApi.V1.Gateways;
 
 namespace SingleViewApi.Tests.V1.Gateways;
 
-public class JigsawGatewayTests
+public class JigsawGatewayTests : LogCallAspectFixture
 {
     private JigsawGateway _classUnderTest;
     private MockHttpMessageHandler _mockHttp;
