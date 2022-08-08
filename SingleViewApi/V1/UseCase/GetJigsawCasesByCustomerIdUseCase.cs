@@ -124,8 +124,8 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             {
                 information.Add(new Information()
                 {
-                    Question = RemoveAsterisks(question.Label),
-                    Answer = RemoveAsterisks(question.GetAnswer(question.SelectedValue))
+                    Question = RemoveAsterisk(question.Label),
+                    Answer = RemoveAsterisk(question.GetAnswer(question.SelectedValue))
                 });
             }
 
@@ -139,7 +139,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         return processedInformation;
     }
 
-    private static string RemoveAsterisks(string data)
+    private static string RemoveAsterisk(string data)
     {
         return Regex.Replace(data, "[*]", "").Trim();
     }
