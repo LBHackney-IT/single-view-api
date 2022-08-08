@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.Testing.Shared;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using ServiceStack;
@@ -11,7 +12,7 @@ using SingleViewApi.V1.Gateways;
 
 namespace SingleViewApi.Tests.V1.Gateways;
 
-public class JigsawGatewayTests
+public class JigsawGatewayTests : LogCallAspectFixture
 {
     private JigsawGateway _classUnderTest;
     private MockHttpMessageHandler _mockHttp;
@@ -369,7 +370,7 @@ public class JigsawGatewayTests
         var bearerToken = _fixture.Create<string>();
         var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
 
-        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", mockData.ToJson());
 
@@ -390,7 +391,7 @@ public class JigsawGatewayTests
         var bearerToken = _fixture.Create<string>();
         var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
 
-        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", mockData.ToJson());
 
