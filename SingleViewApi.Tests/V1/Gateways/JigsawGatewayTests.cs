@@ -370,7 +370,7 @@ public class JigsawGatewayTests : LogCallAspectFixture
         var bearerToken = _fixture.Create<string>();
         var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
 
-        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", mockData.ToJson());
 
@@ -391,7 +391,7 @@ public class JigsawGatewayTests : LogCallAspectFixture
         var bearerToken = _fixture.Create<string>();
         var mockData = _fixture.Create<JigsawCaseAdditionalFactorsResponseObject>();
 
-        _mockHttp.Expect($"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
+        _mockHttp.Expect($"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2")
             .WithHeaders("Authorization", $"Bearer {bearerToken}")
             .Respond("application/json", mockData.ToJson());
 

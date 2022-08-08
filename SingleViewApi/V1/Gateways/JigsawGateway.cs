@@ -212,7 +212,7 @@ namespace SingleViewApi.V1.Gateways
         [LogCall]
         public async Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken)
         {
-            var requestUrl = $"{_homelessnessBaseUrl}/caseoverview/{caseId}";
+            var requestUrl = $"{_accommodationBaseUrl}/caseoverview/{caseId}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
