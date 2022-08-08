@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using ServiceStack;
 
 public static class Extensions
 {
@@ -31,6 +32,10 @@ public static class Extensions
 
     public static string Upcase(this string str)
     {
-        return str?.First().ToString().ToUpper() + str?.Substring(1).ToLower();
+        if (str.IsNullOrEmpty())
+        {
+            return "";
+        }
+        return str.First().ToString().ToUpper() + str.Substring(1)?.ToLower();
     }
 }

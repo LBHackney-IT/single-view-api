@@ -75,7 +75,7 @@ public class PersonInfo
     public bool OkToContactOnWorkPhoneNumber { get; set; }
     public string EmailAddress { get; set; }
     public bool OkToContactOnEmail { get; set; }
-    public string SupportWorker { get; set; }
+    public SupportWorker SupportWorker { get; set; }
     public object SupportWorkerId { get; set; }
     public string Gender { get; set; }
     public object HouseholdMemberType { get; set; }
@@ -85,6 +85,19 @@ public class PersonInfo
     public object ContactMethod { get; set; }
     public object LocalAuthorityId { get; set; }
     public object OrganisationInternalReference { get; set; }
+}
+
+public class SupportWorker
+{
+#nullable enable
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? FullName { get; set; }
+    public string? JobTitle { get; set; }
+    public string? Agency { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
+#nullable disable
 }
 
 public class JigsawCustomerResponseObject

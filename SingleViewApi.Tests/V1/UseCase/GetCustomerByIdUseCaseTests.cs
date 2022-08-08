@@ -68,7 +68,7 @@ namespace SingleViewApi.Tests.V1.UseCase
             var mockPregnancyDueDate = "2000-12-01T00:00:00Z";
             var mockAccommodationTypeId = _fixture.Create<string>();
             var mockHousingCircumstanceId = _fixture.Create<string>();
-            var mockSupportWorker = "Adam Smith";
+            var mockSupportWorker = _fixture.Create<SupportWorker>();
             var mockGender = "Male";
 
             _mockCustomerGateway.Setup(x => x.Find(id)).Returns(new SavedCustomer()
@@ -116,7 +116,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 NhsNumber = null,
                 NiNo = null,
                 PreferredSurname = mockLastName,
-                PreferredTitle = Hackney.Shared.Person.Domain.Title.Miss,
+                PreferredTitle = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,
@@ -359,7 +359,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 NhsNumber = null,
                 NiNo = null,
                 PreferredSurname = mockLastName,
-                PreferredTitle = Hackney.Shared.Person.Domain.Title.Miss,
+                PreferredTitle = Hackney.Shared.Person.Domain.Title.Miss.GetDisplayName(),
                 PlaceOfBirth = null,
                 PreferredFirstName = mockFirstName,
                 PreferredMiddleName = null,

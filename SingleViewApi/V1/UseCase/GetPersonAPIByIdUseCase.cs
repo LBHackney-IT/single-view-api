@@ -73,9 +73,9 @@ namespace SingleViewApi.V1.UseCase
                 response.Customer = new Customer()
                 {
                     Id = person.Id.ToString(),
-                    Title = person.Title.GetDisplayName(),
+                    Title = person.Title?.GetDisplayName(),
                     DataSource = dataSource,
-                    PreferredTitle = person.PreferredTitle,
+                    PreferredTitle = person.PreferredTitle.GetDisplayName(),
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,
                     PreferredSurname = person.PreferredSurname,

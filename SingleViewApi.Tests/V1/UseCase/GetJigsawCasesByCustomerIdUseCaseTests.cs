@@ -85,7 +85,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
                         }, new Question()
                         {
                             SelectedValue = "Paracetamol",
-                            Label = "Detail current medication and dosage for all household members"
+                            Label = "* Detail current medication and dosage for all household members"
                         }
                     }
                 }

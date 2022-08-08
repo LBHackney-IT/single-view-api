@@ -30,7 +30,7 @@ namespace SingleViewApi.V1.Boundary.Response
     {
         public string Id { get; set; }
         public string Title { get; set; }
-        public Hackney.Shared.Person.Domain.Title? PreferredTitle { get; set; }
+        public string PreferredTitle { get; set; }
         public string PreferredFirstName { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
@@ -52,7 +52,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public string? AccommodationTypeId { get; set; }
         public string? HousingCircumstanceId { get; set; }
         public bool? IsSettled { get; set; }
-        public string? SupportWorker { get; set; }
+        public SupportWorker? SupportWorker { get; set; }
         public string? Gender { get; set; }
         public DateTime? DateOfDeath { get; set; }
         public bool? IsAMinor { get; set; }

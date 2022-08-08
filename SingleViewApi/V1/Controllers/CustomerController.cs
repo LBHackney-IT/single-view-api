@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary.Request;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.Controllers
 {
@@ -19,13 +20,13 @@ namespace SingleViewApi.V1.Controllers
     {
         private readonly ICreateCustomerUseCase _customerUseCase;
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
+        private readonly ICustomerGateway _gateway;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase)
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, ICustomerGateway gateway)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
             _customerUseCase = customerUseCase;
-
-
+            _gateway = gateway;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -49,6 +50,13 @@ namespace SingleViewApi.V1.Controllers
         public IActionResult SaveCustomer([FromBody] CreateCustomerRequest customer)
         {
             return Ok(_customerUseCase.Execute(customer).Id);
+        }
+
+        [HttpDelete]
+        [LogCall(LogLevel.Information)]
+        public IActionResult DeleteCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
+        {
+            return Ok(_gateway.Delete(id));
         }
     }
 }

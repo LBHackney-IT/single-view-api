@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.Tests.V1.Controllers
 {
@@ -18,13 +19,15 @@ namespace SingleViewApi.Tests.V1.Controllers
         private Mock<IGetCustomerByIdUseCase> _mockGetCustomerByIdUseCase;
         private Mock<ICreateCustomerUseCase> _mockCreateCustomerUseCase;
         private Fixture _fixture;
+        private Mock<ICustomerGateway> _mockGateway;
 
         [SetUp]
         public void SetUp()
         {
             _mockGetCustomerByIdUseCase = new Mock<IGetCustomerByIdUseCase>();
             _mockCreateCustomerUseCase = new Mock<ICreateCustomerUseCase>();
-            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object);
+            _mockGateway = new Mock<ICustomerGateway>();
+            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object, _mockGateway.Object);
             _fixture = new Fixture();
         }
 
