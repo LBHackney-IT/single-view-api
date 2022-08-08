@@ -212,7 +212,7 @@ namespace SingleViewApi.V1.Gateways
         [LogCall]
         public async Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken)
         {
-            var requestUrl = $"{_accommodationBaseUrl}/caseoverview/{caseId}";
+            var requestUrl = $"{_homelessnessBaseUrl}/caseoverview/{caseId}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -283,7 +283,7 @@ namespace SingleViewApi.V1.Gateways
         [LogCall]
         public async Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseAdditionalFactors(string caseId, string bearerToken)
         {
-            var requestUrl = $"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2";
+            var requestUrl = $"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
