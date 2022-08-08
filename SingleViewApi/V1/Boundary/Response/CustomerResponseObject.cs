@@ -56,7 +56,7 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public bool? IsSettled { get; set; }
 
-        public string? SupportWorker { get; set; }
+        public SupportWorker? SupportWorker { get; set; }
 
         public string? Gender { get; set; }
 
