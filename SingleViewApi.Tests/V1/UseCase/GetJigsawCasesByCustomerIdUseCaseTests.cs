@@ -104,7 +104,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
                         new Question()
                         {
                             SelectedValue = "AN_YES",
-                            Label = "Do you or any of your household members have any self-reported vulnerabilities?",
+                            Label = "* Do you or any of your household members have any self-reported vulnerabilities?",
                             Options = new List<Option>()
                             {
                                 new Option()
