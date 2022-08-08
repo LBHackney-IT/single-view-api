@@ -252,7 +252,7 @@ namespace SingleViewApi.V1.Gateways
         [LogCall]
         public async Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseAdditionalFactors(string caseId, string bearerToken)
         {
-            var requestUrl = $"{_accommodationBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2";
+            var requestUrl = $"{_homelessnessBaseUrl}/caseform?caseId={caseId}&formId=1&pageId=2";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             request.Headers.Add("Authorization", $"Bearer {bearerToken}");
@@ -267,8 +267,18 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
-                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                try
+                {
+                    additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseAdditionalFactors");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return additionalFactors;
+                }
             }
             return additionalFactors;
         }
@@ -291,8 +301,18 @@ namespace SingleViewApi.V1.Gateways
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonBody = response.Content.ReadAsStringAsync().Result;
-
-                additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                try
+                {
+                    additionalFactors = JsonConvert.DeserializeObject<JigsawCaseAdditionalFactorsResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING GetCaseHealthAndWellBeing");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return additionalFactors;
+                }
             }
             return additionalFactors;
         }
