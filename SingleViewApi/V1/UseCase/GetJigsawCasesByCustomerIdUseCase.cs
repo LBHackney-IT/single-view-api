@@ -47,7 +47,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var currentCase = cases.Cases.FirstOrDefault(x => x.IsCurrent);
 
         var customerCaseOverview = new JigsawCaseOverviewResponseObject();
-        var customerAccommodationPlacementList = new JigsawCasePlacementInformationResponseObject();
+        JigsawCasePlacementInformationResponseObject customerAccommodationPlacementList = null;
 
         if (currentCase != null)
         {
@@ -95,22 +95,27 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             }
         }
 
-        var healthAndWellBeingInfo =
-            await _jigsawGateway.GetCaseHealthAndWellBeing(currentCase.Id.ToString(), jigsawAuthResponse.Token);
-
-        var additionalFactorsInfo =
-            await _jigsawGateway.GetCaseAdditionalFactors(currentCase.Id.ToString(), jigsawAuthResponse.Token);
-
-        var newCaseResponseObject = new CasesResponseObject()
+        if (currentCase != null)
         {
-            CurrentCase = currentCase,
-            CaseOverview = newCaseOverview,
-            PlacementInformation = placementsList,
-            HealthAndWellBeing = ProcessAdditionalInfo(healthAndWellBeingInfo),
-            AdditionalFactors = ProcessAdditionalInfo(additionalFactorsInfo)
-        };
+            var healthAndWellBeingInfo =
+                await _jigsawGateway.GetCaseHealthAndWellBeing(currentCase.Id.ToString(), jigsawAuthResponse.Token);
 
-        return newCaseResponseObject;
+            var additionalFactorsInfo =
+                await _jigsawGateway.GetCaseAdditionalFactors(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+
+            var newCaseResponseObject = new CasesResponseObject()
+            {
+                CurrentCase = currentCase,
+                CaseOverview = newCaseOverview,
+                PlacementInformation = placementsList,
+                HealthAndWellBeing = ProcessAdditionalInfo(healthAndWellBeingInfo),
+                AdditionalFactors = ProcessAdditionalInfo(additionalFactorsInfo)
+            };
+
+            return newCaseResponseObject;
+        }
+
+        return null;
     }
 
     private List<AdditionalInfo> ProcessAdditionalInfo(JigsawCaseAdditionalFactorsResponseObject additionalInformation)
