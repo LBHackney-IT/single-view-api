@@ -60,7 +60,7 @@ public class GetJigsawCustomerByIdUseCaseTest
         const string stubbedAccommodationTypeId = "111";
         const string stubbedHousingCircumstanceId = "112";
         const bool stubbedIsSettled = true;
-        const string stubbedSupportWorker = "Adam Smith";
+        SupportWorker stubbedSupportWorker = _fixture.Create<SupportWorker>();
 
         var stubbedEntity = _fixture.Create<JigsawCustomerResponseObject>();
 
