@@ -1,16 +1,14 @@
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary;
-using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/getJigsawCases")]
+    [Microsoft.AspNetCore.Mvc.Route("api/v1/getJigsawCases")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
     public class JigsawCasesController : BaseController
@@ -31,9 +29,15 @@ namespace SingleViewApi.V1.Controllers
         [ProducesResponseType(typeof(CasesResponseObject), StatusCodes.Status200OK)]
         [LogCall]
         [HttpGet]
-        public IActionResult GetCasesByCustomerId([FromQuery] string id, string redisId, [FromHeader] string authorization)
+        public async Task<IActionResult> GetCasesByCustomerId([FromQuery] string id, string redisId, [FromHeader] string authorization)
         {
-            return Ok(_getJigsawCasesByCustomerIdUseCase.Execute(id, redisId, authorization).Result);
+            var jigsawCase = await _getJigsawCasesByCustomerIdUseCase.Execute(id, redisId, authorization);
+            if (jigsawCase == null)
+            {
+                return NotFound(null);
+            }
+
+            return Ok(jigsawCase);
         }
     }
 }
