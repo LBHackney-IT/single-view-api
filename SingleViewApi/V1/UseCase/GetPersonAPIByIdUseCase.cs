@@ -75,7 +75,7 @@ namespace SingleViewApi.V1.UseCase
                     Id = person.Id.ToString(),
                     Title = person.Title?.GetDisplayName(),
                     DataSource = dataSource,
-                    PreferredTitle = person.PreferredTitle.GetDisplayName(),
+                    PreferredTitle = person.PreferredTitle?.GetDisplayName(),
                     PreferredFirstName = person.PreferredFirstName,
                     PreferredMiddleName = person.PreferredMiddleName,
                     PreferredSurname = person.PreferredSurname,
