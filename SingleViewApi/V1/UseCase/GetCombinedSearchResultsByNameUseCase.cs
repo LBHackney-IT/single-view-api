@@ -151,7 +151,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
 
     private static bool MatchByName(string firstName, string lastName, SearchResult searchResult)
     {
-        return searchResult.FirstName.ToLower() == firstName.ToLower() && searchResult.SurName.ToLower() == lastName.ToLower();
+        return searchResult.FirstName.ToLower().Contains(firstName.ToLower()) && searchResult.SurName.ToLower().Contains(lastName.ToLower());
     }
 
     [LogCall]
