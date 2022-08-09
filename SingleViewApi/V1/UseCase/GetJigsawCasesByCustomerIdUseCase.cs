@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
@@ -147,6 +148,10 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
     private static string RemoveAsterisk(string data)
     {
+        if (String.IsNullOrEmpty(data))
+        {
+            return null;
+        }
         return Regex.Replace(data, "[*]", "").Trim();
     }
 }
