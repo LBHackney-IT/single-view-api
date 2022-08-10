@@ -5,7 +5,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase;
 
-public class DeleteCustomerUseCase: IDeleteCustomerUseCase
+public class DeleteCustomerUseCase : IDeleteCustomerUseCase
 {
     private readonly ICustomerGateway _customerGateway;
 
