@@ -128,6 +128,12 @@ namespace SingleViewApi
                 return new CreateCustomerUseCase(customerGateway, customerDataSourceGateway, dataSourceGateway);
             });
 
+            services.AddTransient<IDeleteCustomerUseCase, DeleteCustomerUseCase>(s =>
+            {
+                var customerGateway = s.GetService<ICustomerGateway>();
+                return new DeleteCustomerUseCase(customerGateway);
+            });
+
             services.AddTransient<IHousingSearchGateway, HousingSearchGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
