@@ -20,12 +20,14 @@ namespace SingleViewApi.V1.Controllers
     {
         private readonly ICreateCustomerUseCase _customerUseCase;
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
+        private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
         private readonly ICustomerGateway _gateway;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, ICustomerGateway gateway)
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, IDeleteCustomerUseCase deleteCustomerUseCase, ICustomerGateway gateway)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
             _customerUseCase = customerUseCase;
+            _deleteCustomerUseCase = deleteCustomerUseCase;
             _gateway = gateway;
         }
 
@@ -52,11 +54,12 @@ namespace SingleViewApi.V1.Controllers
             return Ok(_customerUseCase.Execute(customer).Id);
         }
 
+        [ProducesResponseType(typeof(Boolean), StatusCodes.Status204NoContent)]
         [HttpDelete]
         [LogCall(LogLevel.Information)]
-        public IActionResult DeleteCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
+        public IActionResult DeleteCustomer([FromQuery] Guid id)
         {
-            return Ok(_gateway.Delete(id));
+            return Ok(_deleteCustomerUseCase.Execute(id));
         }
     }
 }
