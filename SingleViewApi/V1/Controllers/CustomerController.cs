@@ -20,13 +20,13 @@ namespace SingleViewApi.V1.Controllers
     {
         private readonly ICreateCustomerUseCase _customerUseCase;
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
-        private readonly ICustomerGateway _gateway;
+        private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, ICustomerGateway gateway)
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, IDeleteCustomerUseCase deleteCustomerUseCase)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
             _customerUseCase = customerUseCase;
-            _gateway = gateway;
+            _deleteCustomerUseCase = deleteCustomerUseCase;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
@@ -52,11 +52,12 @@ namespace SingleViewApi.V1.Controllers
             return Ok(_customerUseCase.Execute(customer).Id);
         }
 
+        [ProducesResponseType(typeof(Boolean), StatusCodes.Status204NoContent)]
         [HttpDelete]
         [LogCall(LogLevel.Information)]
-        public IActionResult DeleteCustomer([FromQuery] Guid id, string redisId, [FromHeader] string authorization)
+        public IActionResult DeleteCustomer([FromQuery] Guid id)
         {
-            return Ok(_gateway.Delete(id));
+            return Ok(_deleteCustomerUseCase.Execute(id));
         }
     }
 }
