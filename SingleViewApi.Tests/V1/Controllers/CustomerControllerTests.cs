@@ -20,7 +20,6 @@ namespace SingleViewApi.Tests.V1.Controllers
         private Mock<ICreateCustomerUseCase> _mockCreateCustomerUseCase;
         private Mock<IDeleteCustomerUseCase> _mockDeleteCustomerUseCase;
         private Fixture _fixture;
-        private Mock<ICustomerGateway> _mockGateway;
 
         [SetUp]
         public void SetUp()
@@ -28,8 +27,7 @@ namespace SingleViewApi.Tests.V1.Controllers
             _mockGetCustomerByIdUseCase = new Mock<IGetCustomerByIdUseCase>();
             _mockCreateCustomerUseCase = new Mock<ICreateCustomerUseCase>();
             _mockDeleteCustomerUseCase = new Mock<IDeleteCustomerUseCase>();
-            _mockGateway = new Mock<ICustomerGateway>();
-            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object, _mockDeleteCustomerUseCase.Object, _mockGateway.Object);
+            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object, _mockDeleteCustomerUseCase.Object);
             _fixture = new Fixture();
         }
 
