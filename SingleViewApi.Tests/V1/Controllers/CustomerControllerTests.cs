@@ -18,6 +18,7 @@ namespace SingleViewApi.Tests.V1.Controllers
         private CustomerController _classUnderTest;
         private Mock<IGetCustomerByIdUseCase> _mockGetCustomerByIdUseCase;
         private Mock<ICreateCustomerUseCase> _mockCreateCustomerUseCase;
+        private Mock<IDeleteCustomerUseCase> _mockDeleteCustomerUseCase;
         private Fixture _fixture;
         private Mock<ICustomerGateway> _mockGateway;
 
@@ -26,8 +27,9 @@ namespace SingleViewApi.Tests.V1.Controllers
         {
             _mockGetCustomerByIdUseCase = new Mock<IGetCustomerByIdUseCase>();
             _mockCreateCustomerUseCase = new Mock<ICreateCustomerUseCase>();
+            _mockDeleteCustomerUseCase = new Mock<IDeleteCustomerUseCase>();
             _mockGateway = new Mock<ICustomerGateway>();
-            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object, _mockGateway.Object);
+            _classUnderTest = new CustomerController(_mockGetCustomerByIdUseCase.Object, _mockCreateCustomerUseCase.Object, _mockDeleteCustomerUseCase.Object, _mockGateway.Object);
             _fixture = new Fixture();
         }
 
@@ -53,6 +55,18 @@ namespace SingleViewApi.Tests.V1.Controllers
             _ = _classUnderTest.SaveCustomer(request);
 
             _mockCreateCustomerUseCase.Verify(x => x.Execute(request), Times.Once);
+        }
+
+        [Test]
+        public void DeleteUseCaseGetsCalled()
+        {
+            var mockId = _fixture.Create<Guid>();
+
+            _mockDeleteCustomerUseCase.Setup(x => x.Execute(mockId)).Returns(true);
+
+            _ = _classUnderTest.DeleteCustomer(mockId);
+
+            _mockDeleteCustomerUseCase.Verify(x => x.Execute(mockId), Times.Once);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace SingleViewApi.V1.Gateways
             if (result != null) _singleViewContext.Customers.Remove(result);
             _singleViewContext.SaveChanges();
 
-            return result.Id;
+            return result?.Id;
         }
     }
 }
