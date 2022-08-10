@@ -21,14 +21,12 @@ namespace SingleViewApi.V1.Controllers
         private readonly ICreateCustomerUseCase _customerUseCase;
         private readonly IGetCustomerByIdUseCase _getCustomerByIdUseCase;
         private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
-        private readonly ICustomerGateway _gateway;
 
-        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, IDeleteCustomerUseCase deleteCustomerUseCase, ICustomerGateway gateway)
+        public CustomerController(IGetCustomerByIdUseCase getCustomerByIdUseCase, ICreateCustomerUseCase customerUseCase, IDeleteCustomerUseCase deleteCustomerUseCase)
         {
             _getCustomerByIdUseCase = getCustomerByIdUseCase;
             _customerUseCase = customerUseCase;
             _deleteCustomerUseCase = deleteCustomerUseCase;
-            _gateway = gateway;
         }
 
         //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
