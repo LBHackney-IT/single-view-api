@@ -32,9 +32,9 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string DataSource { get; set; }
 
-        #nullable enable
+#nullable enable
         public string? JigsawCaseReferenceId { get; set; }
-        #nullable disable
+#nullable disable
 
         public int CompareTo(NoteResponseObject other)
         {
