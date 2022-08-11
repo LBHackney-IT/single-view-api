@@ -68,6 +68,7 @@ namespace SingleViewApi.V1.UseCase
                 {
                     notes.Add(new NoteResponseObject()
                     {
+                        JigsawCaseReferenceId = note.CaseId,
                         Description = note.Content,
                         CreatedAt = note.CreatedDate,
                         Categorisation = new Categorisation() { Description = $"Jigsaw NoteTypeId: {note.NoteTypeId}" },
