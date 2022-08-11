@@ -131,6 +131,7 @@ public class AcademyGateway : IAcademyGateway
         {
             var jsonBody = response.Content.ReadAsStringAsync().Result;
             result = JsonConvert.DeserializeObject<List<AcademyNotesResponseObject>>(jsonBody);
+            //comment
         }
 
         return result;

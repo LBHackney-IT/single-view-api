@@ -8,7 +8,7 @@ using SingleViewApi.V1.UseCase.Interfaces;
 
 namespace SingleViewApi.V1.UseCase;
 
-public class GetJigsawActiveCaseNotesUseCase: IGetJigsawActiveCaseNotesUseCase
+public class GetJigsawActiveCaseNotesUseCase : IGetJigsawActiveCaseNotesUseCase
 {
     private readonly IJigsawGateway _jigsawGateway;
 
