@@ -21,6 +21,7 @@ public class JigsawNotesResponseObject
 
 
 #nullable enable
+    public string? CaseId { get; set; }
     public string? CustomerName { get; set; }
     public DateTime? InterviewDate { get; set; }
     public int? OfficerId { get; set; }
