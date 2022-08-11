@@ -66,16 +66,16 @@ namespace SingleViewApi.V1.UseCase
             {
                 foreach (var note in activeCaseNotes)
                 {
-                    notes.Add( new NoteResponseObject()
+                    notes.Add(new NoteResponseObject()
                     {
                         Description = note.Content,
                         CreatedAt = note.CreatedDate,
                         Categorisation = new Categorisation() { Description = $"Jigsaw NoteTypeId: {note.NoteTypeId}" },
                         Author = new AuthorDetails() { FullName = note.OfficerName },
-                    IsSensitive = note.IsSensitive,
-                    IsPinned = note.IsPinned,
-                    DataSourceId = note.Id.ToString(),
-                    DataSource = dataSource.Name,
+                        IsSensitive = note.IsSensitive,
+                        IsPinned = note.IsPinned,
+                        DataSourceId = note.Id.ToString(),
+                        DataSource = dataSource.Name,
                     });
                 }
             }
