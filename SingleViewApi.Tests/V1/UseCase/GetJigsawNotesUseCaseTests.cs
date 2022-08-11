@@ -20,15 +20,17 @@ namespace SingleViewApi.Tests.V1.UseCase
         private GetJigsawNotesUseCase _classUnderTest;
         private Fixture _fixture;
         private Mock<IDataSourceGateway> _mockDataSourceGateway;
+        private Mock<IGetJigsawActiveCaseNotesUseCase> _mockGetJigsawActiveCaseNotesUseCase;
 
         [SetUp]
         public void SetUp()
         {
             _mockJigsawGateway = new Mock<IJigsawGateway>();
             _mockGetJigsawAuthTokenUseCase = new Mock<IGetJigsawAuthTokenUseCase>();
+            _mockGetJigsawActiveCaseNotesUseCase = new Mock<IGetJigsawActiveCaseNotesUseCase>();
             _mockDataSourceGateway = new Mock<IDataSourceGateway>();
             _classUnderTest =
-                new GetJigsawNotesUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
+                new GetJigsawNotesUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object, _mockGetJigsawActiveCaseNotesUseCase.Object, _mockDataSourceGateway.Object);
             _fixture = new Fixture();
         }
 
