@@ -13,13 +13,15 @@ namespace SingleViewApi.V1.UseCase
     public class GetJigsawNotesUseCase : IGetJigsawNotesUseCase
     {
         private readonly IJigsawGateway _gateway;
+        private readonly IGetJigsawActiveCaseNotesUseCase _getCaseNotesUseCase;
         private readonly IGetJigsawAuthTokenUseCase _getAuthTokenUseCase;
         private readonly IDataSourceGateway _dataSourceGateway;
 
-        public GetJigsawNotesUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IDataSourceGateway dataSourceGateway)
+        public GetJigsawNotesUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase, IGetJigsawActiveCaseNotesUseCase getCaseNotesUseCase, IDataSourceGateway dataSourceGateway)
         {
             _gateway = jigsawGateway;
             _getAuthTokenUseCase = getJigsawAuthTokenUseCase;
+            _getCaseNotesUseCase = getCaseNotesUseCase;
             _dataSourceGateway = dataSourceGateway;
         }
 
@@ -32,29 +34,52 @@ namespace SingleViewApi.V1.UseCase
                 Console.WriteLine(authResponse.ExceptionMessage);
                 return null;
             }
-            var gatewayResponse = await _gateway.GetCustomerNotesByCustomerId(customerId, authResponse.Token);
+            var customerNotes = await _gateway.GetCustomerNotesByCustomerId(customerId, authResponse.Token);
 
-            if (gatewayResponse == null) return null;
+            var activeCaseNotes = await _getCaseNotesUseCase.Execute(customerId, authResponse.Token);
 
             var dataSource = _dataSourceGateway.GetEntityById(2);
 
             var notes = new List<NoteResponseObject>();
-            foreach (var note in gatewayResponse)
+
+            if (customerNotes != null)
             {
-                notes.Add(
-                    new NoteResponseObject()
+                foreach (var note in customerNotes)
+                {
+                    notes.Add(
+                        new NoteResponseObject()
+                        {
+                            Description = note.Content,
+                            CreatedAt = note.CreatedDate,
+                            Categorisation = new Categorisation() { Description = $"Jigsaw NoteTypeId: {note.NoteTypeId}" },
+                            Author = new AuthorDetails() { FullName = note.OfficerName },
+                            IsSensitive = note.IsSensitive,
+                            IsPinned = note.IsPinned,
+                            DataSourceId = note.Id.ToString(),
+                            DataSource = dataSource.Name
+                        }
+                    );
+                }
+            }
+
+            if (activeCaseNotes != null)
+            {
+                foreach (var note in activeCaseNotes)
+                {
+                    notes.Add( new NoteResponseObject()
                     {
                         Description = note.Content,
                         CreatedAt = note.CreatedDate,
                         Categorisation = new Categorisation() { Description = $"Jigsaw NoteTypeId: {note.NoteTypeId}" },
                         Author = new AuthorDetails() { FullName = note.OfficerName },
-                        IsSensitive = note.IsSensitive,
-                        IsPinned = note.IsPinned,
-                        DataSourceId = note.Id.ToString(),
-                        DataSource = dataSource.Name
-                    }
-                );
+                    IsSensitive = note.IsSensitive,
+                    IsPinned = note.IsPinned,
+                    DataSourceId = note.Id.ToString(),
+                    DataSource = dataSource.Name,
+                    });
+                }
             }
+
             return notes;
         }
     }
