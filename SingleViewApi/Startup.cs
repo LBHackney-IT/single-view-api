@@ -294,8 +294,15 @@ namespace SingleViewApi
             {
                 var jigsawGateway = s.GetService<IJigsawGateway>();
                 var getJigsawAuthTokenUseCase = s.GetService<IGetJigsawAuthTokenUseCase>();
+                var getActiveCaseNotesUseCase = s.GetService<IGetJigsawActiveCaseNotesUseCase>();
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
-                return new GetJigsawNotesUseCase(jigsawGateway, getJigsawAuthTokenUseCase, dataSourceGateway);
+                return new GetJigsawNotesUseCase(jigsawGateway, getJigsawAuthTokenUseCase, getActiveCaseNotesUseCase, dataSourceGateway);
+            });
+
+            services.AddTransient<IGetJigsawActiveCaseNotesUseCase>(s =>
+            {
+                var jigsawGateway = s.GetService<IJigsawGateway>();
+                return new GetJigsawActiveCaseNotesUseCase(jigsawGateway);
             });
 
             services.AddTransient<IGetAllNotesUseCase, GetAllNotesUseCase>(s =>

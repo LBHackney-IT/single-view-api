@@ -15,6 +15,8 @@ namespace SingleViewApi.V1.Gateways.Interfaces
 
         Task<List<JigsawNotesResponseObject>> GetCustomerNotesByCustomerId(string id, string bearerToken);
 
+        Task<List<JigsawNotesResponseObject>> GetActiveCaseNotesByCaseId(string id, string bearerToken);
+
         Task<JigsawCasesResponseObject> GetCasesByCustomerId(string id, string bearerToken);
 
         Task<JigsawCaseOverviewResponseObject> GetCaseOverviewByCaseId(string caseId, string bearerToken);
