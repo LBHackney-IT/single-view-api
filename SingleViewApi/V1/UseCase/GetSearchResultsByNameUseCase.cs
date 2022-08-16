@@ -57,7 +57,7 @@ namespace SingleViewApi.V1.UseCase
                     var person = new SearchResult()
                     {
                         Id = result.Id.ToString(),
-                        DataSource = dataSource.Name,
+                        DataSources = new List<string>() { dataSource.Name },
                         FirstName = result.FirstName,
                         SurName = result.Surname,
                         Title = result.Title,

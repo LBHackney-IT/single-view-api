@@ -29,7 +29,7 @@ namespace SingleViewApi.V1.Boundary.Response
     public class SearchResult
     {
         public string Id { get; set; }
-        public string DataSource { get; set; }
+        public List<string> DataSources { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
 #nullable enable

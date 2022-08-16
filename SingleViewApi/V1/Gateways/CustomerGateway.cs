@@ -50,8 +50,8 @@ namespace SingleViewApi.V1.Gateways
             var customers = from c in _singleViewContext.Customers
                             where c.LastName.ToLower().Contains(lastName.ToLower()) && c.FirstName.ToLower().Contains(firstName.ToLower())
                             select c;
-
-            return customers.ToList().Map(c => c.ToDomain());
+            var results = customers.Include(c => c.DataSources);
+            return results.ToList().Map(c => c.ToDomain());
         }
 
         public Guid? Delete(Guid id)
