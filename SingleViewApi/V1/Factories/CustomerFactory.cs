@@ -25,7 +25,7 @@ namespace SingleViewApi.V1.Factories
 
         private static List<CustomerDataSource> ToDomain(this List<CustomerDataSourceDbEntity> dataSources)
         {
-            return dataSources?.Select(hrItem => hrItem.ToDomain()).ToList();
+            return dataSources.Select(hrItem => hrItem.ToDomain()).ToList();
         }
 
         public static CustomerDbEntity ToDatabase(this SavedCustomer entity)

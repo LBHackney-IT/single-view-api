@@ -61,7 +61,7 @@ namespace SingleViewApi.V1.UseCase
                 var person = new SearchResult()
                 {
                     Id = result.Id,
-                    DataSource = dataSource.Name,
+                    DataSources = new List<string>() { dataSource.Name },
                     FirstName = result.FirstName.Upcase(),
                     SurName = result.LastName.Upcase(),
                     DateOfBirth = result.DoB,

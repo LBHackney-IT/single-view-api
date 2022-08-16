@@ -54,7 +54,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
             var result = new SearchResult()
             {
                 Id = account.Id,
-                DataSource = dataSource.Name,
+                DataSources = new List<string>() { dataSource.Name },
                 FirstName = account.FirstName.Upcase(),
                 SurName = account.LastName.Upcase(),
                 DateOfBirth = account?.DateOfBirth,

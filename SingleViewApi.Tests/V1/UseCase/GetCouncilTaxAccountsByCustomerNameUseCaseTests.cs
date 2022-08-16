@@ -81,7 +81,7 @@ public class GetCouncilTaxAccountsByCustomerNameUseCaseTests : LogCallAspectFixt
         results.SearchResponse.UngroupedResults[0].FirstName.Should().BeEquivalentTo(stubbedEntity.Customers[0].FirstName);
         results.SearchResponse.UngroupedResults[0].SurName.Should().BeEquivalentTo(stubbedEntity.Customers[0].LastName);
         results.SearchResponse.UngroupedResults[0].DateOfBirth.Should().Be(stubbedEntity.Customers[0].DateOfBirth);
-        results.SearchResponse.UngroupedResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource.Name);
+        results.SearchResponse.UngroupedResults[0].DataSources[0].Should().BeEquivalentTo(stubbedDataSource.Name);
 
     }
 
