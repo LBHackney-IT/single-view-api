@@ -346,7 +346,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource.Name
+                DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
             },
             new SearchResult()
         {
@@ -354,7 +354,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
             FirstName = testFirstName,
             SurName = testLastName,
             DateOfBirth = DateTime.Now,
-            DataSource = stubbedHousingSearchDataSource.Name
+            DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
 
         },
             new SearchResult() {
@@ -362,7 +362,7 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource.Name
+                DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
             },
         };
         var expectedSortedData = new List<SearchResult>
@@ -373,21 +373,21 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
                 FirstName = testFirstName,
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource.Name
+                DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
             },
             new SearchResult(){
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "IrrelevantName",
                 SurName = testLastName,
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource.Name
+                DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
             },
             new SearchResult() {
                 Id = _fixture.Create<Guid>().ToString(),
                 FirstName = "AnotherIrrelevantName",
                 SurName = "IrrelevantLastName",
                 DateOfBirth = DateTime.Now,
-                DataSource = stubbedHousingSearchDataSource.Name
+                DataSources = new List<string>{stubbedHousingSearchDataSource.Name}
             },
         };
 
@@ -405,33 +405,33 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
         var lastNameFixture = _fixture.Create<string>();
         var dataSourceListFixture = _fixture.CreateMany<DataSource>(3).ToList();
         var searchResultsListFixture = _fixture.Build<SearchResult>()
-            .With(o => o.DataSource, dataSourceListFixture[0].Name).CreateMany(3).ToList();
+            .With(o => o.DataSources, new List<string>() { dataSourceListFixture[0].Name }).CreateMany(3).ToList();
 
         searchResultsListFixture.Add(_fixture.Build<SearchResult>()
             .With(o => o.FirstName, firstNameFixture)
             .With(o => o.SurName, lastNameFixture)
-            .With(o => o.DataSource, dataSourceListFixture[2].Name)
+            .With(o => o.DataSources, new List<string>() { dataSourceListFixture[2].Name })
             .Create());
 
         searchResultsListFixture.Add(_fixture.Build<SearchResult>()
             .With(o => o.FirstName, firstNameFixture)
             .With(o => o.SurName, lastNameFixture)
-            .With(o => o.DataSource, dataSourceListFixture[1].Name)
+            .With(o => o.DataSources, new List<string>() { dataSourceListFixture[1].Name })
             .Create());
 
         searchResultsListFixture.Add(_fixture.Build<SearchResult>()
             .With(o => o.FirstName, firstNameFixture)
             .With(o => o.SurName, lastNameFixture)
-            .With(o => o.DataSource, dataSourceListFixture[0].Name)
+            .With(o => o.DataSources, new List<string>() { dataSourceListFixture[0].Name })
             .Create());
 
 
         var results = _classUnderTest.SortResultsByRelevance(
             firstNameFixture, lastNameFixture, searchResultsListFixture);
 
-        Assert.AreNotEqual(results[1].DataSource, results[0].DataSource);
-        Assert.AreNotEqual(results[2].DataSource, results[0].DataSource);
-        Assert.AreNotEqual(results[2].DataSource, results[1].DataSource);
+        Assert.AreNotEqual(results[1].DataSources, results[0].DataSources);
+        Assert.AreNotEqual(results[2].DataSources, results[0].DataSources);
+        Assert.AreNotEqual(results[2].DataSources, results[1].DataSources);
     }
 
     [Test]

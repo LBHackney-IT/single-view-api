@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Hackney.Core.Logging;
-using Hackney.Shared.Person.Domain;
+using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
-using SingleViewApi.V1.Domain;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
 
@@ -16,10 +12,12 @@ namespace SingleViewApi.V1.UseCase
     public class SearchSingleViewUseCase : ISearchSingleViewUseCase
     {
         private readonly ICustomerGateway _customerGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-        public SearchSingleViewUseCase(ICustomerGateway customerGateway)
+        public SearchSingleViewUseCase(ICustomerGateway customerGateway, IDataSourceGateway dataSourceGateway)
         {
             _customerGateway = customerGateway;
+            _dataSourceGateway = dataSourceGateway;
         }
 
         [LogCall]
@@ -40,22 +38,16 @@ namespace SingleViewApi.V1.UseCase
             }
             else
             {
-                var personResults = new List<SearchResult>();
-
-                foreach (var result in searchResults)
+                var dataSources = _dataSourceGateway.GetAll();
+                var personResults = searchResults.Select(result => new SearchResult()
                 {
-                    var person = new SearchResult()
-                    {
-                        Id = result.Id.ToString(),
-                        DataSource = dataSourceName,
-                        FirstName = result.FirstName,
-                        SurName = result.LastName,
-                        DateOfBirth = result.DateOfBirth,
-                        NiNumber = result.NiNumber,
-                    };
-
-                    personResults.Add(person);
-                }
+                    Id = result.Id.ToString(),
+                    DataSources = result.DataSources.Map(customerDataSource => dataSources.Find(dataSource => dataSource.Id == customerDataSource.DataSourceId)?.Name),
+                    FirstName = result.FirstName,
+                    SurName = result.LastName,
+                    DateOfBirth = result.DateOfBirth,
+                    NiNumber = result.NiNumber
+                }).ToList();
 
                 response.SearchResponse = new SearchResponse()
                 {
