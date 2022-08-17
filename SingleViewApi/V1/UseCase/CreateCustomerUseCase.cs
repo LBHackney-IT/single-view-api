@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SingleViewApi.V1.Gateways;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Domain;
@@ -37,7 +37,8 @@ namespace SingleViewApi.V1.UseCase
 
             foreach (var customerRequestDataSource in customerRequest.DataSources)
             {
-                var dataSource = dataSources.FirstOrDefault(d => d.Name == customerRequestDataSource.DataSource);
+                var dataSource = dataSources.FirstOrDefault(d => String.Equals(d.Name, customerRequestDataSource.DataSource, StringComparison.CurrentCultureIgnoreCase));
+
                 if (dataSource != null)
                 {
 
