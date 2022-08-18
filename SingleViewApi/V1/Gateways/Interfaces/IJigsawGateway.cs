@@ -27,7 +27,7 @@ namespace SingleViewApi.V1.Gateways.Interfaces
 
         Task<JigsawCaseAdditionalFactorsResponseObject> GetCaseHealthAndWellBeing(string caseId, string bearerToken);
 
-        Task<string> GetLookup(string bearerToken, string id, bool isHousingCircumstance);
+        Task<JigsawLookupResponseObject> GetLookups(string bearerToken);
 
     }
 }

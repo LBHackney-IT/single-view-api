@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Shared.ContactDetail.Domain;
@@ -44,6 +45,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         var dataSource = _dataSourceGateway.GetEntityById(2);
 
+        var lookups = await _jigsawGateway.GetLookups(jigsawAuthResponse.Token);
+
         var jigsawId = new SystemId() { SystemName = dataSource?.Name, Id = jigsawResponse?.Id };
 
         var systemIdList = new List<SystemId>() { jigsawId };
@@ -66,8 +69,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 NiNo = jigsawResponse.PersonInfo.NationalInsuranceNumber,
                 NhsNumber = jigsawResponse.PersonInfo.NhsNumber,
                 PregnancyDueDate = jigsawResponse.PersonInfo.PregnancyDueDate,
-                AccommodationType = await _jigsawGateway.GetLookup(jigsawAuthResponse.Token, jigsawResponse.PersonInfo.AccommodationTypeId, false),
-                HousingCircumstance = await _jigsawGateway.GetLookup(jigsawAuthResponse.Token, jigsawResponse.PersonInfo.HousingCircumstanceId, true),
+                HousingCircumstance = lookups.HousingCircumstances.Circumstances.FirstOrDefault(x => x.Id == jigsawResponse.PersonInfo.HousingCircumstanceId)?.Name,
+                AccommodationType = lookups.AccommodationTypes.Types.FirstOrDefault(x => x.Id == jigsawResponse.PersonInfo.AccommodationTypeId)?.Name,
                 IsSettled = jigsawResponse.PersonInfo.IsSettled,
                 SupportWorker = jigsawResponse.PersonInfo.SupportWorker,
                 Gender = jigsawResponse.PersonInfo.Gender,
