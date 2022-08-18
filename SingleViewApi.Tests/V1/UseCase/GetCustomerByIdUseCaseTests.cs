@@ -166,8 +166,8 @@ namespace SingleViewApi.Tests.V1.UseCase
                 PersonTypes = null,
                 CautionaryAlerts = fakeCautionaryAlerts,
                 PregnancyDueDate = mockPregnancyDueDate,
-                AccommodationTypeId = mockAccommodationTypeId,
-                HousingCircumstanceId = mockHousingCircumstanceId,
+                AccommodationType = mockAccommodationTypeId,
+                HousingCircumstance = mockHousingCircumstanceId,
                 IsSettled = true,
                 SupportWorker = mockSupportWorker,
                 Gender = mockGender
@@ -283,8 +283,8 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.DateOfBirth.Should().Be(mockDateOfBirth);
             result.Customer.DateOfDeath.Should().BeNull();
             result.Customer.PregnancyDueDate.Should().Be(mockPregnancyDueDate);
-            result.Customer.AccommodationTypeId.Should().Be(mockAccommodationTypeId);
-            result.Customer.HousingCircumstanceId.Should().Be(mockHousingCircumstanceId);
+            result.Customer.AccommodationType.Should().Be(mockAccommodationTypeId);
+            result.Customer.HousingCircumstance.Should().Be(mockHousingCircumstanceId);
             result.Customer.IsSettled.Should().BeTrue();
             result.Customer.SupportWorker.Should().Be(mockSupportWorker);
             result.Customer.Gender.Should().Be(mockGender);
