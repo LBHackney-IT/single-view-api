@@ -25,12 +25,11 @@ public class CaseOverview
     public string Id { get; set; }
     public string CurrentFlowchartPosition { get; set; }
     public string CurrentDecision { get; set; }
-    public string HouseHoldComposition { get; set; }
 
-    public List<Member> HouseholdMembers { get; set; }
+    public List<JigsawHouseholdMember> HouseholdComposition { get; set; }
 }
 
-public class Member
+public class JigsawHouseholdMember
 {
     #nullable enable
     public string? Name { get; set; }
