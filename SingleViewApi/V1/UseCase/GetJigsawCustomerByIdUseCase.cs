@@ -66,8 +66,8 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
                 NiNo = jigsawResponse.PersonInfo.NationalInsuranceNumber,
                 NhsNumber = jigsawResponse.PersonInfo.NhsNumber,
                 PregnancyDueDate = jigsawResponse.PersonInfo.PregnancyDueDate,
-                AccommodationTypeId = jigsawResponse.PersonInfo.AccommodationTypeId,
-                HousingCircumstanceId = jigsawResponse.PersonInfo.HousingCircumstanceId,
+                AccommodationType = await _jigsawGateway.GetLookup(jigsawAuthResponse.Token,jigsawResponse.PersonInfo.AccommodationTypeId,false),
+                HousingCircumstance = await _jigsawGateway.GetLookup(jigsawAuthResponse.Token,jigsawResponse.PersonInfo.HousingCircumstanceId,true),
                 IsSettled = jigsawResponse.PersonInfo.IsSettled,
                 SupportWorker = jigsawResponse.PersonInfo.SupportWorker,
                 Gender = jigsawResponse.PersonInfo.Gender,
@@ -142,12 +142,4 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
         return res.Count == 0 ? null : res;
     }
-
-    public static Guid ToGuid(int value)
-    {
-        byte[] bytes = new byte[16];
-        BitConverter.GetBytes(value).CopyTo(bytes, 0);
-        return new Guid(bytes);
-    }
-
 }
