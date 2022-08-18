@@ -101,8 +101,6 @@ public class GetJigsawCustomerByIdUseCaseTest
         results.Customer.KnownAddresses[0].CurrentAddress.Should().Be(true);
         results.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
         results.Customer.PregnancyDueDate.Should().Be(stubbedEntity.PersonInfo.PregnancyDueDate);
-        results.Customer.AccommodationTypeId.Should().Be(stubbedEntity.PersonInfo.AccommodationTypeId);
-        results.Customer.HousingCircumstanceId.Should().Be(stubbedEntity.PersonInfo.HousingCircumstanceId);
         results.Customer.IsSettled.Should().BeTrue();
         results.Customer.SupportWorker.Should().Be(stubbedEntity.PersonInfo.SupportWorker);
         results.Customer.Gender.Should().Be(stubbedEntity.PersonInfo.Gender);
