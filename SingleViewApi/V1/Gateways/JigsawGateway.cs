@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -376,7 +375,7 @@ namespace SingleViewApi.V1.Gateways
             return additionalFactors;
         }
 
-        public async Task<string> GetLookup(string bearerToken, string id, bool isHousingCircumstance)
+        public async Task<JigsawLookupResponseObject> GetLookups(string bearerToken)
         {
             var requestUrl = $"{_homelessnessBaseUrl}/lookups";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -403,18 +402,11 @@ namespace SingleViewApi.V1.Gateways
                     Console.WriteLine(e);
                     Console.WriteLine("---- API RES:");
                     Console.WriteLine(jsonBody);
-                    return null;
+                    return lookups;
                 }
             }
+            return lookups;
 
-            if (isHousingCircumstance)
-            {
-                return lookups?.HousingCircumstances.Circumstances.First(x => x.Id == id).Name;
-            }
-            else
-            {
-                return lookups?.AccommodationTypes.Types.First(x => x.Id == id).Name;
-            }
 
         }
 
