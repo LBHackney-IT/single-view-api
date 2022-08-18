@@ -26,6 +26,19 @@ public class CaseOverview
     public string CurrentFlowchartPosition { get; set; }
     public string CurrentDecision { get; set; }
     public string HouseHoldComposition { get; set; }
+
+    public List<Member> HouseholdMembers { get; set; }
+}
+
+public class Member
+{
+    #nullable enable
+    public string? Name { get; set; }
+    public string? Gender { get; set; }
+    public string? DateOfBirth { get; set; }
+    public string? NiNumber { get; set; }
+    public string? NhsNumber { get; set; }
+    #nullable disable
 }
 
 
