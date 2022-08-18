@@ -134,8 +134,8 @@ namespace SingleViewApi.V1.UseCase
                     mergedCustomer.NhsNumber ??= r.Customer.NhsNumber;
                     mergedCustomer.NiNo ??= r.Customer.NiNo;
                     mergedCustomer.PregnancyDueDate ??= r.Customer.PregnancyDueDate;
-                    mergedCustomer.AccommodationTypeId ??= r.Customer.AccommodationTypeId;
-                    mergedCustomer.HousingCircumstanceId ??= r.Customer.HousingCircumstanceId;
+                    mergedCustomer.AccommodationType ??= r.Customer.AccommodationType;
+                    mergedCustomer.HousingCircumstance ??= r.Customer.HousingCircumstance;
                     mergedCustomer.IsSettled ??= r.Customer.IsSettled;
                     mergedCustomer.SupportWorker ??= r.Customer.SupportWorker;
                     mergedCustomer.Gender ??= r.Customer.Gender;
