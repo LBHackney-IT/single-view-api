@@ -52,6 +52,7 @@ namespace SingleViewApi.V1.UseCase
                         SurName = result.LastName,
                         DateOfBirth = result.DateOfBirth,
                         NiNumber = result.NiNumber,
+
                     };
 
                     personResults.Add(person);
