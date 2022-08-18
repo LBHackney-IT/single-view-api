@@ -64,6 +64,10 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
         var newCaseOverview = new CaseOverview();
 
+        var householdComposition = new List<JigsawHouseholdMember>();
+
+        //do call to new gateway method, loop through, add to list
+
         if (customerCaseOverview != null)
         {
             newCaseOverview = new CaseOverview()
@@ -71,7 +75,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
                 Id = customerCaseOverview.Id.ToString(),
                 CurrentDecision = customerCaseOverview.CurrentDecision,
                 CurrentFlowchartPosition = customerCaseOverview.CurrentFlowchartPosition,
-                HouseHoldComposition = customerCaseOverview.HouseholdComposition
+                HouseholdComposition = householdComposition,
             };
 
         }
