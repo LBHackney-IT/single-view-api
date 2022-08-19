@@ -52,6 +52,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
         var hackneyToken = _fixture.Create<string>();
         var jigsawToken = _fixture.Create<string>();
         var mockCustomerCases = _fixture.Create<JigsawCasesResponseObject>();
+        var mockCustomerHouseholdComposition = _fixture.Create<JigsawHouseholdCompositionResponseObject>();
         var mockCurrentCustomerCaseId = mockCustomerCases.Cases[0].Id;
         var mockCustomerCaseOverviews = _fixture.Build<JigsawCaseOverviewResponseObject>()
             .With(x => x.CustomerId, mockCurrentCustomerCaseId).Create();
@@ -132,6 +133,9 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
             .ReturnsAsync(mockCustomerCaseOverviews);
         _mockJigsawGateway.Setup(x => x.GetCaseAccommodationPlacementsByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockCustomerPlacements);
+        _mockJigsawGateway
+            .Setup(x => x.GetHouseholdCompositionByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
+            .ReturnsAsync(mockCustomerHouseholdComposition);
 
         _mockJigsawGateway.Setup(x => x.GetCaseAdditionalFactors(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockAdditionalFactors);
@@ -143,6 +147,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 
         result.CurrentCase.Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
         result.CaseOverview.Id.Should().BeEquivalentTo(mockCustomerCaseOverviews.Id.ToString());
+        result.CaseOverview.HouseholdComposition[0].Name.Should().BeEquivalentTo(mockCustomerHouseholdComposition.People[0].DisplayName);
         result.PlacementInformation[0].DclgClassificationType.Should()
             .BeEquivalentTo(mockCustomerPlacements.Placements[0].DclgClassificationType);
         result.AdditionalFactors[0].Legend.Should().BeEquivalentTo("Overview of additional factors");
@@ -150,7 +155,6 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
         result.AdditionalFactors[0].Info[0].Answer.Should().BeEquivalentTo("No");
         result.AdditionalFactors[0].Info[1].Question.Should().BeEquivalentTo("Detail current medication and dosage for all household members");
         result.AdditionalFactors[0].Info[1].Answer.Should().BeEquivalentTo("Paracetamol");
-
         result.HealthAndWellBeing[0].Legend.Should().BeEquivalentTo("Health and well being");
         result.HealthAndWellBeing[0].Info[0].Question.Should().BeEquivalentTo("Do you or any of your household members have any self-reported vulnerabilities?");
         result.HealthAndWellBeing[0].Info[0].Answer.Should().BeEquivalentTo("Yes");
