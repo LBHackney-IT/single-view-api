@@ -226,8 +226,9 @@ namespace SingleViewApi
             services.AddTransient<ISearchSingleViewUseCase, SearchSingleViewUseCase>(s =>
             {
                 var customerGateway = s.GetService<ICustomerGateway>();
+                var dataSourceGateway = s.GetService<IDataSourceGateway>();
 
-                return new SearchSingleViewUseCase(customerGateway);
+                return new SearchSingleViewUseCase(customerGateway, dataSourceGateway);
             });
 
             services.AddTransient<IGetCombinedSearchResultsByNameUseCase, GetCombinedSearchResultsByNameUseCase>(s =>
