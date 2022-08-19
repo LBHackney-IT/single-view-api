@@ -50,6 +50,7 @@ public class GetJigsawCustomerByIdUseCaseTest
     {
         var redisId = _fixture.Create<string>();
         var jigsawToken = _fixture.Create<string>();
+        var stubbedLookups = _fixture.Create<JigsawLookupResponseObject>();
         const string hackneyToken = "test-token";
         const string stubbedCorrespondenceAddress = "123 Some St, E8 3YD";
         const string stubbedEmailAddress = "some@example.com";
@@ -86,6 +87,7 @@ public class GetJigsawCustomerByIdUseCaseTest
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
         _mockJigsawGateway.Setup(x => x.GetCustomerById(stubbedCustomerId, jigsawToken)).ReturnsAsync(stubbedEntity);
+        _mockJigsawGateway.Setup(x => x.GetLookups(jigsawToken)).ReturnsAsync(stubbedLookups);
 
         var results = _classUnderTest.Execute(stubbedCustomerId, redisId, hackneyToken).Result;
 
@@ -101,8 +103,6 @@ public class GetJigsawCustomerByIdUseCaseTest
         results.Customer.KnownAddresses[0].CurrentAddress.Should().Be(true);
         results.Customer.KnownAddresses[0].DataSourceName.Should().BeEquivalentTo(stubbedDataSource.Name);
         results.Customer.PregnancyDueDate.Should().Be(stubbedEntity.PersonInfo.PregnancyDueDate);
-        results.Customer.AccommodationTypeId.Should().Be(stubbedEntity.PersonInfo.AccommodationTypeId);
-        results.Customer.HousingCircumstanceId.Should().Be(stubbedEntity.PersonInfo.HousingCircumstanceId);
         results.Customer.IsSettled.Should().BeTrue();
         results.Customer.SupportWorker.Should().Be(stubbedEntity.PersonInfo.SupportWorker);
         results.Customer.Gender.Should().Be(stubbedEntity.PersonInfo.Gender);
@@ -147,11 +147,13 @@ public class GetJigsawCustomerByIdUseCaseTest
 
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCustomerId = _fixture.Create<string>();
+        var stubbedLookups = _fixture.Create<JigsawLookupResponseObject>();
 
         _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
         _mockJigsawGateway.Setup(x => x.GetCustomerById(stubbedCustomerId, jigsawToken)).ReturnsAsync(stubbedEntity);
+        _mockJigsawGateway.Setup(x => x.GetLookups(jigsawToken)).ReturnsAsync(stubbedLookups);
 
         var results = _classUnderTest.Execute(stubbedCustomerId, redisId, hackneyToken).Result;
 
