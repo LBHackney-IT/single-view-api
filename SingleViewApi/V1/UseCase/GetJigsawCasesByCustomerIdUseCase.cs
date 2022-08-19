@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using ServiceStack;
@@ -70,14 +72,13 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var newCaseOverview = new CaseOverview();
         var householdComposition = new List<JigsawHouseholdMember>();
 
-        //do call to new gateway method, loop through, add to list, update tests
         if (householdCompositionResponse != null)
         {
             foreach (var householdMember in householdCompositionResponse.People)
             {
                 var newMember = new JigsawHouseholdMember()
                 {
-                    DateOfBirth = householdMember.DateOfBirth.ToLongDateString(),
+                    DateOfBirth = householdMember.DateOfBirth?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                     Gender = householdMember.Gender,
                     Name = householdMember.DisplayName,
                     NhsNumber = householdMember.NhsNumber,

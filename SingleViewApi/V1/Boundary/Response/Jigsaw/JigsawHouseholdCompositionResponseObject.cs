@@ -130,73 +130,73 @@ public class JigsawHouseholdPerson
     [JsonProperty("customerReference")]
     public string? CustomerReference { get; set; }
 
-#nullable disable
-
-    [JsonProperty("lastName")]
-    public string LastName { get; set; }
-
-    [JsonProperty("displayName")]
-    public string DisplayName { get; set; }
-
-    [JsonProperty("dateOfBirth")]
-    public DateTime DateOfBirth { get; set; }
-
-    [JsonProperty("nationalInsuranceNumber")]
-    public string NationalInsuranceNumber { get; set; }
-
-    [JsonProperty("addressString")]
-    public string AddressString { get; set; }
-
-    [JsonProperty("address")]
-    public HouseholdCompositionAddress Address { get; set; }
+    [JsonProperty("workPhoneNumber")]
+    public string? WorkPhoneNumber { get; set; }
 
     [JsonProperty("moveInDate")]
-    public DateTime MoveInDate { get; set; }
+    public DateTime? MoveInDate { get; set; }
+
+    [JsonProperty("lastName")]
+    public string? LastName { get; set; }
+
+    [JsonProperty("displayName")]
+    public string? DisplayName { get; set; }
+
+    [JsonProperty("dateOfBirth")]
+    public DateTime? DateOfBirth { get; set; }
+
+    [JsonProperty("nationalInsuranceNumber")]
+    public string? NationalInsuranceNumber { get; set; }
+
+    [JsonProperty("addressString")]
+    public string? AddressString { get; set; }
+
+    [JsonProperty("address")]
+    public HouseholdCompositionAddress? Address { get; set; }
 
     [JsonProperty("accommodationTypeId")]
-    public int AccommodationTypeId { get; set; }
+    public int? AccommodationTypeId { get; set; }
 
     [JsonProperty("housingCircumstanceId")]
-    public int HousingCircumstanceId { get; set; }
+    public int? HousingCircumstanceId { get; set; }
 
     [JsonProperty("isSettled")]
-    public bool IsSettled { get; set; }
+    public bool? IsSettled { get; set; }
 
     [JsonProperty("okToContactOnHomePhoneNumber")]
-    public bool OkToContactOnHomePhoneNumber { get; set; }
+    public bool? OkToContactOnHomePhoneNumber { get; set; }
 
     [JsonProperty("mobilePhoneNumber")]
-    public string MobilePhoneNumber { get; set; }
+    public string? MobilePhoneNumber { get; set; }
 
     [JsonProperty("okToContactOnMobilePhoneNumber")]
-    public bool OkToContactOnMobilePhoneNumber { get; set; }
-
-    [JsonProperty("workPhoneNumber")]
-    public object WorkPhoneNumber { get; set; }
+    public bool? OkToContactOnMobilePhoneNumber { get; set; }
 
     [JsonProperty("okToContactOnWorkPhoneNumber")]
-    public bool OkToContactOnWorkPhoneNumber { get; set; }
+    public bool? OkToContactOnWorkPhoneNumber { get; set; }
 
     [JsonProperty("emailAddress")]
-    public string EmailAddress { get; set; }
+    public string? EmailAddress { get; set; }
 
     [JsonProperty("okToContactOnEmail")]
-    public bool OkToContactOnEmail { get; set; }
+    public bool? OkToContactOnEmail { get; set; }
 
     [JsonProperty("contactDetailsId")]
-    public int ContactDetailsId { get; set; }
+    public int? ContactDetailsId { get; set; }
 
     [JsonProperty("supportWorker")]
-    public JigsawSupportWorker SupportWorker { get; set; }
+    public JigsawSupportWorker? SupportWorker { get; set; }
 
     [JsonProperty("gender")]
-    public string Gender { get; set; }
+    public string? Gender { get; set; }
 
     [JsonProperty("householdMemberType")]
-    public int HouseholdMemberType { get; set; }
+    public int? HouseholdMemberType { get; set; }
 
     [JsonProperty("preferredLanguage")]
-    public string PreferredLanguage { get; set; }
+    public string? PreferredLanguage { get; set; }
+
+#nullable disable
 }
 
 public class JigsawHouseholdCompositionResponseObject
