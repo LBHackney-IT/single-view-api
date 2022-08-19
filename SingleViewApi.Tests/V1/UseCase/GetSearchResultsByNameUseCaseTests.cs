@@ -86,7 +86,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 .Be(stubbedEntity.Results.Persons[0].DateOfBirth);
             results.SearchResponse.UngroupedResults[0].KnownAddresses[0].FullAddress.Should()
                 .BeEquivalentTo(stubbedEntity.Results.Persons[0].Tenures.ToList()[0].AssetFullAddress);
-            results.SearchResponse.UngroupedResults[0].DataSource.Should().BeEquivalentTo(stubbedDataSource.Name);
+            results.SearchResponse.UngroupedResults[0].DataSources[0].Should().BeEquivalentTo(stubbedDataSource.Name);
         }
     }
 }
