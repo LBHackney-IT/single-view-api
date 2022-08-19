@@ -143,7 +143,6 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 
         result.CurrentCase.Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
         result.CaseOverview.Id.Should().BeEquivalentTo(mockCustomerCaseOverviews.Id.ToString());
-        result.CaseOverview.HouseHoldComposition.Should().BeEquivalentTo(mockCustomerCaseOverviews.HouseholdComposition);
         result.PlacementInformation[0].DclgClassificationType.Should()
             .BeEquivalentTo(mockCustomerPlacements.Placements[0].DclgClassificationType);
         result.AdditionalFactors[0].Legend.Should().BeEquivalentTo("Overview of additional factors");

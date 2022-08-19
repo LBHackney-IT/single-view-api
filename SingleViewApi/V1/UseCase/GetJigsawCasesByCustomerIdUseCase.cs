@@ -50,11 +50,16 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var customerCaseOverview = new JigsawCaseOverviewResponseObject();
         JigsawCasePlacementInformationResponseObject customerAccommodationPlacementList = null;
 
+        var householdCompositionResponse = new JigsawHouseholdCompositionResponseObject();
+
         if (currentCase != null)
         {
             customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
             customerAccommodationPlacementList =
                 await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+            householdCompositionResponse =
+                await _jigsawGateway.GetHouseholdCompositionByCaseId(currentCase.Id.ToString(),
+                    jigsawAuthResponse.Token);
         }
 
         if (customerAccommodationPlacementList != null)
@@ -63,10 +68,27 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
 
         var newCaseOverview = new CaseOverview();
-
         var householdComposition = new List<JigsawHouseholdMember>();
 
-        //do call to new gateway method, loop through, add to list
+        //do call to new gateway method, loop through, add to list, update tests
+        if (householdCompositionResponse != null)
+        {
+            foreach (var householdMember in householdCompositionResponse.People)
+            {
+                var newMember = new JigsawHouseholdMember()
+                {
+                    DateOfBirth = householdMember.DateOfBirth.ToLongDateString(),
+                    Gender = householdMember.Gender,
+                    Name = householdMember.DisplayName,
+                    NhsNumber = householdMember.NhsNumber,
+                    NiNumber = householdMember.NationalInsuranceNumber
+                };
+
+                householdComposition.Add(newMember);
+            }
+        }
+
+
 
         if (customerCaseOverview != null)
         {

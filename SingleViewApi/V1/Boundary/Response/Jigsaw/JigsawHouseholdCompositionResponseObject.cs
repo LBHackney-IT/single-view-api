@@ -13,8 +13,24 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("apartment")]
         public string Apartment { get; set; }
 
+#nullable enable
+
         [JsonProperty("roomNumber")]
-        public object RoomNumber { get; set; }
+        public int? RoomNumber { get; set; }
+
+        [JsonProperty("latitude")]
+        public string? Latitude { get; set; }
+
+        [JsonProperty("longitude")]
+        public string? Longitude { get; set; }
+
+        [JsonProperty("freetext")]
+        public string? Freetext { get; set; }
+
+        [JsonProperty("locality")]
+        public string? Locality { get; set; }
+
+#nullable disable
 
         [JsonProperty("houseName")]
         public string HouseName { get; set; }
@@ -25,9 +41,6 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("street")]
         public string Street { get; set; }
 
-        [JsonProperty("locality")]
-        public object Locality { get; set; }
-
         [JsonProperty("town")]
         public string Town { get; set; }
 
@@ -37,26 +50,17 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("postcode")]
         public string Postcode { get; set; }
 
-        [JsonProperty("latitude")]
-        public object Latitude { get; set; }
-
-        [JsonProperty("longitude")]
-        public object Longitude { get; set; }
-
-        [JsonProperty("freetext")]
-        public object Freetext { get; set; }
-
         [JsonProperty("isCurrent")]
         public bool IsCurrent { get; set; }
     }
 
-    public class Person
+    public class JigsawHouseholdPerson
     {
         [JsonProperty("casePersonId")]
         public int CasePersonId { get; set; }
 
         [JsonProperty("referralPersonId")]
-        public object ReferralPersonId { get; set; }
+        public int? ReferralPersonId { get; set; }
 
         [JsonProperty("isLead")]
         public bool IsLead { get; set; }
@@ -68,7 +72,7 @@ namespace SingleViewApi.V1.Boundary.Response;
         public int PersonTitleId { get; set; }
 
         [JsonProperty("relationshipId")]
-        public object RelationshipId { get; set; }
+        public int? RelationshipId { get; set; }
 
         [JsonProperty("genderId")]
         public int GenderId { get; set; }
@@ -82,11 +86,51 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("firstName")]
         public string FirstName { get; set; }
 
+        #nullable enable
+
         [JsonProperty("middleName")]
-        public object MiddleName { get; set; }
+        public string? MiddleName { get; set; }
 
         [JsonProperty("otherName")]
-        public object OtherName { get; set; }
+        public string? OtherName { get; set; }
+
+        [JsonProperty("nhsNumber")]
+        public string? NhsNumber { get; set; }
+
+        [JsonProperty("pregnancyDueDate")]
+        public string? PregnancyDueDate { get; set; }
+
+        [JsonProperty("housingCircumstance")]
+        public string? HousingCircumstance { get; set; }
+
+        [JsonProperty("accommodationDescription")]
+        public string? AccommodationDescription { get; set; }
+
+        [JsonProperty("accommodationProvider")]
+        public string? AccommodationProvider { get; set; }
+
+        [JsonProperty("correspondenceAddress")]
+        public string? CorrespondenceAddress { get; set; }
+
+        [JsonProperty("correspondenceAddressString")]
+        public string? CorrespondenceAddressString { get; set; }
+
+        [JsonProperty("homePhoneNumber")]
+        public string? HomePhoneNumber { get; set; }
+
+        [JsonProperty("supportWorkerId")]
+        public int? SupportWorkerId { get; set; }
+
+        [JsonProperty("contactMethodId")]
+        public int? ContactMethodId { get; set; }
+
+        [JsonProperty("contactMethod")]
+        public int? ContactMethod { get; set; }
+
+        [JsonProperty("customerReference")]
+        public string? CustomerReference { get; set; }
+
+        #nullable disable
 
         [JsonProperty("lastName")]
         public string LastName { get; set; }
@@ -99,12 +143,6 @@ namespace SingleViewApi.V1.Boundary.Response;
 
         [JsonProperty("nationalInsuranceNumber")]
         public string NationalInsuranceNumber { get; set; }
-
-        [JsonProperty("nhsNumber")]
-        public object NhsNumber { get; set; }
-
-        [JsonProperty("pregnancyDueDate")]
-        public object PregnancyDueDate { get; set; }
 
         [JsonProperty("addressString")]
         public string AddressString { get; set; }
@@ -123,24 +161,6 @@ namespace SingleViewApi.V1.Boundary.Response;
 
         [JsonProperty("isSettled")]
         public bool IsSettled { get; set; }
-
-        [JsonProperty("housingCircumstance")]
-        public object HousingCircumstance { get; set; }
-
-        [JsonProperty("accommodationDescription")]
-        public object AccommodationDescription { get; set; }
-
-        [JsonProperty("accommodationProvider")]
-        public object AccommodationProvider { get; set; }
-
-        [JsonProperty("correspondenceAddress")]
-        public object CorrespondenceAddress { get; set; }
-
-        [JsonProperty("correspondenceAddressString")]
-        public object CorrespondenceAddressString { get; set; }
-
-        [JsonProperty("homePhoneNumber")]
-        public object HomePhoneNumber { get; set; }
 
         [JsonProperty("okToContactOnHomePhoneNumber")]
         public bool OkToContactOnHomePhoneNumber { get; set; }
@@ -169,32 +189,20 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("supportWorker")]
         public JigsawSupportWorker SupportWorker { get; set; }
 
-        [JsonProperty("supportWorkerId")]
-        public object SupportWorkerId { get; set; }
-
         [JsonProperty("gender")]
         public string Gender { get; set; }
 
         [JsonProperty("householdMemberType")]
         public int HouseholdMemberType { get; set; }
 
-        [JsonProperty("contactMethodId")]
-        public object ContactMethodId { get; set; }
-
-        [JsonProperty("contactMethod")]
-        public object ContactMethod { get; set; }
-
         [JsonProperty("preferredLanguage")]
         public string PreferredLanguage { get; set; }
-
-        [JsonProperty("customerReference")]
-        public object CustomerReference { get; set; }
     }
 
     public class JigsawHouseholdCompositionResponseObject
     {
         [JsonProperty("people")]
-        public List<Person> People { get; set; }
+        public List<JigsawHouseholdPerson> People { get; set; }
 
     }
 
@@ -203,26 +211,28 @@ namespace SingleViewApi.V1.Boundary.Response;
         [JsonProperty("id")]
         public int Id { get; set; }
 
+    #nullable enable
         [JsonProperty("firstName")]
-        public object FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [JsonProperty("lastName")]
-        public object LastName { get; set; }
+        public string? LastName { get; set; }
 
         [JsonProperty("fullName")]
-        public object FullName { get; set; }
+        public string? FullName { get; set; }
 
         [JsonProperty("jobTitle")]
-        public object JobTitle { get; set; }
+        public string? JobTitle { get; set; }
 
         [JsonProperty("agency")]
-        public object Agency { get; set; }
+        public string? Agency { get; set; }
 
         [JsonProperty("phoneNumber")]
-        public object PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [JsonProperty("emailAddress")]
-        public object EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
+#nullable disable
     }
 
 
