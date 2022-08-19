@@ -50,9 +50,9 @@ namespace SingleViewApi.V1.Boundary.Response
 
         public string? PregnancyDueDate { get; set; }
 
-        public string? AccommodationTypeId { get; set; }
+        public string? AccommodationType { get; set; }
 
-        public string? HousingCircumstanceId { get; set; }
+        public string? HousingCircumstance { get; set; }
 
         public bool? IsSettled { get; set; }
 
