@@ -31,13 +31,13 @@ public class CaseOverview
 
 public class JigsawHouseholdMember
 {
-    #nullable enable
+#nullable enable
     public string? Name { get; set; }
     public string? Gender { get; set; }
     public string? DateOfBirth { get; set; }
     public string? NiNumber { get; set; }
     public string? NhsNumber { get; set; }
-    #nullable disable
+#nullable disable
 }
 
 
