@@ -90,6 +90,16 @@ namespace SingleViewApi
                     );
             });
 
+            services.AddTransient<ITenureGateway, TenureGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new TenureGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("TENURE_API")
+                    );
+            });
+
             services.AddTransient<ICautionaryAlertsGateway, CautionaryAlertsGateway>(s =>
             {
                 var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
@@ -115,8 +125,9 @@ namespace SingleViewApi
                 var dataSourceGateway = s.GetService<IDataSourceGateway>();
                 var equalityInformationGateway = s.GetService<IEqualityInformationGateway>();
                 var cautionaryAlertsGateway = s.GetService<ICautionaryAlertsGateway>();
+                var tenureGateway = s.GetService<ITenureGateway>();
 
-                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityInformationGateway, cautionaryAlertsGateway);
+                return new GetPersonApiByIdUseCase(personGateway, contactDetailsGateway, dataSourceGateway, equalityInformationGateway, cautionaryAlertsGateway, tenureGateway);
             });
 
             services.AddTransient<ICreateCustomerUseCase, CreateCustomerUseCase>(s =>

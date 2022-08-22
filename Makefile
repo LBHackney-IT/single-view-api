@@ -3,7 +3,7 @@ setup:
 	docker-compose build
 
 .PHONY: build
-build:
+buid:
 	docker-compose build SingleViewApi
 
 .PHONY: serve
