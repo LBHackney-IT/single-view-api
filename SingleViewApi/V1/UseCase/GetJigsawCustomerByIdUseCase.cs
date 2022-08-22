@@ -81,10 +81,10 @@ public class GetJigsawCustomerByIdUseCase : IGetJigsawCustomerByIdUseCase
 
                         FullAddress = jigsawResponse.PersonInfo.AddressString,
                         CurrentAddress = true,
-                        DataSourceName = dataSource.Name
+                        DataSourceName = dataSource?.Name
                     }
                 },
-                AllContactDetails = GetContacts(jigsawResponse, dataSource.Name)
+                AllContactDetails = GetContacts(jigsawResponse, dataSource?.Name)
             };
         }
         return response;
