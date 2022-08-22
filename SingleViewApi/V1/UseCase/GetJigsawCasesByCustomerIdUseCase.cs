@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using ServiceStack;
@@ -50,11 +52,16 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         var customerCaseOverview = new JigsawCaseOverviewResponseObject();
         JigsawCasePlacementInformationResponseObject customerAccommodationPlacementList = null;
 
+        var householdCompositionResponse = new JigsawHouseholdCompositionResponseObject();
+
         if (currentCase != null)
         {
             customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
             customerAccommodationPlacementList =
                 await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+            householdCompositionResponse =
+                await _jigsawGateway.GetHouseholdCompositionByCaseId(currentCase.Id.ToString(),
+                    jigsawAuthResponse.Token);
         }
 
         if (customerAccommodationPlacementList != null)
@@ -63,6 +70,26 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
         }
 
         var newCaseOverview = new CaseOverview();
+        var householdComposition = new List<JigsawHouseholdMember>();
+
+        if (householdCompositionResponse != null)
+        {
+            foreach (var householdMember in householdCompositionResponse.People)
+            {
+                var newMember = new JigsawHouseholdMember()
+                {
+                    DateOfBirth = householdMember.DateOfBirth?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                    Gender = householdMember.Gender,
+                    Name = householdMember.DisplayName,
+                    NhsNumber = householdMember.NhsNumber,
+                    NiNumber = householdMember.NationalInsuranceNumber
+                };
+
+                householdComposition.Add(newMember);
+            }
+        }
+
+
 
         if (customerCaseOverview != null)
         {
@@ -71,7 +98,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
                 Id = customerCaseOverview.Id.ToString(),
                 CurrentDecision = customerCaseOverview.CurrentDecision,
                 CurrentFlowchartPosition = customerCaseOverview.CurrentFlowchartPosition,
-                HouseHoldComposition = customerCaseOverview.HouseholdComposition
+                HouseholdComposition = householdComposition,
             };
 
         }
