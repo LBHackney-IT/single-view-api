@@ -52,6 +52,7 @@ functions:
       ACADEMY_API_V1: ${ssm:/single-view/${self:provider.stage}/academy-v1}
       CAUTIONARY_ALERTS_API: ${ssm:/single-view/${self:provider.stage}/cautionary-alerts-v1}
       ACADEMY_API_KEY: ${ssm:/single-view/${self:provider.stage}/academy-api-key}
+      TENURE_API: ${ssm:/single-view/${self:provider.stage}/tenure-api}
 
 
     events:
