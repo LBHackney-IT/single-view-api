@@ -71,8 +71,6 @@ namespace SingleViewApi.V1.Boundary.Response
         public CouncilTaxAccountInfo? CouncilTaxAccount { get; set; }
         public HousingBenefitsAccountInfo? HousingBenefitsAccount { get; set; }
 
-        public decimal? WeeklyHousingBenefitAmount { get; set; }
-
         public bool? IsAMinor { get; set; }
 #nullable disable
     }
