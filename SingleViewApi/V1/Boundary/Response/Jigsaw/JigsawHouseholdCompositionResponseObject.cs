@@ -125,7 +125,7 @@ public class JigsawHouseholdPerson
     public int? ContactMethodId { get; set; }
 
     [JsonProperty("contactMethod")]
-    public int? ContactMethod { get; set; }
+    public string? ContactMethod { get; set; }
 
     [JsonProperty("customerReference")]
     public string? CustomerReference { get; set; }
