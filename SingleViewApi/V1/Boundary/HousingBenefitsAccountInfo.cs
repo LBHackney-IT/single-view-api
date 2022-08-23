@@ -11,6 +11,8 @@ public class HousingBenefitsAccountInfo
     public string? PersonReference { get; set; }
     public List<HouseholdMember>? HouseholdMembers { get; set; }
     public List<Benefits>? Benefits { get; set; }
+
+    public decimal? WeeklyHousingBenefitAmount { get; set; }
 #nullable disable
 }
 

@@ -32,6 +32,8 @@ public class HousingBenefitsRecordResponseObject
 
     public List<Benefits>? Benefits { get; set; }
 
+    public decimal? WeeklyHousingBenefitAmount { get; set; }
+
 #nullable disable
 }
 
