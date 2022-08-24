@@ -53,7 +53,8 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
                     CheckDigit = account.CheckDigit,
                     PersonReference = account.PersonReference,
                     HouseholdMembers = account.HouseholdMembers,
-                    Benefits = account.Benefits
+                    Benefits = account.Benefits,
+                    WeeklyHousingBenefitAmount = account.WeeklyHousingBenefitAmount
                 }
             };
         }
