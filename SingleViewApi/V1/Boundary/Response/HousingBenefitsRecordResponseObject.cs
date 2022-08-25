@@ -32,7 +32,7 @@ public class HousingBenefitsRecordResponseObject
 
     public List<Benefits>? Benefits { get; set; }
 
-    public decimal? WeeklyHousingBenefitAmount { get; set; }
+    public HbInfo? HousingBenefitDetails { get; set; }
 
 #nullable disable
 }
@@ -43,6 +43,12 @@ public class Benefits
     public string Description { get; set; }
     public string Period { get; set; }
     public int Frequency { get; set; }
+}
+
+public class HbInfo
+{
+    public string HousingBenefitPayee { get; set; }
+    public decimal WeeklyHousingBenefit { get; set; }
 }
 
 public class HouseholdMember
