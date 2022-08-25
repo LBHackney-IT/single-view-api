@@ -34,6 +34,8 @@ public class HousingBenefitsRecordResponseObject
 
     public HbInfo? HousingBenefitDetails { get; set; }
 
+    public HousingBenefitLandlordDetails? HousingBenefitLandlordDetails { get; set; }
+
 #nullable disable
 }
 
@@ -49,6 +51,18 @@ public class HbInfo
 {
     public string HousingBenefitPayee { get; set; }
     public decimal WeeklyHousingBenefit { get; set; }
+}
+
+public class HousingBenefitLandlordDetails
+{
+    public int ClaimId { get; set; }
+    public string Name { get; set; }
+    public string Addr1 { get; set; }
+    public string Addr2 { get; set; }
+    public string Addr3 { get; set; }
+    public string Addr4 { get; set; }
+    public string Postcode { get; set; }
+    public int CreditorId { get; set; }
 }
 
 public class HouseholdMember
