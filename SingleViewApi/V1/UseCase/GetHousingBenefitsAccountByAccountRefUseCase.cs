@@ -55,7 +55,8 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
                     HouseholdMembers = account.HouseholdMembers,
                     Benefits = account.Benefits,
                     WeeklyHousingBenefitDetails = account.HousingBenefitDetails,
-                    HousingBenefitLandlordDetails = account.HousingBenefitLandlordDetails
+                    HousingBenefitLandlordDetails = account.HousingBenefitLandlordDetails,
+                    LastPaymentDetails = account.LastPaymentDetails
 
                 }
             };
