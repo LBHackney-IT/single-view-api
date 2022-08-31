@@ -36,6 +36,8 @@ public class HousingBenefitsRecordResponseObject
 
     public HousingBenefitLandlordDetails? HousingBenefitLandlordDetails { get; set; }
 
+    public PaymentDetails? LastPaymentDetails { get; set; }
+
 #nullable disable
 }
 
@@ -74,6 +76,13 @@ public class HouseholdMember
     public string LastName { get; set; }
 
     public DateTime? DateOfBirth { get; set; }
+}
+
+public class PaymentDetails
+{
+    public int ClaimId { get; set; }
+    public DateTime PostingDate { get; set; }
+    public decimal PaymentAmount { get; set; }
 }
 
 
