@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -27,6 +28,7 @@ namespace SingleViewApi.Tests.V1.UseCase
         private GetCustomerByIdUseCase _classUnderTest;
         private Mock<IGetHousingBenefitsAccountByAccountRefUseCase> _mockGetHousingBenefitsAccountByAccountRefUseCase;
         private Fixture _fixture;
+        private Mock<ISharedPlanGateway> _mockSharedPlanGateway;
 
         [SetUp]
         public void SetUp()
@@ -36,12 +38,14 @@ namespace SingleViewApi.Tests.V1.UseCase
             _mockGetJigsawCustomerByIdUseCase = new Mock<IGetJigsawCustomerByIdUseCase>();
             _mockGetCouncilTaxAccountByAccountRefUseCase = new Mock<IGetCouncilTaxAccountByAccountRefUseCase>();
             _mockGetHousingBenefitsAccountByAccountRefUseCase = new Mock<IGetHousingBenefitsAccountByAccountRefUseCase>();
+            _mockSharedPlanGateway = new Mock<ISharedPlanGateway>();
             _classUnderTest = new GetCustomerByIdUseCase(
                 _mockCustomerGateway.Object,
                 _mockGetPersonApiByIdUseCase.Object,
                 _mockGetJigsawCustomerByIdUseCase.Object,
                 _mockGetCouncilTaxAccountByAccountRefUseCase.Object,
-                _mockGetHousingBenefitsAccountByAccountRefUseCase.Object);
+                _mockGetHousingBenefitsAccountByAccountRefUseCase.Object,
+                _mockSharedPlanGateway.Object);
             _fixture = new Fixture();
 
         }
@@ -92,6 +96,15 @@ namespace SingleViewApi.Tests.V1.UseCase
                     }
                 }
             });
+
+            _mockSharedPlanGateway.Setup(x => x.GetSharedPlans(It.IsAny<GetSharedPlanRequest>(), It.IsAny<string>()))
+                .ReturnsAsync(new SharedPlanResponseObject
+                {
+                    PlanIds = new List<string>
+                    {
+                        "101010", "202020", "303030"
+                    }
+                });
 
             var fakeContactDetails = new List<CustomerContactDetails>()
             {
@@ -302,6 +315,10 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.HousingBenefitsAccount.Should().BeEquivalentTo(mockHousingBenefitsAccount);
             result.Customer.CautionaryAlerts.Count.Should().Be(fakeCautionaryAlerts.Count + fakeJigsawCautionaryAlerts.Count);
             result.Customer.EqualityInformation.Should().Be(fakeEqualityInformation);
+            result.Customer.SharedPlanIds.PlanIds.Count.Should().Be(3);
+            result.Customer.SharedPlanIds.PlanIds[0].Should().BeEquivalentTo("101010");
+            result.Customer.SharedPlanIds.PlanIds[1].Should().BeEquivalentTo("202020");
+            result.Customer.SharedPlanIds.PlanIds[2].Should().BeEquivalentTo("303030");
         }
 
         [Test]
