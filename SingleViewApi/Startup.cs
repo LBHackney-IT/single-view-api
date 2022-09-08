@@ -163,6 +163,17 @@ namespace SingleViewApi
                     redisManager.GetClient());
             });
 
+            services.AddTransient<ISharedPlanGateway, SharedPlanGateway>(s =>
+            {
+                var httpClient = s.GetService<IHttpClientFactory>().CreateClient();
+
+                return new SharedPlanGateway(
+                    httpClient,
+                    Environment.GetEnvironmentVariable("SHARED_PLAN_API")
+                    );
+            });
+
+
             services.AddHttpClient("JigsawClient").ConfigureHttpClient(client =>
             {
                 client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("JIGSAW_LOGIN_URL"));
@@ -185,13 +196,15 @@ namespace SingleViewApi
                 var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
                 var getCouncilTaxAccountByIdAccountRefUseCase = s.GetService<IGetCouncilTaxAccountByAccountRefUseCase>();
                 var getHousingBenefitsAccountByAccountRefUseCase = s.GetService<IGetHousingBenefitsAccountByAccountRefUseCase>();
+                var sharedPlanGateway = s.GetService<ISharedPlanGateway>();
 
                 return new GetCustomerByIdUseCase(
                     customerGateway,
                     getPersonApiByIdUseCase,
                     getJigsawCustomerByIdUseCase,
                     getCouncilTaxAccountByIdAccountRefUseCase,
-                    getHousingBenefitsAccountByAccountRefUseCase);
+                    getHousingBenefitsAccountByAccountRefUseCase,
+                    sharedPlanGateway);
             });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {
