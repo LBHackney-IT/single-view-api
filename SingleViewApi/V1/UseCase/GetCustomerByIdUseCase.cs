@@ -98,10 +98,6 @@ namespace SingleViewApi.V1.UseCase
 
             var sharedPlanIds = _sharedPlanGateway.GetSharedPlans(getSharedPlanRequest, userToken).Result;
 
-            Console.WriteLine("----------------------------SHARED-PLAN-IDS-----------------------------");
-            Console.WriteLine(sharedPlanIds);
-            Console.WriteLine("----------------------------SHARED-PLAN-IDS-----------------------------");
-
             return MergeRecords(customer, foundRecords, sharedPlanIds);
         }
 
