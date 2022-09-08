@@ -8,6 +8,7 @@ using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
 
@@ -20,15 +21,22 @@ namespace SingleViewApi.V1.UseCase
         private readonly IGetJigsawCustomerByIdUseCase _jigsawCustomerByIdUseCase;
         private readonly IGetCouncilTaxAccountByAccountRefUseCase _getCouncilTaxAccountByAccountRefUseCase;
         private readonly IGetHousingBenefitsAccountByAccountRefUseCase _getHousingBenefitsAccountByAccountRefUseCase;
+        private readonly ISharedPlanGateway _sharedPlanGateway;
 
-        public GetCustomerByIdUseCase(ICustomerGateway gateway, IGetPersonApiByIdUseCase getPersonApiByIdUseCase, IGetJigsawCustomerByIdUseCase jigsawCustomerByIdUseCase,
-        IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase, IGetHousingBenefitsAccountByAccountRefUseCase getHousingBenefitsAccountByAccountRefUseCase)
+        public GetCustomerByIdUseCase(
+            ICustomerGateway gateway,
+            IGetPersonApiByIdUseCase getPersonApiByIdUseCase,
+            IGetJigsawCustomerByIdUseCase jigsawCustomerByIdUseCase,
+            IGetCouncilTaxAccountByAccountRefUseCase getCouncilTaxAccountByAccountRefUseCase,
+            IGetHousingBenefitsAccountByAccountRefUseCase getHousingBenefitsAccountByAccountRefUseCase,
+            ISharedPlanGateway sharedPlanGateway)
         {
             _gateway = gateway;
             _getPersonApiByIdUseCase = getPersonApiByIdUseCase;
             _jigsawCustomerByIdUseCase = jigsawCustomerByIdUseCase;
             _getCouncilTaxAccountByAccountRefUseCase = getCouncilTaxAccountByAccountRefUseCase;
             _getHousingBenefitsAccountByAccountRefUseCase = getHousingBenefitsAccountByAccountRefUseCase;
+            _sharedPlanGateway = sharedPlanGateway;
         }
 
         [LogCall]
@@ -81,10 +89,23 @@ namespace SingleViewApi.V1.UseCase
                 }
             }
 
-            return MergeRecords(customer, foundRecords);
+            var systemIds = customer.DataSources.Map(x => x.SourceId);
+
+            var getSharedPlanRequest = new GetSharedPlanRequest()
+            {
+                FirstName = customer.FirstName, LastName = customer.LastName, SystemIds = systemIds
+            };
+
+            var sharedPlanIds = _sharedPlanGateway.GetSharedPlans(getSharedPlanRequest, userToken).Result;
+
+            Console.WriteLine("----------------------------SHARED-PLAN-IDS-----------------------------");
+            Console.WriteLine(sharedPlanIds);
+            Console.WriteLine("----------------------------SHARED-PLAN-IDS-----------------------------");
+
+            return MergeRecords(customer, foundRecords, sharedPlanIds);
         }
 
-        private static MergedCustomerResponseObject MergeRecords(SavedCustomer customer, List<CustomerResponseObject> records)
+        private static MergedCustomerResponseObject MergeRecords(SavedCustomer customer, List<CustomerResponseObject> records, SharedPlanResponseObject sharedPlanIds)
         {
             var allSystemIds = new List<SystemId>();
             var allKnownAddresses = new List<KnownAddress>();
@@ -151,6 +172,7 @@ namespace SingleViewApi.V1.UseCase
             mergedCustomer.AllContactDetails = allContactDetails;
             mergedCustomer.PersonTypes = allPersonType;
             mergedCustomer.CautionaryAlerts = allCautionaryAlerts;
+            mergedCustomer.SharedPlanIds = sharedPlanIds;
 
             return new MergedCustomerResponseObject()
             {
