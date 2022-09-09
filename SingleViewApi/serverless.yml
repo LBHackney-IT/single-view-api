@@ -54,6 +54,7 @@ functions:
       ACADEMY_API_KEY: ${ssm:/single-view/${self:provider.stage}/academy-api-key}
       TENURE_API: ${ssm:/single-view/${self:provider.stage}/tenure-api}
       SHARED_PLAN_API: ${ssm:/single-view/${self:provider.stage}/shared-plan}
+      X_API_KEY: ${ssm:/single-view/${self:provider.stage}/X_API_KEY}
 
 
     events:

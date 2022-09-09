@@ -169,7 +169,8 @@ namespace SingleViewApi
 
                 return new SharedPlanGateway(
                     httpClient,
-                    Environment.GetEnvironmentVariable("SHARED_PLAN_API")
+                    Environment.GetEnvironmentVariable("SHARED_PLAN_API"),
+                    Environment.GetEnvironmentVariable("X_API_KEY")
                     );
             });
 

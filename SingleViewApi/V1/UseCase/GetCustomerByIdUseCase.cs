@@ -96,7 +96,7 @@ namespace SingleViewApi.V1.UseCase
                 FirstName = customer.FirstName, LastName = customer.LastName, SystemIds = systemIds
             };
 
-            var sharedPlanIds = _sharedPlanGateway.GetSharedPlans(getSharedPlanRequest, userToken).Result;
+            var sharedPlanIds = _sharedPlanGateway.GetSharedPlans(getSharedPlanRequest).Result;
 
             return MergeRecords(customer, foundRecords, sharedPlanIds);
         }
