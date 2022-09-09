@@ -33,7 +33,7 @@ public class SharedPlanGatewayTests
         {
             FirstName = "John",
             LastName = "Smith",
-            SystemIds = new List<string>() {"SingleView", "Jigsaw", "Housing",}
+            SystemIds = new List<string>() { "SingleView", "Jigsaw", "Housing", }
         };
     }
 
@@ -51,7 +51,7 @@ public class SharedPlanGatewayTests
     public async Task DataFromApiIsRetrieved()
     {
         // Arrange
-        var data = new SharedPlanResponseObject {PlanIds = new List<string> {"101010", "202020", "303030"}};
+        var data = new SharedPlanResponseObject { PlanIds = new List<string> { "101010", "202020", "303030" } };
         _mockHttp.Expect($"{_baseUrl}/api/plans/find")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond("application/json", JsonConvert.SerializeObject(data));

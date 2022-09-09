@@ -93,7 +93,9 @@ namespace SingleViewApi.V1.UseCase
 
             var getSharedPlanRequest = new GetSharedPlanRequest()
             {
-                FirstName = customer.FirstName, LastName = customer.LastName, SystemIds = systemIds
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                SystemIds = systemIds
             };
 
             var sharedPlanIds = _sharedPlanGateway.GetSharedPlans(getSharedPlanRequest).Result;
