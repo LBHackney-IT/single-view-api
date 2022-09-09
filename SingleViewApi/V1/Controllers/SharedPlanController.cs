@@ -28,7 +28,7 @@ namespace SingleViewApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public IActionResult CreateSharedPlan([FromBody] CreateSharedPlanRequest createSharedPlanRequest)
         {
-            var result = _createSharedPlanUseCase.Execute(createSharedPlanRequest);
+            var result = _createSharedPlanUseCase.Execute(createSharedPlanRequest).Result;
 
             if (result == null)
             {

@@ -53,16 +53,10 @@ public class SharedPlanGateway : ISharedPlanGateway
 
         var response = await _httpClient.SendAsync(request);
 
-#nullable enable
-        CreateSharedPlanResponseObject? createSharedPlanResponse = null;
-#nullable disable
+        if (response.StatusCode != HttpStatusCode.Created) return null;
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            var jsonBody = response.Content.ReadAsStringAsync().Result;
-            createSharedPlanResponse = JsonConvert.DeserializeObject<CreateSharedPlanResponseObject>(jsonBody);
-        }
+        var jsonBody = await response.Content.ReadAsStringAsync();
 
-        return createSharedPlanResponse;
+        return JsonConvert.DeserializeObject<CreateSharedPlanResponseObject>(jsonBody);
     }
 }
