@@ -7,5 +7,5 @@ namespace SingleViewApi.V1.Gateways.Interfaces;
 
 public interface ISharedPlanGateway
 {
-    Task<SharedPlanResponseObject> GetSharedPlans(GetSharedPlanRequest getSharedPlanRequest , string userToken);
+    Task<SharedPlanResponseObject> GetSharedPlans(GetSharedPlanRequest getSharedPlanRequest);
 }
