@@ -174,6 +174,13 @@ namespace SingleViewApi
                     );
             });
 
+            services.AddTransient<ICreateSharedPlanUseCase, CreateSharedPlanUseCase>(s =>
+            {
+                var sharedPlanGateway = s.GetService<ISharedPlanGateway>();
+
+                return new CreateSharedPlanUseCase(sharedPlanGateway);
+            });
+
 
             services.AddHttpClient("JigsawClient").ConfigureHttpClient(client =>
             {
