@@ -34,7 +34,7 @@ public class SharedPlanGateway : ISharedPlanGateway
 
 #nullable enable
         SharedPlanResponseObject? sharedPlans = null;
-#nullable enable
+#nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
@@ -43,5 +43,26 @@ public class SharedPlanGateway : ISharedPlanGateway
         }
 
         return sharedPlans;
+    }
+
+    public async Task<CreateSharedPlanResponseObject> CreateSharedPlan(CreateSharedPlanRequest createSharedPlanRequest)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://staging.sharedplan.hackney.gov.uk/api/plans");
+        request.Headers.Add("x-api-key", _xApiKey);
+        request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+        CreateSharedPlanResponseObject? createSharedPlanResponse = null;
+#nullable disable
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var jsonBody = response.Content.ReadAsStringAsync().Result;
+            createSharedPlanResponse = JsonConvert.DeserializeObject<CreateSharedPlanResponseObject>(jsonBody);
+        }
+
+        return createSharedPlanResponse;
     }
 }
