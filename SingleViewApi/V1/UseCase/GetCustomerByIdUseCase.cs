@@ -168,7 +168,7 @@ namespace SingleViewApi.V1.UseCase
             mergedCustomer.AllContactDetails = allContactDetails;
             mergedCustomer.PersonTypes = allPersonType;
             mergedCustomer.CautionaryAlerts = allCautionaryAlerts;
-            mergedCustomer.SharedPlanIds = sharedPlanIds;
+            mergedCustomer.SharedPlan = sharedPlanIds;
 
             return new MergedCustomerResponseObject()
             {

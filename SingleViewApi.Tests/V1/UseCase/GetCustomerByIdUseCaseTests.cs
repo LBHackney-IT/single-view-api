@@ -315,10 +315,10 @@ namespace SingleViewApi.Tests.V1.UseCase
             result.Customer.HousingBenefitsAccount.Should().BeEquivalentTo(mockHousingBenefitsAccount);
             result.Customer.CautionaryAlerts.Count.Should().Be(fakeCautionaryAlerts.Count + fakeJigsawCautionaryAlerts.Count);
             result.Customer.EqualityInformation.Should().Be(fakeEqualityInformation);
-            result.Customer.SharedPlanIds.PlanIds.Count.Should().Be(3);
-            result.Customer.SharedPlanIds.PlanIds[0].Should().BeEquivalentTo("101010");
-            result.Customer.SharedPlanIds.PlanIds[1].Should().BeEquivalentTo("202020");
-            result.Customer.SharedPlanIds.PlanIds[2].Should().BeEquivalentTo("303030");
+            result.Customer.SharedPlan.PlanIds.Count.Should().Be(3);
+            result.Customer.SharedPlan.PlanIds[0].Should().BeEquivalentTo("101010");
+            result.Customer.SharedPlan.PlanIds[1].Should().BeEquivalentTo("202020");
+            result.Customer.SharedPlan.PlanIds[2].Should().BeEquivalentTo("303030");
         }
 
         [Test]
