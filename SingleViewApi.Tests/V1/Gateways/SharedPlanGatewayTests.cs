@@ -17,7 +17,7 @@ public class SharedPlanGatewayTests
     private string _baseUrl;
     private SharedPlanGateway _classUnderTest;
     private GetSharedPlanRequest _sharedPlanRequest;
-    private string _userToken;
+    private string _xApiKey;
 
     [SetUp]
     public void Setup()
@@ -25,10 +25,10 @@ public class SharedPlanGatewayTests
         _mockHttp = new MockHttpMessageHandler();
         var mockHttpClient = _mockHttp.ToHttpClient();
         _baseUrl = "https://shared-plan.api";
+        _xApiKey = "x-api-key";
 
-        _classUnderTest = new SharedPlanGateway(mockHttpClient, _baseUrl);
+        _classUnderTest = new SharedPlanGateway(mockHttpClient, _baseUrl, _xApiKey);
 
-        _userToken = "user token";
         _sharedPlanRequest = new GetSharedPlanRequest()
         {
             FirstName = "John",
@@ -41,7 +41,7 @@ public class SharedPlanGatewayTests
     public void ARequestIsMade()
     {
         // Act
-        _classUnderTest.GetSharedPlans(_sharedPlanRequest, _userToken);
+        _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
@@ -53,11 +53,11 @@ public class SharedPlanGatewayTests
         // Arrange
         var data = new SharedPlanResponseObject {PlanIds = new List<string> {"101010", "202020", "303030"}};
         _mockHttp.Expect($"{_baseUrl}/api/plans/find")
-            .WithHeaders("Authorization", _userToken)
+            .WithHeaders("x-api-key", _xApiKey)
             .Respond("application/json", JsonConvert.SerializeObject(data));
 
         // Act
-        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest, _userToken);
+        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         sharedPlanIds.PlanIds.Count.Should().Be(3);
@@ -71,11 +71,11 @@ public class SharedPlanGatewayTests
     {
         // Arrange
         _mockHttp.Expect($"{_baseUrl}/api/plans/find")
-            .WithHeaders("Authorization", _userToken)
+            .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.ServiceUnavailable);
 
         // Act
-        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest, _userToken);
+        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         sharedPlanIds.Should().BeNull();
@@ -86,11 +86,11 @@ public class SharedPlanGatewayTests
     {
         // Arrange
         _mockHttp.Expect($"{_baseUrl}/api/plans/find")
-            .WithHeaders("Authorization", _userToken)
+            .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.NotFound);
 
         // Act
-        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest, _userToken);
+        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         sharedPlanIds.Should().BeNull();
@@ -101,11 +101,11 @@ public class SharedPlanGatewayTests
     {
         // Arrange
         _mockHttp.Expect($"{_baseUrl}/api/plans/find")
-            .WithHeaders("Authorization", _userToken)
+            .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.Unauthorized);
 
         // Act
-        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest, _userToken);
+        var sharedPlanIds = await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         sharedPlanIds.Should().BeNull();

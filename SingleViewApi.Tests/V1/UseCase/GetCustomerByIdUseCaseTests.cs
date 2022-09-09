@@ -97,7 +97,7 @@ namespace SingleViewApi.Tests.V1.UseCase
                 }
             });
 
-            _mockSharedPlanGateway.Setup(x => x.GetSharedPlans(It.IsAny<GetSharedPlanRequest>(), It.IsAny<string>()))
+            _mockSharedPlanGateway.Setup(x => x.GetSharedPlans(It.IsAny<GetSharedPlanRequest>()))
                 .ReturnsAsync(new SharedPlanResponseObject
                 {
                     PlanIds = new List<string>
