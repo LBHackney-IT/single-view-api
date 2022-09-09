@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -13,17 +15,19 @@ public class SharedPlanGateway : ISharedPlanGateway
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly string _xApiKey;
 
-    public SharedPlanGateway(HttpClient httpClient, string baseUrl)
+    public SharedPlanGateway(HttpClient httpClient, string baseUrl, string xApiKey)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;
+        _xApiKey = xApiKey;
     }
 
-    public async Task<SharedPlanResponseObject> GetSharedPlans(GetSharedPlanRequest getSharedPlanRequest, string userToken)
+    public async Task<SharedPlanResponseObject> GetSharedPlans(GetSharedPlanRequest getSharedPlanRequest)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/api/plans/find");
-        request.Headers.Add("Authorization", userToken);
+        request.Headers.Add("x-api-key", _xApiKey);
         request.Content = new StringContent(JsonConvert.SerializeObject(getSharedPlanRequest), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
