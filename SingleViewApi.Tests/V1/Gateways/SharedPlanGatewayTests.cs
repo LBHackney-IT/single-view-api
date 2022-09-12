@@ -41,9 +41,9 @@ public class SharedPlanGatewayTests
         {
             FirstName = "John",
             LastName = "Smith",
-            SystemIds = new List<string> {"1010", "2020"},
-            Numbers = new List<string> {"0712345678"},
-            Emails = new List<string> {"john.smith@test.com"},
+            SystemIds = new List<string> { "1010", "2020" },
+            Numbers = new List<string> { "0712345678" },
+            Emails = new List<string> { "john.smith@test.com" },
             HasPhp = false
         };
     }
@@ -136,7 +136,7 @@ public class SharedPlanGatewayTests
     public async Task CreateSharedPlanReturnsData()
     {
         // Arrange
-        var createSharedPlanResponse = new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith"};
+        var createSharedPlanResponse = new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith" };
         _mockHttp.Expect($"{_baseUrl}/api/plans")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond("application/json", JsonConvert.SerializeObject(createSharedPlanResponse));
