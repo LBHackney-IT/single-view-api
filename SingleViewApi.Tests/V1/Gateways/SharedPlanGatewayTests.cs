@@ -52,7 +52,7 @@ public class SharedPlanGatewayTests
     {
         // Arrange
         var data = new SharedPlanResponseObject { PlanIds = new List<string> { "101010", "202020", "303030" } };
-        _mockHttp.Expect($"{_baseUrl}/api/plans/find")
+        _mockHttp.Expect($"{_baseUrl}/plans/find")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond("application/json", JsonConvert.SerializeObject(data));
 
