@@ -47,13 +47,13 @@ public class SharedPlanGateway : ISharedPlanGateway
 
     public async Task<CreateSharedPlanResponseObject> CreateSharedPlan(CreateSharedPlanRequest createSharedPlanRequest)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://staging.sharedplan.hackney.gov.uk/api/plans");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/api/plans");
         request.Headers.Add("x-api-key", _xApiKey);
         request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
 
-        if (response.StatusCode != HttpStatusCode.Created) return null;
+        if (response.StatusCode != HttpStatusCode.OK) return null;
 
         var jsonBody = await response.Content.ReadAsStringAsync();
 
