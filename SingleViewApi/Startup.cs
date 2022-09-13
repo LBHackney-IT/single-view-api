@@ -204,15 +204,13 @@ namespace SingleViewApi
                 var getJigsawCustomerByIdUseCase = s.GetService<IGetJigsawCustomerByIdUseCase>();
                 var getCouncilTaxAccountByIdAccountRefUseCase = s.GetService<IGetCouncilTaxAccountByAccountRefUseCase>();
                 var getHousingBenefitsAccountByAccountRefUseCase = s.GetService<IGetHousingBenefitsAccountByAccountRefUseCase>();
-                var sharedPlanGateway = s.GetService<ISharedPlanGateway>();
 
                 return new GetCustomerByIdUseCase(
                     customerGateway,
                     getPersonApiByIdUseCase,
                     getJigsawCustomerByIdUseCase,
                     getCouncilTaxAccountByIdAccountRefUseCase,
-                    getHousingBenefitsAccountByAccountRefUseCase,
-                    sharedPlanGateway);
+                    getHousingBenefitsAccountByAccountRefUseCase);
             });
             services.AddTransient<IStoreJigsawCredentialsUseCase, StoreJigsawCredentialsUseCase>(s =>
             {

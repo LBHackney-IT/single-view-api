@@ -26,7 +26,7 @@ public class SharedPlanGateway : ISharedPlanGateway
 
     public async Task<SharedPlanResponseObject> GetSharedPlans(GetSharedPlanRequest getSharedPlanRequest)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/api/plans/find");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/plans/find");
         request.Headers.Add("x-api-key", _xApiKey);
         request.Content = new StringContent(JsonConvert.SerializeObject(getSharedPlanRequest), Encoding.UTF8, "application/json");
 
