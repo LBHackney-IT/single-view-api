@@ -37,6 +37,8 @@ services:
       - AES_IV=${AES_IV}
       - CAUTIONARY_ALERTS_API=${CAUTIONARY_ALERTS_API}
       - TENURE_API=${TENURE_API}
+      - SHARED_PLAN_API=${SHARED_PLAN_API}
+      - X_API_KEY=${X_API_KEY}
 
 # TODO: If using DynamoDb remove the line above and uncomment the section below.
 #      - DynamoDb_LocalMode=true

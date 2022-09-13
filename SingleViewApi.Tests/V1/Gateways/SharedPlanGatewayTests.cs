@@ -38,10 +38,10 @@ public class SharedPlanGatewayTests
     }
 
     [Test]
-    public void ARequestIsMade()
+    public async Task ARequestIsMade()
     {
         // Act
-        _classUnderTest.GetSharedPlans(_sharedPlanRequest);
+        await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
@@ -70,7 +70,7 @@ public class SharedPlanGatewayTests
     public async Task GetSharedPlansReturnsNullIfApiIsNotResponding()
     {
         // Arrange
-        _mockHttp.Expect($"{_baseUrl}/api/plans/find")
+        _mockHttp.Expect($"{_baseUrl}/plans/find")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.ServiceUnavailable);
 
@@ -85,7 +85,7 @@ public class SharedPlanGatewayTests
     public async Task GetSharedPlansReturnsNullIfSharedPlansDontExist()
     {
         // Arrange
-        _mockHttp.Expect($"{_baseUrl}/api/plans/find")
+        _mockHttp.Expect($"{_baseUrl}/plans/find")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.NotFound);
 
@@ -100,7 +100,7 @@ public class SharedPlanGatewayTests
     public async Task GetSharedPlansReturnsNullIfUserNotAuthorised()
     {
         // Arrange
-        _mockHttp.Expect($"{_baseUrl}/api/plans/find")
+        _mockHttp.Expect($"{_baseUrl}/plans/find")
             .WithHeaders("x-api-key", _xApiKey)
             .Respond(HttpStatusCode.Unauthorized);
 
