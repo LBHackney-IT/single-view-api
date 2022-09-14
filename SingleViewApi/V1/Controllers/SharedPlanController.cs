@@ -37,9 +37,9 @@ namespace SingleViewApi.V1.Controllers
                 return BadRequest();
             }
             string baseUrl = Environment.GetEnvironmentVariable("SHARED_PLAN_API");
-            if (!StringExtensions.IsNullOrEmpty(baseUrl))
+            if (baseUrl != null)
             {
-                baseUrl.Replace("/api", "");
+                baseUrl = baseUrl.Replace("/api", "");
             }
             string sharedPlanUrl = baseUrl + "/plans/" + result.Id;
 
