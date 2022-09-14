@@ -47,13 +47,14 @@ public class SharedPlanGateway : ISharedPlanGateway
 
     public async Task<CreateSharedPlanResponseObject> CreateSharedPlan(CreateSharedPlanRequest createSharedPlanRequest)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/api/plans");
+        var requestUri = $"{_baseUrl}/plans";
+        var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
         request.Headers.Add("x-api-key", _xApiKey);
         request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
 
-        if (response.StatusCode != HttpStatusCode.OK) return null;
+        if (response.StatusCode != HttpStatusCode.Created) return null;
 
         var jsonBody = await response.Content.ReadAsStringAsync();
 

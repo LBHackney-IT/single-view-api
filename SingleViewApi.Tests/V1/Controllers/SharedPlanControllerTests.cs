@@ -28,10 +28,14 @@ public class SharedPlanControllerTests : LogCallAspectFixture
     {
         var request = _fixture.Create<CreateSharedPlanRequest>();
         var response = _fixture.Create<CreateSharedPlanResponseObject>();
-        _mockCreateSharedPlanUseCase.Setup(x => x.Execute(It.IsAny<CreateSharedPlanRequest>())).ReturnsAsync(response);
 
-        _classUnderTest.CreateSharedPlan(request);
+        _mockCreateSharedPlanUseCase.Setup(x =>
+            x.Execute(It.IsAny<CreateSharedPlanRequest>()))
+            .ReturnsAsync(response);
 
-        _mockCreateSharedPlanUseCase.Verify(x => x.Execute(It.IsAny<CreateSharedPlanRequest>()), Times.Once);
+        var x = _classUnderTest.CreateSharedPlan(request);
+
+        _mockCreateSharedPlanUseCase.Verify(x =>
+            x.Execute(It.IsAny<CreateSharedPlanRequest>()), Times.Once);
     }
 }

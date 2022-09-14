@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -8,6 +9,7 @@ using RichardSzalay.MockHttp;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
+
 
 namespace SingleViewApi.Tests.V1.Gateways;
 
@@ -49,10 +51,10 @@ public class SharedPlanGatewayTests
     }
 
     [Test]
-    public void GetSharedPlanMakesARequest()
+    public async Task GetSharedPlanMakesARequest()
     {
         // Act
-        _classUnderTest.GetSharedPlans(_sharedPlanRequest);
+        await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
@@ -121,13 +123,12 @@ public class SharedPlanGatewayTests
         // Assert
         sharedPlanIds.Should().BeNull();
     }
-<<<<<<< HEAD
 
     [Test]
-    public void CreateSharedPlanMakesARequest()
+    public async Task CreateSharedPlanMakesARequest()
     {
         // Act
-        _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+        await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
 
         // Assert
         _mockHttp.VerifyNoOutstandingExpectation();
@@ -138,14 +139,16 @@ public class SharedPlanGatewayTests
     {
         // Arrange
         var createSharedPlanResponse = new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith" };
-        _mockHttp.Expect($"{_baseUrl}/api/plans")
+
+        _mockHttp.When(HttpMethod.Post, $"{_baseUrl}/plans")
             .WithHeaders("x-api-key", _xApiKey)
-            .Respond("application/json", JsonConvert.SerializeObject(createSharedPlanResponse));
+            .Respond(HttpStatusCode.Created, "application/json", JsonConvert.SerializeObject(createSharedPlanResponse));
 
         // Act
         var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
 
         // Assert
+        result.Should().NotBeNull();
         result.Id.Should().BeEquivalentTo("1111");
         result.FirstName.Should().BeEquivalentTo("John");
         result.LastName.Should().BeEquivalentTo("Smith");
@@ -210,6 +213,4 @@ public class SharedPlanGatewayTests
         // Assert
         result.Should().BeNull();
     }
-=======
->>>>>>> master
 }
