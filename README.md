@@ -1,6 +1,18 @@
 # LBH Single View API
 
-Base API is a boilerplate code for being reused for new APIs for LBH
+Single view API is used for search residents across multiple systems.
+
+![Architecture diagram](docs/diagram.png)
+
+### Data integrations used
+| API                | What data is retrieved                                                                                      |
+|--------------------|-------------------------------------------------------------------------------------------------------------|
+| Housing search api | Used for searching for resident in MMH                                                                      |
+| Person API         | Used for retrieving resident information from MMH                                                           |
+| Notes API          | Used for retrieving notes from MMH                                                                          |
+| Academy API        | Used for searching for residents, retrieving information and notes from the Council Tax and Benefits system |
+| Jigsaw             | Used for searching for residents, retrieving information and notes from the homelessness system             |
+| Shared Plan        | Used for creating new and retrieving existing shared plans                                                  |
 
 ## Stack
 
@@ -10,6 +22,7 @@ Base API is a boilerplate code for being reused for new APIs for LBH
 ## Dependencies
 
 - Redis
+- Postgress
 
 ## Contributing
 
@@ -66,7 +79,6 @@ At Hackney, we have created the NuGet Package to prevent the duplication of comm
 ##### Using the package
 For full details on how to use the package(s) within this repository please read
 [this wiki page](https://github.com/LBHackney-IT/lbh-core/wiki/Using-the-package(s)-from-the-Hackney.Core-repository).
-
 
 ### Release process
 
