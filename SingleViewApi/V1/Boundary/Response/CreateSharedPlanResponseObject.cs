@@ -1,8 +1,17 @@
+using System;
+
 namespace SingleViewApi.V1.Boundary.Response;
 
 public class CreateSharedPlanResponseObject
 {
-    public string Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Id { get; init; }
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+
+    public string SharedPlanUrl { get; set; }
+    // public string Url()
+    // {
+    //     var url = Environment.GetEnvironmentVariable("SHARED_PLAN_URL") + "/plans/" + Id;
+    //     return url;
+    // }
 }
