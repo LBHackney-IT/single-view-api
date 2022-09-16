@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -9,6 +10,7 @@ using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 
+
 namespace SingleViewApi.Tests.V1.Gateways;
 
 public class SharedPlanGatewayTests
@@ -16,8 +18,9 @@ public class SharedPlanGatewayTests
     private MockHttpMessageHandler _mockHttp;
     private string _baseUrl;
     private SharedPlanGateway _classUnderTest;
-    private GetSharedPlanRequest _sharedPlanRequest;
     private string _xApiKey;
+    private GetSharedPlanRequest _sharedPlanRequest;
+    private CreateSharedPlanRequest _createSharedPlanRequest;
 
     [SetUp]
     public void Setup()
@@ -35,10 +38,20 @@ public class SharedPlanGatewayTests
             LastName = "Smith",
             SystemIds = new List<string>() { "SingleView", "Jigsaw", "Housing", }
         };
+
+        _createSharedPlanRequest = new CreateSharedPlanRequest()
+        {
+            FirstName = "John",
+            LastName = "Smith",
+            SystemIds = new List<string> { "1010", "2020" },
+            Numbers = new List<string> { "0712345678" },
+            Emails = new List<string> { "john.smith@test.com" },
+            HasPhp = false
+        };
     }
 
     [Test]
-    public async Task ARequestIsMade()
+    public async Task GetSharedPlanMakesARequest()
     {
         // Act
         await _classUnderTest.GetSharedPlans(_sharedPlanRequest);
@@ -109,5 +122,95 @@ public class SharedPlanGatewayTests
 
         // Assert
         sharedPlanIds.Should().BeNull();
+    }
+
+    [Test]
+    public async Task CreateSharedPlanMakesARequest()
+    {
+        // Act
+        await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        _mockHttp.VerifyNoOutstandingExpectation();
+    }
+
+    [Test]
+    public async Task CreateSharedPlanReturnsData()
+    {
+        // Arrange
+        var createSharedPlanResponse = new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith" };
+
+        _mockHttp.When(HttpMethod.Post, $"{_baseUrl}/plans")
+            .WithHeaders("x-api-key", _xApiKey)
+            .Respond(HttpStatusCode.Created, "application/json", JsonConvert.SerializeObject(createSharedPlanResponse));
+
+        // Act
+        var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().BeEquivalentTo("1111");
+        result.FirstName.Should().BeEquivalentTo("John");
+        result.LastName.Should().BeEquivalentTo("Smith");
+    }
+
+    [Test]
+    public async Task CreateSharedPlansReturnsNullIfApiIsNotResponding()
+    {
+        // Arrange
+        _mockHttp.Expect($"{_baseUrl}/api/plans")
+            .WithHeaders("x-api-key", _xApiKey)
+            .Respond(HttpStatusCode.ServiceUnavailable);
+
+        // Act
+        var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task CreateSharedPlansReturnsNullIfUserNotAuthorised()
+    {
+        // Arrange
+        _mockHttp.Expect($"{_baseUrl}/api/plans")
+            .WithHeaders("x-api-key", _xApiKey)
+            .Respond(HttpStatusCode.Unauthorized);
+
+        // Act
+        var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task CreateSharedPlansReturnsNullIfInternalServerError()
+    {
+        // Arrange
+        _mockHttp.Expect($"{_baseUrl}/api/plans")
+            .WithHeaders("x-api-key", _xApiKey)
+            .Respond(HttpStatusCode.InternalServerError);
+
+        // Act
+        var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task CreateSharedPlansReturnsNullIfBadRequest()
+    {
+        // Arrange
+        _mockHttp.Expect($"{_baseUrl}/api/plans")
+            .WithHeaders("x-api-key", _xApiKey)
+            .Respond(HttpStatusCode.BadRequest);
+
+        // Act
+        var result = await _classUnderTest.CreateSharedPlan(_createSharedPlanRequest);
+
+        // Assert
+        result.Should().BeNull();
     }
 }

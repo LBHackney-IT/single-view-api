@@ -34,7 +34,7 @@ public class SharedPlanGateway : ISharedPlanGateway
 
 #nullable enable
         SharedPlanResponseObject? sharedPlans = null;
-#nullable enable
+#nullable disable
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
@@ -43,5 +43,21 @@ public class SharedPlanGateway : ISharedPlanGateway
         }
 
         return sharedPlans;
+    }
+
+    public async Task<CreateSharedPlanResponseObject> CreateSharedPlan(CreateSharedPlanRequest createSharedPlanRequest)
+    {
+        var requestUri = $"{_baseUrl}/plans";
+        var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+        request.Headers.Add("x-api-key", _xApiKey);
+        request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+
+        if (response.StatusCode != HttpStatusCode.Created) return null;
+
+        var jsonBody = await response.Content.ReadAsStringAsync();
+
+        return JsonConvert.DeserializeObject<CreateSharedPlanResponseObject>(jsonBody);
     }
 }
