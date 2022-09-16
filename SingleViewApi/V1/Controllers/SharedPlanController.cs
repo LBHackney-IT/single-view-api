@@ -1,11 +1,7 @@
-using System;
-using System.Net.Http.Json;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using ServiceStack;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -25,9 +21,9 @@ namespace SingleViewApi.V1.Controllers
             _createSharedPlanUseCase = createSharedPlanUseCase;
         }
 
-        /// <response code="200">Successfully created shared-plan</response>
+        /// <response code="201">Successfully created shared-plan</response>
         /// <response code="400">Bad request</response>
-        [ProducesResponseType(typeof(CreateSharedPlanResponseObject), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateSharedPlanResponseObject), StatusCodes.Status201Created)]
         [HttpPost]
         [LogCall(LogLevel.Information)]
         public IActionResult CreateSharedPlan([FromBody] CreateSharedPlanRequest createSharedPlanRequest)
@@ -38,13 +34,7 @@ namespace SingleViewApi.V1.Controllers
                 return BadRequest();
             }
 
-            // TODO: This should be made into a Created() response & use the Location header on FE for redirect
-            Response.Headers.Add("Access-Control-Expose-Headers", "Location");
-
-            // string response = JsonConvert.SerializeObject(
-            //     new { sharedPlanUrl = sharedPlanUrl }
-            // );
-            return Ok(result);
+            return Created(result.SharedPlanUrl, result);
         }
     }
 }

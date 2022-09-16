@@ -20,7 +20,7 @@ public class CreateSharedPlanUseCase : ICreateSharedPlanUseCase
 
     public async Task<CreateSharedPlanResponseObject> Execute(CreateSharedPlanRequest createSharedPlanRequest)
     {
-        var response  = await _sharedPlanGateway.CreateSharedPlan(createSharedPlanRequest);
+        var response = await _sharedPlanGateway.CreateSharedPlan(createSharedPlanRequest);
         return new CreateSharedPlanResponseObject()
         {
             Id = response.Id,
