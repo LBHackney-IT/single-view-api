@@ -22,7 +22,9 @@ Single view API is used for search residents across multiple systems.
 ## Dependencies
 
 - Redis
+    - Redis is used for storing jigsaw auth tokens and credentials
 - Postgress
+    - Postgress is used for storing matched records
 
 ## Contributing
 
