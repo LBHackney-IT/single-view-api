@@ -5,14 +5,18 @@ Single view API is used for search residents across multiple systems.
 ![Architecture diagram](docs/diagram.png)
 
 ### Data integrations used
-| API                | What data is retrieved                                                                                      |
-|--------------------|-------------------------------------------------------------------------------------------------------------|
-| Housing search api | Used for searching for resident in MMH                                                                      |
-| Person API         | Used for retrieving resident information from MMH                                                           |
-| Notes API          | Used for retrieving notes from MMH                                                                          |
-| Academy API        | Used for searching for residents, retrieving information and notes from the Council Tax and Benefits system |
-| Jigsaw             | Used for searching for residents, retrieving information and notes from the homelessness system             |
-| Shared Plan        | Used for creating new and retrieving existing shared plans                                                  |
+| API                      | What data is retrieved                                                                                      |
+|--------------------------|-------------------------------------------------------------------------------------------------------------|
+| Housing search api       | Used for searching for resident in MMH                                                                      |
+| Person API               | Used for retrieving resident information from MMH                                                           |
+| Notes API                | Used for retrieving notes from MMH                                                                          |
+| Contact Details API      | Used for retrieving contact details from MMH                                                                |
+| Cautionary Alerts API    | Used for retrieving cautionary alerts from MMH                                                              |
+| Equality Information API | Used for retrieving equality information from MMH                                                           |
+| Tenure API               | Used for retrieving tenure information from MMH                                                             |
+| Academy API              | Used for searching for residents, retrieving information and notes from the Council Tax and Benefits system |
+| Jigsaw                   | Used for searching for residents, retrieving information and notes from the homelessness system             |
+| Shared Plan              | Used for creating new and retrieving existing shared plans                                                  |
 
 ## Stack
 
