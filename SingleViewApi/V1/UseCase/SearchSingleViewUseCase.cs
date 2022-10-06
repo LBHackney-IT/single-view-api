@@ -40,14 +40,15 @@ namespace SingleViewApi.V1.UseCase
             {
                 var dataSources = _dataSourceGateway.GetAll();
                 var personResults = searchResults.Select(result => new SearchResult()
-                {
-                    Id = result.Id.ToString(),
-                    DataSources = result.DataSources.Map(customerDataSource => dataSources.Find(dataSource => dataSource.Id == customerDataSource.DataSourceId)?.Name),
-                    FirstName = result.FirstName,
-                    SurName = result.LastName,
-                    DateOfBirth = result.DateOfBirth,
-                    NiNumber = result.NiNumber
-                }).ToList();
+                    {
+                        Id = result.Id.ToString(),
+                        DataSources = result.DataSources.Map(customerDataSource => dataSources.Find(dataSource => dataSource.Id == customerDataSource.DataSourceId)?.Name),
+                        FirstName = result.FirstName,
+                        SurName = result.LastName,
+                        DateOfBirth = result.DateOfBirth,
+                        NiNumber = result.NiNumber
+                    }
+                ).ToList();
 
                 response.SearchResponse = new SearchResponse()
                 {
@@ -55,6 +56,11 @@ namespace SingleViewApi.V1.UseCase
                     UngroupedResults = personResults,
                     Total = searchResults.Count
                 };
+
+                foreach (var searchResponseUngroupedResult in response.SearchResponse.UngroupedResults)
+                {
+                    searchResponseUngroupedResult.IsMergedSingleViewRecord = true;
+                }
 
             }
 
