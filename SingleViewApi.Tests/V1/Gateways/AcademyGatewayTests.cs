@@ -1,8 +1,8 @@
 using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using ServiceStack;
@@ -14,6 +14,12 @@ namespace SingleViewApi.Tests.V1.Gateways;
 [TestFixture]
 public class AcademyGatewayTests
 {
+    private Fixture _fixture;
+    private AcademyGateway _classUnderTest;
+    private MockHttpMessageHandler _mockHttp;
+    private string _baseUrl;
+    private string _apiKey;
+
     [SetUp]
     public void Setup()
     {
@@ -25,12 +31,6 @@ public class AcademyGatewayTests
         var mockClient = _mockHttp.ToHttpClient();
         _classUnderTest = new AcademyGateway(mockClient, _baseUrl, _apiKey);
     }
-
-    private Fixture _fixture;
-    private AcademyGateway _classUnderTest;
-    private MockHttpMessageHandler _mockHttp;
-    private string _baseUrl;
-    private string _apiKey;
 
     [Test]
     public void GetCouncilTaxAccountsByCustomerNameMakesRequestToCouncilTaxSearch()
@@ -74,7 +74,7 @@ public class AcademyGatewayTests
         _mockHttp.Expect($"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json",
-                JsonSerializer.Serialize(stubbedResponse));
+                JsonSerializer.Serialize<CouncilTaxSearchResponseObject>(stubbedResponse));
 
         var results = await _classUnderTest.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
@@ -111,7 +111,7 @@ public class AcademyGatewayTests
         _mockHttp.Expect($"{_baseUrl}/council-tax/{accountRef}")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json",
-                JsonSerializer.Serialize(stubbedResponse));
+                JsonSerializer.Serialize<CouncilTaxRecordResponseObject>(stubbedResponse));
 
         var result = await _classUnderTest.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
 
@@ -169,7 +169,7 @@ public class AcademyGatewayTests
         _mockHttp.Expect($"{_baseUrl}/benefits/search?firstName={firstName}&lastName={lastName}")
             .WithHeaders("Authorization", userToken)
             .Respond("application/json",
-                JsonSerializer.Serialize(stubbedResponse));
+                JsonSerializer.Serialize<HousingBenefitsSearchResponseObject>(stubbedResponse));
 
         var results = await _classUnderTest.GetHousingBenefitsAccountsByCustomerName(firstName, lastName, userToken);
 
@@ -238,7 +238,6 @@ public class AcademyGatewayTests
             Assert.AreEqual("London", results.FullAddress.Line3);
             Assert.AreEqual("M3 0W", results.FullAddress.Postcode);
         }
-
         Assert.AreEqual("Felis", results.HouseholdMembers[0].FirstName);
         Assert.AreEqual("Catus", results.HouseholdMembers[0].LastName);
         Assert.AreEqual(12.30, results.Benefits[0].Amount);

@@ -12,8 +12,8 @@ namespace SingleViewApi.Tests.V1.Controllers;
 public class SharedPlanControllerTests : LogCallAspectFixture
 {
     private SharedPlanController _classUnderTest;
-    private Fixture _fixture;
     private Mock<ICreateSharedPlanUseCase> _mockCreateSharedPlanUseCase;
+    private Fixture _fixture;
 
     [SetUp]
     public void SetUp()
@@ -30,7 +30,7 @@ public class SharedPlanControllerTests : LogCallAspectFixture
         var response = _fixture.Create<CreateSharedPlanResponseObject>();
 
         _mockCreateSharedPlanUseCase.Setup(x =>
-                x.Execute(It.IsAny<CreateSharedPlanRequest>()))
+            x.Execute(It.IsAny<CreateSharedPlanRequest>()))
             .ReturnsAsync(response);
 
         var x = _classUnderTest.CreateSharedPlan(request);

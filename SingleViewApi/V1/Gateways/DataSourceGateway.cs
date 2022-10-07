@@ -6,27 +6,28 @@ using SingleViewApi.V1.Factories;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.V1.Gateways;
-
-public class DataSourceGateway : IDataSourceGateway
+namespace SingleViewApi.V1.Gateways
 {
-    private readonly SingleViewContext _singleViewContext;
-
-    public DataSourceGateway(SingleViewContext singleViewContext)
+    public class DataSourceGateway : IDataSourceGateway
     {
-        _singleViewContext = singleViewContext;
-    }
+        private readonly SingleViewContext _singleViewContext;
 
-    public DataSource GetEntityById(int id)
-    {
-        var result = _singleViewContext.DataSources.Find(id);
+        public DataSourceGateway(SingleViewContext singleViewContext)
+        {
+            _singleViewContext = singleViewContext;
+        }
 
-        return result?.ToDomain();
-    }
+        public DataSource GetEntityById(int id)
+        {
+            var result = _singleViewContext.DataSources.Find(id);
 
-    public List<DataSource> GetAll()
-    {
-        var results = _singleViewContext.DataSources.ToList();
-        return results.Map(x => x.ToDomain());
+            return result?.ToDomain();
+        }
+
+        public List<DataSource> GetAll()
+        {
+            var results = _singleViewContext.DataSources.ToList();
+            return results.Map(x => x.ToDomain());
+        }
     }
 }

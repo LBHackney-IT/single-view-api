@@ -1,20 +1,19 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SingleViewApi;
-
-[ExcludeFromCodeCoverage]
-public static class Program
+namespace SingleViewApi
 {
-    public static void Main(string[] args)
+    [ExcludeFromCodeCoverage]
+    public static class Program
     {
-        CreateWebHostBuilder(args).Build().Run();
-    }
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-    {
-        return WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

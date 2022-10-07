@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -25,20 +28,26 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
         var account = await _academyGateway.GetCouncilTaxAccountByAccountRef(accountRef, userToken);
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
-        var academyCtId = new SystemId { SystemName = dataSource.Name, Id = account.AccountReference.ToString() };
+        var academyCtId = new SystemId() { SystemName = dataSource.Name, Id = account.AccountReference.ToString() };
 
-        var response = new CustomerResponseObject { SystemIds = new List<SystemId> { academyCtId } };
+        var response = new CustomerResponseObject()
+        {
+            SystemIds = new List<SystemId>() { academyCtId }
+        };
 
         if (account == null)
+        {
             academyCtId.Error = SystemId.NotFoundMessage;
+        }
         else
-            response.Customer = new Customer
+        {
+            response.Customer = new Customer()
             {
                 Id = account.AccountReference.ToString(),
                 DataSource = dataSource,
                 FirstName = account.FirstName.Upcase(),
                 Surname = account.LastName.Upcase(),
-                CouncilTaxAccount = new CouncilTaxAccountInfo
+                CouncilTaxAccount = new CouncilTaxAccountInfo()
                 {
                     AccountBalance = account.AccountBalance,
                     AccountCheckDigit = account.AccountCheckDigit,
@@ -48,6 +57,7 @@ public class GetCouncilTaxAccountByIdUseCase : IGetCouncilTaxAccountByAccountRef
                     PaymentMethod = account.PaymentMethod
                 }
             };
+        }
         return response;
     }
 }

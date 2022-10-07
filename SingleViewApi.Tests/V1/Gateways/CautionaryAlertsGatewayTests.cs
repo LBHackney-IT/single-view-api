@@ -8,12 +8,13 @@ using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SingleViewApi.Tests.V1.Gateways;
 
 public class CautionaryAlertsGatewayTests
 {
-    private readonly Fixture _fixture = new();
+    private readonly Fixture _fixture = new Fixture();
     private CautionaryAlertsGateway _classUnderTest;
     private MockHttpMessageHandler _mockHttp;
 
@@ -78,6 +79,8 @@ public class CautionaryAlertsGatewayTests
         Assert.AreEqual("VA", cautionaryAlerts.Alerts[0].AlertCode);
         Assert.AreEqual("Verbal Abuse", cautionaryAlerts.Alerts[0].Description);
         Assert.AreEqual("Tenant was abusive", cautionaryAlerts.Alerts[0].Reason);
+
+
     }
 
     [Test]
@@ -126,8 +129,7 @@ public class CautionaryAlertsGatewayTests
         const string userToken = "User token";
         var stubbedCautionaryAlerts = _fixture.Create<List<CautionaryAlert>>();
 
-        _mockHttp.Expect(
-                $"https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1/cautionary-alerts/persons/{id}")
+        _mockHttp.Expect($"https://y4xnj7mcpa.execute-api.eu-west-2.amazonaws.com/staging/api/v1/cautionary-alerts/persons/{id}")
             .WithHeaders("Authorization", userToken)
             .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
 

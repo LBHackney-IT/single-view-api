@@ -5,42 +5,42 @@ using Microsoft.AspNetCore.Mvc;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
-namespace SingleViewApi.V1.Controllers;
-
-[ApiController]
-[Route("api/v1/search")]
-[Produces("application/json")]
-[ApiVersion("1.0")]
-public class CombinedSearchController : BaseController
+namespace SingleViewApi.V1.Controllers
 {
-    private readonly IGetCombinedSearchResultsByNameUseCase _getCombinedSearchResultsByNameUseCase;
-
-    public CombinedSearchController(IGetCombinedSearchResultsByNameUseCase getCombinedSearchResultsByNameUseCase)
+    [ApiController]
+    [Route("api/v1/search")]
+    [Produces("application/json")]
+    [ApiVersion("1.0")]
+    public class CombinedSearchController : BaseController
     {
-        _getCombinedSearchResultsByNameUseCase = getCombinedSearchResultsByNameUseCase;
-    }
+        private readonly IGetCombinedSearchResultsByNameUseCase _getCombinedSearchResultsByNameUseCase;
 
-    //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
-    /// <summary>
-    ///     ...
-    /// </summary>
-    /// <response code="200">...</response>
-    /// <response code="400">Invalid Query Parameter.</response>
-    [ProducesResponseType(typeof(SearchResponseObject), StatusCodes.Status200OK)]
-    [HttpGet]
-    public IActionResult SearchByName([FromQuery] string firstName, string lastName, [Optional] string dateOfBirth,
-        string redisId, [FromHeader] string authorization)
-    {
-        try
+        public CombinedSearchController(IGetCombinedSearchResultsByNameUseCase getCombinedSearchResultsByNameUseCase)
         {
-            return Ok(_getCombinedSearchResultsByNameUseCase
-                .Execute(firstName, lastName, authorization, redisId, dateOfBirth).Result);
+            _getCombinedSearchResultsByNameUseCase = getCombinedSearchResultsByNameUseCase;
         }
-        catch (Exception e)
+
+        //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-SingleViewApi/wiki/Controllers-and-Response-Objects)
+        /// <summary>
+        /// ...
+        /// </summary>
+        /// <response code="200">...</response>
+        /// <response code="400">Invalid Query Parameter.</response>
+        [ProducesResponseType(typeof(SearchResponseObject), StatusCodes.Status200OK)]
+
+        [HttpGet]
+        public IActionResult SearchByName([FromQuery] string firstName, string lastName, [Optional] string dateOfBirth, string redisId, [FromHeader] string authorization)
         {
-            Console.WriteLine("search error ---------------");
-            Console.WriteLine(e);
-            throw;
+            try
+            {
+                return Ok(_getCombinedSearchResultsByNameUseCase.Execute(firstName, lastName, authorization, redisId, dateOfBirth).Result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("search error ---------------");
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

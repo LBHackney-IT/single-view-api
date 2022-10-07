@@ -2,16 +2,17 @@ using System.Collections.Generic;
 using Hackney.Core.DynamoDb;
 using Newtonsoft.Json;
 
-namespace SingleViewApi.V1.Boundary.Response;
-
-public class NotesResultsResponseObject
+namespace SingleViewApi.V1.Boundary.Response
 {
-    public List<NotesApiResponseObject> Results { get; set; }
-
-    public PaginationDetails PaginationDetails { get; set; }
-
-    public string ToJson()
+    public class NotesResultsResponseObject
     {
-        return JsonConvert.SerializeObject(this);
+        public List<NotesApiResponseObject> Results { get; set; }
+
+        public PaginationDetails PaginationDetails { get; set; }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

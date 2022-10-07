@@ -13,19 +13,17 @@ namespace SingleViewApi.Tests.V1.UseCase;
 
 public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspectFixture
 {
-    private GetHousingBenefitsAccountsByCustomerNameUseCase _classUnderTest;
-    private Fixture _fixture;
     private Mock<IAcademyGateway> _mockAcademyGateway;
     private Mock<IDataSourceGateway> _mockDataSourceGateway;
+    private GetHousingBenefitsAccountsByCustomerNameUseCase _classUnderTest;
+    private Fixture _fixture;
 
     [SetUp]
     public void SetUp()
     {
         _mockAcademyGateway = new Mock<IAcademyGateway>();
         _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest =
-            new GetHousingBenefitsAccountsByCustomerNameUseCase(_mockAcademyGateway.Object,
-                _mockDataSourceGateway.Object);
+        _classUnderTest = new GetHousingBenefitsAccountsByCustomerNameUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
         _fixture = new Fixture();
     }
 
@@ -35,7 +33,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var stubDataSource = new DataSource { Id = 4, Name = "Academy - Housing Benefits" };
+        var stubDataSource = new DataSource() { Id = 4, Name = "Academy - Housing Benefits" };
 
         _mockDataSourceGateway.Setup(x => x.GetEntityById(4)).Returns(stubDataSource);
         _mockAcademyGateway.Setup(x => x.GetHousingBenefitsAccountsByCustomerName(firstName, lastName, userToken))
@@ -43,8 +41,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
 
         var result = _classUnderTest.Execute(firstName, lastName, userToken).Result;
 
-        Assert.That(result.SystemIds[0].Error, Is.EqualTo(SystemId.NotFoundMessage));
-        ;
+        Assert.That(result.SystemIds[0].Error, Is.EqualTo(SystemId.NotFoundMessage)); ;
     }
 
     [Test]
@@ -53,7 +50,7 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCaseTests : LogCallAspec
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var userToken = _fixture.Create<string>();
-        var stubDataSource = new DataSource { Id = 4, Name = "Academy - Housing Benefits" };
+        var stubDataSource = new DataSource() { Id = 4, Name = "Academy - Housing Benefits" };
         var stubEntity = _fixture.Build<HousingBenefitsSearchResponseObject>()
             .Without(x => x.Error).Create();
 

@@ -1,24 +1,25 @@
 using System.Threading.Tasks;
+using SingleViewApi.V1.Gateways;
+using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
-using SingleViewApi.V1.UseCase.Interfaces;
 
-namespace SingleViewApi.V1.UseCase;
-
-public class CreateNoteUseCase : ICreateNoteUseCase
+namespace SingleViewApi.V1.UseCase
 {
-    private readonly INotesGateway _gateway;
-
-    public CreateNoteUseCase(INotesGateway gateway)
+    public class CreateNoteUseCase : ICreateNoteUseCase
     {
-        _gateway = gateway;
-    }
+        private readonly INotesGateway _gateway;
+        public CreateNoteUseCase(INotesGateway gateway)
+        {
+            _gateway = gateway;
+        }
 
-    [LogCall]
-    public async Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken)
-    {
-        return await _gateway.CreateNote(createNoteRequest, userToken);
+        [LogCall]
+        public async Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken)
+        {
+            return await _gateway.CreateNote(createNoteRequest, userToken);
+        }
     }
 }

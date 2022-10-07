@@ -1,29 +1,32 @@
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.V1.Factories;
-
-public static class CustomerDataSourceFactory
+namespace SingleViewApi.V1.Factories
 {
-    public static CustomerDataSource ToDomain(this CustomerDataSourceDbEntity customerDataSourceDbEntity)
+    public static class CustomerDataSourceFactory
     {
-        // TODO: Map the rest of the fields in the domain object.
-        // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-
-        return new CustomerDataSource
+        public static CustomerDataSource ToDomain(this CustomerDataSourceDbEntity customerDataSourceDbEntity)
         {
-            Id = customerDataSourceDbEntity.Id,
-            CustomerId = customerDataSourceDbEntity.CustomerDbEntityId,
-            DataSourceId = customerDataSourceDbEntity.DataSourceId,
-            SourceId = customerDataSourceDbEntity.SourceId
-        };
-    }
+            // TODO: Map the rest of the fields in the domain object.
+            // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
 
-    public static CustomerDataSourceDbEntity ToDatabase(this CustomerDataSource entity)
-    {
-        return new CustomerDataSourceDbEntity
+            return new CustomerDataSource
+            {
+                Id = customerDataSourceDbEntity.Id,
+                CustomerId = customerDataSourceDbEntity.CustomerDbEntityId,
+                DataSourceId = customerDataSourceDbEntity.DataSourceId,
+                SourceId = customerDataSourceDbEntity.SourceId
+            };
+        }
+
+        public static CustomerDataSourceDbEntity ToDatabase(this CustomerDataSource entity)
         {
-            CustomerDbEntityId = entity.CustomerId, DataSourceId = entity.DataSourceId, SourceId = entity.SourceId
-        };
+            return new CustomerDataSourceDbEntity
+            {
+                CustomerDbEntityId = entity.CustomerId,
+                DataSourceId = entity.DataSourceId,
+                SourceId = entity.SourceId
+            };
+        }
     }
 }

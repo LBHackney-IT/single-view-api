@@ -9,15 +9,15 @@ namespace SingleViewApi.Tests.V1.Controllers;
 [TestFixture]
 public class PersonApiControllerTests : LogCallAspectFixture
 {
+    private PersonApiController _classUnderTest;
+    private Mock<IGetPersonApiByIdUseCase> _getPersonApiByIdUseCaseUseCaseMock;
+
     [SetUp]
     public void SetUp()
     {
         _getPersonApiByIdUseCaseUseCaseMock = new Mock<IGetPersonApiByIdUseCase>();
         _classUnderTest = new PersonApiController(_getPersonApiByIdUseCaseUseCaseMock.Object);
     }
-
-    private PersonApiController _classUnderTest;
-    private Mock<IGetPersonApiByIdUseCase> _getPersonApiByIdUseCaseUseCaseMock;
 
     [Test]
     public void UseCaseGetsCalled()

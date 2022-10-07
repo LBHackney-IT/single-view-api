@@ -1,7 +1,6 @@
 using System;
 
 namespace SingleViewApi.V1.Boundary.Response;
-
 public class JigsawAddress
 {
     public int Id { get; set; }

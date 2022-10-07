@@ -1,43 +1,45 @@
 using System.Collections.Generic;
 using System.Linq;
+using SingleViewApi.V1.Infrastructure;
 using Hackney.Core.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace SingleViewApi.V1.Controllers;
-
-public class BaseController : Controller
+namespace SingleViewApi.V1.Controllers
 {
-    public BaseController()
+    public class BaseController : Controller
     {
-        ConfigureJsonSerializer();
-    }
-
-    public string GetCorrelationId()
-    {
-        StringValues correlationId;
-        HttpContext.Request.Headers.TryGetValue(HeaderConstants.CorrelationId, out correlationId);
-
-        if (!correlationId.Any())
-            throw new KeyNotFoundException("Request is missing a correlationId");
-
-        return correlationId.First();
-    }
-
-    public static void ConfigureJsonSerializer()
-    {
-        JsonConvert.DefaultSettings = () =>
+        public BaseController()
         {
-            var settings = new JsonSerializerSettings();
-            settings.Formatting = Formatting.Indented;
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            ConfigureJsonSerializer();
+        }
 
-            settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-            settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+        public string GetCorrelationId()
+        {
+            StringValues correlationId;
+            HttpContext.Request.Headers.TryGetValue(HeaderConstants.CorrelationId, out correlationId);
 
-            return settings;
-        };
+            if (!correlationId.Any())
+                throw new KeyNotFoundException("Request is missing a correlationId");
+
+            return correlationId.First();
+        }
+
+        public static void ConfigureJsonSerializer()
+        {
+            JsonConvert.DefaultSettings = () =>
+            {
+                var settings = new JsonSerializerSettings();
+                settings.Formatting = Formatting.Indented;
+                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+                settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+
+                return settings;
+            };
+        }
     }
 }

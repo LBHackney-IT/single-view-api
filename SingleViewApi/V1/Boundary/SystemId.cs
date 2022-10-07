@@ -1,12 +1,15 @@
-namespace SingleViewApi.V1.Boundary;
+using SingleViewApi.V1.Domain;
 
-public class SystemId
+namespace SingleViewApi.V1.Boundary
 {
-    public static readonly string NotFoundMessage = "Not found";
-    public static readonly string UnauthorisedMessage = "Unauthorised";
-    public string SystemName { get; set; }
-    public string Id { get; set; }
+    public class SystemId
+    {
+        public static readonly string NotFoundMessage = "Not found";
+        public static readonly string UnauthorisedMessage = "Unauthorised";
+        public string SystemName { get; set; }
+        public string Id { get; set; }
 #nullable enable
-    public string? Error { get; set; }
+        public string? Error { get; set; }
 #nullable disable
+    }
 }

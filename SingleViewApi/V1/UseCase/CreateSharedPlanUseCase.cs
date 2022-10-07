@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
@@ -8,8 +9,8 @@ namespace SingleViewApi.V1.UseCase;
 
 public class CreateSharedPlanUseCase : ICreateSharedPlanUseCase
 {
-    private readonly string _sharedPlanBaseUrl;
     private readonly ISharedPlanGateway _sharedPlanGateway;
+    private readonly string _sharedPlanBaseUrl;
 
     public CreateSharedPlanUseCase(ISharedPlanGateway sharedPlanGateway, string sharedPlanBaseUrl)
     {
@@ -20,7 +21,7 @@ public class CreateSharedPlanUseCase : ICreateSharedPlanUseCase
     public async Task<CreateSharedPlanResponseObject> Execute(CreateSharedPlanRequest createSharedPlanRequest)
     {
         var response = await _sharedPlanGateway.CreateSharedPlan(createSharedPlanRequest);
-        return new CreateSharedPlanResponseObject
+        return new CreateSharedPlanResponseObject()
         {
             Id = response.Id,
             FirstName = response.FirstName,

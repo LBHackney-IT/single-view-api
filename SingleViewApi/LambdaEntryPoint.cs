@@ -1,15 +1,16 @@
-using System.Diagnostics.CodeAnalysis;
 using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SingleViewApi;
-
-[ExcludeFromCodeCoverage]
-public class LambdaEntryPoint : APIGatewayProxyFunction
+namespace SingleViewApi
 {
-    protected override void Init(IWebHostBuilder builder)
+    [ExcludeFromCodeCoverage]
+    public class LambdaEntryPoint : APIGatewayProxyFunction
     {
-        builder
-            .UseStartup<Startup>();
+        protected override void Init(IWebHostBuilder builder)
+        {
+            builder
+                .UseStartup<Startup>();
+        }
     }
 }

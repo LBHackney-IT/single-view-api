@@ -2,16 +2,18 @@ using FluentAssertions;
 using NUnit.Framework;
 using SingleViewApi.V1.Helpers;
 
-namespace SingleViewApi.Tests.V1.Helper;
 
-public class JwtHelperTests
+namespace SingleViewApi.Tests.V1.Helper
 {
-    private DecoderHelper _classUnderTest;
 
-    [SetUp]
-    public void Setup()
+    public class JwtHelperTests
     {
-        const string testKey = @"MIIEpAIBAAKCAQEAz1xzhzn9ulK+rQ0gOCb/xzquQgelF8BGtyXRiMqs0hLbwDSG
+        private DecoderHelper _classUnderTest;
+
+        [SetUp]
+        public void Setup()
+        {
+            const string testKey = @"MIIEpAIBAAKCAQEAz1xzhzn9ulK+rQ0gOCb/xzquQgelF8BGtyXRiMqs0hLbwDSG
 smNm27l7+ZJ4FyUEWz7WBQdpXg7GKgqU4JOo5z/rS5L2CtYxMv09G0JL28GSeCKb
 mKyc0FU7XXuFXT52E6MAHAEX8A8It7PkQxnYn7GF0T5BOzrTE/lJGvrZ9SNbvTho
 lxthdy7EyNSoTGwqplc64xLK/puEWnDqBeXscPBKUnqkTCtjCi8v16f+u5qQ3Pvo
@@ -36,20 +38,21 @@ I19T3r3WtEutTVUk2tWQOQN22E0l3wQ8EM5+uyhUqJs+4/LrIc5te5jPTWLnHo0D
 ZNVqgYcCgYAk68DGImt0zqHSbJ/eOe0bIfBeDkt2t1qC9EcnXgIu6/5J8ccKDDh+
 XJfBDhQmsAyVRawVNyEiGKQgiTpGPtdy7Cn/emuMiE36jnPZ6T4tanqSiPeOkrsq
 +0Jcqzg1nlf8KGjZh1MYlRRG2OPX+9Za/eJTimuuKs85kW7sAzMrGA==";
-        _classUnderTest = new DecoderHelper(testKey);
-    }
+            _classUnderTest = new DecoderHelper(testKey);
 
-    [Test]
-    public void ItDecodesTheEncryptedCredentials()
-    {
-        const string encryptedCredentials =
-            "e9AfdDArc1+Bw/D9eBAsT4WBrUc3VSjnUIgdDa+NrwFjwIYUyupVfxDXjy8Ju0LPNlIcxDlmL6AvC2PlIcJ1h0WvAiaX9SG4C7mu+mYeCb/bJjJKIOScDCaNrvdRiFcwDs3azjXB2S4N5efPRauv7NGaZDxyllVv0sJwNMt9BVPYkvanXnmRIYFm15YSPI7qYB+VmC1xmoLSdpeBQFOhT6B90kGSFK3ZUcc2xhzkNJbpfSHqOeb8jG/xMD6Lk97O1kF0dbZFhfUHwCAcnwNJCYJ0SxqSIc7JGt/Xg0Nx2sD929YDgst6L/nZ/DYuZnqAHmT5Zv8wL1/ZCjlXhb7rxw==";
-        const string expectedUsername = "testUser";
-        const string expectedPassword = "pa$$w0rd";
+        }
 
-        var result = _classUnderTest.DecodeJigsawCredentials(encryptedCredentials);
+        [Test]
+        public void ItDecodesTheEncryptedCredentials()
+        {
+            const string encryptedCredentials = "e9AfdDArc1+Bw/D9eBAsT4WBrUc3VSjnUIgdDa+NrwFjwIYUyupVfxDXjy8Ju0LPNlIcxDlmL6AvC2PlIcJ1h0WvAiaX9SG4C7mu+mYeCb/bJjJKIOScDCaNrvdRiFcwDs3azjXB2S4N5efPRauv7NGaZDxyllVv0sJwNMt9BVPYkvanXnmRIYFm15YSPI7qYB+VmC1xmoLSdpeBQFOhT6B90kGSFK3ZUcc2xhzkNJbpfSHqOeb8jG/xMD6Lk97O1kF0dbZFhfUHwCAcnwNJCYJ0SxqSIc7JGt/Xg0Nx2sD929YDgst6L/nZ/DYuZnqAHmT5Zv8wL1/ZCjlXhb7rxw==";
+            const string expectedUsername = "testUser";
+            const string expectedPassword = "pa$$w0rd";
 
-        result.Username.Should().Be(expectedUsername);
-        result.Password.Should().Be(expectedPassword);
+            var result = _classUnderTest.DecodeJigsawCredentials(encryptedCredentials);
+
+            result.Username.Should().Be(expectedUsername);
+            result.Password.Should().Be(expectedPassword);
+        }
     }
 }

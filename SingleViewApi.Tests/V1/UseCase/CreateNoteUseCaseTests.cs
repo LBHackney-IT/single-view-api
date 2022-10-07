@@ -1,60 +1,61 @@
 using System.Threading.Tasks;
 using AutoFixture;
+using SingleViewApi.V1.Boundary.Response;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Request;
-using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase;
 
-namespace SingleViewApi.Tests.V1.UseCase;
-
-public class CreateNoteUseCaseTests : LogCallAspectFixture
+namespace SingleViewApi.Tests.V1.UseCase
 {
-    private CreateNoteUseCase _classUnderTest;
-    private Fixture _fixture;
-    private Mock<INotesGateway> _mockNotesGateway;
-
-    [SetUp]
-    public void SetUp()
+    public class CreateNoteUseCaseTests : LogCallAspectFixture
     {
-        _mockNotesGateway = new Mock<INotesGateway>();
-        _classUnderTest = new CreateNoteUseCase(_mockNotesGateway.Object);
-        _fixture = new Fixture();
-    }
+        private Mock<INotesGateway> _mockNotesGateway;
+        private CreateNoteUseCase _classUnderTest;
+        private Fixture _fixture;
 
-    [Test]
-    public async Task CreatesNote()
-    {
-        var noteResponseObject = _fixture.Create<NotesApiResponseObject>();
-        var createNoteRequest = _fixture.Create<CreateNoteRequest>();
-        var userToken = _fixture.Create<string>();
+        [SetUp]
+        public void SetUp()
+        {
+            _mockNotesGateway = new Mock<INotesGateway>();
+            _classUnderTest = new CreateNoteUseCase(_mockNotesGateway.Object);
+            _fixture = new Fixture();
+        }
 
-        _mockNotesGateway.Setup(x =>
-            x.CreateNote(createNoteRequest, userToken)).ReturnsAsync(noteResponseObject);
+        [Test]
+        public async Task CreatesNote()
+        {
+            var noteResponseObject = _fixture.Create<NotesApiResponseObject>();
+            var createNoteRequest = _fixture.Create<CreateNoteRequest>();
+            var userToken = _fixture.Create<string>();
 
-        var response = await _classUnderTest.Execute(createNoteRequest, userToken);
+            _mockNotesGateway.Setup(x =>
+                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync(noteResponseObject);
 
-        Assert.AreEqual(noteResponseObject.Author, response.Author);
-        Assert.AreEqual(noteResponseObject.Categorisation, response.Categorisation);
-        Assert.AreEqual(noteResponseObject.Description, response.Description);
-        Assert.AreEqual(noteResponseObject.Highlight, response.Highlight);
-        Assert.AreEqual(noteResponseObject.Id, response.Id);
-        Assert.AreEqual(noteResponseObject.Title, response.Title);
-    }
+            var response = await _classUnderTest.Execute(createNoteRequest, userToken);
 
-    [Test]
-    public async Task ReturnsNullIfGatewayErrors()
-    {
-        var createNoteRequest = _fixture.Create<CreateNoteRequest>();
-        var userToken = _fixture.Create<string>();
+            Assert.AreEqual(noteResponseObject.Author, response.Author);
+            Assert.AreEqual(noteResponseObject.Categorisation, response.Categorisation);
+            Assert.AreEqual(noteResponseObject.Description, response.Description);
+            Assert.AreEqual(noteResponseObject.Highlight, response.Highlight);
+            Assert.AreEqual(noteResponseObject.Id, response.Id);
+            Assert.AreEqual(noteResponseObject.Title, response.Title);
+        }
 
-        _mockNotesGateway.Setup(x =>
-            x.CreateNote(createNoteRequest, userToken)).ReturnsAsync((NotesApiResponseObject) null);
+        [Test]
+        public async Task ReturnsNullIfGatewayErrors()
+        {
+            var createNoteRequest = _fixture.Create<CreateNoteRequest>();
+            var userToken = _fixture.Create<string>();
 
-        var response = await _classUnderTest.Execute(createNoteRequest, userToken);
+            _mockNotesGateway.Setup(x =>
+                x.CreateNote(createNoteRequest, userToken)).ReturnsAsync((NotesApiResponseObject) null);
 
-        Assert.IsNull(response);
+            var response = await _classUnderTest.Execute(createNoteRequest, userToken);
+
+            Assert.IsNull(response);
+        }
     }
 }

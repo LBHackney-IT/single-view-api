@@ -1,21 +1,17 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using ServiceStack;
 
 public static class Extensions
 {
-    /// Extension method parsing a date string to a DateTime?
-    /// <para />
+    /// Extension method parsing a date string to a DateTime? <para/>
     /// <summary>
     /// </summary>
     /// <param name="dateTimeStr">The date string to parse</param>
-    /// <param name="dateFmt">
-    ///     dateFmt is optional and allows to pass
-    ///     a parsing pattern array or one or more patterns passed
-    ///     as string parameters
-    /// </param>
+    /// <param name="dateFmt">dateFmt is optional and allows to pass
+    /// a parsing pattern array or one or more patterns passed
+    /// as string parameters</param>
     /// <returns>Parsed DateTime or null</returns>
     public static DateTime? ToDate(this string dateTimeStr, params string[] dateFmt)
     {
@@ -26,20 +22,20 @@ public static class Extensions
         const DateTimeStyles style = DateTimeStyles.AllowWhiteSpaces;
         if (dateFmt == null)
         {
-            var dateInfo = Thread.CurrentThread.CurrentCulture.DateTimeFormat;
+            var dateInfo = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat;
             dateFmt = dateInfo.GetAllDateTimePatterns();
         }
-
         var result = DateTime.TryParseExact(dateTimeStr, dateFmt, CultureInfo.InvariantCulture,
-            style, out var dt)
-            ? dt
-            : null as DateTime?;
+            style, out var dt) ? dt : null as DateTime?;
         return result;
     }
 
     public static string Upcase(this string str)
     {
-        if (str.IsNullOrEmpty()) return "";
+        if (str.IsNullOrEmpty())
+        {
+            return "";
+        }
         return str.First().ToString().ToUpper() + str.Substring(1)?.ToLower();
     }
 }

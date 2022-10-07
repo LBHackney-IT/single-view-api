@@ -1,38 +1,39 @@
 using System.Data.Common;
+using SingleViewApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.Tests;
-
-public class MockWebApplicationFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup : class
+namespace SingleViewApi.Tests
 {
-    private readonly DbConnection _connection;
-
-    public MockWebApplicationFactory(DbConnection connection)
+    public class MockWebApplicationFactory<TStartup>
+        : WebApplicationFactory<TStartup> where TStartup : class
     {
-        _connection = connection;
-    }
+        private readonly DbConnection _connection;
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
-            .UseStartup<Startup>();
-        builder.ConfigureServices(services =>
+        public MockWebApplicationFactory(DbConnection connection)
         {
-            var dbBuilder = new DbContextOptionsBuilder();
-            dbBuilder.UseNpgsql(_connection);
-            var context = new SingleViewContext(dbBuilder.Options);
-            services.AddSingleton(context);
+            _connection = connection;
+        }
 
-            var serviceProvider = services.BuildServiceProvider();
-            var dbContext = serviceProvider.GetRequiredService<SingleViewContext>();
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
+                .UseStartup<Startup>();
+            builder.ConfigureServices(services =>
+            {
+                var dbBuilder = new DbContextOptionsBuilder();
+                dbBuilder.UseNpgsql(_connection);
+                var context = new SingleViewContext(dbBuilder.Options);
+                services.AddSingleton(context);
 
-            dbContext.Database.EnsureCreated();
-        });
+                var serviceProvider = services.BuildServiceProvider();
+                var dbContext = serviceProvider.GetRequiredService<SingleViewContext>();
+
+                dbContext.Database.EnsureCreated();
+            });
+        }
     }
 }

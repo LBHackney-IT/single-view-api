@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace SingleViewApi.Versioning;
-
-public static class ApiVersionDescriptionExtensions
+namespace SingleViewApi.Versioning
 {
-    public static string GetFormattedApiVersion(this ApiVersionDescription apiVersionDescription)
+    public static class ApiVersionDescriptionExtensions
     {
-        return $"v{apiVersionDescription.ApiVersion.ToString()}";
+        public static string GetFormattedApiVersion(this ApiVersionDescription apiVersionDescription)
+        {
+            return $"v{apiVersionDescription.ApiVersion.ToString()}";
+        }
     }
 }
+

@@ -2,63 +2,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
-using SingleViewApi.V1.UseCase;
 
-namespace SingleViewApi.Tests.V1.UseCase;
-
-public class GetNotesUseCaseTests : LogCallAspectFixture
+namespace SingleViewApi.Tests.V1.UseCase
 {
-    private GetNotesUseCase _classUnderTest;
-    private Fixture _fixture;
-    private Mock<IDataSourceGateway> _mockDataSourceGateway;
-    private Mock<INotesGateway> _mockNotesGateway;
-
-    [SetUp]
-    public void SetUp()
+    public class GetNotesUseCaseTests : LogCallAspectFixture
     {
-        _mockNotesGateway = new Mock<INotesGateway>();
-        _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest = new GetNotesUseCase(_mockNotesGateway.Object, _mockDataSourceGateway.Object);
-        _fixture = new Fixture();
-    }
+        private Mock<INotesGateway> _mockNotesGateway;
+        private GetNotesUseCase _classUnderTest;
+        private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
-    [Test]
-    public async Task GetsNotes()
-    {
-        var tokenFixture = _fixture.Create<string>();
-        var idFixture = _fixture.Create<string>();
-        var notesFixture = _fixture.CreateMany<NotesApiResponseObject>().ToList();
-        var stubbedDataSourceName = _fixture.Create<string>();
-
-        _mockNotesGateway.Setup(x =>
-            x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync(notesFixture);
-        _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(new DataSource
+        [SetUp]
+        public void SetUp()
         {
-            Id = 2, Name = stubbedDataSourceName
-        });
+            _mockNotesGateway = new Mock<INotesGateway>();
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+            _classUnderTest = new GetNotesUseCase(_mockNotesGateway.Object, _mockDataSourceGateway.Object);
+            _fixture = new Fixture();
+        }
 
-        var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
-        Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
-        Assert.AreEqual(notesFixture[^1].Id.ToString(), response[^1].DataSourceId);
-        Assert.AreEqual(notesFixture[^1].Description, response[^1].Description);
-    }
+        [Test]
+        public async Task GetsNotes()
+        {
+            var tokenFixture = _fixture.Create<string>();
+            var idFixture = _fixture.Create<string>();
+            var notesFixture = _fixture.CreateMany<NotesApiResponseObject>().ToList();
+            var stubbedDataSourceName = _fixture.Create<string>();
 
-    [Test]
-    public async Task ReturnsNullIfGatewayErrors()
-    {
-        var tokenFixture = _fixture.Create<string>();
-        var idFixture = _fixture.Create<string>();
+            _mockNotesGateway.Setup(x =>
+                x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync(notesFixture);
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(1)).Returns(new DataSource()
+            {
+                Id = 2,
+                Name = stubbedDataSourceName
+            });
 
-        _mockNotesGateway.Setup(x =>
-            x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync((List<NotesApiResponseObject>) null);
+            var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
+            Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
+            Assert.AreEqual(notesFixture[^1].Id.ToString(), response[^1].DataSourceId);
+            Assert.AreEqual(notesFixture[^1].Description, response[^1].Description);
+        }
 
-        var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
-        Assert.IsNull(response);
+        [Test]
+        public async Task ReturnsNullIfGatewayErrors()
+        {
+            var tokenFixture = _fixture.Create<string>();
+            var idFixture = _fixture.Create<string>();
+
+            _mockNotesGateway.Setup(x =>
+                x.GetAllById(idFixture, tokenFixture, null, 0)).ReturnsAsync((List<NotesApiResponseObject>) null);
+
+            var response = await _classUnderTest.Execute(idFixture, tokenFixture, null, 0);
+            Assert.IsNull(response);
+        }
     }
 }

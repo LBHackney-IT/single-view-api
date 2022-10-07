@@ -9,15 +9,15 @@ namespace SingleViewApi.Tests.V1.Controllers;
 [TestFixture]
 public class JigsawControllerTests : LogCallAspectFixture
 {
+    private JigsawController _classUnderTest;
+    private Mock<IGetJigsawCustomerByIdUseCase> _getJigsawCustomerByIdUseCaseMock;
+
     [SetUp]
     public void SetUp()
     {
         _getJigsawCustomerByIdUseCaseMock = new Mock<IGetJigsawCustomerByIdUseCase>();
         _classUnderTest = new JigsawController(_getJigsawCustomerByIdUseCaseMock.Object);
     }
-
-    private JigsawController _classUnderTest;
-    private Mock<IGetJigsawCustomerByIdUseCase> _getJigsawCustomerByIdUseCaseMock;
 
     [Test]
     public void UseCaseGetsCalled()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,80 +6,89 @@ using Hackney.Core.Logging;
 using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
+using SingleViewApi.V1.Domain;
+using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
 
-namespace SingleViewApi.V1.UseCase;
-
-public class GetSearchResultsByNameUseCase : IGetSearchResultsByNameUseCase
+namespace SingleViewApi.V1.UseCase
 {
-    private readonly IDataSourceGateway _dataSourceGateway;
-    private readonly IHousingSearchGateway _housingSearchGateway;
-
-
-    public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway,
-        IDataSourceGateway dataSourceGateway)
+    public class GetSearchResultsByNameUseCase : IGetSearchResultsByNameUseCase
     {
-        _housingSearchGateway = housingSearchGateway;
-        _dataSourceGateway = dataSourceGateway;
-    }
+        private IHousingSearchGateway _housingSearchGateway;
+        private readonly IDataSourceGateway _dataSourceGateway;
 
-    [LogCall]
-    public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
-    {
-        var searchText = $"{firstName}+{lastName}";
 
-        var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
-
-        var dataSource = _dataSourceGateway.GetEntityById(1);
-
-        var housingSearchApiId = new SystemId { SystemName = dataSource.Name, Id = searchText };
-
-        var response = new SearchResponseObject { SystemIds = new List<SystemId> { housingSearchApiId } };
-
-        if (searchResults == null)
+        public GetSearchResultsByNameUseCase(IHousingSearchGateway housingSearchGateway, IDataSourceGateway dataSourceGateway)
         {
-            housingSearchApiId.Error = SystemId.NotFoundMessage;
+            _housingSearchGateway = housingSearchGateway;
+            _dataSourceGateway = dataSourceGateway;
         }
-        else
-        {
-            var personResults = new List<SearchResult>();
 
-            foreach (var result in searchResults.Results.Persons)
+        [LogCall]
+
+        public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
+        {
+            var searchText = $"{firstName}+{lastName}";
+
+            var searchResults = await _housingSearchGateway.GetSearchResultsBySearchText(searchText, userToken);
+
+            var dataSource = _dataSourceGateway.GetEntityById(1);
+
+            var housingSearchApiId = new SystemId() { SystemName = dataSource.Name, Id = searchText };
+
+            var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { housingSearchApiId } };
+
+            if (searchResults == null)
             {
-                var personTypes = new List<PersonType>();
-                if (result.PersonTypes != null) personTypes = result.PersonTypes.ToList();
-                var person = new SearchResult
+                housingSearchApiId.Error = SystemId.NotFoundMessage;
+            }
+            else
+            {
+                var personResults = new List<SearchResult>();
+
+                foreach (var result in searchResults.Results.Persons)
                 {
-                    Id = result.Id.ToString(),
-                    DataSources = new List<string> { dataSource.Name },
-                    FirstName = result.FirstName,
-                    SurName = result.Surname,
-                    Title = result.Title,
-                    PreferredFirstName = result.PreferredFirstName,
-                    PreferredSurname = result.PreferredSurname,
-                    MiddleName = result.MiddleName,
-                    PersonTypes = personTypes,
-                    DateOfBirth = result.DateOfBirth,
-                    KnownAddresses = new List<KnownAddress>(result.Tenures.Select(t => new KnownAddress
+                    var personTypes = new List<PersonType>();
+                    if (result.PersonTypes != null)
                     {
-                        Id = t.Id,
-                        CurrentAddress = t.IsActive,
-                        StartDate = t.StartDate,
-                        EndDate = t.EndDate,
-                        FullAddress = t.AssetFullAddress
-                    }))
+                        personTypes = result.PersonTypes.ToList();
+                    }
+                    var person = new SearchResult()
+                    {
+                        Id = result.Id.ToString(),
+                        DataSources = new List<string>() { dataSource.Name },
+                        FirstName = result.FirstName,
+                        SurName = result.Surname,
+                        Title = result.Title,
+                        PreferredFirstName = result.PreferredFirstName,
+                        PreferredSurname = result.PreferredSurname,
+                        MiddleName = result.MiddleName,
+                        PersonTypes = personTypes,
+                        DateOfBirth = result.DateOfBirth,
+                        KnownAddresses = new List<KnownAddress>(result.Tenures.Select(t => new KnownAddress()
+                        {
+                            Id = t.Id,
+                            CurrentAddress = t.IsActive,
+                            StartDate = t.StartDate,
+                            EndDate = t.EndDate,
+                            FullAddress = t.AssetFullAddress
+                        }))
+                    };
+
+                    personResults.Add(person);
+                }
+
+                response.SearchResponse = new SearchResponse()
+                {
+
+                    UngroupedResults = personResults,
+                    Total = searchResults.Total
                 };
 
-                personResults.Add(person);
             }
 
-            response.SearchResponse = new SearchResponse
-            {
-                UngroupedResults = personResults, Total = searchResults.Total
-            };
+            return response;
         }
-
-        return response;
     }
 }

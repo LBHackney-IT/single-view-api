@@ -1,26 +1,27 @@
+using SingleViewApi.V1.Domain;
 using FluentAssertions;
 using NUnit.Framework;
-using SingleViewApi.V1.Domain;
 
-namespace SingleViewApi.Tests.V1.Domain;
-
-[TestFixture]
-public class DataSourceTest
+namespace SingleViewApi.Tests.V1.Domain
 {
-    [Test]
-    public void EntitiesHaveAnId()
+    [TestFixture]
+    public class DataSourceTest
     {
-        var entity = new DataSource();
-        entity.Id.Should().BeGreaterOrEqualTo(0);
-    }
+        [Test]
+        public void EntitiesHaveAnId()
+        {
+            var entity = new DataSource();
+            entity.Id.Should().BeGreaterOrEqualTo(0);
+        }
 
-    [Test]
-    public void EntitiesHaveAName()
-    {
-        var entity = new DataSource();
-        var name = "My Entity";
-        entity.Name = name;
+        [Test]
+        public void EntitiesHaveAName()
+        {
+            var entity = new DataSource();
+            var name = "My Entity";
+            entity.Name = name;
 
-        entity.Name.Should().Be(name);
+            entity.Name.Should().Be(name);
+        }
     }
 }

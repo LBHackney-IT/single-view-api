@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SingleViewApi.V1.Boundary.Response;
 
@@ -5,16 +6,19 @@ namespace SingleViewApi.V1.Boundary;
 
 public class CasesResponseObject
 {
-    public List<AccommodationPlacementInfo> PlacementInformation { get; set; }
-
-    public CaseOverview CaseOverview { get; set; }
 #nullable enable
     public Case? CurrentCase { get; set; }
     public List<AdditionalInfo>? AdditionalFactors { get; set; }
 
     public List<AdditionalInfo>? HealthAndWellBeing { get; set; }
 #nullable disable
+    public List<AccommodationPlacementInfo> PlacementInformation { get; set; }
+
+    public CaseOverview CaseOverview { get; set; }
 }
+
+
+
 
 public class CaseOverview
 {
@@ -36,6 +40,7 @@ public class JigsawHouseholdMember
 #nullable disable
 }
 
+
 public class AccommodationPlacementInfo
 {
     public string PlacementType { get; set; }
@@ -44,6 +49,7 @@ public class AccommodationPlacementInfo
     public string PlacementDutyFullName { get; set; }
     public string Usage { get; set; }
     public string DclgClassificationType { get; set; }
+
 }
 
 public class AdditionalInfo

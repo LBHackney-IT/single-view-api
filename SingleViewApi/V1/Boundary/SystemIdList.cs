@@ -1,14 +1,16 @@
+
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SingleViewApi.V1.Boundary;
-
-public class SystemIdList
+namespace SingleViewApi.V1.Boundary
 {
-    public List<SystemId> SystemIds { get; set; }
-
-    public string ToJson()
+    public class SystemIdList
     {
-        return JsonConvert.SerializeObject(SystemIds);
+        public List<SystemId> SystemIds { get; set; }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(SystemIds);
+        }
     }
 }

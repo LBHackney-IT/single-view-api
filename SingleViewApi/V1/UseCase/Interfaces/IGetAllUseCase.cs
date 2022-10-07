@@ -1,8 +1,9 @@
 using SingleViewApi.V1.Boundary.Response;
 
-namespace SingleViewApi.V1.UseCase.Interfaces;
-
-public interface IGetAllUseCase
+namespace SingleViewApi.V1.UseCase.Interfaces
 {
-    ResponseObjectList Execute();
+    public interface IGetAllUseCase
+    {
+        ResponseObjectList Execute();
+    }
 }

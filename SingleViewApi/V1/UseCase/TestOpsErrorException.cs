@@ -1,10 +1,9 @@
 using System;
 
-namespace SingleViewApi.V1.UseCase;
-
-public class TestOpsErrorException : Exception
+namespace SingleViewApi.V1.UseCase
 {
-    public TestOpsErrorException() : base("This is a test exception to test our integrations")
+    public class TestOpsErrorException : Exception
     {
+        public TestOpsErrorException() : base("This is a test exception to test our integrations") { }
     }
 }

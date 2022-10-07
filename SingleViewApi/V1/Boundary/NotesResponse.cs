@@ -1,21 +1,22 @@
 using System.Collections.Generic;
 using SingleViewApi.V1.Boundary.Response;
 
-namespace SingleViewApi.V1.Boundary;
-
-public class NotesResponse
+namespace SingleViewApi.V1.Boundary
 {
-    public List<NoteResponseObject> Notes { get; set; }
-
-    public List<SystemId> SystemIds { get; set; }
-
-    public void Sort()
+    public class NotesResponse
     {
-        SortByCreatedAtDescending();
-    }
+        public List<NoteResponseObject> Notes { get; set; }
 
-    public void SortByCreatedAtDescending()
-    {
-        Notes.Sort((x, y) => y.CreatedAt.CompareTo(x.CreatedAt));
+        public List<SystemId> SystemIds { get; set; }
+
+        public void Sort()
+        {
+            SortByCreatedAtDescending();
+        }
+
+        public void SortByCreatedAtDescending()
+        {
+            Notes.Sort((x, y) => y.CreatedAt.CompareTo(x.CreatedAt));
+        }
     }
 }

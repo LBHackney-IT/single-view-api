@@ -2,61 +2,65 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using SingleViewApi.V1.UseCase;
 using Hackney.Core.Testing.Shared;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
-using SingleViewApi.V1.UseCase;
 
-namespace SingleViewApi.Tests.V1.UseCase;
-
-public class GetCouncilTaxNotesUseCaseTests : LogCallAspectFixture
+namespace SingleViewApi.Tests.V1.UseCase
 {
-    private GetCouncilTaxNotesUseCase _classUnderTest;
-    private Fixture _fixture;
-    private Mock<IAcademyGateway> _mockAcademyGateway;
-    private Mock<IDataSourceGateway> _mockDataSourceGateway;
-
-    [SetUp]
-    public void SetUp()
+    public class GetCouncilTaxNotesUseCaseTests : LogCallAspectFixture
     {
-        _mockAcademyGateway = new Mock<IAcademyGateway>();
-        _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest =
-            new GetCouncilTaxNotesUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
-        _fixture = new Fixture();
-    }
+        private Mock<IAcademyGateway> _mockAcademyGateway;
+        private GetCouncilTaxNotesUseCase _classUnderTest;
+        private Fixture _fixture;
+        private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
-    [Test]
-    public async Task GetsNotes()
-    {
-        var idFixture = _fixture.Create<string>();
-        var hackneyTokenFixture = _fixture.Create<string>();
-        var notesFixture = new List<AcademyNotesResponseObject>
+        [SetUp]
+        public void SetUp()
         {
-            new()
+            _mockAcademyGateway = new Mock<IAcademyGateway>();
+            _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+            _classUnderTest =
+                new GetCouncilTaxNotesUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
+            _fixture = new Fixture();
+        }
+
+        [Test]
+        public async Task GetsNotes()
+        {
+            var idFixture = _fixture.Create<string>();
+            var hackneyTokenFixture = _fixture.Create<string>();
+            var notesFixture = new List<AcademyNotesResponseObject>()
             {
-                Date = "31.03.2022 15:39:37  1017585577", UserId = "Diane", Note = "Lorem ipsum dolor sit amet."
-            }
-        };
-        var stubbedDataSourceName = _fixture.Create<string>();
+                new AcademyNotesResponseObject()
+                {
+                    Date = "31.03.2022 15:39:37  1017585577",
+                    UserId = "Diane",
+                    Note = "Lorem ipsum dolor sit amet."
+                }
+            };
+            var stubbedDataSourceName = _fixture.Create<string>();
 
-        _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(new DataSource
-        {
-            Id = 2, Name = stubbedDataSourceName
-        });
+            _mockDataSourceGateway.Setup(x => x.GetEntityById(3)).Returns(new DataSource()
+            {
+                Id = 2,
+                Name = stubbedDataSourceName
+            });
 
-        _mockAcademyGateway.Setup(x =>
-            x.GetCouncilTaxNotes(idFixture, hackneyTokenFixture)).ReturnsAsync(notesFixture);
+            _mockAcademyGateway.Setup(x =>
+                x.GetCouncilTaxNotes(idFixture, hackneyTokenFixture)).ReturnsAsync(notesFixture);
 
-        var response = await _classUnderTest.Execute(idFixture, hackneyTokenFixture);
+            var response = await _classUnderTest.Execute(idFixture, hackneyTokenFixture);
 
-        Assert.AreEqual(notesFixture[^1].Note, response[^1].Description);
-        Assert.AreEqual(DateTime.Parse("2022-03-31 15:39:37"), response[^1].CreatedAt);
-        Assert.AreEqual("Academy Council Tax Note", response[^1].Categorisation.Description);
-        Assert.AreEqual(notesFixture[^1].UserId, response[^1].Author.FullName);
-        Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
+            Assert.AreEqual(notesFixture[^1].Note, response[^1].Description);
+            Assert.AreEqual(DateTime.Parse("2022-03-31 15:39:37"), response[^1].CreatedAt);
+            Assert.AreEqual("Academy Council Tax Note", response[^1].Categorisation.Description);
+            Assert.AreEqual(notesFixture[^1].UserId, response[^1].Author.FullName);
+            Assert.AreEqual(stubbedDataSourceName, response[^1].DataSource);
+        }
     }
 }

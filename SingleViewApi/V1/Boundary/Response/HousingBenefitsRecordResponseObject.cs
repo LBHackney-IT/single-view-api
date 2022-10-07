@@ -84,3 +84,5 @@ public class PaymentDetails
     public DateTime PostingDate { get; set; }
     public decimal PaymentAmount { get; set; }
 }
+
+

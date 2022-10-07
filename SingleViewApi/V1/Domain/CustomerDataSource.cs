@@ -1,14 +1,15 @@
 using System;
 
-namespace SingleViewApi.V1.Domain;
-
-public class CustomerDataSource
+namespace SingleViewApi.V1.Domain
 {
-    public int Id { get; set; }
+    public class CustomerDataSource
+    {
+        public int Id { get; set; }
 
-    public Guid CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
-    public int DataSourceId { get; set; }
+        public int DataSourceId { get; set; }
 
-    public string SourceId { get; set; }
+        public string SourceId { get; set; }
+    }
 }

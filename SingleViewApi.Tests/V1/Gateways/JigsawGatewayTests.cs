@@ -14,13 +14,13 @@ namespace SingleViewApi.Tests.V1.Gateways;
 
 public class JigsawGatewayTests : LogCallAspectFixture
 {
-    private string _accommodationBaseUrl;
-    private string _authUrl;
     private JigsawGateway _classUnderTest;
-    private string _customerBaseUrl;
-    private Fixture _fixture;
-    private string _homelessnessBaseUrl;
     private MockHttpMessageHandler _mockHttp;
+    private string _authUrl;
+    private string _customerBaseUrl;
+    private string _homelessnessBaseUrl;
+    private string _accommodationBaseUrl;
+    private Fixture _fixture;
 
     [SetUp]
     public void Setup()
@@ -32,8 +32,7 @@ public class JigsawGatewayTests : LogCallAspectFixture
         _accommodationBaseUrl = "https://api.jigsaw-accommodation";
         _mockHttp = new MockHttpMessageHandler();
         var mockClient = _mockHttp.ToHttpClient();
-        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _customerBaseUrl, _homelessnessBaseUrl,
-            _accommodationBaseUrl);
+        _classUnderTest = new JigsawGateway(mockClient, _authUrl, _customerBaseUrl, _homelessnessBaseUrl, _accommodationBaseUrl);
     }
 
     [Test]
@@ -49,11 +48,13 @@ public class JigsawGatewayTests : LogCallAspectFixture
         _ = _classUnderTest.GetCustomers(firstName, lastName, bearerToken);
 
         _mockHttp.VerifyNoOutstandingExpectation();
-    }
 
+
+    }
     [Test]
     public async Task GetCustomersReturnsNullIfThereAreNoResults()
     {
+
         var firstName = _fixture.Create<string>();
         var lastName = _fixture.Create<string>();
         var bearerToken = _fixture.Create<string>();

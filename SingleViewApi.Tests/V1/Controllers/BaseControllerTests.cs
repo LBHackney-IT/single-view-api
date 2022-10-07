@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SingleViewApi.V1.Controllers;
+using SingleViewApi.V1.Infrastructure;
 using FluentAssertions;
 using Hackney.Core.Middleware;
 using Microsoft.AspNetCore.Http;
@@ -6,48 +8,46 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using NUnit.Framework;
-using SingleViewApi.V1.Controllers;
 
-namespace SingleViewApi.Tests.V1.Controllers;
-
-[TestFixture]
-public class BaseControllerTests
+namespace SingleViewApi.Tests.V1.Controllers
 {
-    [SetUp]
-    public void Init()
+    [TestFixture]
+    public class BaseControllerTests
     {
-        _stubHttpContext = new DefaultHttpContext();
-        _controllerContext =
-            new ControllerContext(
-                new ActionContext(_stubHttpContext, new RouteData(), new ControllerActionDescriptor()));
-        _sut = new BaseController();
+        private BaseController _sut;
+        private ControllerContext _controllerContext;
+        private HttpContext _stubHttpContext;
 
-        _sut.ControllerContext = _controllerContext;
-    }
+        [SetUp]
+        public void Init()
+        {
+            _stubHttpContext = new DefaultHttpContext();
+            _controllerContext = new ControllerContext(new ActionContext(_stubHttpContext, new RouteData(), new ControllerActionDescriptor()));
+            _sut = new BaseController();
 
-    private BaseController _sut;
-    private ControllerContext _controllerContext;
-    private HttpContext _stubHttpContext;
+            _sut.ControllerContext = _controllerContext;
+        }
 
-    [Test]
-    public void GetCorrelationShouldThrowExceptionIfCorrelationHeaderUnavailable()
-    {
-        // Arrange + Act + Assert
-        _sut.Invoking(x => x.GetCorrelationId())
-            .Should().Throw<KeyNotFoundException>()
-            .WithMessage("Request is missing a correlationId");
-    }
+        [Test]
+        public void GetCorrelationShouldThrowExceptionIfCorrelationHeaderUnavailable()
+        {
+            // Arrange + Act + Assert
+            _sut.Invoking(x => x.GetCorrelationId())
+                .Should().Throw<KeyNotFoundException>()
+                .WithMessage("Request is missing a correlationId");
+        }
 
-    [Test]
-    public void GetCorrelationShouldReturnCorrelationIdWhenExists()
-    {
-        // Arrange
-        _stubHttpContext.Request.Headers.Add(HeaderConstants.CorrelationId, "123");
+        [Test]
+        public void GetCorrelationShouldReturnCorrelationIdWhenExists()
+        {
+            // Arrange
+            _stubHttpContext.Request.Headers.Add(HeaderConstants.CorrelationId, "123");
 
-        // Act
-        var result = _sut.GetCorrelationId();
+            // Act
+            var result = _sut.GetCorrelationId();
 
-        // Assert
-        result.Should().BeEquivalentTo("123");
+            // Assert
+            result.Should().BeEquivalentTo("123");
+        }
     }
 }

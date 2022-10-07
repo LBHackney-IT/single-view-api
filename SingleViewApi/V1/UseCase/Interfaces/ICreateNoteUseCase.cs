@@ -2,9 +2,10 @@ using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 
-namespace SingleViewApi.V1.UseCase.Interfaces;
-
-public interface ICreateNoteUseCase
+namespace SingleViewApi.V1.UseCase.Interfaces
 {
-    Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken);
+    public interface ICreateNoteUseCase
+    {
+        Task<NotesApiResponseObject> Execute(CreateNoteRequest createNoteRequest, string userToken);
+    }
 }

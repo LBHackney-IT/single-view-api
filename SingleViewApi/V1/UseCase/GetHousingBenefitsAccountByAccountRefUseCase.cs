@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person.Domain;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -13,8 +14,7 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
     private readonly IAcademyGateway _academyGateway;
     private readonly IDataSourceGateway _dataSourceGateway;
 
-    public GetHousingBenefitsAccountByAccountRefUseCase(IAcademyGateway academyGateway,
-        IDataSourceGateway dataSourceGateway)
+    public GetHousingBenefitsAccountByAccountRefUseCase(IAcademyGateway academyGateway, IDataSourceGateway dataSourceGateway)
     {
         _academyGateway = academyGateway;
         _dataSourceGateway = dataSourceGateway;
@@ -26,14 +26,20 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
         var account = await _academyGateway.GetHousingBenefitsAccountByAccountRef(accountRef, userToken);
         var dataSource = _dataSourceGateway.GetEntityById(4);
 
-        var academyCtId = new SystemId { SystemName = dataSource.Name, Id = accountRef };
+        var academyCtId = new SystemId() { SystemName = dataSource.Name, Id = accountRef };
 
-        var response = new CustomerResponseObject { SystemIds = new List<SystemId> { academyCtId } };
+        var response = new CustomerResponseObject()
+        {
+            SystemIds = new List<SystemId>() { academyCtId }
+        };
 
         if (account == null)
+        {
             academyCtId.Error = SystemId.NotFoundMessage;
+        }
         else
-            response.Customer = new Customer
+        {
+            response.Customer = new Customer()
             {
                 Id = accountRef,
                 DateOfDeath = account.DateOfBirth,
@@ -41,7 +47,7 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
                 DataSource = dataSource,
                 FirstName = account.FirstName.Upcase(),
                 Surname = account.LastName.Upcase(),
-                HousingBenefitsAccount = new HousingBenefitsAccountInfo
+                HousingBenefitsAccount = new HousingBenefitsAccountInfo()
                 {
                     ClaimId = account.ClaimId,
                     CheckDigit = account.CheckDigit,
@@ -51,8 +57,10 @@ public class GetHousingBenefitsAccountByAccountRefUseCase : IGetHousingBenefitsA
                     WeeklyHousingBenefitDetails = account.HousingBenefitDetails,
                     HousingBenefitLandlordDetails = account.HousingBenefitLandlordDetails,
                     LastPaymentDetails = account.LastPaymentDetails
+
                 }
             };
+        }
         return response;
     }
 }

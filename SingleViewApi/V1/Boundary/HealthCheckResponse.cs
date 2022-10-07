@@ -1,13 +1,14 @@
-namespace SingleViewApi.V1.Boundary;
-
-public class HealthCheckResponse
+namespace SingleViewApi.V1.Boundary
 {
-    public HealthCheckResponse(bool success, string message)
+    public class HealthCheckResponse
     {
-        Success = success;
-        Message = message;
-    }
+        public HealthCheckResponse(bool success, string message)
+        {
+            Success = success;
+            Message = message;
+        }
 
-    public bool Success { get; }
-    public string Message { get; }
+        public bool Success { get; }
+        public string Message { get; }
+    }
 }

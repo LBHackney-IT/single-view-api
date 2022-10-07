@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Response;
 
-namespace SingleViewApi.V1.UseCase.Interfaces;
-
-public interface IGetSearchResultsByNameUseCase
+namespace SingleViewApi.V1.UseCase.Interfaces
 {
-    Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken);
+    public interface IGetSearchResultsByNameUseCase
+    {
+        Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken);
+    }
 }

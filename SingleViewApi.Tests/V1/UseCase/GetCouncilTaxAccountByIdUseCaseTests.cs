@@ -13,18 +13,17 @@ namespace SingleViewApi.Tests.V1.UseCase;
 
 public class GetCouncilTaxAccountByIdUseCaseTests : LogCallAspectFixture
 {
-    private GetCouncilTaxAccountByIdUseCase _classUnderTest;
-    private Fixture _fixture;
     private Mock<IAcademyGateway> _mockAcademyGateway;
     private Mock<IDataSourceGateway> _mockDataSourceGateway;
+    private GetCouncilTaxAccountByIdUseCase _classUnderTest;
+    private Fixture _fixture;
 
     [SetUp]
     public void SetUp()
     {
         _mockAcademyGateway = new Mock<IAcademyGateway>();
         _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest =
-            new GetCouncilTaxAccountByIdUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
+        _classUnderTest = new GetCouncilTaxAccountByIdUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
         _fixture = new Fixture();
     }
 
@@ -46,9 +45,9 @@ public class GetCouncilTaxAccountByIdUseCaseTests : LogCallAspectFixture
         result.Customer.Surname.Should().BeEquivalentTo(stubbedCouncilTaxAccount.LastName);
         result.Customer.FirstName.Should().BeEquivalentTo(stubbedCouncilTaxAccount.FirstName);
         result.Customer.CouncilTaxAccount.AccountBalance.Should().Be(stubbedCouncilTaxAccount.AccountBalance);
-        result.Customer.CouncilTaxAccount.PropertyAddress.Should()
-            .BeEquivalentTo(stubbedCouncilTaxAccount.PropertyAddress);
-        result.Customer.CouncilTaxAccount.ForwardingAddress.Should()
-            .BeEquivalentTo(stubbedCouncilTaxAccount.ForwardingAddress);
+        result.Customer.CouncilTaxAccount.PropertyAddress.Should().BeEquivalentTo(stubbedCouncilTaxAccount.PropertyAddress);
+        result.Customer.CouncilTaxAccount.ForwardingAddress.Should().BeEquivalentTo(stubbedCouncilTaxAccount.ForwardingAddress);
+
+
     }
 }

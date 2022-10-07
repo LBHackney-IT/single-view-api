@@ -13,18 +13,17 @@ namespace SingleViewApi.Tests.V1.UseCase;
 
 public class GetHousingBenefitsAccountByAccountRefUseCaseTests : LogCallAspectFixture
 {
-    private GetHousingBenefitsAccountByAccountRefUseCase _classUnderTest;
-    private Fixture _fixture;
     private Mock<IAcademyGateway> _mockAcademyGateway;
     private Mock<IDataSourceGateway> _mockDataSourceGateway;
+    private GetHousingBenefitsAccountByAccountRefUseCase _classUnderTest;
+    private Fixture _fixture;
 
     [SetUp]
     public void SetUp()
     {
         _mockAcademyGateway = new Mock<IAcademyGateway>();
         _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest =
-            new GetHousingBenefitsAccountByAccountRefUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
+        _classUnderTest = new GetHousingBenefitsAccountByAccountRefUseCase(_mockAcademyGateway.Object, _mockDataSourceGateway.Object);
         _fixture = new Fixture();
     }
 
@@ -46,13 +45,10 @@ public class GetHousingBenefitsAccountByAccountRefUseCaseTests : LogCallAspectFi
         result.Customer.Surname.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.LastName);
         result.Customer.FirstName.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.FirstName);
         result.Customer.HousingBenefitsAccount.ClaimId.Should().Be(stubbedHousingBenefitsRecordResponse.ClaimId);
-        result.Customer.HousingBenefitsAccount.CheckDigit.Should()
-            .BeEquivalentTo(stubbedHousingBenefitsRecordResponse.CheckDigit);
-        result.Customer.HousingBenefitsAccount.PersonReference.Should()
-            .BeEquivalentTo(stubbedHousingBenefitsRecordResponse.PersonReference);
-        result.Customer.HousingBenefitsAccount.HouseholdMembers.Should()
-            .BeEquivalentTo(stubbedHousingBenefitsRecordResponse.HouseholdMembers);
-        result.Customer.HousingBenefitsAccount.Benefits.Should()
-            .BeEquivalentTo(stubbedHousingBenefitsRecordResponse.Benefits);
+        result.Customer.HousingBenefitsAccount.CheckDigit.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.CheckDigit);
+        result.Customer.HousingBenefitsAccount.PersonReference.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.PersonReference);
+        result.Customer.HousingBenefitsAccount.HouseholdMembers.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.HouseholdMembers);
+        result.Customer.HousingBenefitsAccount.Benefits.Should().BeEquivalentTo(stubbedHousingBenefitsRecordResponse.Benefits);
+
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -11,9 +12,9 @@ namespace SingleViewApi.V1.Gateways;
 
 public class AcademyGateway : IAcademyGateway
 {
-    private readonly string _apiKey;
-    private readonly string _baseUrl;
     private readonly HttpClient _httpClient;
+    private readonly string _baseUrl;
+    private readonly string _apiKey;
 
     public AcademyGateway(HttpClient httpClient, string baseUrl, string apiKey)
     {
@@ -23,8 +24,7 @@ public class AcademyGateway : IAcademyGateway
     }
 
     [LogCall]
-    public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName,
-        string lastName, string userToken)
+    public async Task<CouncilTaxSearchResponseObject> GetCouncilTaxAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
             $"{_baseUrl}/council-tax/search?firstName={firstName}&lastName={lastName}");
@@ -40,17 +40,18 @@ public class AcademyGateway : IAcademyGateway
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
+
             var jsonBody = response.Content.ReadAsStringAsync().Result;
 
             results = JsonConvert.DeserializeObject<CouncilTaxSearchResponseObject>(jsonBody);
+
         }
 
         return results;
     }
 
     [LogCall]
-    public async Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName,
-        string lastName, string userToken)
+    public async Task<HousingBenefitsSearchResponseObject> GetHousingBenefitsAccountsByCustomerName(string firstName, string lastName, string userToken)
     {
 #nullable enable
         HousingBenefitsSearchResponseObject? results = null;
@@ -73,8 +74,7 @@ public class AcademyGateway : IAcademyGateway
     }
 
     [LogCall]
-    public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef,
-        string userToken)
+    public async Task<CouncilTaxRecordResponseObject> GetCouncilTaxAccountByAccountRef(string accountRef, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/council-tax/{accountRef}");
         request.Headers.Add("Authorization", userToken);
@@ -95,8 +95,7 @@ public class AcademyGateway : IAcademyGateway
     }
 
     [LogCall]
-    public async Task<HousingBenefitsRecordResponseObject> GetHousingBenefitsAccountByAccountRef(string accountRef,
-        string userToken)
+    public async Task<HousingBenefitsRecordResponseObject> GetHousingBenefitsAccountByAccountRef(string accountRef, string userToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/benefits/{accountRef}");
         request.Headers.Add("Authorization", userToken);

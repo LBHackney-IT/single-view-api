@@ -1,20 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace SingleViewApi.V1.Infrastructure;
-
-public class SingleViewContext : DbContext
+namespace SingleViewApi.V1.Infrastructure
 {
-    //Guidance on the context class can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Database-contexts
-    public SingleViewContext(DbContextOptions options) : base(options)
-    {
-    }
 
-    public DbSet<DataSourceDbEntity> DataSources { get; set; }
-    public DbSet<CustomerDbEntity> Customers { get; set; }
-    public DbSet<CustomerDataSourceDbEntity> CustomerDataSources { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class SingleViewContext : DbContext
     {
-        modelBuilder.Entity<CustomerDbEntity>();
+        //Guidance on the context class can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Database-contexts
+        public SingleViewContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        public DbSet<DataSourceDbEntity> DataSources { get; set; }
+        public DbSet<CustomerDbEntity> Customers { get; set; }
+        public DbSet<CustomerDataSourceDbEntity> CustomerDataSources { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CustomerDbEntity>();
+        }
     }
 }

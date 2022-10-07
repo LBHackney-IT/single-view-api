@@ -14,37 +14,35 @@ namespace SingleViewApi.Tests.V1.UseCase;
 [TestFixture]
 public class GetJigsawCustomerByIdUseCaseTest
 {
-    [SetUp]
-    public void SetUp()
-    {
-        _mockJigsawGateway = new Mock<IJigsawGateway>();
-        _mockGetJigsawAuthTokenUseCase = new Mock<IGetJigsawAuthTokenUseCase>();
-        _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest = new GetJigsawCustomerByIdUseCase(_mockJigsawGateway.Object,
-            _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
-        _fixture = new Fixture();
-    }
-
     private Mock<IJigsawGateway> _mockJigsawGateway;
     private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
     private GetJigsawCustomerByIdUseCase _classUnderTest;
     private Fixture _fixture;
     private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
+    [SetUp]
+    public void SetUp()
+    {
+        _mockJigsawGateway = new Mock<IJigsawGateway>();
+        _mockGetJigsawAuthTokenUseCase = new Mock<IGetJigsawAuthTokenUseCase>();
+        _mockDataSourceGateway = new Mock<IDataSourceGateway>();
+        _classUnderTest = new GetJigsawCustomerByIdUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
+        _fixture = new Fixture();
+    }
+
     [Test]
     public void UseCaseReturnsNullIfAuthFails()
     {
-        var redisId = _fixture.Create<string>();
+        string redisId = _fixture.Create<string>();
         const string hackneyToken = "test-token";
-        var stubbedCustomerId = _fixture.Create<string>();
+        string stubbedCustomerId = _fixture.Create<string>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
-            .ReturnsAsync(new AuthGatewayResponse { Token = null, ExceptionMessage = "No token present" });
-        ;
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
 
         var result = _classUnderTest.Execute(stubbedCustomerId, redisId, hackneyToken).Result;
 
         Assert.That(result, Is.EqualTo(null));
+
     }
 
     [Test]
@@ -63,7 +61,7 @@ public class GetJigsawCustomerByIdUseCaseTest
         const string stubbedAccommodationTypeId = "111";
         const string stubbedHousingCircumstanceId = "112";
         const bool stubbedIsSettled = true;
-        var stubbedSupportWorker = _fixture.Create<SupportWorker>();
+        SupportWorker stubbedSupportWorker = _fixture.Create<SupportWorker>();
 
         var stubbedEntity = _fixture.Create<JigsawCustomerResponseObject>();
 
@@ -85,8 +83,7 @@ public class GetJigsawCustomerByIdUseCaseTest
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCustomerId = _fixture.Create<string>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
-            .ReturnsAsync(new AuthGatewayResponse { Token = jigsawToken, ExceptionMessage = null });
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
         _mockJigsawGateway.Setup(x => x.GetCustomerById(stubbedCustomerId, jigsawToken)).ReturnsAsync(stubbedEntity);
@@ -138,23 +135,21 @@ public class GetJigsawCustomerByIdUseCaseTest
         const string hackneyToken = "test-token";
 
         var stubbedEntity = _fixture.Build<JigsawCustomerResponseObject>()
-            .With(o => o.PersonInfo,
-                new PersonInfo
-                {
-                    CorrespondenceAddress = "",
-                    OkToContactOnEmail = false,
-                    OkToContactOnHomePhoneNumber = false,
-                    OkToContactOnMobilePhoneNumber = false,
-                    OkToContactOnWorkPhoneNumber = false
-                }).Create();
+            .With(o => o.PersonInfo, new PersonInfo()
+            {
+                CorrespondenceAddress = "",
+                OkToContactOnEmail = false,
+                OkToContactOnHomePhoneNumber = false,
+                OkToContactOnMobilePhoneNumber = false,
+                OkToContactOnWorkPhoneNumber = false
+            }).Create();
 
 
         var stubbedDataSource = _fixture.Create<DataSource>();
         var stubbedCustomerId = _fixture.Create<string>();
         var stubbedLookups = _fixture.Create<JigsawLookupResponseObject>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
-            .ReturnsAsync(new AuthGatewayResponse { Token = jigsawToken, ExceptionMessage = null });
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
         _mockJigsawGateway.Setup(x => x.GetCustomerById(stubbedCustomerId, jigsawToken)).ReturnsAsync(stubbedEntity);

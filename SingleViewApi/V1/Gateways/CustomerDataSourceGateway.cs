@@ -4,28 +4,31 @@ using SingleViewApi.V1.Factories;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.V1.Gateways;
-
-public class CustomerDataSourceGateway : ICustomerDataSourceGateway
+namespace SingleViewApi.V1.Gateways
 {
-    private readonly SingleViewContext _singleViewContext;
-
-    public CustomerDataSourceGateway(SingleViewContext singleViewContext)
+    public class CustomerDataSourceGateway : ICustomerDataSourceGateway
     {
-        _singleViewContext = singleViewContext;
-    }
+        private readonly SingleViewContext _singleViewContext;
 
-    public CustomerDataSource Add(Guid customerId, int dataSourceId, string sourceId)
-    {
-        var entity = new CustomerDataSource
+        public CustomerDataSourceGateway(SingleViewContext singleViewContext)
         {
-            CustomerId = customerId, DataSourceId = dataSourceId, SourceId = sourceId
-        }.ToDatabase();
-        _singleViewContext.CustomerDataSources.Add(entity);
-        _singleViewContext.SaveChanges();
+            _singleViewContext = singleViewContext;
+        }
 
-        var result = _singleViewContext.CustomerDataSources.Find(entity.Id);
+        public CustomerDataSource Add(Guid customerId, int dataSourceId, string sourceId)
+        {
+            var entity = new CustomerDataSource()
+            {
+                CustomerId = customerId,
+                DataSourceId = dataSourceId,
+                SourceId = sourceId
+            }.ToDatabase();
+            _singleViewContext.CustomerDataSources.Add(entity);
+            _singleViewContext.SaveChanges();
 
-        return result.ToDomain();
+            var result = _singleViewContext.CustomerDataSources.Find(entity.Id);
+
+            return result.ToDomain();
+        }
     }
 }

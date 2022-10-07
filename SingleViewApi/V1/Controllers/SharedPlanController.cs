@@ -6,31 +6,35 @@ using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
 
-namespace SingleViewApi.V1.Controllers;
-
-[ApiController]
-[Route("api/v1/sharedPlan")]
-[Produces("application/json")]
-[ApiVersion("1.0")]
-public class SharedPlanController : BaseController
+namespace SingleViewApi.V1.Controllers
 {
-    private readonly ICreateSharedPlanUseCase _createSharedPlanUseCase;
-
-    public SharedPlanController(ICreateSharedPlanUseCase createSharedPlanUseCase)
+    [ApiController]
+    [Microsoft.AspNetCore.Mvc.Route("api/v1/sharedPlan")]
+    [Produces("application/json")]
+    [ApiVersion("1.0")]
+    public class SharedPlanController : BaseController
     {
-        _createSharedPlanUseCase = createSharedPlanUseCase;
-    }
+        private readonly ICreateSharedPlanUseCase _createSharedPlanUseCase;
 
-    /// <response code="201">Successfully created shared-plan</response>
-    /// <response code="400">Bad request</response>
-    [ProducesResponseType(typeof(CreateSharedPlanResponseObject), StatusCodes.Status201Created)]
-    [HttpPost]
-    [LogCall(LogLevel.Information)]
-    public IActionResult CreateSharedPlan([FromBody] CreateSharedPlanRequest createSharedPlanRequest)
-    {
-        var result = _createSharedPlanUseCase.Execute(createSharedPlanRequest).Result;
-        if (result == null) return BadRequest();
+        public SharedPlanController(ICreateSharedPlanUseCase createSharedPlanUseCase)
+        {
+            _createSharedPlanUseCase = createSharedPlanUseCase;
+        }
 
-        return Created(result.SharedPlanUrl, result);
+        /// <response code="201">Successfully created shared-plan</response>
+        /// <response code="400">Bad request</response>
+        [ProducesResponseType(typeof(CreateSharedPlanResponseObject), StatusCodes.Status201Created)]
+        [HttpPost]
+        [LogCall(LogLevel.Information)]
+        public IActionResult CreateSharedPlan([FromBody] CreateSharedPlanRequest createSharedPlanRequest)
+        {
+            var result = _createSharedPlanUseCase.Execute(createSharedPlanRequest).Result;
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Created(result.SharedPlanUrl, result);
+        }
     }
 }

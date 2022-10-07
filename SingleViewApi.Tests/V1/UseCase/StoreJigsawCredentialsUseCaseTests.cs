@@ -12,24 +12,24 @@ using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase;
 
 namespace SingleViewApi.Tests.V1.UseCase;
-
 [TestFixture]
 public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
 {
+
+    private Mock<IRedisClient> _mockRedisClient;
+    private Mock<IJigsawGateway> _jigsawGatewayMock;
+    private Mock<IDecoderHelper> _decoderHelperMock;
+    private StoreJigsawCredentialsUseCase _classUnderTest;
+
     [SetUp]
     public void Setup()
     {
         _mockRedisClient = new Mock<IRedisClient>();
         _jigsawGatewayMock = new Mock<IJigsawGateway>();
         _decoderHelperMock = new Mock<IDecoderHelper>();
-        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object),
-            _jigsawGatewayMock.Object, _decoderHelperMock.Object);
-    }
+        _classUnderTest = new StoreJigsawCredentialsUseCase(new RedisGateway(_mockRedisClient.Object), _jigsawGatewayMock.Object, _decoderHelperMock.Object);
 
-    private Mock<IRedisClient> _mockRedisClient;
-    private Mock<IJigsawGateway> _jigsawGatewayMock;
-    private Mock<IDecoderHelper> _decoderHelperMock;
-    private StoreJigsawCredentialsUseCase _classUnderTest;
+    }
 
     [Test]
     public void AddsValueAndReturnsId()
@@ -38,11 +38,14 @@ public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
         const string hackneyToken = "hackneyToken";
         const string id = "testId";
         const int ttl = 1;
-        var mockJigsawCredentials = new JigsawCredentials { Username = "TestUsername", Password = "TestPassword" };
+        var mockJigsawCredentials = new JigsawCredentials()
+        {
+            Username = "TestUsername",
+            Password = "TestPassword",
+        };
 
         _decoderHelperMock.Setup(x => x.DecodeJigsawCredentials(encryptedCreds)).Returns(mockJigsawCredentials);
-        _jigsawGatewayMock.Setup(x => x.GetAuthToken(mockJigsawCredentials))
-            .ReturnsAsync(new AuthGatewayResponse { Token = id });
+        _jigsawGatewayMock.Setup(x => x.GetAuthToken(mockJigsawCredentials)).ReturnsAsync(new AuthGatewayResponse() { Token = id });
         _mockRedisClient.Setup(x => x.SetValue(It.IsAny<string>(), id, TimeSpan.FromDays(ttl)));
 
         var response = _classUnderTest.Execute(encryptedCreds, hackneyToken);
@@ -58,11 +61,11 @@ public class StoreJigsawCredentialsUseCaseTests : LogCallAspectFixture
         const JigsawCredentials mockJigsawCredentials = null;
         _decoderHelperMock.Setup(x => x.DecodeJigsawCredentials(value)).Returns(mockJigsawCredentials);
         _jigsawGatewayMock.Setup(x => x.GetAuthToken(mockJigsawCredentials))
-            .ReturnsAsync(new AuthGatewayResponse { Token = null, ExceptionMessage = "Credentials Are Incorrect" });
-        ;
+            .ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "Credentials Are Incorrect" }); ;
 
         var response = _classUnderTest.Execute(value, hackneyToken);
 
         response.Should().BeNull();
     }
+
 }
