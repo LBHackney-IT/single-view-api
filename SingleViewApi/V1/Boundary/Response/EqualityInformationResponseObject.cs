@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace SingleViewApi.V1.Boundary.Response;
 
@@ -98,7 +97,3 @@ public class EqualityInformationResponseObject
     public string? ArmedForces { get; set; }
 #nullable disable
 }
-
-
-
-

@@ -3,105 +3,101 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using Hackney.Shared.ContactDetail.Domain;
-using SingleViewApi.V1.Gateways;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using SingleViewApi.V1.Gateways;
 
-namespace SingleViewApi.Tests.V1.Gateways
+namespace SingleViewApi.Tests.V1.Gateways;
+
+[TestFixture]
+public class ContactDetailsGatewayTest
 {
-    [TestFixture]
-    public class ContactDetailsGatewayTest
+    [SetUp]
+    public void Setup()
     {
-        private readonly Fixture _fixture = new Fixture();
-        private ContactDetailsGateway _classUnderTest;
-        private MockHttpMessageHandler _mockHttp;
+        _mockHttp = new MockHttpMessageHandler();
+        const string baseUrl = "https://contact-details.api";
+        var mockClient = _mockHttp.ToHttpClient();
+        _classUnderTest = new ContactDetailsGateway(mockClient, baseUrl);
+    }
+
+    private readonly Fixture _fixture = new();
+    private ContactDetailsGateway _classUnderTest;
+    private MockHttpMessageHandler _mockHttp;
+
+    [Test]
+    public void ARequestIsMade()
+    {
+        // Arrange
+        const string id = "123-Some-ID";
+        const string userToken = "User token";
+
+        _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
+            .WithHeaders("Authorization", userToken);
+        // Act
+        _ = _classUnderTest.GetContactDetailsById(id, userToken);
+
+        // Assert
+        _mockHttp.VerifyNoOutstandingExpectation();
+    }
 
 
-        [SetUp]
-        public void Setup()
-        {
-            _mockHttp = new MockHttpMessageHandler();
-            const string baseUrl = "https://contact-details.api";
-            var mockClient = _mockHttp.ToHttpClient();
-            _classUnderTest = new ContactDetailsGateway(mockClient, baseUrl);
+    [Test]
+    public async Task GetContactDetailsByIdReturnsNullIfEntityDoesntExist()
+    {
+        // Arrange
+        const string id = "123-Some-ID";
+        const string userToken = "User token";
 
-        }
+        _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
+            .WithHeaders("Authorization", userToken)
+            .Respond(HttpStatusCode.NotFound, x => new StringContent(id));
 
-        [Test]
-        public void ARequestIsMade()
-        {
-            // Arrange
-            const string id = "123-Some-ID";
-            const string userToken = "User token";
+        var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
 
-            _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
-                .WithHeaders("Authorization", userToken);
-            // Act
-            _ = _classUnderTest.GetContactDetailsById(id, userToken);
+        contactDetails.Should().BeEmpty();
+    }
 
-            // Assert
-            _mockHttp.VerifyNoOutstandingExpectation();
-        }
+    [Test]
+    public async Task GetContactDetailsByIdReturnsNullIfUserIsUnAuthorised()
+    {
+        // Arrange
+        const string id = "123-Some-ID";
+        const string userToken = "User token";
 
+        _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
+            .WithHeaders("Authorization", userToken)
+            .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
 
-        [Test]
-        public async Task GetContactDetailsByIdReturnsNullIfEntityDoesntExist()
-        {
-            // Arrange
-            const string id = "123-Some-ID";
-            const string userToken = "User token";
+        var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
 
-            _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
-                .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.NotFound, x => new StringContent(id));
+        contactDetails.Should().BeEmpty();
+    }
 
-            var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
+    [Test]
+    public async Task GetContactDetailsByIdReturnsNullIfApiIsDown()
+    {
+        // Arrange
+        const string id = "123-Some-ID";
+        const string userToken = "User token";
 
-            contactDetails.Should().BeEmpty();
-        }
+        _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
+            .WithHeaders("Authorization", userToken)
+            .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
 
-        [Test]
-        public async Task GetContactDetailsByIdReturnsNullIfUserIsUnAuthorised()
-        {
-            // Arrange
-            const string id = "123-Some-ID";
-            const string userToken = "User token";
+        var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
 
-            _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
-                .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.Unauthorized, x => new StringContent(id));
+        contactDetails.Should().BeEmpty();
+    }
 
-            var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
+    [Test]
+    public async Task DataFromApiIsReturned()
+    {
+        // Arrange
+        const string id = "123-Some-ID";
+        const string userToken = "User token";
 
-            contactDetails.Should().BeEmpty();
-        }
-
-        [Test]
-        public async Task GetContactDetailsByIdReturnsNullIfApiIsDown()
-        {
-            // Arrange
-            const string id = "123-Some-ID";
-            const string userToken = "User token";
-
-            _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
-                .WithHeaders("Authorization", userToken)
-                .Respond(HttpStatusCode.ServiceUnavailable, x => new StringContent(id));
-
-            var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
-
-            contactDetails.Should().BeEmpty();
-        }
-
-        [Test]
-        public async Task DataFromApiIsReturned()
-        {
-            // Arrange
-            const string id = "123-Some-ID";
-            const string userToken = "User token";
-
-            var rawJson = @"
+        var rawJson = @"
 {
     ""results"": [
         {
@@ -186,34 +182,33 @@ namespace SingleViewApi.Tests.V1.Gateways
 }
 ";
 
-            _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
-                .WithHeaders("Authorization", userToken)
-                .Respond("application/json", rawJson);
+        _mockHttp.Expect($"https://contact-details.api/contactDetails?targetId={id}&includeHistoric=true")
+            .WithHeaders("Authorization", userToken)
+            .Respond("application/json", rawJson);
 
-            // Act
-            var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
+        // Act
+        var contactDetails = await _classUnderTest.GetContactDetailsById(id, userToken);
 
-            // Assert
-            _mockHttp.VerifyNoOutstandingExpectation();
-            Assert.AreEqual("address", contactDetails[0].ContactInformation.ContactType.ToString());
-            Assert.AreEqual("correspondenceAddress", contactDetails[0].ContactInformation.SubType.ToString());
-            Assert.AreEqual("100021038870", contactDetails[0].ContactInformation.AddressExtended.UPRN);
-            Assert.AreEqual(false, contactDetails[0].ContactInformation.AddressExtended.IsOverseasAddress);
-            Assert.AreEqual(null, contactDetails[0].ContactInformation.AddressExtended.OverseasAddress);
-            Assert.AreEqual("1 Hillman st, E8 1DY", contactDetails[0].ContactInformation.Value);
-            Assert.AreEqual(true, contactDetails[0].IsActive);
-            Assert.AreEqual("Housing", contactDetails[0].SourceServiceArea.Area);
-            Assert.AreEqual("phone", contactDetails[1].ContactInformation.ContactType.ToString());
-            Assert.AreEqual("home", contactDetails[1].ContactInformation.SubType.ToString());
-            Assert.AreEqual("02083563154", contactDetails[1].ContactInformation.Value);
-            Assert.AreEqual(true, contactDetails[1].IsActive);
-            Assert.AreEqual("Housing", contactDetails[1].SourceServiceArea.Area);
-            Assert.AreEqual("phone", contactDetails[2].ContactInformation.ContactType.ToString());
-            Assert.AreEqual("other", contactDetails[2].ContactInformation.SubType.ToString());
-            Assert.AreEqual("02083563100", contactDetails[2].ContactInformation.Value);
-            Assert.AreEqual("Rent phone", contactDetails[2].ContactInformation.Description);
-            Assert.AreEqual(true, contactDetails[2].IsActive);
-            Assert.AreEqual("Housing", contactDetails[2].SourceServiceArea.Area);
-        }
+        // Assert
+        _mockHttp.VerifyNoOutstandingExpectation();
+        Assert.AreEqual("address", contactDetails[0].ContactInformation.ContactType.ToString());
+        Assert.AreEqual("correspondenceAddress", contactDetails[0].ContactInformation.SubType.ToString());
+        Assert.AreEqual("100021038870", contactDetails[0].ContactInformation.AddressExtended.UPRN);
+        Assert.AreEqual(false, contactDetails[0].ContactInformation.AddressExtended.IsOverseasAddress);
+        Assert.AreEqual(null, contactDetails[0].ContactInformation.AddressExtended.OverseasAddress);
+        Assert.AreEqual("1 Hillman st, E8 1DY", contactDetails[0].ContactInformation.Value);
+        Assert.AreEqual(true, contactDetails[0].IsActive);
+        Assert.AreEqual("Housing", contactDetails[0].SourceServiceArea.Area);
+        Assert.AreEqual("phone", contactDetails[1].ContactInformation.ContactType.ToString());
+        Assert.AreEqual("home", contactDetails[1].ContactInformation.SubType.ToString());
+        Assert.AreEqual("02083563154", contactDetails[1].ContactInformation.Value);
+        Assert.AreEqual(true, contactDetails[1].IsActive);
+        Assert.AreEqual("Housing", contactDetails[1].SourceServiceArea.Area);
+        Assert.AreEqual("phone", contactDetails[2].ContactInformation.ContactType.ToString());
+        Assert.AreEqual("other", contactDetails[2].ContactInformation.SubType.ToString());
+        Assert.AreEqual("02083563100", contactDetails[2].ContactInformation.Value);
+        Assert.AreEqual("Rent phone", contactDetails[2].ContactInformation.Description);
+        Assert.AreEqual(true, contactDetails[2].IsActive);
+        Assert.AreEqual("Housing", contactDetails[2].SourceServiceArea.Area);
     }
 }

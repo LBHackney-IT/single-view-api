@@ -15,7 +15,7 @@ public class DeleteCustomerUseCase : IDeleteCustomerUseCase
     }
 
     [LogCall]
-    public Boolean Execute(Guid customerId)
+    public bool Execute(Guid customerId)
     {
         var result = _customerGateway.Delete(customerId);
 

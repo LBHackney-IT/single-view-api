@@ -1,21 +1,20 @@
-using SingleViewApi.V1.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
+using SingleViewApi.V1.UseCase;
 
-namespace SingleViewApi.Tests.V1.UseCase
+namespace SingleViewApi.Tests.V1.UseCase;
+
+[TestFixture]
+public class ThrowOpsErrorUsecaseTests
 {
-    [TestFixture]
-    public class ThrowOpsErrorUsecaseTests
+    [Test]
+    public void ThrowsTestOpsErrorException()
     {
-        [Test]
-        public void ThrowsTestOpsErrorException()
-        {
-            var ex = Assert.Throws<TestOpsErrorException>(
-                delegate { ThrowOpsErrorUsecase.Execute(); });
+        var ex = Assert.Throws<TestOpsErrorException>(
+            delegate { ThrowOpsErrorUsecase.Execute(); });
 
-            var expected = "This is a test exception to test our integrations";
+        var expected = "This is a test exception to test our integrations";
 
-            ex.Message.Should().BeEquivalentTo(expected);
-        }
+        ex.Message.Should().BeEquivalentTo(expected);
     }
 }

@@ -26,5 +26,3 @@ public class CouncilTaxRecordResponseObject
 
 #nullable disable
 }
-
-

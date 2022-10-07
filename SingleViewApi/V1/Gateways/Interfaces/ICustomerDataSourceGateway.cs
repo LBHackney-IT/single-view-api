@@ -1,10 +1,9 @@
 using System;
 using SingleViewApi.V1.Domain;
 
-namespace SingleViewApi.V1.Gateways.Interfaces
+namespace SingleViewApi.V1.Gateways.Interfaces;
+
+public interface ICustomerDataSourceGateway
 {
-    public interface ICustomerDataSourceGateway
-    {
-        CustomerDataSource Add(Guid customerId, int dataSourceId, string sourceId);
-    }
+    CustomerDataSource Add(Guid customerId, int dataSourceId, string sourceId);
 }

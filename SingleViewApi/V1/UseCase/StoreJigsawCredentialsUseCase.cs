@@ -1,7 +1,5 @@
 using System;
-using System.Threading.Tasks;
 using Hackney.Core.Logging;
-using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.Helpers.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -10,11 +8,12 @@ namespace SingleViewApi.V1.UseCase;
 
 public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 {
-    private IRedisGateway _redisGateway;
-    private IJigsawGateway _jigsawGateway;
-    private IDecoderHelper _decoderHelper;
+    private readonly IDecoderHelper _decoderHelper;
+    private readonly IJigsawGateway _jigsawGateway;
+    private readonly IRedisGateway _redisGateway;
 
-    public StoreJigsawCredentialsUseCase(IRedisGateway redisGateway, IJigsawGateway jigsawGateway, IDecoderHelper decoderHelper)
+    public StoreJigsawCredentialsUseCase(IRedisGateway redisGateway, IJigsawGateway jigsawGateway,
+        IDecoderHelper decoderHelper)
     {
         _redisGateway = redisGateway;
         _jigsawGateway = jigsawGateway;
@@ -28,9 +27,9 @@ public class StoreJigsawCredentialsUseCase : IStoreJigsawCredentialsUseCase
 
         var authGatewayResponse = _jigsawGateway.GetAuthToken(decryptedCredentials).Result;
 
-        if (String.IsNullOrEmpty(authGatewayResponse.Token)) return null;
+        if (string.IsNullOrEmpty(authGatewayResponse.Token)) return null;
 
-        Console.WriteLine($"Adding Jigsaw token to Redis cache");
+        Console.WriteLine("Adding Jigsaw token to Redis cache");
 
         _redisGateway.AddValueWithKey(hackneyToken, authGatewayResponse.Token, 1);
 

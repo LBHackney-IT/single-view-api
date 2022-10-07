@@ -16,5 +16,3 @@ public class HousingBenefitsAccountInfo
     public PaymentDetails? LastPaymentDetails { get; set; }
 #nullable disable
 }
-
-

@@ -1,11 +1,10 @@
-namespace SingleViewApi.V1.Domain
+namespace SingleViewApi.V1.Domain;
+
+public class Categorisation
 {
-    public class Categorisation
-    {
-        public string Category { get; set; }
+    public string Category { get; set; }
 
-        public string SubCategory { get; set; }
+    public string SubCategory { get; set; }
 
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Hackney.Core.DynamoDb;
@@ -6,38 +7,36 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 
-namespace SingleViewApi.Tests
+namespace SingleViewApi.Tests;
+
+public class DynamoDbMockWebApplicationFactory<TStartup>
+    : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public class DynamoDbMockWebApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    private readonly List<TableDef> _tables;
+
+    public DynamoDbMockWebApplicationFactory(List<TableDef> tables)
     {
-        private readonly List<TableDef> _tables;
+        _tables = tables;
+    }
 
-        public IDynamoDbFixture DbFixture { get; private set; }
-        public IAmazonDynamoDB DynamoDb => DbFixture?.DynamoDb;
-        public IDynamoDBContext DynamoDbContext => DbFixture?.DynamoDbContext;
+    public IDynamoDbFixture DbFixture { get; private set; }
+    public IAmazonDynamoDB DynamoDb => DbFixture?.DynamoDb;
+    public IDynamoDBContext DynamoDbContext => DbFixture?.DynamoDbContext;
 
-        public DynamoDbMockWebApplicationFactory(List<TableDef> tables)
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
+            .UseStartup<Startup>();
+        builder.ConfigureServices(services =>
         {
-            _tables = tables;
-        }
+            services.ConfigureDynamoDB();
+            services.ConfigureDynamoDbFixture();
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
-                .UseStartup<Startup>();
-            builder.ConfigureServices(services =>
-            {
-                services.ConfigureDynamoDB();
-                services.ConfigureDynamoDbFixture();
+            var serviceProvider = services.BuildServiceProvider();
 
-                var serviceProvider = services.BuildServiceProvider();
-
-                DbFixture = serviceProvider.GetRequiredService<IDynamoDbFixture>();
-                DbFixture.EnsureTablesExist(_tables);
-            });
-        }
+            DbFixture = serviceProvider.GetRequiredService<IDynamoDbFixture>();
+            DbFixture.EnsureTablesExist(_tables);
+        });
     }
 }

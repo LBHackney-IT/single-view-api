@@ -10,17 +10,16 @@ using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 
-
 namespace SingleViewApi.Tests.V1.Gateways;
 
 public class SharedPlanGatewayTests
 {
-    private MockHttpMessageHandler _mockHttp;
     private string _baseUrl;
     private SharedPlanGateway _classUnderTest;
-    private string _xApiKey;
-    private GetSharedPlanRequest _sharedPlanRequest;
     private CreateSharedPlanRequest _createSharedPlanRequest;
+    private MockHttpMessageHandler _mockHttp;
+    private GetSharedPlanRequest _sharedPlanRequest;
+    private string _xApiKey;
 
     [SetUp]
     public void Setup()
@@ -32,14 +31,14 @@ public class SharedPlanGatewayTests
 
         _classUnderTest = new SharedPlanGateway(mockHttpClient, _baseUrl, _xApiKey);
 
-        _sharedPlanRequest = new GetSharedPlanRequest()
+        _sharedPlanRequest = new GetSharedPlanRequest
         {
             FirstName = "John",
             LastName = "Smith",
-            SystemIds = new List<string>() { "SingleView", "Jigsaw", "Housing", }
+            SystemIds = new List<string> { "SingleView", "Jigsaw", "Housing" }
         };
 
-        _createSharedPlanRequest = new CreateSharedPlanRequest()
+        _createSharedPlanRequest = new CreateSharedPlanRequest
         {
             FirstName = "John",
             LastName = "Smith",
@@ -138,7 +137,8 @@ public class SharedPlanGatewayTests
     public async Task CreateSharedPlanReturnsData()
     {
         // Arrange
-        var createSharedPlanResponse = new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith" };
+        var createSharedPlanResponse =
+            new CreateSharedPlanResponseObject { Id = "1111", FirstName = "John", LastName = "Smith" };
 
         _mockHttp.When(HttpMethod.Post, $"{_baseUrl}/plans")
             .WithHeaders("x-api-key", _xApiKey)

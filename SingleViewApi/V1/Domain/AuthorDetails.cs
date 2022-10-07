@@ -1,9 +1,8 @@
-namespace SingleViewApi.V1.Domain
-{
-    public class AuthorDetails
-    {
-        public string FullName { get; set; }
+namespace SingleViewApi.V1.Domain;
 
-        public string Email { get; set; }
-    }
+public class AuthorDetails
+{
+    public string FullName { get; set; }
+
+    public string Email { get; set; }
 }

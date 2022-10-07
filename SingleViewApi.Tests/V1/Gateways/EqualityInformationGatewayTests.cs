@@ -12,25 +12,21 @@ using SingleViewApi.V1.Gateways;
 
 namespace SingleViewApi.Tests.V1.Gateways;
 
-
-
 [TestFixture]
 public class EqualityInformationGatewayTests : LogCallAspectFixture
 {
-    private readonly Fixture _fixture = new Fixture();
-    private EqualityInformationGateway _classUnderTest;
-    private MockHttpMessageHandler _mockHttp;
-
     [SetUp]
-
     public void Setup()
     {
-
         _mockHttp = new MockHttpMessageHandler();
         const string baseUrl = "https://equality.api";
         var mockClient = _mockHttp.ToHttpClient();
         _classUnderTest = new EqualityInformationGateway(mockClient, baseUrl);
     }
+
+    private readonly Fixture _fixture = new();
+    private EqualityInformationGateway _classUnderTest;
+    private MockHttpMessageHandler _mockHttp;
 
     [Test]
     public void ARequestIsMade()
@@ -54,42 +50,24 @@ public class EqualityInformationGatewayTests : LogCallAspectFixture
         var userToken = _fixture.Create<string>();
         var data = new EqualityInformationResponseObject
         {
-            Gender = new Gender()
-            {
-                GenderValue = "Female",
-                GenderValueIfOther = null,
-                GenderDifferentToBirthSex = "No"
-            },
-            Ethnicity = new Ethnicity()
-            {
-                EthnicGroupValue = "Other",
-                EthnicGroupValueIfOther = "Other ethnicity"
-            },
-            ReligionOrBelief = new ReligionOrBelief()
-            {
-                ReligionOrBeliefValue = "Other",
-                ReligionOrBeliefValueIfOther = "Other religion"
-            },
-            MarriageOrCivilPartnership = new MarriageOrCivilPartnership()
-            {
-                Married = "No",
-                CivilPartnership = "Yes"
-            },
-            PregnancyOrMaternity = new List<PregnancyOrMaternity>()
-            {
-                new PregnancyOrMaternity()
+            Gender =
+                new Gender { GenderValue = "Female", GenderValueIfOther = null, GenderDifferentToBirthSex = "No" },
+            Ethnicity = new Ethnicity { EthnicGroupValue = "Other", EthnicGroupValueIfOther = "Other ethnicity" },
+            ReligionOrBelief =
+                new ReligionOrBelief
                 {
-                    PregnancyDate = "2022-01-20",
-                    PregnancyValidUntil = "2022-09-20"
-                }
-            },
+                    ReligionOrBeliefValue = "Other", ReligionOrBeliefValueIfOther = "Other religion"
+                },
+            MarriageOrCivilPartnership =
+                new MarriageOrCivilPartnership { Married = "No", CivilPartnership = "Yes" },
+            PregnancyOrMaternity =
+                new List<PregnancyOrMaternity>
+                {
+                    new() { PregnancyDate = "2022-01-20", PregnancyValidUntil = "2022-09-20" }
+                },
             NationalInsuranceNumber = "SL203040",
             Disabled = "No",
-            CommunicationRequirements = new List<string>()
-            {
-                "Communication help needed",
-                "Interpretation needed"
-            }
+            CommunicationRequirements = new List<string> { "Communication help needed", "Interpretation needed" }
         };
 
         _mockHttp.Expect($"https://equality.api/equality-information?targetId={id}")

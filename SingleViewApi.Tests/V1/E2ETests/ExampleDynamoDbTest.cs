@@ -1,15 +1,4 @@
-using AutoFixture;
-using SingleViewApi;
-using SingleViewApi.Tests;
-using SingleViewApi.V1.Domain;
-using SingleViewApi.V1.Factories;
-using SingleViewApi.V1.Infrastructure;
-using FluentAssertions;
-using Newtonsoft.Json;
-using NUnit.Framework;
-using System;
-using System.Net;
-using System.Threading.Tasks;
+
 
 //namespace SingleViewApi.Tests.V1.E2ETests
 //{

@@ -8,11 +8,15 @@ build:
 
 .PHONY: serve
 serve:
-	docker-compose build SingleViewApi && docker-compose up SingleViewApi
+	 docker-compose build SingleViewApi && docker-compose up SingleViewApi
 
 .PHONY: shell
 shell:
 	docker-compose run SingleViewApi bash
+
+.PHONY: cleanup
+cleanup:
+	docker-compose down
 
 .PHONY: test
 test:

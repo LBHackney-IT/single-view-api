@@ -20,7 +20,6 @@ public class GetJigsawActiveCaseNotesUseCase : IGetJigsawActiveCaseNotesUseCase
     [LogCall]
     public async Task<List<JigsawNotesResponseObject>> Execute(string customerId, string authToken)
     {
-
         var customerCases = await _jigsawGateway.GetCasesByCustomerId(customerId, authToken);
 
         if (customerCases == null) return null;
@@ -32,7 +31,5 @@ public class GetJigsawActiveCaseNotesUseCase : IGetJigsawActiveCaseNotesUseCase
         var activeCaseNotes = await _jigsawGateway.GetActiveCaseNotesByCaseId(activeCase.Id.ToString(), authToken);
 
         return activeCaseNotes;
-
-
     }
 }

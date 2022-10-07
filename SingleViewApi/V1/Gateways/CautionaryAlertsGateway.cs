@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,8 +8,8 @@ namespace SingleViewApi.V1.Gateways;
 
 public class CautionaryAlertsGateway : ICautionaryAlertsGateway
 {
-    private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly HttpClient _httpClient;
 
     public CautionaryAlertsGateway(HttpClient httpClient, string baseUrl)
     {

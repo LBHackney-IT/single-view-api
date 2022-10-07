@@ -18,9 +18,9 @@ public class HousingBenefitsSearchResponse
     public string Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public Address FullAddress { get; set; }
 #nullable enable
     public DateTime? DateOfBirth { get; set; }
     public string? NiNumber { get; set; }
 #nullable disable
-    public Address FullAddress { get; set; }
 }

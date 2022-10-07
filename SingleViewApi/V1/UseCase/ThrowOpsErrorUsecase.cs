@@ -1,11 +1,9 @@
+namespace SingleViewApi.V1.UseCase;
 
-namespace SingleViewApi.V1.UseCase
+public static class ThrowOpsErrorUsecase
 {
-    public static class ThrowOpsErrorUsecase
+    public static void Execute()
     {
-        public static void Execute()
-        {
-            throw new TestOpsErrorException();
-        }
+        throw new TestOpsErrorException();
     }
 }

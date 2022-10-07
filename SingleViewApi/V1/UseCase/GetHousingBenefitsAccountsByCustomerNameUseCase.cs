@@ -14,7 +14,8 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
     private readonly IAcademyGateway _academyGateway;
     private readonly IDataSourceGateway _dataSourceGateway;
 
-    public GetHousingBenefitsAccountsByCustomerNameUseCase(IAcademyGateway academyGateway, IDataSourceGateway dataSourceGateway)
+    public GetHousingBenefitsAccountsByCustomerNameUseCase(IAcademyGateway academyGateway,
+        IDataSourceGateway dataSourceGateway)
     {
         _academyGateway = academyGateway;
         _dataSourceGateway = dataSourceGateway;
@@ -24,8 +25,8 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken)
     {
         var dataSource = _dataSourceGateway.GetEntityById(4);
-        var academyApiId = new SystemId() { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
-        var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { academyApiId } };
+        var academyApiId = new SystemId { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
+        var response = new SearchResponseObject { SystemIds = new List<SystemId> { academyApiId } };
         var accounts = await _academyGateway.GetHousingBenefitsAccountsByCustomerName(firstName, lastName, userToken);
 
         if (accounts?.Customers == null || accounts.Customers.Count == 0)
@@ -45,26 +46,23 @@ public class GetHousingBenefitsAccountsByCustomerNameUseCase : IGetHousingBenefi
 
         foreach (var account in accounts.Customers)
         {
-            var result = new SearchResult()
+            var result = new SearchResult
             {
                 Id = account.Id,
-                DataSources = new List<string>() { dataSource.Name },
+                DataSources = new List<string> { dataSource.Name },
                 FirstName = account.FirstName.Upcase(),
                 SurName = account.LastName,
                 DateOfBirth = account?.DateOfBirth,
                 NiNumber = account?.NiNumber,
-                KnownAddresses = new List<KnownAddress>()
+                KnownAddresses = new List<KnownAddress>
                 {
-                    new KnownAddress() { CurrentAddress = true, FullAddress = AddressToString(account.FullAddress)  }
+                    new() { CurrentAddress = true, FullAddress = AddressToString(account.FullAddress) }
                 }
             };
             searchResults.Add(result);
         }
-        response.SearchResponse = new SearchResponse()
-        {
-            UngroupedResults = searchResults,
-            Total = searchResults.Count
-        };
+
+        response.SearchResponse = new SearchResponse { UngroupedResults = searchResults, Total = searchResults.Count };
         return response;
     }
 

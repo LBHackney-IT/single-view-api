@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -13,8 +11,8 @@ namespace SingleViewApi.V1.Gateways;
 
 public class SharedPlanGateway : ISharedPlanGateway
 {
-    private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly HttpClient _httpClient;
     private readonly string _xApiKey;
 
     public SharedPlanGateway(HttpClient httpClient, string baseUrl, string xApiKey)
@@ -28,7 +26,8 @@ public class SharedPlanGateway : ISharedPlanGateway
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/plans/find");
         request.Headers.Add("x-api-key", _xApiKey);
-        request.Content = new StringContent(JsonConvert.SerializeObject(getSharedPlanRequest), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonConvert.SerializeObject(getSharedPlanRequest), Encoding.UTF8,
+            "application/json");
 
         var response = await _httpClient.SendAsync(request);
 
@@ -50,7 +49,8 @@ public class SharedPlanGateway : ISharedPlanGateway
         var requestUri = $"{_baseUrl}/plans";
         var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
         request.Headers.Add("x-api-key", _xApiKey);
-        request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonConvert.SerializeObject(createSharedPlanRequest), Encoding.UTF8,
+            "application/json");
 
         var response = await _httpClient.SendAsync(request);
 

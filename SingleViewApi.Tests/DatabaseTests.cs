@@ -1,32 +1,31 @@
-using SingleViewApi.V1.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NUnit.Framework;
+using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.Tests
+namespace SingleViewApi.Tests;
+
+[TestFixture]
+public class DatabaseTests
 {
-    [TestFixture]
-    public class DatabaseTests
+    [SetUp]
+    public void RunBeforeAnyTests()
     {
-        private IDbContextTransaction _transaction;
-        protected SingleViewContext SingleViewContext { get; private set; }
+        var builder = new DbContextOptionsBuilder();
+        builder.UseNpgsql(ConnectionString.TestDatabase());
+        SingleViewContext = new SingleViewContext(builder.Options);
 
-        [SetUp]
-        public void RunBeforeAnyTests()
-        {
-            var builder = new DbContextOptionsBuilder();
-            builder.UseNpgsql(ConnectionString.TestDatabase());
-            SingleViewContext = new SingleViewContext(builder.Options);
-
-            SingleViewContext.Database.EnsureCreated();
-            _transaction = SingleViewContext.Database.BeginTransaction();
-        }
-
-        [TearDown]
-        public void RunAfterAnyTests()
-        {
-            _transaction.Rollback();
-            _transaction.Dispose();
-        }
+        SingleViewContext.Database.EnsureCreated();
+        _transaction = SingleViewContext.Database.BeginTransaction();
     }
+
+    [TearDown]
+    public void RunAfterAnyTests()
+    {
+        _transaction.Rollback();
+        _transaction.Dispose();
+    }
+
+    private IDbContextTransaction _transaction;
+    protected SingleViewContext SingleViewContext { get; private set; }
 }

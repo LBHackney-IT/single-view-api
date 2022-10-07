@@ -1,7 +1,5 @@
-using System;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
 using Newtonsoft.Json;
@@ -12,14 +10,15 @@ namespace SingleViewApi.V1.Gateways;
 
 public class EqualityInformationGateway : IEqualityInformationGateway
 {
-    private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private readonly HttpClient _httpClient;
 
     public EqualityInformationGateway(HttpClient httpClient, string baseUrl)
     {
-        this._httpClient = httpClient;
-        this._baseUrl = baseUrl;
+        _httpClient = httpClient;
+        _baseUrl = baseUrl;
     }
+
     [LogCall]
     public async Task<EqualityInformationResponseObject> GetEqualityInformationById(string id, string userToken)
     {

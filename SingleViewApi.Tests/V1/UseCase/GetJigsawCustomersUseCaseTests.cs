@@ -15,21 +15,22 @@ namespace SingleViewApi.Tests.V1.UseCase;
 [TestFixture]
 public class GetJigsawCustomersUseCaseTests
 {
-    private Mock<IJigsawGateway> _mockJigsawGateway;
-    private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
-    private GetJigsawCustomersUseCase _classUnderTest;
-    private Fixture _fixture;
-    private Mock<IDataSourceGateway> _mockDataSourceGateway;
-
     [SetUp]
     public void SetUp()
     {
         _mockJigsawGateway = new Mock<IJigsawGateway>();
         _mockGetJigsawAuthTokenUseCase = new Mock<IGetJigsawAuthTokenUseCase>();
         _mockDataSourceGateway = new Mock<IDataSourceGateway>();
-        _classUnderTest = new GetJigsawCustomersUseCase(_mockJigsawGateway.Object, _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
+        _classUnderTest = new GetJigsawCustomersUseCase(_mockJigsawGateway.Object,
+            _mockGetJigsawAuthTokenUseCase.Object, _mockDataSourceGateway.Object);
         _fixture = new Fixture();
     }
+
+    private Mock<IJigsawGateway> _mockJigsawGateway;
+    private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
+    private GetJigsawCustomersUseCase _classUnderTest;
+    private Fixture _fixture;
+    private Mock<IDataSourceGateway> _mockDataSourceGateway;
 
     [Test]
     public void UseCaseReturnsErrorWhenThereIsNoJigsawToken()
@@ -41,12 +42,14 @@ public class GetJigsawCustomersUseCaseTests
         var stubbedJigsawDataSource = _fixture.Create<DataSource>();
 
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedJigsawDataSource);
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" }); ;
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
+            .ReturnsAsync(new AuthGatewayResponse { Token = null, ExceptionMessage = "No token present" });
+        ;
 
         var result = _classUnderTest.Execute(firstName, lastName, redisId, hackneyToken).Result;
 
-        Assert.That(result.SystemIds[0].Error, Is.EqualTo("No token present")); ;
-
+        Assert.That(result.SystemIds[0].Error, Is.EqualTo("No token present"));
+        ;
     }
 
     [Test]
@@ -61,7 +64,8 @@ public class GetJigsawCustomersUseCaseTests
         var stubbedEntity = _fixture.Create<List<JigsawCustomerSearchApiResponseObject>>();
         var stubbedDataSource = _fixture.Create<DataSource>();
 
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
+            .ReturnsAsync(new AuthGatewayResponse { Token = jigsawToken, ExceptionMessage = null });
         _mockDataSourceGateway.Setup(x => x.GetEntityById(2)).Returns(stubbedDataSource);
 
         _mockJigsawGateway.Setup(x => x.GetCustomers(firstName, lastName, jigsawToken)).ReturnsAsync(stubbedEntity);

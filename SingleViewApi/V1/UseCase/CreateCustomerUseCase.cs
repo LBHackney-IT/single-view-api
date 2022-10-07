@@ -7,52 +7,52 @@ using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
 using SingleViewApi.V1.UseCase.Interfaces;
 
-namespace SingleViewApi.V1.UseCase
+namespace SingleViewApi.V1.UseCase;
+
+public class CreateCustomerUseCase : ICreateCustomerUseCase
 {
-    public class CreateCustomerUseCase : ICreateCustomerUseCase
+    private readonly ICustomerDataSourceGateway _customerDataSourceGateway;
+    private readonly ICustomerGateway _customerGateway;
+    private readonly IDataSourceGateway _dataSourceGateway;
+
+    public CreateCustomerUseCase(ICustomerGateway customerGateway, ICustomerDataSourceGateway customerDataSourceGateway,
+        IDataSourceGateway dataSourceGateway)
     {
-        private readonly ICustomerGateway _customerGateway;
-        private readonly ICustomerDataSourceGateway _customerDataSourceGateway;
-        private readonly IDataSourceGateway _dataSourceGateway;
+        _customerGateway = customerGateway;
+        _customerDataSourceGateway = customerDataSourceGateway;
+        _dataSourceGateway = dataSourceGateway;
+    }
 
-        public CreateCustomerUseCase(ICustomerGateway customerGateway, ICustomerDataSourceGateway customerDataSourceGateway, IDataSourceGateway dataSourceGateway)
+    [LogCall]
+    public SavedCustomer Execute(CreateCustomerRequest customerRequest)
+    {
+        var customer = _customerGateway.Add(
+            customerRequest.FirstName,
+            customerRequest.LastName, customerRequest.DateOfBirth,
+            customerRequest.NiNumber
+        );
+
+        customer.DataSources = new List<CustomerDataSource>();
+
+        var dataSources = _dataSourceGateway.GetAll();
+
+        foreach (var customerRequestDataSource in customerRequest.DataSources)
         {
-            _customerGateway = customerGateway;
-            _customerDataSourceGateway = customerDataSourceGateway;
-            _dataSourceGateway = dataSourceGateway;
-        }
+            var dataSource = dataSources.FirstOrDefault(d => string.Equals(d.Name, customerRequestDataSource.DataSource,
+                StringComparison.CurrentCultureIgnoreCase));
 
-        [LogCall]
-        public SavedCustomer Execute(CreateCustomerRequest customerRequest)
-        {
-            var customer = _customerGateway.Add(
-               customerRequest.FirstName,
-              customerRequest.LastName, customerRequest.DateOfBirth,
-              customerRequest.NiNumber
-            );
-
-            customer.DataSources = new List<CustomerDataSource>();
-
-            var dataSources = _dataSourceGateway.GetAll();
-
-            foreach (var customerRequestDataSource in customerRequest.DataSources)
+            if (dataSource != null)
             {
-                var dataSource = dataSources.FirstOrDefault(d => String.Equals(d.Name, customerRequestDataSource.DataSource, StringComparison.CurrentCultureIgnoreCase));
+                var savedCustomerDataSource = _customerDataSourceGateway.Add(
+                    customer.Id,
+                    dataSource.Id,
+                    customerRequestDataSource.SourceId
+                );
 
-                if (dataSource != null)
-                {
-
-                    var savedCustomerDataSource = _customerDataSourceGateway.Add(
-                        customer.Id,
-                        dataSource.Id,
-                        customerRequestDataSource.SourceId
-                    );
-
-                    customer.DataSources.Add(savedCustomerDataSource);
-                }
+                customer.DataSources.Add(savedCustomerDataSource);
             }
-
-            return customer;
         }
+
+        return customer;
     }
 }

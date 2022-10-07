@@ -4,5 +4,5 @@ namespace SingleViewApi.V1.UseCase.Interfaces;
 
 public interface IDeleteCustomerUseCase
 {
-    Boolean Execute(Guid customerId);
+    bool Execute(Guid customerId);
 }

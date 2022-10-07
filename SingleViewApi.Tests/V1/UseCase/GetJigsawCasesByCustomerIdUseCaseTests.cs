@@ -14,10 +14,10 @@ namespace SingleViewApi.Tests.V1.UseCase;
 
 public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 {
-    private Mock<IJigsawGateway> _mockJigsawGateway;
-    private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
     private GetJigsawCasesByCustomerIdUseCase _classUnderTest;
     private Fixture _fixture;
+    private Mock<IGetJigsawAuthTokenUseCase> _mockGetJigsawAuthTokenUseCase;
+    private Mock<IJigsawGateway> _mockJigsawGateway;
 
     [SetUp]
     public void SetUp()
@@ -37,7 +37,7 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
         var hackneyToken = _fixture.Create<string>();
 
         _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
-            .ReturnsAsync(new AuthGatewayResponse() { Token = null, ExceptionMessage = "No token present" });
+            .ReturnsAsync(new AuthGatewayResponse { Token = null, ExceptionMessage = "No token present" });
 
         var result = _classUnderTest.Execute(customerId, redisId, hackneyToken).Result;
 
@@ -58,67 +58,57 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
             .With(x => x.CustomerId, mockCurrentCustomerCaseId).Create();
         var mockCustomerPlacements = _fixture.Create<JigsawCasePlacementInformationResponseObject>();
 
-        var mockAdditionalFactors = new JigsawCaseAdditionalFactorsResponseObject()
+        var mockAdditionalFactors = new JigsawCaseAdditionalFactorsResponseObject
         {
-            QuestionGroups = new List<QuestionGroup>()
+            QuestionGroups = new List<QuestionGroup>
             {
-                new QuestionGroup()
+                new()
                 {
                     Legend = "Overview of additional factors",
-                    Questions = new List<Question>()
+                    Questions = new List<Question>
                     {
-                        new Question()
+                        new()
                         {
                             SelectedValue = "AN_NO",
                             Label = "* Drug/alcohol use?",
-                            Options = new List<Option>()
+                            Options = new List<Option>
                             {
-                                new Option()
-                                {
-                                    Label = "Yes",
-                                    Value = "AN_YES"
-                                }, new Option()
-                                {
-                                    Label = "No",
-                                    Value = "AN_NO"
-                                }
+                                new() { Label = "Yes", Value = "AN_YES" },
+                                new() { Label = "No", Value = "AN_NO" }
                             }
-                        }, new Question()
+                        },
+                        new()
                         {
                             SelectedValue = "Paracetamol",
-                            Label = "* Detail current medication and dosage for all household members"
+                            Label =
+                                "* Detail current medication and dosage for all household members"
                         }
                     }
                 }
             }
         };
 
-        var mockHealthAndWellBeing = new JigsawCaseAdditionalFactorsResponseObject()
+        var mockHealthAndWellBeing = new JigsawCaseAdditionalFactorsResponseObject
         {
-            QuestionGroups = new List<QuestionGroup>()
+            QuestionGroups = new List<QuestionGroup>
             {
-                new QuestionGroup()
+                new()
                 {
                     Legend = "Health and well being",
-                    Questions = new List<Question>()
+                    Questions = new List<Question>
                     {
-                        new Question()
+                        new()
                         {
                             SelectedValue = "AN_YES",
-                            Label = "* Do you or any of your household members have any self-reported vulnerabilities?",
-                            Options = new List<Option>()
+                            Label =
+                                "* Do you or any of your household members have any self-reported vulnerabilities?",
+                            Options = new List<Option>
                             {
-                                new Option()
-                                {
-                                    Label = "Yes",
-                                    Value = "AN_YES"
-                                }, new Option()
-                                {
-                                    Label = "No",
-                                    Value = "AN_NO"
-                                }
+                                new() { Label = "Yes", Value = "AN_YES" },
+                                new() { Label = "No", Value = "AN_NO" }
                             }
-                        }, new Question()
+                        },
+                        new()
                         {
                             SelectedValue = "wheelchair/depression",
                             Label = "If yes, please provide details:"
@@ -127,11 +117,13 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
                 }
             }
         };
-        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken)).ReturnsAsync(new AuthGatewayResponse() { Token = jigsawToken, ExceptionMessage = null });
+        _mockGetJigsawAuthTokenUseCase.Setup(x => x.Execute(redisId, hackneyToken))
+            .ReturnsAsync(new AuthGatewayResponse { Token = jigsawToken, ExceptionMessage = null });
         _mockJigsawGateway.Setup(x => x.GetCasesByCustomerId(customerId, jigsawToken)).ReturnsAsync(mockCustomerCases);
         _mockJigsawGateway.Setup(x => x.GetCaseOverviewByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockCustomerCaseOverviews);
-        _mockJigsawGateway.Setup(x => x.GetCaseAccommodationPlacementsByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
+        _mockJigsawGateway.Setup(x =>
+                x.GetCaseAccommodationPlacementsByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
             .ReturnsAsync(mockCustomerPlacements);
         _mockJigsawGateway
             .Setup(x => x.GetHouseholdCompositionByCaseId(mockCurrentCustomerCaseId.ToString(), jigsawToken))
@@ -147,16 +139,19 @@ public class GetJigsawCasesByCustomerIdUseCaseTests : LogCallAspectFixture
 
         result.CurrentCase.Should().BeEquivalentTo(mockCustomerCases.Cases[0]);
         result.CaseOverview.Id.Should().BeEquivalentTo(mockCustomerCaseOverviews.Id.ToString());
-        result.CaseOverview.HouseholdComposition[0].Name.Should().BeEquivalentTo(mockCustomerHouseholdComposition.People[0].DisplayName);
+        result.CaseOverview.HouseholdComposition[0].Name.Should()
+            .BeEquivalentTo(mockCustomerHouseholdComposition.People[0].DisplayName);
         result.PlacementInformation[0].DclgClassificationType.Should()
             .BeEquivalentTo(mockCustomerPlacements.Placements[0].DclgClassificationType);
         result.AdditionalFactors[0].Legend.Should().BeEquivalentTo("Overview of additional factors");
         result.AdditionalFactors[0].Info[0].Question.Should().BeEquivalentTo("Drug/alcohol use?");
         result.AdditionalFactors[0].Info[0].Answer.Should().BeEquivalentTo("No");
-        result.AdditionalFactors[0].Info[1].Question.Should().BeEquivalentTo("Detail current medication and dosage for all household members");
+        result.AdditionalFactors[0].Info[1].Question.Should()
+            .BeEquivalentTo("Detail current medication and dosage for all household members");
         result.AdditionalFactors[0].Info[1].Answer.Should().BeEquivalentTo("Paracetamol");
         result.HealthAndWellBeing[0].Legend.Should().BeEquivalentTo("Health and well being");
-        result.HealthAndWellBeing[0].Info[0].Question.Should().BeEquivalentTo("Do you or any of your household members have any self-reported vulnerabilities?");
+        result.HealthAndWellBeing[0].Info[0].Question.Should()
+            .BeEquivalentTo("Do you or any of your household members have any self-reported vulnerabilities?");
         result.HealthAndWellBeing[0].Info[0].Answer.Should().BeEquivalentTo("Yes");
         result.HealthAndWellBeing[0].Info[1].Question.Should().BeEquivalentTo("If yes, please provide details:");
         result.HealthAndWellBeing[0].Info[1].Answer.Should().BeEquivalentTo("wheelchair/depression");

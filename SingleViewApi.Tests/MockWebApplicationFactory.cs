@@ -1,39 +1,38 @@
 using System.Data.Common;
-using SingleViewApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.Tests
+namespace SingleViewApi.Tests;
+
+public class MockWebApplicationFactory<TStartup>
+    : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public class MockWebApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    private readonly DbConnection _connection;
+
+    public MockWebApplicationFactory(DbConnection connection)
     {
-        private readonly DbConnection _connection;
+        _connection = connection;
+    }
 
-        public MockWebApplicationFactory(DbConnection connection)
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
+            .UseStartup<Startup>();
+        builder.ConfigureServices(services =>
         {
-            _connection = connection;
-        }
+            var dbBuilder = new DbContextOptionsBuilder();
+            dbBuilder.UseNpgsql(_connection);
+            var context = new SingleViewContext(dbBuilder.Options);
+            services.AddSingleton(context);
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
-                .UseStartup<Startup>();
-            builder.ConfigureServices(services =>
-            {
-                var dbBuilder = new DbContextOptionsBuilder();
-                dbBuilder.UseNpgsql(_connection);
-                var context = new SingleViewContext(dbBuilder.Options);
-                services.AddSingleton(context);
+            var serviceProvider = services.BuildServiceProvider();
+            var dbContext = serviceProvider.GetRequiredService<SingleViewContext>();
 
-                var serviceProvider = services.BuildServiceProvider();
-                var dbContext = serviceProvider.GetRequiredService<SingleViewContext>();
-
-                dbContext.Database.EnsureCreated();
-            });
-        }
+            dbContext.Database.EnsureCreated();
+        });
     }
 }

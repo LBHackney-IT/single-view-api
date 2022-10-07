@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
-using ServiceStack.MiniProfiler.Data;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -16,11 +14,11 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
     private readonly IAcademyGateway _academyGateway;
     private readonly IDataSourceGateway _dataSourceGateway;
 
-    public GetCouncilTaxAccountsByCustomerNameUseCase(IAcademyGateway academyGateway, IDataSourceGateway dataSourceGateway)
+    public GetCouncilTaxAccountsByCustomerNameUseCase(IAcademyGateway academyGateway,
+        IDataSourceGateway dataSourceGateway)
     {
         _academyGateway = academyGateway;
         _dataSourceGateway = dataSourceGateway;
-
     }
 
     [LogCall]
@@ -28,13 +26,13 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
     {
         var dataSource = _dataSourceGateway.GetEntityById(3);
 
-        var academyApiId = new SystemId() { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
+        var academyApiId = new SystemId { SystemName = dataSource.Name, Id = $"{firstName}+{lastName}" };
 
-        var response = new SearchResponseObject() { SystemIds = new List<SystemId>() { academyApiId } };
+        var response = new SearchResponseObject { SystemIds = new List<SystemId> { academyApiId } };
 
         var accounts = await _academyGateway.GetCouncilTaxAccountsByCustomerName(firstName, lastName, userToken);
 
-        if (!String.IsNullOrEmpty(accounts.Error))
+        if (!string.IsNullOrEmpty(accounts.Error))
         {
             Console.WriteLine($"Error from Academy Council Tax Use Case: {accounts.Error}");
             academyApiId.Error = accounts.Error;
@@ -51,30 +49,24 @@ public class GetCouncilTaxAccountsByCustomerNameUseCase : IGetCouncilTaxAccounts
 
         foreach (var account in accounts.Customers)
         {
-            var result = new SearchResult()
+            var result = new SearchResult
             {
                 Id = account.Id,
-                DataSources = new List<string>() { dataSource.Name },
+                DataSources = new List<string> { dataSource.Name },
                 FirstName = account.FirstName.Upcase(),
                 SurName = account.LastName.Upcase(),
                 DateOfBirth = account?.DateOfBirth,
                 NiNumber = account?.NiNumber,
-                KnownAddresses = new List<KnownAddress>()
+                KnownAddresses = new List<KnownAddress>
                 {
-                    new KnownAddress() { CurrentAddress = true, FullAddress = AddressToString(account.FullAddress)  }
-                },
-
+                    new() { CurrentAddress = true, FullAddress = AddressToString(account.FullAddress) }
+                }
             };
 
             searchResults.Add(result);
         }
 
-        response.SearchResponse = new SearchResponse()
-        {
-            UngroupedResults = searchResults,
-            Total = searchResults.Count
-        };
-
+        response.SearchResponse = new SearchResponse { UngroupedResults = searchResults, Total = searchResults.Count };
 
 
         return response;

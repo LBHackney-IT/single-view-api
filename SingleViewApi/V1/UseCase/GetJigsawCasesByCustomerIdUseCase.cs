@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
-using ServiceStack;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways.Interfaces;
@@ -18,10 +15,11 @@ namespace SingleViewApi.V1.UseCase;
 public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseCase
 {
     private readonly IJigsawGateway _jigsawGateway;
-    private IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
+    private readonly IGetJigsawAuthTokenUseCase _getJigsawAuthTokenUseCase;
 
 
-    public GetJigsawCasesByCustomerIdUseCase(IJigsawGateway jigsawGateway, IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
+    public GetJigsawCasesByCustomerIdUseCase(IJigsawGateway jigsawGateway,
+        IGetJigsawAuthTokenUseCase getJigsawAuthTokenUseCase)
     {
         _jigsawGateway = jigsawGateway;
         _getJigsawAuthTokenUseCase = getJigsawAuthTokenUseCase;
@@ -32,11 +30,12 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
     {
         var jigsawAuthResponse = _getJigsawAuthTokenUseCase.Execute(redisId, hackneyToken).Result;
 
-        if (!String.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
+        if (!string.IsNullOrEmpty(jigsawAuthResponse.ExceptionMessage))
         {
             Console.WriteLine($"Error getting Jigsaw token for CustomerById: {jigsawAuthResponse.ExceptionMessage}");
             return null;
         }
+
         var cases = await _jigsawGateway.GetCasesByCustomerId(customerId, jigsawAuthResponse.Token);
 
         if (cases == null)
@@ -56,27 +55,26 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
         if (currentCase != null)
         {
-            customerCaseOverview = await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+            customerCaseOverview =
+                await _jigsawGateway.GetCaseOverviewByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
             customerAccommodationPlacementList =
-                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(), jigsawAuthResponse.Token);
+                await _jigsawGateway.GetCaseAccommodationPlacementsByCaseId(currentCase.Id.ToString(),
+                    jigsawAuthResponse.Token);
             householdCompositionResponse =
                 await _jigsawGateway.GetHouseholdCompositionByCaseId(currentCase.Id.ToString(),
                     jigsawAuthResponse.Token);
         }
 
         if (customerAccommodationPlacementList != null)
-        {
             customerAccommodationPlacements.Add(customerAccommodationPlacementList);
-        }
 
         var newCaseOverview = new CaseOverview();
         var householdComposition = new List<JigsawHouseholdMember>();
 
         if (householdCompositionResponse != null)
-        {
             foreach (var householdMember in householdCompositionResponse.People)
             {
-                var newMember = new JigsawHouseholdMember()
+                var newMember = new JigsawHouseholdMember
                 {
                     DateOfBirth = householdMember.DateOfBirth?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                     Gender = householdMember.Gender,
@@ -87,40 +85,33 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
                 householdComposition.Add(newMember);
             }
-        }
-
 
 
         if (customerCaseOverview != null)
-        {
-            newCaseOverview = new CaseOverview()
+            newCaseOverview = new CaseOverview
             {
                 Id = customerCaseOverview.Id.ToString(),
                 CurrentDecision = customerCaseOverview.CurrentDecision,
                 CurrentFlowchartPosition = customerCaseOverview.CurrentFlowchartPosition,
-                HouseholdComposition = householdComposition,
+                HouseholdComposition = householdComposition
             };
-
-        }
 
         var placementsList = new List<AccommodationPlacementInfo>();
 
         foreach (var placementList in customerAccommodationPlacements)
+        foreach (var placement in placementList.Placements)
         {
-            foreach (var placement in placementList.Placements)
+            var newPlacement = new AccommodationPlacementInfo
             {
-                var newPlacement = new AccommodationPlacementInfo()
-                {
-                    DclgClassificationType = placement.DclgClassificationType,
-                    FullAddressDetails = placement.FullAddressDetails,
-                    PlacementDuty = placement.PlacementDuty,
-                    PlacementDutyFullName = placement.PlacementDutyFullName,
-                    PlacementType = placement.PlacementType,
-                    Usage = placement.Usage
-                };
+                DclgClassificationType = placement.DclgClassificationType,
+                FullAddressDetails = placement.FullAddressDetails,
+                PlacementDuty = placement.PlacementDuty,
+                PlacementDutyFullName = placement.PlacementDutyFullName,
+                PlacementType = placement.PlacementType,
+                Usage = placement.Usage
+            };
 
-                placementsList.Add(newPlacement);
-            }
+            placementsList.Add(newPlacement);
         }
 
         if (currentCase != null)
@@ -131,7 +122,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             var additionalFactorsInfo =
                 await _jigsawGateway.GetCaseAdditionalFactors(currentCase.Id.ToString(), jigsawAuthResponse.Token);
 
-            var newCaseResponseObject = new CasesResponseObject()
+            var newCaseResponseObject = new CasesResponseObject
             {
                 CurrentCase = currentCase,
                 CaseOverview = newCaseOverview,
@@ -148,10 +139,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
     private List<AdditionalInfo> ProcessAdditionalInfo(JigsawCaseAdditionalFactorsResponseObject additionalInformation)
     {
-        if (additionalInformation?.QuestionGroups == null)
-        {
-            return null;
-        }
+        if (additionalInformation?.QuestionGroups == null) return null;
 
         var processedInformation = new List<AdditionalInfo>();
 
@@ -160,19 +148,13 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
             var information = new List<Information>();
 
             foreach (var question in questionGroup.Questions)
-            {
-                information.Add(new Information()
+                information.Add(new Information
                 {
                     Question = RemoveAsterisk(question.Label),
                     Answer = RemoveAsterisk(question.GetAnswer(question.SelectedValue))
                 });
-            }
 
-            processedInformation.Add(new AdditionalInfo()
-            {
-                Info = information,
-                Legend = questionGroup.Legend
-            });
+            processedInformation.Add(new AdditionalInfo { Info = information, Legend = questionGroup.Legend });
         }
 
         return processedInformation;
@@ -180,10 +162,7 @@ public class GetJigsawCasesByCustomerIdUseCase : IGetJigsawCasesByCustomerIdUseC
 
     private static string RemoveAsterisk(string data)
     {
-        if (String.IsNullOrEmpty(data))
-        {
-            return null;
-        }
+        if (string.IsNullOrEmpty(data)) return null;
         return Regex.Replace(data, "[*]", "").Trim();
     }
 }

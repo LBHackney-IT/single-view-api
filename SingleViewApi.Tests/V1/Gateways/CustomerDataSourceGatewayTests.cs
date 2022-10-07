@@ -1,38 +1,36 @@
 using System;
 using System.Linq;
 using AutoFixture;
-using SingleViewApi.V1.Gateways;
 using NUnit.Framework;
+using SingleViewApi.V1.Gateways;
 
-namespace SingleViewApi.Tests.V1.Gateways
+namespace SingleViewApi.Tests.V1.Gateways;
+
+[TestFixture]
+public class CustomerDataSourceGatewayTests : DatabaseTests
 {
-    [TestFixture]
-    public class CustomerDataSourceGatewayTests : DatabaseTests
+    [SetUp]
+    public void Setup()
     {
-        private readonly Fixture _fixture = new Fixture();
-        private CustomerDataSourceGateway _classUnderTest;
+        _classUnderTest = new CustomerDataSourceGateway(SingleViewContext);
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _classUnderTest = new CustomerDataSourceGateway(SingleViewContext);
-        }
+    private readonly Fixture _fixture = new();
+    private CustomerDataSourceGateway _classUnderTest;
 
-        [Test]
-        public void AddsValue()
-        {
-            var dummyCustomerId = _fixture.Create<Guid>();
-            var dummyDataSourceId = _fixture.Create<int>();
-            var dummySourceId = _fixture.Create<string>();
+    [Test]
+    public void AddsValue()
+    {
+        var dummyCustomerId = _fixture.Create<Guid>();
+        var dummyDataSourceId = _fixture.Create<int>();
+        var dummySourceId = _fixture.Create<string>();
 
-            _ = _classUnderTest.Add(dummyCustomerId, dummyDataSourceId, dummySourceId);
+        _ = _classUnderTest.Add(dummyCustomerId, dummyDataSourceId, dummySourceId);
 
-            var actual = SingleViewContext.CustomerDataSources.ToList().LastOrDefault();
+        var actual = SingleViewContext.CustomerDataSources.ToList().LastOrDefault();
 
-            Assert.AreEqual(dummyCustomerId, actual.CustomerDbEntityId);
-            Assert.AreEqual(dummySourceId, actual.SourceId);
-            Assert.AreEqual(dummyDataSourceId, actual.DataSourceId);
-        }
-
+        Assert.AreEqual(dummyCustomerId, actual.CustomerDbEntityId);
+        Assert.AreEqual(dummySourceId, actual.SourceId);
+        Assert.AreEqual(dummyDataSourceId, actual.DataSourceId);
     }
 }

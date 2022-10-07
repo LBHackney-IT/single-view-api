@@ -3,25 +3,24 @@ using AutoFixture;
 using NUnit.Framework;
 using SingleViewApi.V1.Infrastructure;
 
-namespace SingleViewApi.Tests.V1.Infrastructure
+namespace SingleViewApi.Tests.V1.Infrastructure;
+
+[TestFixture]
+public class SingleViewContextTest : DatabaseTests
 {
-    [TestFixture]
-    public class SingleViewContextTest : DatabaseTests
+    private readonly Fixture _fixture = new();
+
+    [Test]
+    public void CanGetADataSourceDbEntity()
     {
-        private readonly Fixture _fixture = new();
+        var dataSourceDbEntity = _fixture.Create<DataSourceDbEntity>();
 
-        [Test]
-        public void CanGetADataSourceDbEntity()
-        {
-            var dataSourceDbEntity = _fixture.Create<DataSourceDbEntity>();
+        SingleViewContext.Add(dataSourceDbEntity);
+        SingleViewContext.SaveChanges();
 
-            SingleViewContext.Add(dataSourceDbEntity);
-            SingleViewContext.SaveChanges();
+        var result = SingleViewContext.DataSources.ToList().LastOrDefault();
 
-            var result = SingleViewContext.DataSources.ToList().LastOrDefault();
-
-            Assert.AreEqual(result.Id, dataSourceDbEntity.Id);
-            Assert.AreEqual(result.Name, dataSourceDbEntity.Name);
-        }
+        Assert.AreEqual(result.Id, dataSourceDbEntity.Id);
+        Assert.AreEqual(result.Name, dataSourceDbEntity.Name);
     }
 }

@@ -1,13 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace SingleViewApi.V1.Domain
+namespace SingleViewApi.V1.Domain;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TargetType
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum TargetType
-    {
-        Person,
-        Asset,
-        Tenure,
-        Repair
-    }
+    Person,
+    Asset,
+    Tenure,
+    Repair
 }

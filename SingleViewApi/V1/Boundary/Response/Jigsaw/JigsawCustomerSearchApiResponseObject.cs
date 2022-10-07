@@ -8,6 +8,12 @@ public class JigsawCustomerSearchApiResponseObject
     public string Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public int? EntityTypeId { get; set; }
+    public DateTime DoB { get; set; }
+    public string DisplayName { get; set; }
+    public string HouseholdMembers { get; set; }
+    public string FormattedHouseholdMembers { get; set; }
+    public List<string> HouseholdMembersList { get; set; }
 #nullable enable
     public string? Address { get; set; }
     public string? MobilePhone { get; set; }
@@ -17,11 +23,4 @@ public class JigsawCustomerSearchApiResponseObject
     public string? NhsNumber { get; set; }
     public string? NiNumber { get; set; }
 #nullable disable
-    public int? EntityTypeId { get; set; }
-    public DateTime DoB { get; set; }
-    public string DisplayName { get; set; }
-    public string HouseholdMembers { get; set; }
-    public string FormattedHouseholdMembers { get; set; }
-    public List<string> HouseholdMembersList { get; set; }
-
 }
