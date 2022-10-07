@@ -40,14 +40,14 @@ namespace SingleViewApi.V1.UseCase
             {
                 var dataSources = _dataSourceGateway.GetAll();
                 var personResults = searchResults.Select(result => new SearchResult()
-                    {
-                        Id = result.Id.ToString(),
-                        DataSources = result.DataSources.Map(customerDataSource => dataSources.Find(dataSource => dataSource.Id == customerDataSource.DataSourceId)?.Name),
-                        FirstName = result.FirstName,
-                        SurName = result.LastName,
-                        DateOfBirth = result.DateOfBirth,
-                        NiNumber = result.NiNumber
-                    }
+                {
+                    Id = result.Id.ToString(),
+                    DataSources = result.DataSources.Map(customerDataSource => dataSources.Find(dataSource => dataSource.Id == customerDataSource.DataSourceId)?.Name),
+                    FirstName = result.FirstName,
+                    SurName = result.LastName,
+                    DateOfBirth = result.DateOfBirth,
+                    NiNumber = result.NiNumber
+                }
                 ).ToList();
 
                 response.SearchResponse = new SearchResponse()
