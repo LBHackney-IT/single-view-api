@@ -47,7 +47,8 @@ namespace SingleViewApi.V1.UseCase
                     SurName = result.LastName,
                     DateOfBirth = result.DateOfBirth,
                     NiNumber = result.NiNumber
-                }).ToList();
+                }
+                ).ToList();
 
                 response.SearchResponse = new SearchResponse()
                 {
@@ -55,6 +56,11 @@ namespace SingleViewApi.V1.UseCase
                     UngroupedResults = personResults,
                     Total = searchResults.Count
                 };
+
+                foreach (var searchResponseUngroupedResult in response.SearchResponse.UngroupedResults)
+                {
+                    searchResponseUngroupedResult.IsMergedSingleViewRecord = true;
+                }
 
             }
 
