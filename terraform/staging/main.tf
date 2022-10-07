@@ -8,17 +8,17 @@
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
 provider "aws" {
-  region  = "eu-west-2"
-  version = "~> 2.0"
+    region  = "eu-west-2"
+    version = "~> 2.0"
 }
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
     application_name = "single-view-api"
-    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
-    vpc_id = "vpc-06bc937006240a256"
-    cidr = "0.0.0.0/0"
+    parameter_store  = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+    vpc_id           = "vpc-06bc937006240a256"
+    cidr             = "0.0.0.0/0"
 }
 
 data "aws_subnet_ids" "all" {
@@ -37,9 +37,9 @@ resource "aws_security_group" "redis_sg" {
     }
 
     egress {
-        from_port       = 0
-        to_port         = 0
-        protocol        = "-1"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
         cidr_blocks = [local.cidr]
     }
 
@@ -69,12 +69,12 @@ resource "aws_elasticache_cluster" "redis" {
 }
 
 terraform {
-  backend "s3" {
-    bucket  = "terraform-state-corporate-staging"
-    encrypt = true
-    region  = "eu-west-2"
-    key     = "services/single-view-api/state"
-  }
+    backend "s3" {
+        bucket  = "terraform-state-corporate-staging"
+        encrypt = true
+        region  = "eu-west-2"
+        key     = "services/single-view-api/state"
+    }
 }
 
 ################################################################################
@@ -93,22 +93,23 @@ data "aws_ssm_parameter" "uh_postgres_username" {
 # DB
 #####
 module "postgres_db" {
-    source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
-    environment_name = "staging"
-    vpc_id = local.vpc_id
-    db_identifier = "singleview"
-    db_name = "singleview"
-    db_port  = 5302
-    subnet_ids = data.aws_subnet_ids.all.ids
-    db_engine = "postgres"
-    db_engine_version = "12.8" //DMS does not work well with v12
-    db_instance_class = "db.t3.micro"
-    db_allocated_storage = 20
-    maintenance_window = "sun:10:00-sun:10:30"
-    db_username = data.aws_ssm_parameter.uh_postgres_username.value
-    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-    storage_encrypted = false
-    multi_az = false //only true if production deployment
-    publicly_accessible = false
-    project_name = "single view"
+    source                     = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
+    environment_name           = "staging"
+    vpc_id                     = local.vpc_id
+    db_identifier              = "singleview"
+    db_name                    = "singleview"
+    db_port                    = 5302
+    subnet_ids                 = data.aws_subnet_ids.all.ids
+    db_engine                  = "postgres"
+    db_engine_version          = "12.8" //DMS does not work well with v12
+    db_instance_class          = "db.t3.micro"
+    db_allocated_storage       = 20
+    maintenance_window         = "sun:10:00-sun:10:30"
+    db_username                = data.aws_ssm_parameter.uh_postgres_username.value
+    db_password                = data.aws_ssm_parameter.uh_postgres_db_password.value
+    storage_encrypted          = false
+    multi_az                   = false //only true if production deployment
+    publicly_accessible        = false
+    project_name               = "single view"
+    auto_minor_version_upgrade = false
 }
