@@ -33,9 +33,7 @@ namespace SingleViewApi.V1.Gateways
         }
 
 
-
         public async Task<AuthGatewayResponse> GetAuthToken(JigsawCredentials credentials)
-
         {
             try
             {
@@ -52,6 +50,7 @@ namespace SingleViewApi.V1.Gateways
                 {
                     new ("Email", credentials.Username),
                     new ("Password", credentials.Password),
+                    new ("signin", "true"),
                     new ("__RequestVerificationToken", tokens.Token)
                 };
 
