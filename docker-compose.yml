@@ -40,6 +40,7 @@ services:
       - SHARED_PLAN_URL=${SHARED_PLAN_URL}
       - SHARED_PLAN_API=${SHARED_PLAN_API}
       - X_API_KEY=${X_API_KEY}
+      - RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY}
 
 # TODO: If using DynamoDb remove the line above and uncomment the section below.
 #      - DynamoDb_LocalMode=true
