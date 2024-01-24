@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using AngleSharp.Common;
 using Hackney.Core.Logging;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
@@ -31,12 +32,44 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId, string dateOfBirth)
     {
-        var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
-        var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        var councilTaxResults =
-          await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
-        var housingBenefitsResults =
-            await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        var singleViewResults = new SearchResponseObject();
+        var housingResults = new SearchResponseObject();
+        var councilTaxResults = new SearchResponseObject();
+        var housingBenefitsResults = new SearchResponseObject();
+
+        try
+        {
+            singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
+        } catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching SV records from SingleView Use Case: {e.Message}");
+        }
+
+        try
+        {
+            housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
+        } catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching housing search results from Housing Search Use Case: {e.Message}");
+        }
+
+        try
+        {
+            councilTaxResults =
+                await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        } catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching CTax records from Council Tax Use Case: {e.Message}");
+        }
+
+        try
+        {
+            housingBenefitsResults =
+                await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        } catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching housing benefits records from Housing Benefits Use Case: {e.Message}");
+        }
 
         int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
@@ -74,8 +107,15 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         total += councilTaxResults?.SearchResponse?.Total ?? 0;
         total += housingBenefitsResults?.SearchResponse?.Total ?? 0;
 
-        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds)
-            .Concat(councilTaxResults?.SystemIds).Concat(housingBenefitsResults?.SystemIds).ToList();
+        var systemIds = new List<SystemId>();
+        if (singleViewResults?.SystemIds != null)
+            systemIds = singleViewResults.SystemIds;
+        if (housingResults.SystemIds != null)
+            systemIds = systemIds.Concat(housingResults.SystemIds).ToList();
+        if (councilTaxResults.SystemIds != null)
+            systemIds = systemIds.Concat(councilTaxResults.SystemIds).ToList();
+        if (housingBenefitsResults.SystemIds != null)
+            systemIds = systemIds.Concat(housingBenefitsResults?.SystemIds).ToList();
 
         var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
 
