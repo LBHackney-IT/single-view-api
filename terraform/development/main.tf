@@ -61,7 +61,7 @@ resource "aws_elasticache_cluster" "redis" {
 
     cluster_id           = "single-view-development"
     engine               = "redis"
-    engine_version       = "7.1"
+    engine_version       = "7.0"
     node_type            = "cache.t4g.micro"
     num_cache_nodes      = 1
     parameter_group_name = "default.redis7.1"
