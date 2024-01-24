@@ -110,7 +110,7 @@ commands:
           command: apt-get update && apt-get install unzip
       - run:
           name: Install dotnet ef core
-          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/
+          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/ --version 6.*
       - run:
           name: Install ssh
           command: apt-get update && apt-get -y install openssh-server
