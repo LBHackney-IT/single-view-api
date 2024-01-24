@@ -40,7 +40,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         try
         {
             singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine($"Error fetching SV records from SingleView Use Case: {e.Message}");
         }
@@ -48,7 +49,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         try
         {
             housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine($"Error fetching housing search results from Housing Search Use Case: {e.Message}");
         }
@@ -57,7 +59,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             councilTaxResults =
                 await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine($"Error fetching CTax records from Council Tax Use Case: {e.Message}");
         }
@@ -66,7 +69,8 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         {
             housingBenefitsResults =
                 await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine($"Error fetching housing benefits records from Housing Benefits Use Case: {e.Message}");
         }
