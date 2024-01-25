@@ -239,7 +239,8 @@ namespace SingleViewApi
                 var searchSingleViewUseCase = s.GetService<ISearchSingleViewUseCase>();
                 var getCouncilTaxAccountsByCustomerNameUseCase = s.GetService<IGetCouncilTaxAccountsByCustomerNameUseCase>();
                 var getHousingBenefitsAccountsByCustomerNameUseCase = s.GetService<IGetHousingBenefitsAccountsByCustomerNameUseCase>();
-                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase, getHousingBenefitsAccountsByCustomerNameUseCase);
+                var logger = s.GetService<ILogger<GetCombinedSearchResultsByNameUseCase>>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase, getHousingBenefitsAccountsByCustomerNameUseCase, logger);
             });
 
             services.AddTransient<IGetCouncilTaxAccountByAccountRefUseCase, IGetCouncilTaxAccountByAccountRefUseCase>(s =>
