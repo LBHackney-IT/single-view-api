@@ -51,7 +51,6 @@ namespace SingleViewApi.V1.UseCase
 
                 response.SearchResponse = new SearchResponse()
                 {
-
                     UngroupedResults = personResults,
                     Total = searchResults.Count
                 };
