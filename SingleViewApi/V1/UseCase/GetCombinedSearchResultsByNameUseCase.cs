@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using AngleSharp.Common;
 using Hackney.Core.Logging;
 using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary;
@@ -121,11 +120,11 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         var systemIds = new List<SystemId>();
         if (singleViewResults?.SystemIds != null)
             systemIds = singleViewResults.SystemIds;
-        if (housingResults.SystemIds != null)
+        if (housingResults?.SystemIds != null)
             systemIds = systemIds.Concat(housingResults.SystemIds).ToList();
-        if (councilTaxResults.SystemIds != null)
+        if (councilTaxResults?.SystemIds != null)
             systemIds = systemIds.Concat(councilTaxResults.SystemIds).ToList();
-        if (housingBenefitsResults.SystemIds != null)
+        if (housingBenefitsResults?.SystemIds != null)
             systemIds = systemIds.Concat(housingBenefitsResults?.SystemIds).ToList();
 
         var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
