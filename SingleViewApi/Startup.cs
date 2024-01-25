@@ -57,6 +57,7 @@ namespace SingleViewApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             services
                 .AddMvc().AddNewtonsoftJson();
             services.AddApiVersioning(o =>
@@ -270,7 +271,8 @@ namespace SingleViewApi
                 var searchSingleViewUseCase = s.GetService<ISearchSingleViewUseCase>();
                 var getCouncilTaxAccountsByCustomerNameUseCase = s.GetService<IGetCouncilTaxAccountsByCustomerNameUseCase>();
                 var getHousingBenefitsAccountsByCustomerNameUseCase = s.GetService<IGetHousingBenefitsAccountsByCustomerNameUseCase>();
-                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase, getHousingBenefitsAccountsByCustomerNameUseCase);
+                var logger = s.GetService<ILogger<GetCombinedSearchResultsByNameUseCase>>();
+                return new GetCombinedSearchResultsByNameUseCase(getSearchResultsByNameUseCase, getJigsawCustomersUseCase, searchSingleViewUseCase, getCouncilTaxAccountsByCustomerNameUseCase, getHousingBenefitsAccountsByCustomerNameUseCase, logger);
             });
 
             services.AddTransient<IGetCouncilTaxAccountByAccountRefUseCase, IGetCouncilTaxAccountByAccountRefUseCase>(s =>

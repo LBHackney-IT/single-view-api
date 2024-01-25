@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Hackney.Core.Logging;
+using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.UseCase.Interfaces;
@@ -18,25 +19,67 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
     private readonly ISearchSingleViewUseCase _searchSingleViewUseCase;
     private readonly IGetCouncilTaxAccountsByCustomerNameUseCase _getCouncilTaxAccountsByCustomerNameUseCase;
     private readonly IGetHousingBenefitsAccountsByCustomerNameUseCase _getHousingBenefitsAccountsByCustomerNameUseCase;
+    private readonly ILogger<GetCombinedSearchResultsByNameUseCase> _logger;
 
-    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase, IGetCouncilTaxAccountsByCustomerNameUseCase getCouncilTaxAccountsByCustomerNameUseCase, IGetHousingBenefitsAccountsByCustomerNameUseCase getHousingBenefitsAccountsByCustomerNameUseCase)
+    public GetCombinedSearchResultsByNameUseCase(IGetSearchResultsByNameUseCase getSearchResultsByNameUseCase, IGetJigsawCustomersUseCase getJigsawCustomersUseCase, ISearchSingleViewUseCase searchSingleViewUseCase, IGetCouncilTaxAccountsByCustomerNameUseCase getCouncilTaxAccountsByCustomerNameUseCase, IGetHousingBenefitsAccountsByCustomerNameUseCase getHousingBenefitsAccountsByCustomerNameUseCase, ILogger<GetCombinedSearchResultsByNameUseCase> logger)
     {
         _getSearchResultsByNameUseCase = getSearchResultsByNameUseCase;
         _searchSingleViewUseCase = searchSingleViewUseCase;
         _getJigsawCustomersUseCase = getJigsawCustomersUseCase;
         _getCouncilTaxAccountsByCustomerNameUseCase = getCouncilTaxAccountsByCustomerNameUseCase;
         _getHousingBenefitsAccountsByCustomerNameUseCase = getHousingBenefitsAccountsByCustomerNameUseCase;
+        _logger = logger;
     }
 
     [LogCall]
     public async Task<SearchResponseObject> Execute(string firstName, string lastName, string userToken, string redisId, string dateOfBirth)
     {
-        var singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
-        var housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
-        var councilTaxResults =
-          await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
-        var housingBenefitsResults =
-            await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+        var singleViewResults = new SearchResponseObject();
+        var housingResults = new SearchResponseObject();
+        var councilTaxResults = new SearchResponseObject();
+        var housingBenefitsResults = new SearchResponseObject();
+
+        try
+        {
+            singleViewResults = _searchSingleViewUseCase.Execute(firstName, lastName);
+            _logger.LogInformation("SingleView results count: {Total}", singleViewResults.SearchResponse.Total);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error fetching SV records from SingleView Use Case: {EMessage}", e.Message);
+        }
+
+        try
+        {
+            housingResults = await _getSearchResultsByNameUseCase.Execute(firstName, lastName, userToken);
+            _logger.LogInformation("Housing results count: {Total}", housingResults.SearchResponse.Total);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error fetching housing search results from Housing Search Use Case: {EMessage}", e.Message);
+        }
+
+        try
+        {
+            councilTaxResults =
+                await _getCouncilTaxAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+            _logger.LogInformation("Council Tax results count: {Total}", councilTaxResults.SearchResponse.Total);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error fetching CTax records from Council Tax Use Case: {EMessage}", e.Message);
+        }
+
+        try
+        {
+            housingBenefitsResults =
+                await _getHousingBenefitsAccountsByCustomerNameUseCase.Execute(firstName, lastName, userToken);
+            _logger.LogInformation("Housing Benefits results count: {Total}", housingBenefitsResults.SearchResponse.Total);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error fetching housing benefits records from Housing Benefits Use Case: {EMessage}", e.Message);
+        }
 
         int total = singleViewResults?.SearchResponse?.Total ?? 0;
 
@@ -74,8 +117,16 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         total += councilTaxResults?.SearchResponse?.Total ?? 0;
         total += housingBenefitsResults?.SearchResponse?.Total ?? 0;
 
-        var systemIds = singleViewResults?.SystemIds?.Concat(housingResults?.SystemIds)
-            .Concat(councilTaxResults?.SystemIds).Concat(housingBenefitsResults?.SystemIds).ToList();
+        var systemIds = new List<SystemId>();
+        if (singleViewResults?.SystemIds != null)
+            systemIds = singleViewResults.SystemIds;
+        if (housingResults?.SystemIds != null)
+            systemIds = systemIds.Concat(housingResults.SystemIds).ToList();
+        if (councilTaxResults?.SystemIds != null)
+            systemIds = systemIds.Concat(councilTaxResults.SystemIds).ToList();
+        if (housingBenefitsResults?.SystemIds != null)
+            systemIds = systemIds.Concat(housingBenefitsResults?.SystemIds).ToList();
+
 
         var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
 

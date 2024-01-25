@@ -4,6 +4,7 @@ using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.Testing.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using SingleViewApi.V1.Boundary;
@@ -34,13 +35,16 @@ public class GetCombinedSearchResultsByNameUseCaseTests : LogCallAspectFixture
         _mockSearchSingleViewUseCase = new Mock<ISearchSingleViewUseCase>();
         _mockGetCouncilTaxAccountsByCustomerNameUseCase = new Mock<IGetCouncilTaxAccountsByCustomerNameUseCase>();
         _mockGetHousingBenefitsAccountsByCustomerNameUseCase = new Mock<IGetHousingBenefitsAccountsByCustomerNameUseCase>();
+        var _nullLogger = new NullLogger<GetCombinedSearchResultsByNameUseCase>();
         _fixture = new Fixture();
         _classUnderTest = new GetCombinedSearchResultsByNameUseCase(
             _mockGetSearchResultsByNameUseCase.Object,
             _mockGetJigsawCustomersUseCase.Object,
             _mockSearchSingleViewUseCase.Object,
             _mockGetCouncilTaxAccountsByCustomerNameUseCase.Object,
-            _mockGetHousingBenefitsAccountsByCustomerNameUseCase.Object);
+            _mockGetHousingBenefitsAccountsByCustomerNameUseCase.Object,
+            _nullLogger
+            );
     }
 
     [Test]

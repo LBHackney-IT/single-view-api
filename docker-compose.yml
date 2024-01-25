@@ -41,13 +41,6 @@ services:
       - SHARED_PLAN_API=${SHARED_PLAN_API}
       - X_API_KEY=${X_API_KEY}
       - RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY}
-
-# TODO: If using DynamoDb remove the line above and uncomment the section below.
-#      - DynamoDb_LocalMode=true
-#      - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
-#      - AWS_REGION=eu-west-2
-#      - AWS_ACCESS_KEY_ID=local
-#      - AWS_SECRET_ACCESS_KEY=local
     links:
       - dev-database
       - cache
