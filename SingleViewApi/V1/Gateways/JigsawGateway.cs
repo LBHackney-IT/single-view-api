@@ -33,9 +33,7 @@ namespace SingleViewApi.V1.Gateways
         }
 
 
-
         public async Task<AuthGatewayResponse> GetAuthToken(JigsawCredentials credentials)
-
         {
             try
             {
@@ -52,6 +50,7 @@ namespace SingleViewApi.V1.Gateways
                 {
                     new ("Email", credentials.Username),
                     new ("Password", credentials.Password),
+                    new ("signin", "true"),
                     new ("__RequestVerificationToken", tokens.Token)
                 };
 
@@ -408,6 +407,39 @@ namespace SingleViewApi.V1.Gateways
             return lookups;
 
 
+        }
+
+        public async Task<JigsawHouseholdCompositionResponseObject> GetHouseholdCompositionByCaseId(string caseId, string bearerToken)
+        {
+            var requestUrl = $"{_homelessnessBaseUrl}/householdmembers?id={caseId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            request.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _httpClient.SendAsync(request);
+
+#nullable enable
+            JigsawHouseholdCompositionResponseObject? householdComposition = null;
+#nullable disable
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var jsonBody = response.Content.ReadAsStringAsync().Result;
+                try
+                {
+                    householdComposition = JsonConvert.DeserializeObject<JigsawHouseholdCompositionResponseObject>(jsonBody);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("---- ERROR FETCHING Household Composition from Jigsaw");
+                    Console.WriteLine(e);
+                    Console.WriteLine("---- API RES:");
+                    Console.WriteLine(jsonBody);
+                    return householdComposition;
+                }
+            }
+            return householdComposition;
         }
 
 

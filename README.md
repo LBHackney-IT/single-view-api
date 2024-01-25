@@ -1,6 +1,22 @@
 # LBH Single View API
 
-Base API is a boilerplate code for being reused for new APIs for LBH
+Single view API is used for search residents across multiple systems.
+
+![Architecture diagram](docs/diagram.png)
+
+### Data integrations used
+| API                      | What data is retrieved                                                                                      |
+|--------------------------|-------------------------------------------------------------------------------------------------------------|
+| Housing search api       | Used for searching for resident in MMH                                                                      |
+| Person API               | Used for retrieving resident information from MMH                                                           |
+| Notes API                | Used for retrieving notes from MMH                                                                          |
+| Contact Details API      | Used for retrieving contact details from MMH                                                                |
+| Cautionary Alerts API    | Used for retrieving cautionary alerts from MMH                                                              |
+| Equality Information API | Used for retrieving equality information from MMH                                                           |
+| Tenure API               | Used for retrieving tenure information from MMH                                                             |
+| Academy API              | Used for searching for residents, retrieving information and notes from the Council Tax and Benefits system |
+| Jigsaw                   | Used for searching for residents, retrieving information and notes from the homelessness system             |
+| Shared Plan              | Used for creating new and retrieving existing shared plans                                                  |
 
 ## Stack
 
@@ -10,6 +26,9 @@ Base API is a boilerplate code for being reused for new APIs for LBH
 ## Dependencies
 
 - Redis
+    - Redis is used for storing jigsaw auth tokens and credentials
+- Postgress
+    - Postgress is used for storing matched records
 
 ## Contributing
 
@@ -48,25 +67,23 @@ docker run --name dynamodb-local -p 8000:8000 -v <PUT YOUR LOCAL PATH HERE>:/dat
 If you would like to see what is in your local DynamoDb instance using a simple gui, then [this admin tool](https://github.com/aaronshaf/dynamodb-admin) can do that.
 
 The application can also be served locally using docker:
-1.  Add you security credentials to AWS CLI.
-```sh
-$ aws configure
-```
-2. Log into AWS ECR.
-```sh
-$ aws ecr get-login --no-include-email
-```
-3. Build and serve the application. It will be available in the port 3000.
 ```sh
 $ make build && make serve
 ```
+
+### Developing / Debugging the Jigsaw Integration
+When sent a "Placeholder-Jigsaw-Token" RedisId (such as in the Single View Frontend when it is run locally), the API will return a default response, and will not contact Jigsaw's server for authentication.
+
+In order to run the code contacting Jigsaw's server, you will need to ensure that the source (e.g. the frontend) sends a valid RedisId, encoded with the RSA public key.
+This API can then decrypt it with the RSA private key, which must be set as an environment variable.
+It will then contact Jigsaw's auth endpoint to obtain an authorisation header.
+
 ### NuGet Packages
 At Hackney, we have created the NuGet Package to prevent the duplication of common code when implementing our APIs. Hence our NuGet packages will store the common code that can then be used in the relevant projects. For full details on the different features implemented within our packages please read [this ReadMe](https://github.com/LBHackney-IT/lbh-core/blob/release/README.md)
 
 ##### Using the package
 For full details on how to use the package(s) within this repository please read
 [this wiki page](https://github.com/LBHackney-IT/lbh-core/wiki/Using-the-package(s)-from-the-Hackney.Core-repository).
-
 
 ### Release process
 
@@ -182,10 +199,7 @@ dotnet ef database update
 
 - **Selwyn Preston**, Lead Developer at London Borough of Hackney (selwyn.preston@hackney.gov.uk)
 - **Mirela Georgieva**, Lead Developer at London Borough of Hackney (mirela.georgieva@hackney.gov.uk)
-
-### Other Contacts
-
-- **Rashmi Shetty**, Product Owner at London Borough of Hackney (rashmi.shetty@hackney.gov.uk)
+- **Adam Tracy**, Junior Developer at London Borough of Hackney (adam.tracy@hackney.gov.uk)
 
 [docker-download]: https://www.docker.com/products/docker-desktop
 [universal-housing-simulator]: https://github.com/LBHackney-IT/lbh-universal-housing-simulator

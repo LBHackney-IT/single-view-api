@@ -49,7 +49,7 @@ namespace SingleViewApi.V1.UseCase
 
         private static DateTime? ParseNoteDate(string noteDate)
         {
-            DateTime? dt = Regex.Replace(noteDate, @"\d{10}", "").TrimEnd().ToDate("dd.MM.yyyy HH:mm:ss");
+            DateTime? dt = Regex.Replace(noteDate, @"\d{9,10}", "").TrimEnd().ToDate("dd.MM.yyyy HH:mm:ss");
             return dt;
         }
     }

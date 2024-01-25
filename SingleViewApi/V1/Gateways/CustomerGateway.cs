@@ -21,6 +21,7 @@ namespace SingleViewApi.V1.Gateways
 
         public SavedCustomer Add(string firstName, string lastName, DateTime dateOfBirth, string niNumber = null)
         {
+            dateOfBirth = dateOfBirth.ToUniversalTime();
             var entity = new SavedCustomer()
             {
                 FirstName = firstName,

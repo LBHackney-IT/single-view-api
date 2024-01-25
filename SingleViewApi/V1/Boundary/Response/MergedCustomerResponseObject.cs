@@ -57,6 +57,7 @@ namespace SingleViewApi.V1.Boundary.Response
         public DateTime? DateOfDeath { get; set; }
         public bool? IsAMinor { get; set; }
         public EqualityInformationResponseObject? EqualityInformation { get; set; }
+        public SharedPlanResponseObject? SharedPlan { get; set; }
 #nullable disable
     }
 }

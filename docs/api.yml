@@ -1,0 +1,1648 @@
+openapi: 3.0.1
+info:
+  title: Single View API-api v1.0
+  description: >-
+    Single View API version v1.0. Please check older versions for depreciated
+    endpoints.
+  version: v1.0
+paths:
+  /api/v1/council-tax:
+    get:
+      tags:
+        - Academy
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/academy/council-tax:
+    get:
+      tags:
+        - Academy
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/academy/benefits:
+    get:
+      tags:
+        - Academy
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/search:
+    get:
+      tags:
+        - CombinedSearch
+      summary: ...
+      parameters:
+        - name: firstName
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: lastName
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: dateOfBirth
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: redisId
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.SearchResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/customers:
+    get:
+      tags:
+        - Customer
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: redisId
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.MergedCustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+    post:
+      tags:
+        - Customer
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateCustomerRequest
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateCustomerRequest
+          text/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateCustomerRequest
+          application/*+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateCustomerRequest
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+    delete:
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/v1/getJigsawCustomer:
+    get:
+      tags:
+        - Jigsaw
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: redisId
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/getJigsawCases:
+    get:
+      tags:
+        - JigsawCases
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: redisId
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.CasesResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/notes:
+    get:
+      tags:
+        - Notes
+      parameters:
+        - name: systemIds
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: redisId
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: Successfully retrieved notes from available data sources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleViewApi.V1.Boundary.NotesResponse'
+    post:
+      tags:
+        - Notes
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateNoteRequest
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateNoteRequest
+          text/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateNoteRequest
+          application/*+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateNoteRequest
+      responses:
+        '201':
+          description: Successfully created note
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.NoteResponseObject
+        '400':
+          description: Bad request
+  /api/v1/getPersonApiCustomer:
+    get:
+      tags:
+        - PersonApi
+      summary: ...
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/postgres/GetAll:
+    get:
+      tags:
+        - Postgres
+      summary: ...
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.ResponseObject
+        '400':
+          description: Invalid Query Parameter.
+  /api/v1/postgres/Get:
+    get:
+      tags:
+        - Postgres
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: Success
+  /api/v1/sharedPlan:
+    post:
+      tags:
+        - SharedPlan
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateSharedPlanRequest
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateSharedPlanRequest
+          text/json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateSharedPlanRequest
+          application/*+json:
+            schema:
+              $ref: >-
+                #/components/schemas/SingleViewApi.V1.Boundary.Request.CreateSharedPlanRequest
+      responses:
+        '200':
+          description: Successfully created shared-plan
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.CreateSharedPlanResponseObject
+        '400':
+          description: Bad request
+  /api/v1/storeCredentials:
+    post:
+      tags:
+        - StoreJigsawCredentials
+      summary: ...
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+            nullable: true
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              type: string
+              nullable: true
+          application/json:
+            schema:
+              type: string
+              nullable: true
+          text/json:
+            schema:
+              type: string
+              nullable: true
+          application/*+json:
+            schema:
+              type: string
+              nullable: true
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/SingleViewApi.V1.Boundary.Response.ResponseObject
+        '400':
+          description: Invalid Query Parameter.
+components:
+  schemas:
+    SingleViewApi.V1.Domain.DataSource:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Hackney.Shared.Tenure.Domain.HouseholdMembersType:
+      enum:
+        - Person
+        - Organisation
+      type: string
+    Hackney.Shared.Tenure.Domain.PersonTenureType:
+      enum:
+        - Tenant
+        - Leaseholder
+        - Freeholder
+        - HouseholdMember
+        - Occupant
+      type: string
+    Hackney.Shared.Tenure.Domain.HouseholdMembers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          $ref: >-
+            #/components/schemas/Hackney.Shared.Tenure.Domain.HouseholdMembersType
+        fullName:
+          type: string
+          nullable: true
+        isResponsible:
+          type: boolean
+        dateOfBirth:
+          type: string
+          format: date-time
+        personTenureType:
+          $ref: '#/components/schemas/Hackney.Shared.Tenure.Domain.PersonTenureType'
+      additionalProperties: false
+    Hackney.Shared.Tenure.Domain.LegacyReference:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.KnownAddress:
+      type: object
+      properties:
+        fullAddress:
+          type: string
+          nullable: true
+        id:
+          type: string
+          format: uuid
+        currentAddress:
+          type: boolean
+        startDate:
+          type: string
+          nullable: true
+        endDate:
+          type: string
+          nullable: true
+        householdMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hackney.Shared.Tenure.Domain.HouseholdMembers'
+          nullable: true
+        legacyReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hackney.Shared.Tenure.Domain.LegacyReference'
+          nullable: true
+        dataSourceName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.SupportWorker:
+      type: object
+      properties:
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+          nullable: true
+        jobTitle:
+          type: string
+          nullable: true
+        agency:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        emailAddress:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Hackney.Shared.ContactDetail.Domain.AddressExtended:
+      type: object
+      properties:
+        uprn:
+          type: string
+          nullable: true
+        isOverseasAddress:
+          type: boolean
+        overseasAddress:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.CustomerContactDetails:
+      type: object
+      properties:
+        dataSourceName:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        sourceServiceArea:
+          type: string
+          nullable: true
+        contactType:
+          type: string
+          nullable: true
+        subType:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        addressExtended:
+          $ref: >-
+            #/components/schemas/Hackney.Shared.ContactDetail.Domain.AddressExtended
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.Gender:
+      type: object
+      properties:
+        genderValue:
+          type: string
+          nullable: true
+        genderValueIfOther:
+          type: string
+          nullable: true
+        genderDifferentToBirthSex:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.Ethnicity:
+      type: object
+      properties:
+        ethnicGroupValue:
+          type: string
+          nullable: true
+        ethnicGroupValueIfOther:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.ReligionOrBelief:
+      type: object
+      properties:
+        religionOrBeliefValue:
+          type: string
+          nullable: true
+        religionOrBeliefValueIfOther:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.SexualOrientation:
+      type: object
+      properties:
+        sexualOrientationValue:
+          type: string
+          nullable: true
+        sexualOrientationValueIfOther:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.MarriageOrCivilPartnership:
+      type: object
+      properties:
+        married:
+          type: string
+          nullable: true
+        civilPartnership:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.PregnancyOrMaternity:
+      type: object
+      properties:
+        pregnancyDate:
+          type: string
+          nullable: true
+        pregnancyValidUntil:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.CaringResponsibilities:
+      type: object
+      properties:
+        provideUnpaidCare:
+          type: string
+          nullable: true
+        hoursSpentProvidingUnpaidCare:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.EconomicSituation:
+      type: object
+      properties:
+        economicSituationValue:
+          type: string
+          nullable: true
+        economicSituationValueIfOther:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.HomeSituation:
+      type: object
+      properties:
+        homeSituationValue:
+          type: string
+          nullable: true
+        homeSituationValueIfOther:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.EqualityInformationResponseObject:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        targetId:
+          type: string
+          nullable: true
+        ageGroup:
+          type: string
+          nullable: true
+        gender:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.Gender'
+        nationality:
+          type: string
+          nullable: true
+        ethnicity:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.Ethnicity'
+        religionOrBelief:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.ReligionOrBelief
+        sexualOrientation:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.SexualOrientation
+        marriageOrCivilPartnership:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.MarriageOrCivilPartnership
+        pregnancyOrMaternity:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.PregnancyOrMaternity
+          nullable: true
+        nationalInsuranceNumber:
+          type: string
+          nullable: true
+        caringResponsibilities:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.CaringResponsibilities
+        disabled:
+          type: string
+          nullable: true
+        communicationRequirements:
+          type: array
+          items:
+            type: string
+          nullable: true
+        economicSituation:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.EconomicSituation
+        homeSituation:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.HomeSituation
+        armedForces:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Domain.CautionaryAlert:
+      type: object
+      properties:
+        dateModified:
+          type: string
+          nullable: true
+        modifiedBy:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+          nullable: true
+        endDate:
+          type: string
+          nullable: true
+        alertCode:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Address:
+      type: object
+      properties:
+        line1:
+          type: string
+          nullable: true
+        line2:
+          type: string
+          nullable: true
+        line3:
+          type: string
+          nullable: true
+        line4:
+          type: string
+          nullable: true
+        postcode:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.CouncilTaxAccountInfo:
+      type: object
+      properties:
+        accountReference:
+          type: integer
+          format: int32
+        accountCheckDigit:
+          type: string
+          nullable: true
+        paymentMethod:
+          type: string
+          nullable: true
+        accountBalance:
+          type: number
+          format: double
+          nullable: true
+        propertyAddress:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Address'
+        forwardingAddress:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Address'
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.HouseholdMember:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.Benefits:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+        description:
+          type: string
+          nullable: true
+        period:
+          type: string
+          nullable: true
+        frequency:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.HbInfo:
+      type: object
+      properties:
+        housingBenefitPayee:
+          type: string
+          nullable: true
+        weeklyHousingBenefit:
+          type: number
+          format: double
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.HousingBenefitLandlordDetails:
+      type: object
+      properties:
+        claimId:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        addr1:
+          type: string
+          nullable: true
+        addr2:
+          type: string
+          nullable: true
+        addr3:
+          type: string
+          nullable: true
+        addr4:
+          type: string
+          nullable: true
+        postcode:
+          type: string
+          nullable: true
+        creditorId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.PaymentDetails:
+      type: object
+      properties:
+        claimId:
+          type: integer
+          format: int32
+        postingDate:
+          type: string
+          format: date-time
+        paymentAmount:
+          type: number
+          format: double
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.HousingBenefitsAccountInfo:
+      type: object
+      properties:
+        claimId:
+          type: integer
+          format: int32
+        checkDigit:
+          type: string
+          nullable: true
+        personReference:
+          type: string
+          nullable: true
+        householdMembers:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.HouseholdMember
+          nullable: true
+        benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.Benefits'
+          nullable: true
+        weeklyHousingBenefitDetails:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.HbInfo'
+        housingBenefitLandlordDetails:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.HousingBenefitLandlordDetails
+        lastPaymentDetails:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.PaymentDetails
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        dataSource:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.DataSource'
+        preferredTitle:
+          type: string
+          nullable: true
+        preferredFirstName:
+          type: string
+          nullable: true
+        preferredMiddleName:
+          type: string
+          nullable: true
+        preferredSurname:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        surname:
+          type: string
+          nullable: true
+        placeOfBirth:
+          type: string
+          nullable: true
+        knownAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.KnownAddress'
+          nullable: true
+        personTypes:
+          type: array
+          items:
+            type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+          nullable: true
+        niNo:
+          type: string
+          nullable: true
+        nhsNumber:
+          type: string
+          nullable: true
+        pregnancyDueDate:
+          type: string
+          nullable: true
+        accommodationType:
+          type: string
+          nullable: true
+        housingCircumstance:
+          type: string
+          nullable: true
+        isSettled:
+          type: boolean
+          nullable: true
+        supportWorker:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.SupportWorker
+        gender:
+          type: string
+          nullable: true
+        dateOfDeath:
+          type: string
+          format: date-time
+          nullable: true
+        allContactDetails:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerContactDetails
+          nullable: true
+        equalityInformation:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.EqualityInformationResponseObject
+        cautionaryAlerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Domain.CautionaryAlert'
+          nullable: true
+        councilTaxAccount:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.CouncilTaxAccountInfo'
+        housingBenefitsAccount:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.HousingBenefitsAccountInfo
+        isAMinor:
+          type: boolean
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.SystemId:
+      type: object
+      properties:
+        systemName:
+          type: string
+          nullable: true
+        id:
+          type: string
+          nullable: true
+        error:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.CustomerResponseObject:
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.Customer'
+        systemIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.SystemId'
+          nullable: true
+      additionalProperties: false
+    Hackney.Shared.Person.Domain.Title:
+      enum:
+        - Dr
+        - Master
+        - Miss
+        - Mr
+        - Mrs
+        - Ms
+        - Other
+        - Rabbi
+        - Reverend
+      type: string
+    Hackney.Shared.Person.Domain.PersonType:
+      enum:
+        - Tenant
+        - HouseholdMember
+        - Leaseholder
+        - Freeholder
+        - Occupant
+        - HousingOfficer
+        - HousingAreaManager
+      type: string
+    SingleViewApi.V1.Boundary.Response.SearchResult:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        dataSources:
+          type: array
+          items:
+            type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        surName:
+          type: string
+          nullable: true
+        title:
+          $ref: '#/components/schemas/Hackney.Shared.Person.Domain.Title'
+        middleName:
+          type: string
+          nullable: true
+        preferredTitle:
+          type: string
+          nullable: true
+        preferredFirstName:
+          type: string
+          nullable: true
+        preferredSurname:
+          type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+          nullable: true
+        niNumber:
+          type: string
+          nullable: true
+        personTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hackney.Shared.Person.Domain.PersonType'
+          nullable: true
+        isPersonCautionaryAlert:
+          type: boolean
+        isTenureCautionaryAlert:
+          type: boolean
+        knownAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.KnownAddress'
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.SearchResponse:
+      type: object
+      properties:
+        groupedResults:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.SearchResult
+          nullable: true
+        ungroupedResults:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.SearchResult
+          nullable: true
+        total:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.SearchResponseObject:
+      type: object
+      properties:
+        searchResponse:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.SearchResponse
+        systemIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.SystemId'
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.SharedPlanResponseObject:
+      type: object
+      properties:
+        planIds:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.MergedCustomer:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        preferredTitle:
+          type: string
+          nullable: true
+        preferredFirstName:
+          type: string
+          nullable: true
+        preferredMiddleName:
+          type: string
+          nullable: true
+        preferredSurname:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        surname:
+          type: string
+          nullable: true
+        placeOfBirth:
+          type: string
+          nullable: true
+        knownAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.KnownAddress'
+          nullable: true
+        allContactDetails:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.CustomerContactDetails
+          nullable: true
+        personTypes:
+          type: array
+          items:
+            type: string
+          nullable: true
+        councilTaxAccount:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.CouncilTaxAccountInfo'
+        housingBenefitsAccount:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.HousingBenefitsAccountInfo
+        cautionaryAlerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Domain.CautionaryAlert'
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+          nullable: true
+        niNo:
+          type: string
+          nullable: true
+        nhsNumber:
+          type: string
+          nullable: true
+        pregnancyDueDate:
+          type: string
+          nullable: true
+        accommodationType:
+          type: string
+          nullable: true
+        housingCircumstance:
+          type: string
+          nullable: true
+        isSettled:
+          type: boolean
+          nullable: true
+        supportWorker:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.SupportWorker
+        gender:
+          type: string
+          nullable: true
+        dateOfDeath:
+          type: string
+          format: date-time
+          nullable: true
+        isAMinor:
+          type: boolean
+          nullable: true
+        equalityInformation:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.EqualityInformationResponseObject
+        sharedPlan:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.SharedPlanResponseObject
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.MergedCustomerResponseObject:
+      type: object
+      properties:
+        customer:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.MergedCustomer
+        systemIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.SystemId'
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Request.DataSourceRequest:
+      type: object
+      properties:
+        dataSource:
+          type: string
+          nullable: true
+        sourceId:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Request.CreateCustomerRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+        niNumber:
+          type: string
+          nullable: true
+        dataSources:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Request.DataSourceRequest
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.Case:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+          nullable: true
+        dateOfApproach:
+          type: string
+          format: date-time
+        isCurrent:
+          type: boolean
+        assignedTo:
+          type: string
+          nullable: true
+        isV2LegacyCase:
+          type: boolean
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Information:
+      type: object
+      properties:
+        question:
+          type: string
+          nullable: true
+        answer:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.AdditionalInfo:
+      type: object
+      properties:
+        legend:
+          type: string
+          nullable: true
+        info:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Information'
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.FullAddressDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        houseName:
+          type: string
+          nullable: true
+        houseNumber:
+          type: string
+          nullable: true
+        street:
+          type: string
+          nullable: true
+        town:
+          type: string
+          nullable: true
+        county:
+          type: string
+          nullable: true
+        postcode:
+          type: string
+          nullable: true
+        apartment:
+          type: string
+          nullable: true
+        roomNumber:
+          type: string
+          nullable: true
+        locality:
+          type: string
+          nullable: true
+        latitude:
+          type: string
+          nullable: true
+        longitude:
+          type: string
+          nullable: true
+        freetext:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.AccommodationPlacementInfo:
+      type: object
+      properties:
+        placementType:
+          type: string
+          nullable: true
+        fullAddressDetails:
+          $ref: >-
+            #/components/schemas/SingleViewApi.V1.Boundary.Response.FullAddressDetails
+        placementDuty:
+          type: string
+          nullable: true
+        placementDutyFullName:
+          type: string
+          nullable: true
+        usage:
+          type: string
+          nullable: true
+        dclgClassificationType:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.JigsawHouseholdMember:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          nullable: true
+        niNumber:
+          type: string
+          nullable: true
+        nhsNumber:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.CaseOverview:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        currentFlowchartPosition:
+          type: string
+          nullable: true
+        currentDecision:
+          type: string
+          nullable: true
+        householdComposition:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.JigsawHouseholdMember
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.CasesResponseObject:
+      type: object
+      properties:
+        currentCase:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.Response.Case'
+        additionalFactors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.AdditionalInfo'
+          nullable: true
+        healthAndWellBeing:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.AdditionalInfo'
+          nullable: true
+        placementInformation:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.AccommodationPlacementInfo
+          nullable: true
+        caseOverview:
+          $ref: '#/components/schemas/SingleViewApi.V1.Boundary.CaseOverview'
+      additionalProperties: false
+    SingleViewApi.V1.Domain.TargetType:
+      enum:
+        - Person
+        - Asset
+        - Tenure
+        - Repair
+      type: string
+    SingleViewApi.V1.Domain.Categorisation:
+      type: object
+      properties:
+        category:
+          type: string
+          nullable: true
+        subCategory:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Domain.AuthorDetails:
+      type: object
+      properties:
+        fullName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.NoteResponseObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        targetType:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.TargetType'
+        targetId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        categorisation:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.Categorisation'
+        author:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.AuthorDetails'
+        highlight:
+          type: boolean
+        isSensitive:
+          type: boolean
+        isPinned:
+          type: boolean
+        dataSourceId:
+          type: string
+          nullable: true
+        dataSource:
+          type: string
+          nullable: true
+        jigsawCaseReferenceId:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.NotesResponse:
+      type: object
+      properties:
+        notes:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/SingleViewApi.V1.Boundary.Response.NoteResponseObject
+          nullable: true
+        systemIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleViewApi.V1.Boundary.SystemId'
+          nullable: true
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Request.CreateNoteRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        targetType:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.TargetType'
+        targetId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        categorisation:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.Categorisation'
+        author:
+          $ref: '#/components/schemas/SingleViewApi.V1.Domain.AuthorDetails'
+        highlight:
+          type: boolean
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.ResponseObject:
+      type: object
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Request.CreateSharedPlanRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        systemIds:
+          type: array
+          items:
+            type: string
+          nullable: true
+        numbers:
+          type: array
+          items:
+            type: string
+          nullable: true
+        emails:
+          type: array
+          items:
+            type: string
+          nullable: true
+        hasPhp:
+          type: boolean
+      additionalProperties: false
+    SingleViewApi.V1.Boundary.Response.CreateSharedPlanResponseObject:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        sharedPlanUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    Token:
+      type: apiKey
+      description: Your Hackney API Key
+      name: X-Api-Key
+      in: header
+security:
+  - Token: []

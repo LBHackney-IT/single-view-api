@@ -1,17 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SingleViewApi.V1.Boundary.Response;
 using SingleViewApi.V1.Gateways;
 using SingleViewApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;
-using Hackney.Shared.ContactDetail.Domain;
-using Hackney.Shared.Person;
 using Microsoft.OpenApi.Extensions;
 using ServiceStack;
 using SingleViewApi.V1.Boundary;
-using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Gateways.Interfaces;
 
 namespace SingleViewApi.V1.UseCase
@@ -23,19 +18,22 @@ namespace SingleViewApi.V1.UseCase
         private readonly IDataSourceGateway _dataSourceGateway;
         private readonly IEqualityInformationGateway _equalityInformationGateway;
         private readonly ICautionaryAlertsGateway _cautionaryAlertsGateway;
+        private readonly ITenureGateway _tenureGateway;
 
         public GetPersonApiByIdUseCase(
             IPersonGateway personGateway,
             IContactDetailsGateway contactDetailsGateway,
             IDataSourceGateway dataSourceGateway,
             IEqualityInformationGateway equalityInformationGateway,
-            ICautionaryAlertsGateway cautionaryAlertsGateway)
+            ICautionaryAlertsGateway cautionaryAlertsGateway,
+            ITenureGateway tenureGateway)
         {
             _personGateway = personGateway;
             _contactDetailsGateway = contactDetailsGateway;
             _dataSourceGateway = dataSourceGateway;
             _equalityInformationGateway = equalityInformationGateway;
             _cautionaryAlertsGateway = cautionaryAlertsGateway;
+            _tenureGateway = tenureGateway;
         }
         [LogCall]
         public async Task<CustomerResponseObject> Execute(string personId, string userToken)
@@ -46,8 +44,6 @@ namespace SingleViewApi.V1.UseCase
             var dataSource = _dataSourceGateway.GetEntityById(1);
             var equalityInformation = await _equalityInformationGateway.GetEqualityInformationById(personId, userToken);
             var cautionaryAlerts = await _cautionaryAlertsGateway.GetCautionaryAlertsById(personId, userToken);
-
-
 
             var personApiId = new SystemId() { SystemName = dataSource.Name, Id = personId };
 
@@ -69,6 +65,22 @@ namespace SingleViewApi.V1.UseCase
                 {
                     personTypes.Add(personType.ToDescription());
                 }
+
+                List<KnownAddress> knownAddresses = person.Tenures.Map(t =>
+                {
+                    var tenureInfo = _tenureGateway.GetTenureInformation(t.Id, userToken).Result;
+                    return new KnownAddress()
+                    {
+                        Id = t.Id,
+                        CurrentAddress = t.IsActive,
+                        StartDate = t.StartDate,
+                        EndDate = t.EndDate,
+                        FullAddress = t.AssetFullAddress,
+                        DataSourceName = dataSource.Name,
+                        HouseholdMembers = tenureInfo?.HouseholdMembers,
+                        LegacyReferences = tenureInfo?.LegacyReferences
+                    };
+                });
 
                 response.Customer = new Customer()
                 {
@@ -99,15 +111,7 @@ namespace SingleViewApi.V1.UseCase
                     }),
                     EqualityInformation = equalityInformation,
                     CautionaryAlerts = cautionaryAlerts.Alerts,
-                    KnownAddresses = new List<KnownAddress>(person.Tenures.Select(t => new KnownAddress()
-                    {
-                        Id = t.Id,
-                        CurrentAddress = t.IsActive,
-                        StartDate = t.StartDate,
-                        EndDate = t.EndDate,
-                        FullAddress = t.AssetFullAddress,
-                        DataSourceName = dataSource.Name
-                    }))
+                    KnownAddresses = knownAddresses
                 };
             }
 

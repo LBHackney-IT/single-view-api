@@ -8,7 +8,7 @@ build:
 
 .PHONY: serve
 serve:
-	docker-compose build SingleViewApi && docker-compose up SingleViewApi; docker-compose down
+	docker-compose build SingleViewApi && docker-compose up SingleViewApi
 
 .PHONY: shell
 shell:
@@ -16,7 +16,7 @@ shell:
 
 .PHONY: test
 test:
-	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test; docker-compose down
+	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test
 
 .PHONY: test-db
 test-db:

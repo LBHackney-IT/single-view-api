@@ -11,6 +11,9 @@ public class HousingBenefitsAccountInfo
     public string? PersonReference { get; set; }
     public List<HouseholdMember>? HouseholdMembers { get; set; }
     public List<Benefits>? Benefits { get; set; }
+    public HbInfo? WeeklyHousingBenefitDetails { get; set; }
+    public HousingBenefitLandlordDetails? HousingBenefitLandlordDetails { get; set; }
+    public PaymentDetails? LastPaymentDetails { get; set; }
 #nullable disable
 }
 

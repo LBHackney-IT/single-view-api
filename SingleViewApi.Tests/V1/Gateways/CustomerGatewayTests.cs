@@ -3,6 +3,7 @@ using System.Linq;
 using AutoFixture;
 using SingleViewApi.V1.Gateways;
 using NUnit.Framework;
+using ServiceStack;
 using SingleViewApi.V1.Domain;
 using SingleViewApi.V1.Factories;
 
@@ -112,7 +113,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Testy",
                 LastName = "McTestFace",
-                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
+                DateOfBirth = DateTime.ParseExact("18/08/1996", "dd/MM/yyyy", null).ToUniversalTime(),
                 NiNumber = "SG01010101B"
             }.ToDatabase()).Entity;
 
@@ -120,7 +121,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Luna",
                 LastName = "Kitty",
-                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
+                DateOfBirth = DateTime.ParseExact("07/01/2021", "dd/MM/yyyy", null).ToUniversalTime(),
                 NiNumber = "SG00000000B"
             }.ToDatabase()).Entity;
 
@@ -145,7 +146,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Testy",
                 LastName = "McTestFace",
-                DateOfBirth = DateTime.Parse("08/18/1996").ToUniversalTime(),
+                DateOfBirth = DateTime.ParseExact("18/08/1996", "dd/MM/yyyy", null).ToUniversalTime(),
                 NiNumber = "SG01010101B"
             }.ToDatabase()).Entity;
 
@@ -153,7 +154,7 @@ namespace SingleViewApi.Tests.V1.Gateways
             {
                 FirstName = "Luna",
                 LastName = "Kitty",
-                DateOfBirth = DateTime.Parse("07/01/2021").ToUniversalTime(),
+                DateOfBirth = DateTime.ParseExact("07/01/2021", "dd/MM/yyyy", null).ToUniversalTime(),
                 NiNumber = "SG00000000B"
             }.ToDatabase()).Entity;
 

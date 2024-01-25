@@ -127,6 +127,7 @@ public class GetCombinedSearchResultsByNameUseCase : IGetCombinedSearchResultsBy
         if (housingBenefitsResults?.SystemIds != null)
             systemIds = systemIds.Concat(housingBenefitsResults?.SystemIds).ToList();
 
+
         var groupedResults = GroupByRelevance(firstName, lastName, dateOfBirth, sortedResults);
 
         var ungroupedResults = RemoveDuplicates(groupedResults, sortedResults);
