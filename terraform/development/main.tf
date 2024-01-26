@@ -7,10 +7,20 @@
 # 6) IF ADDITIONAL RESOURCES ARE REQUIRED BY YOUR API, ADD THEM TO THIS FILE
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
+terraform {
+  required_providers {
+        aws = {
+            source = "hashicorp/aws"
+            version = "~> 2.0"
+        }
+    }
+}
+
+
 provider "aws" {
     region  = "eu-west-2"
-    version = "~> 2.0"
 }
+
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
@@ -58,7 +68,6 @@ resource "aws_elasticache_subnet_group" "default" {
 # Create ElastiCache Redis cluster
 
 resource "aws_elasticache_cluster" "redis" {
-
     cluster_id           = "single-view-development"
     engine               = "redis"
     engine_version       = "7.0"

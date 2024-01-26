@@ -7,12 +7,23 @@
 # 6) IF ADDITIONAL RESOURCES ARE REQUIRED BY YOUR API, ADD THEM TO THIS FILE
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
-provider "aws" {
-  region  = "eu-west-2"
-  version = "~> 2.0"
+terraform {
+  required_providers {
+        aws = {
+            source = "hashicorp/aws"
+            version = "~> 2.0"
+        }
+    }
 }
+
+
+provider "aws" {
+    region  = "eu-west-2"
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+
 locals {
     application_name = "single-view-api"
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
@@ -59,10 +70,10 @@ resource "aws_elasticache_subnet_group" "default" {
 resource "aws_elasticache_cluster" "redis" {
     cluster_id           = "single-view-production"
     engine               = "redis"
-    engine_version       = "3.2.10"
-    node_type            = "cache.m4.large"
+    engine_version       = "7.0"
+    node_type            = "cache.t4g.micro"
     num_cache_nodes      = 1
-    parameter_group_name = "default.redis3.2"
+    parameter_group_name = "default.redis7"
     port                 = 6379
     subnet_group_name    = aws_elasticache_subnet_group.default.name
     security_group_ids   = [aws_security_group.redis_sg.id]
@@ -102,7 +113,7 @@ module "postgres_db" {
     db_port  = 5302
     subnet_ids = data.aws_subnet_ids.all.ids
     db_engine = "postgres"
-    db_engine_version = "12.11" //DMS does not work well with v12
+    db_engine_version = "12.14" //DMS does not work well with v12
     db_instance_class = "db.t3.micro"
     db_allocated_storage = 20
     maintenance_window = "sun:10:00-sun:10:30"
