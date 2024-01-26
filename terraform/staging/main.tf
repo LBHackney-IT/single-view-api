@@ -69,7 +69,7 @@ resource "aws_elasticache_subnet_group" "default" {
 resource "aws_elasticache_cluster" "redis" {
     cluster_id           = "single-view-staging"
     engine               = "redis"
-    engine_version       = "7.0.7"
+    engine_version       = "7.x"
     node_type            = "cache.t4g.micro"
     num_cache_nodes      = 1
     parameter_group_name = "default.redis7"
