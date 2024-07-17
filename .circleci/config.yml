@@ -259,62 +259,63 @@ jobs:
 
 workflows:
   feature-branch-checks:
-    - check-code-formatting:
-        context: api-nuget-token-context
-    - build-and-test:
-        context: api-nuget-token-context
-        requires:
-          - check-code-formatting
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - assume-role-development:
-        context: api-assume-role-corporate-development-context
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - preview-terraform-development:
-        requires:
-          - assume-role-development
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - assume-role-staging:
-        context: api-assume-role-corporate-staging-context
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - preview-terraform-staging:
-        requires:
-          - assume-role-staging
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - assume-role-production:
-        context: api-assume-role-corporate-production-context
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
-    - preview-terraform-production:
-        requires:
-          - assume-role-production
-        filters:
-          branches:
-            ignore:
-              - development
-              - master
+    jobs:
+      - check-code-formatting:
+          context: api-nuget-token-context
+      - build-and-test:
+          context: api-nuget-token-context
+          requires:
+            - check-code-formatting
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-development:
+          context: api-assume-role-corporate-development-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-development:
+          requires:
+            - assume-role-development
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-staging:
+          context: api-assume-role-corporate-staging-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-staging:
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-production:
+          context: api-assume-role-corporate-production-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-production:
+          requires:
+            - assume-role-production
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
 
   check-and-deploy-development:
     jobs:
