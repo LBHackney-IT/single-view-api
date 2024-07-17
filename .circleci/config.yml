@@ -344,6 +344,19 @@ workflows:
           filters:
             branches:
               only: development
+      - preview-terraform-development:
+          requires:
+            - assume-role-development
+          filters:
+            branches:
+              only: development
+      - permit-development-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-development
+          filters:
+            branches:
+              only: development
       - terraform-init-and-apply-to-development:
           requires:
             - migrate-database-development
