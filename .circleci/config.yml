@@ -193,6 +193,21 @@ jobs:
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_PRODUCTION
+  preview-terraform-development:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "development"
+  preview-terraform-staging:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "staging"
+  preview-terraform-production:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "production"
   terraform-init-and-apply-to-development:
     executor: docker-terraform
     steps:
