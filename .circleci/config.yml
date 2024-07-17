@@ -263,6 +263,8 @@ workflows:
         context: api-nuget-token-context
     - build-and-test:
         context: api-nuget-token-context
+        requires:
+          - check-code-formatting
         filters:
           branches:
             ignore:
@@ -320,6 +322,8 @@ workflows:
           context: api-nuget-token-context
       - build-and-test:
           context: api-nuget-token-context
+          requires:
+          - check-code-formatting
       - assume-role-development:
           context: api-assume-role-corporate-development-context
           requires:
