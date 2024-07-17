@@ -360,6 +360,7 @@ workflows:
       - terraform-init-and-apply-to-development:
           requires:
             - migrate-database-development
+            - permit-development-terraform-release
           filters:
             branches:
               only: development
@@ -391,9 +392,23 @@ workflows:
           filters:
             branches:
               only: master
+      - preview-terraform-staging:
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              only: master
+      - permit-staging-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-staging
+          filters:
+            branches:
+              only: master
       - terraform-init-and-apply-to-staging:
           requires:
             - migrate-database-staging
+            - permit-staging-terraform-release
           filters:
             branches:
               only: master
@@ -428,6 +443,7 @@ workflows:
       - terraform-init-and-apply-to-production:
           requires:
             - migrate-database-production
+            - 
           filters:
             branches:
               only: master
