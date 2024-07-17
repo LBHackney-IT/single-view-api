@@ -142,12 +142,6 @@ commands:
             CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
 
 jobs:
-  check-env:
-    executor: docker-dotnet
-    steps:
-      - run:
-          name: print env
-          command: echo $TEST
   check-code-formatting:
     executor: docker-dotnet
     steps:
@@ -236,8 +230,6 @@ jobs:
 workflows:
   check-and-deploy-development:
     jobs:
-      - check-env:
-          context: api-nuget-token-context
       - check-code-formatting:
           context: api-nuget-token-context
       - build-and-test:
