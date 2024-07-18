@@ -123,4 +123,7 @@ module "postgres_db" {
     multi_az = false //only true if production deployment
     publicly_accessible = false
     project_name = "single view"
+    additional_tags = {
+        BackupPolicy = "Prod"
+    }
 }
