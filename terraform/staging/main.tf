@@ -69,7 +69,7 @@ resource "aws_elasticache_subnet_group" "default" {
 resource "aws_elasticache_cluster" "redis" {
     cluster_id           = "single-view-staging"
     engine               = "redis"
-    engine_version       = "7.0"
+    engine_version       = "7.0.7"
     node_type            = "cache.t4g.micro"
     num_cache_nodes      = 1
     parameter_group_name = "default.redis7"
@@ -111,7 +111,7 @@ module "postgres_db" {
     db_port                    = 5302
     subnet_ids                 = data.aws_subnet_ids.all.ids
     db_engine                  = "postgres"
-    db_engine_version          = "12.14" //DMS does not work well with v12
+    db_engine_version          = "12.17" //DMS does not work well with v12
     db_instance_class          = "db.t3.micro"
     db_allocated_storage       = 20
     maintenance_window         = "sun:10:00-sun:10:30"

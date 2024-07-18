@@ -38,6 +38,21 @@ commands:
           root: *workspace_root
           paths:
             - .aws
+  preview-terraform:
+    description: "Previews terraform state changes"
+    parameters:
+      environment:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - run:
+          command: |
+            cd ./terraform/<<parameters.environment>>/
+            terraform get -update=true
+            terraform init
+            terraform plan
+          name: get, init, and plan
   terraform-init-then-apply:
     description: "Initializes and applies terraform configuration"
     parameters:
@@ -71,11 +86,11 @@ commands:
       - run:
           name: Install Node.js
           command: |
-            curl -sL https://deb.nodesource.com/setup_16.x | bash -
+            curl -sL https://deb.nodesource.com/setup_20.x | bash -
             apt-get update && apt-get install -y nodejs
       - run:
           name: Install serverless CLI
-          command: npm i -g serverless
+          command: npm i -g serverless@^3
       - run:
           name: Install aws alerts CLI
           command: npm i -g serverless-plugin-aws-alerts
@@ -142,12 +157,6 @@ commands:
             CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
 
 jobs:
-  check-env:
-    executor: docker-dotnet
-    steps:
-      - run:
-          name: print env
-          command: echo $TEST
   check-code-formatting:
     executor: docker-dotnet
     steps:
@@ -184,6 +193,21 @@ jobs:
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_PRODUCTION
+  preview-terraform-development:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "development"
+  preview-terraform-staging:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "staging"
+  preview-terraform-production:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "production"
   terraform-init-and-apply-to-development:
     executor: docker-terraform
     steps:
@@ -234,14 +258,79 @@ jobs:
           aws-account: $AWS_ACCOUNT_PRODUCTION
 
 workflows:
-  check-and-deploy-development:
+  feature-branch-checks:
     jobs:
-      - check-env:
-          context: api-nuget-token-context
       - check-code-formatting:
           context: api-nuget-token-context
       - build-and-test:
           context: api-nuget-token-context
+          requires:
+            - check-code-formatting
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-development:
+          context: api-assume-role-corporate-development-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-development:
+          requires:
+            - assume-role-development
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-staging:
+          context: api-assume-role-corporate-staging-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-staging:
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - assume-role-production:
+          context: api-assume-role-corporate-production-context
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+      - preview-terraform-production:
+          requires:
+            - assume-role-production
+          filters:
+            branches:
+              ignore:
+                - development
+                - master
+
+  check-and-deploy-development:
+    jobs:
+      - check-code-formatting:
+          context: api-nuget-token-context
+          filters:
+            branches:
+              only: development
+      - build-and-test:
+          context: api-nuget-token-context
+          requires:
+            - check-code-formatting
+          filters:
+            branches:
+              only: development
       - assume-role-development:
           context: api-assume-role-corporate-development-context
           requires:
@@ -253,9 +342,26 @@ workflows:
           context: api-nuget-token-context
           requires:
             - assume-role-development
+          filters:
+            branches:
+              only: development
+      - preview-terraform-development:
+          requires:
+            - assume-role-development
+          filters:
+            branches:
+              only: development
+      - permit-development-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-development
+          filters:
+            branches:
+              only: development
       - terraform-init-and-apply-to-development:
           requires:
             - migrate-database-development
+            - permit-development-terraform-release
           filters:
             branches:
               only: development
@@ -267,69 +373,106 @@ workflows:
             branches:
               only: development
   check-and-deploy-staging-and-production:
-     jobs:
-       - build-and-test:
-           context: api-nuget-token-context
-           filters:
-             branches:
-               only: master
-       - assume-role-staging:
-           context: api-assume-role-corporate-staging-context
-           requires:
-               - build-and-test
-           filters:
+    jobs:
+      - build-and-test:
+          context: api-nuget-token-context
+          filters:
+            branches:
+              only: master
+      - assume-role-staging:
+          context: api-assume-role-corporate-staging-context
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: master
+      - migrate-database-staging:
+          context: api-nuget-token-context
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              only: master
+      - preview-terraform-staging:
+          requires:
+            - assume-role-staging
+          filters:
+            branches:
+              only: master
+      - permit-staging-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-staging
+          filters:
+            branches:
+              only: master
+      - terraform-init-and-apply-to-staging:
+          requires:
+            - migrate-database-staging
+            - permit-staging-terraform-release
+          filters:
+            branches:
+              only: master
+      - deploy-to-staging:
+          context: api-nuget-token-context
+          requires:
+            - terraform-init-and-apply-to-staging
+          filters:
+            branches:
+              only: master
+      - start-production-release:
+          type: approval
+          requires:
+            - deploy-to-staging
+          filters:
               branches:
                 only: master
-       - migrate-database-staging:
-           context: api-nuget-token-context
-           requires:
-             - assume-role-staging
-       - terraform-init-and-apply-to-staging:
-           requires:
-             - migrate-database-staging
-           filters:
-             branches:
-               only: master
-       - deploy-to-staging:
-           context: api-nuget-token-context
-           requires:
-             - terraform-init-and-apply-to-staging
-           filters:
-             branches:
-               only: master
-       - permit-production-terraform-release:
-           type: approval
-           requires:
-             - deploy-to-staging
-       - assume-role-production:
-           context: api-assume-role-corporate-production-context
-           requires:
-             - permit-production-terraform-release
-           filters:
-              branches:
-                only: master
-       - migrate-database-production:
-           context: api-nuget-token-context
-           requires:
-             - assume-role-production
-       - terraform-init-and-apply-to-production:
-           requires:
-             - migrate-database-production
-           filters:
-             branches:
-               only: master
-       - permit-production-release:
-           type: approval
-           requires:
-             - deploy-to-staging
-           filters:
-             branches:
-               only: master
-       - deploy-to-production:
-           context: api-nuget-token-context
-           requires:
-             - permit-production-release
-             - terraform-init-and-apply-to-production
-           filters:
-             branches:
-               only: master
+      - assume-role-production:
+          context: api-assume-role-corporate-production-context
+          requires:
+            - start-production-release
+          filters:
+            branches:
+              only: master
+      - migrate-database-production:
+          context: api-nuget-token-context
+          requires:
+            - assume-role-production
+          filters:
+            branches:
+              only: master
+      - preview-terraform-production:
+          requires:
+            - assume-role-production
+          filters:
+            branches:
+              only: master
+      - permit-production-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-production
+          filters:
+            branches:
+              only: master
+      - terraform-init-and-apply-to-production:
+          requires:
+            - migrate-database-production
+            - permit-production-terraform-release
+          filters:
+            branches:
+              only: master
+      - permit-production-api-release:
+          type: approval
+          requires:
+            - terraform-init-and-apply-to-production
+          filters:
+            branches:
+              only: master
+      - deploy-to-production:
+          context: api-nuget-token-context
+          requires:
+            - permit-production-api-release
+            - terraform-init-and-apply-to-production
+          filters:
+            branches:
+              only: master
