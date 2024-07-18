@@ -111,7 +111,7 @@ module "postgres_db" {
     db_port                    = 5302
     subnet_ids                 = data.aws_subnet_ids.all.ids
     db_engine                  = "postgres"
-    db_engine_version          = "12.14" //DMS does not work well with v12
+    db_engine_version          = "12.17" //DMS does not work well with v12
     db_instance_class          = "db.t3.micro"
     db_allocated_storage       = 20
     maintenance_window         = "sun:10:00-sun:10:30"
