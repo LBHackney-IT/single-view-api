@@ -155,6 +155,16 @@ commands:
             CONN_STR="Host=localhost;Password=${PASSWORD};Port=${PORT};Username=${USERNAME};Database=${DATABASE}"
             cd ./SingleViewApi/
             CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
+  test-command:
+    description: "Re-encrypt the database."
+    steps:
+      - aws-cli/install
+      - *attach_workspace
+      - run:
+          name: "Re-encrypt the database job."
+          command: |
+            echo "Done!"
+            exit 0
 
 jobs:
   check-code-formatting:
@@ -256,6 +266,10 @@ jobs:
       - deploy-lambda:
           stage: "production"
           aws-account: $AWS_ACCOUNT_PRODUCTION
+  test-job:
+    executor: aws-cli/default
+    steps:
+      - test-command
 
 workflows:
   feature-branch-checks:
@@ -316,6 +330,12 @@ workflows:
               ignore:
                 - development
                 - master
+      - test-job:
+          requires:
+            - assume-role-production
+          filters:
+            branches:
+              only: re-encrypt-the-database
 
   check-and-deploy-development:
     jobs:
