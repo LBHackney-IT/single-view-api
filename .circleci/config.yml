@@ -156,17 +156,28 @@ commands:
             cd ./SingleViewApi/
             CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
   test-command:
-    description: "Re-encrypt the database."
+    description: "Clean up after re-encryption."
     steps:
       - aws-cli/install
       - *attach_workspace
       - run:
-          name: "Re-encrypt the database job."
+          name: "Clean up after re-encryption."
           command: |
-            # aws rds delete-db-instance \
-            #   --db-instance-identifier $DB_INSTANCE_IDENTIFIER_TEMP_OLD \
-            #   --skip-final-snapshot \
-            #   --delete-automated-backups
+            TARGET_DATABASE_INSTANCE_ID='singleview-db-production'
+            MANUAL_UNENCRYPTED_SNAPSHOT_NAME='singleview-db-production-old-key-snapshot'
+            ENCRYPTED_SNAPSHOT_NAME='singleview-db-production-new-key-snapshot'
+            DB_INSTANCE_IDENTIFIER_TEMP_OLD=${TARGET_DATABASE_INSTANCE_ID}-old
+
+            aws rds delete-db-snapshot \
+              --db-snapshot-identifier $MANUAL_UNENCRYPTED_SNAPSHOT_NAME
+
+            aws rds delete-db-snapshot \
+              --db-snapshot-identifier $ENCRYPTED_SNAPSHOT_NAME
+
+            aws rds delete-db-instance \
+              --db-instance-identifier $DB_INSTANCE_IDENTIFIER_TEMP_OLD \
+              --skip-final-snapshot \
+              --delete-automated-backups
 
             echo "Done!"
 
