@@ -27,7 +27,7 @@ data "aws_region" "current" {}
 locals {
     application_name = "single-view-api"
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
-    vpc_id = "vpc-0a577fbdce98e5fe9"
+    vpc_id = "vpc-006989d0b2bb070d9"
     cidr = "0.0.0.0/0"
 }
 
@@ -86,18 +86,5 @@ terraform {
     region  = "eu-west-2"
     key     = "services/single-view-api/state"
   }
-}
-
-
-################################################################################
-# Supporting Resources
-################################################################################
-
-data "aws_ssm_parameter" "uh_postgres_db_password" {
-    name = "/single-view/production/postgres-password"
-}
-
-data "aws_ssm_parameter" "uh_postgres_username" {
-    name = "/single-view/production/postgres-username"
 }
 
