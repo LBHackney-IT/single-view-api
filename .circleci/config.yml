@@ -183,6 +183,11 @@ jobs:
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_DEVELOPMENT
+  assume-role-disaster-recovery:
+    executor: docker-python
+    steps:
+      - assume-role-and-persist-workspace:
+          aws-account: $AWS_ACCOUNT_DISASTER_RECOVERY
   assume-role-staging:
     executor: docker-python
     steps:
@@ -198,6 +203,11 @@ jobs:
     steps:
       - preview-terraform:
           environment: "development"
+  preview-terraform-disaster-recovery:
+    executor: docker-terraform
+    steps:
+      - preview-terraform:
+          environment: "production"
   preview-terraform-staging:
     executor: docker-terraform
     steps:
@@ -213,6 +223,11 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "development"
+  terraform-init-and-apply-to-disaster-recovery:
+    executor: docker-terraform
+    steps:
+      - terraform-init-then-apply:
+          environment: "production"
   terraform-init-and-apply-to-staging:
     executor: docker-terraform
     steps:
@@ -228,6 +243,11 @@ jobs:
     steps:
       - migrate-database:
           stage: "development"
+  migrate-database-disaster-recovery:
+    executor: docker-dotnet
+    steps:
+      - migrate-database:
+          stage: "production"
   migrate-database-staging:
     executor: docker-dotnet
     steps:
@@ -244,6 +264,12 @@ jobs:
       - deploy-lambda:
           stage: "development"
           aws-account: $AWS_ACCOUNT_DEVELOPMENT
+  deploy-to-disaster-recovery:
+    executor: docker-dotnet
+    steps:
+      - deploy-lambda:
+          stage: "production"
+          aws-account: $AWS_ACCOUNT_DISASTER_RECOVERY
   deploy-to-staging:
     executor: docker-dotnet
     steps:
@@ -316,6 +342,33 @@ workflows:
               ignore:
                 - development
                 - master
+
+  check-and-deploy-disaster-recovery:
+    jobs:
+      - assume-role-disaster-recovery:
+          context: api-assume-role-disaster-recovery-context
+          filters:
+            branches:
+              only: dr-testing
+      - preview-terraform-disaster-recovery:
+          requires:
+            - assume-role-disaster-recovery
+          filters:
+            branches:
+              only: dr-testing
+      - permit-disaster-recovery-terraform-release:
+          type: approval
+          requires:
+            - preview-terraform-disaster-recovery
+          filters:
+            branches:
+              only: dr-testing
+      - terraform-init-and-apply-to-disaster-recovery:
+          requires:
+            - permit-disaster-recovery-terraform-release
+          filters:
+            branches:
+              only: dr-testing
 
   check-and-deploy-development:
     jobs:
