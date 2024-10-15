@@ -104,6 +104,11 @@ data "aws_ssm_parameter" "uh_postgres_username" {
 #####
 # DB
 #####
+import {
+  to = module.postgres_db.aws_db_instance.lbh-db
+  id = "singleview-db-production"
+}
+
 module "postgres_db" {
     source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
     environment_name = "production"
@@ -113,7 +118,7 @@ module "postgres_db" {
     db_port  = 5302
     subnet_ids = data.aws_subnet_ids.all.ids
     db_engine = "postgres"
-    db_engine_version = "16.1" //DMS does not work well with v12
+    db_engine_version = "16.3" //DMS does not work well with v12
     db_instance_class = "db.t3.micro"
     db_allocated_storage = 20
     maintenance_window = "sun:10:00-sun:10:30"
@@ -125,6 +130,7 @@ module "postgres_db" {
     project_name = "single view"
     db_allow_major_version_upgrade = "true"
     db_parameter_group_name = "postgres16"
+    copy_tags_to_snapshot = true
     additional_tags = {
         BackupPolicy = "Prod"
     }
