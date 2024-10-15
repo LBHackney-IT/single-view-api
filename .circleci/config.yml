@@ -51,10 +51,6 @@ commands:
             cd ./terraform/<<parameters.environment>>/
             terraform get -update=true
             terraform init
-            if [ <<parameters.environment>> = "production" ]
-            then
-              terraform state rm 'module.postgres_db.aws_db_instance.lbh-db'
-            fi
             terraform plan
           name: get, init, and plan
   terraform-init-then-apply:

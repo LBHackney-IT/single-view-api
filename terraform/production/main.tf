@@ -104,6 +104,11 @@ data "aws_ssm_parameter" "uh_postgres_username" {
 #####
 # DB
 #####
+import {
+  to = module.postgres_db.aws_db_instance.lbh-db
+  id = "singleview-db-production"
+}
+
 module "postgres_db" {
     source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
     environment_name = "production"
