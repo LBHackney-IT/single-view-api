@@ -317,17 +317,10 @@ workflows:
           filters:
               branches:
                 only: dr-testing
-      - assume-role-role-disaster-recovery:
-          context: api-assume-role-disaster-recovery-context
-          requires:
-            - start-disaster-recovery-release
-          filters:
-            branches:
-              only: dr-testing
       - permit-disaster-recovery-api-release:
           type: approval
           requires:
-            - assume-role-role-disaster-recovery
+            - assume-role-disaster-recovery
           filters:
             branches:
               only: dr-testing
@@ -335,7 +328,7 @@ workflows:
           context: api-nuget-token-context
           requires:
             - permit-disaster-recovery-api-release
-            - assume-role-role-disaster-recovery
+            - assume-role-disaster-recovery
           filters:
             branches:
               only: dr-testing
