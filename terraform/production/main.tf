@@ -131,7 +131,4 @@ module "postgres_db" {
     db_parameter_group_name = "postgres16"
     deletion_protection = true
     copy_tags_to_snapshot = true
-    additional_tags = {
-        BackupPolicy = "Prod"
-    }
 }
