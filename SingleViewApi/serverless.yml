@@ -164,9 +164,7 @@ custom:
         - 'subnet-0dc9e293451de5466'
     production:
       securityGroupIds:
-        - 'sg-093b2a97fa68e75f2'
+        - 'sg-08228267ff052478e'
       subnetIds:
-        - 'subnet-0549806bb139ea8be'
-        - 'subnet-0ee03e80fcc765fb2'
-        - 'subnet-04f3f27d8d1bb349f'
-        - 'subnet-012bdebbf8bf17369'
+        - 'subnet-0b3d84f1090ed1b2f'
+        - 'subnet-0fe9914b2697c0c53'
