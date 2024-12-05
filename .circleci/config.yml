@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@5.1.0
   aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
+  node: circleci/node@6.3.0
 
 executors:
   docker-python:
@@ -82,14 +83,9 @@ commands:
       - *attach_workspace
       - checkout
       - setup_remote_docker
-      - run:
-          name: Install Node.js
-          command: |
-            curl -sL https://deb.nodesource.com/setup_20.x | bash -
-            apt-get update && apt-get install -y nodejs
-      - run:
-          name: Install Serverless Framework
-          command: npm i -g serverless@^4 serverless-plugin-aws-alerts
+      - node/install
+      - node/install-packages:
+          app-dir: SingleViewApi
       - run:
           name: Build lambda
           command: |
@@ -100,7 +96,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./SingleViewApi/
-            serverless deploy --stage <<parameters.stage>> --conceal
+            npx --yes serverless@4 deploy --stage <<parameters.stage>> --conceal
 
   migrate-database:
     description: "Migrate database"
