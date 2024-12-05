@@ -26,8 +26,8 @@ plugins:
   - serverless-plugin-aws-alerts
 
 package:
-# TODO: Rename zipfile in build.sh and build.cmd to match this
-  artifact: ./bin/release/net6.0/SingleViewApi.zip
+  # Ensure the outputs of build.sh and build.cmd match this
+  artifact: ./bin/release/SingleViewApi.zip
 
 functions:
   SingleViewApi:
