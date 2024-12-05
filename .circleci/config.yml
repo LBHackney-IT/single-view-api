@@ -89,11 +89,8 @@ commands:
             curl -sL https://deb.nodesource.com/setup_20.x | bash -
             apt-get update && apt-get install -y nodejs
       - run:
-          name: Install serverless CLI
-          command: npm i -g serverless@^3
-      - run:
-          name: Install aws alerts CLI
-          command: npm i -g serverless-plugin-aws-alerts
+          name: Install Serverless Framework
+          command: npm i -g serverless@^4 serverless-plugin-aws-alerts
       - run:
           name: Build lambda
           command: |
@@ -104,7 +101,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./SingleViewApi/
-            sls deploy --stage <<parameters.stage>> --conceal
+            serverless deploy --stage <<parameters.stage>> --conceal
 
   migrate-database:
     description: "Migrate database"
@@ -366,7 +363,9 @@ workflows:
             branches:
               only: development
       - deploy-to-development:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - terraform-init-and-apply-to-development
           filters:
@@ -414,7 +413,9 @@ workflows:
             branches:
               only: master
       - deploy-to-staging:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - terraform-init-and-apply-to-staging
           filters:
@@ -469,7 +470,9 @@ workflows:
             branches:
               only: master
       - deploy-to-production:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - permit-production-api-release
             - terraform-init-and-apply-to-production
