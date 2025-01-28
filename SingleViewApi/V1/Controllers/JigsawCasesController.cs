@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.UseCase.Interfaces;
+using Asp.Versioning;
 
 namespace SingleViewApi.V1.Controllers
 {
