@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SingleViewApi.V1.Boundary;
 using SingleViewApi.V1.Boundary.Request;
 using SingleViewApi.V1.Boundary.Response;
+using Asp.Versioning;
 
 namespace SingleViewApi.V1.Controllers
 {
