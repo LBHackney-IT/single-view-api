@@ -1,26 +1,26 @@
 .PHONY: setup
 setup:
-	docker-compose build
+	docker compose build
 
 .PHONY: build
 build:
-	docker-compose build SingleViewApi
+	docker compose build SingleViewApi
 
 .PHONY: serve
 serve:
-	docker-compose build SingleViewApi && docker-compose up SingleViewApi
+	docker compose build SingleViewApi && docker compose up SingleViewApi
 
 .PHONY: shell
 shell:
-	docker-compose run SingleViewApi bash
+	docker compose run SingleViewApi bash
 
 .PHONY: test
 test:
-	docker-compose up test-database & docker-compose build SingleViewApi-test && docker-compose up SingleViewApi-test
+	docker compose up test-database & docker compose build SingleViewApi-test && docker compose up SingleViewApi-test
 
 .PHONY: test-db
 test-db:
-	docker-compose up test-database
+	docker compose up test-database
 
 .PHONY: lint
 lint:
@@ -33,4 +33,4 @@ restart-db:
 	docker stop $$(docker ps -q --filter ancestor=test-database -a)
 	-docker rm $$(docker ps -q --filter ancestor=test-database -a)
 	docker rmi test-database
-	docker-compose up -d test-database
+	docker compose up -d test-database
