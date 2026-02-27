@@ -125,4 +125,5 @@ module "postgres_db" {
     project_name = "single view"
     db_allow_major_version_upgrade = "true"
     db_parameter_group_name = "postgres16"
+    copy_tags_to_snapshot = true
 }
