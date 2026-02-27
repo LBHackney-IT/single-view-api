@@ -394,7 +394,7 @@ namespace SingleViewApi
 
             services.AddHealthChecks();
 
-            // User by Hackney.Core.Logging [LogCall]
+            // Used by Logging Middleware core
             services.AddTokenFactory();
 
             services.AddSwaggerGen(c =>
