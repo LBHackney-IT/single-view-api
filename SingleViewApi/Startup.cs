@@ -394,6 +394,7 @@ namespace SingleViewApi
 
             services.AddHealthChecks();
 
+            // Used by Logging Middleware core
             services.AddTokenFactory();
 
             services.AddSwaggerGen(c =>
