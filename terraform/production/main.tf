@@ -9,75 +9,76 @@
 
 terraform {
   required_providers {
-        aws = {
-            source = "hashicorp/aws"
-            version = "~> 2.0"
-        }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 2.0"
     }
+  }
 }
 
 
 provider "aws" {
-    region  = "eu-west-2"
+  region = "eu-west-2"
 }
 
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-    application_name = "single-view-api"
-    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
-    vpc_id = "vpc-0a577fbdce98e5fe9"
-    cidr = "0.0.0.0/0"
+  application_name = "single-view-api"
+  parameter_store  = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+  vpc_id           = "vpc-0a577fbdce98e5fe9"
+  cidr             = "0.0.0.0/0"
 }
 
 data "aws_subnet_ids" "all" {
-    vpc_id = local.vpc_id
+  vpc_id = local.vpc_id
 }
 
+### commented out during decommissioning since prod didn't have ElastiCache deployed at the time
 # Create ElastiCache Redis security group
 
-resource "aws_security_group" "redis_sg" {
-    vpc_id = local.vpc_id
+# resource "aws_security_group" "redis_sg" {
+#     vpc_id = local.vpc_id
 
-    ingress {
-        cidr_blocks = [local.cidr]
-        from_port   = 6379
-        to_port     = 6379
-        protocol    = "tcp"
-    }
+#     ingress {
+#         cidr_blocks = [local.cidr]
+#         from_port   = 6379
+#         to_port     = 6379
+#         protocol    = "tcp"
+#     }
 
-    egress {
-        from_port       = 0
-        to_port         = 0
-        protocol        = "-1"
-        cidr_blocks = [local.cidr]
-    }
+#     egress {
+#         from_port       = 0
+#         to_port         = 0
+#         protocol        = "-1"
+#         cidr_blocks = [local.cidr]
+#     }
 
-}
+# }
 
 # Create ElastiCache Redis subnet group
 
-resource "aws_elasticache_subnet_group" "default" {
-    name        = "subnet-group-single-view"
-    description = "Private subnets for the ElastiCache instances: single view"
-    subnet_ids  = data.aws_subnet_ids.all.ids
-}
+# resource "aws_elasticache_subnet_group" "default" {
+#     name        = "subnet-group-single-view"
+#     description = "Private subnets for the ElastiCache instances: single view"
+#     subnet_ids  = data.aws_subnet_ids.all.ids
+# }
 
 
 # Create ElastiCache Redis cluster
 
-resource "aws_elasticache_cluster" "redis" {
-    cluster_id           = "single-view-production"
-    engine               = "redis"
-    engine_version       = "7.0.7"
-    node_type            = "cache.t4g.micro"
-    num_cache_nodes      = 1
-    parameter_group_name = "default.redis7"
-    port                 = 6379
-    subnet_group_name    = aws_elasticache_subnet_group.default.name
-    security_group_ids   = [aws_security_group.redis_sg.id]
-}
+# resource "aws_elasticache_cluster" "redis" {
+#     cluster_id           = "single-view-production"
+#     engine               = "redis"
+#     engine_version       = "7.0.7"
+#     node_type            = "cache.t4g.micro"
+#     num_cache_nodes      = 1
+#     parameter_group_name = "default.redis7"
+#     port                 = 6379
+#     subnet_group_name    = aws_elasticache_subnet_group.default.name
+#     security_group_ids   = [aws_security_group.redis_sg.id]
+# }
 
 terraform {
   backend "s3" {
@@ -94,11 +95,11 @@ terraform {
 ################################################################################
 
 data "aws_ssm_parameter" "uh_postgres_db_password" {
-    name = "/single-view/production/postgres-password"
+  name = "/single-view/production/postgres-password"
 }
 
 data "aws_ssm_parameter" "uh_postgres_username" {
-    name = "/single-view/production/postgres-username"
+  name = "/single-view/production/postgres-username"
 }
 
 #####
@@ -110,28 +111,28 @@ import {
 }
 
 module "postgres_db" {
-    source = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
-    environment_name = "production"
-    vpc_id = local.vpc_id
-    db_identifier = "singleview"
-    db_name = "singleview"
-    db_port  = 5302
-    subnet_ids = data.aws_subnet_ids.all.ids
-    db_engine = "postgres"
-    db_engine_version = "16.13" //DMS does not work well with v12
-    db_instance_class = "db.t3.micro"
-    db_allocated_storage = 20
-    maintenance_window = "sun:10:00-sun:10:30"
-    db_username = data.aws_ssm_parameter.uh_postgres_username.value
-    db_password = data.aws_ssm_parameter.uh_postgres_db_password.value
-    storage_encrypted = false
-    multi_az = false //only true if production deployment
-    publicly_accessible = false
-    project_name = "single view"
-    db_allow_major_version_upgrade = "true"
-    db_parameter_group_name = "postgres16"
-    copy_tags_to_snapshot = true
-    additional_tags = {
-        BackupPolicy = "Prod"
-    }
+  source                         = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/database/postgres"
+  environment_name               = "production"
+  vpc_id                         = local.vpc_id
+  db_identifier                  = "singleview"
+  db_name                        = "singleview"
+  db_port                        = 5302
+  subnet_ids                     = data.aws_subnet_ids.all.ids
+  db_engine                      = "postgres"
+  db_engine_version              = "16.13" //DMS does not work well with v12
+  db_instance_class              = "db.t3.micro"
+  db_allocated_storage           = 20
+  maintenance_window             = "sun:10:00-sun:10:30"
+  db_username                    = data.aws_ssm_parameter.uh_postgres_username.value
+  db_password                    = data.aws_ssm_parameter.uh_postgres_db_password.value
+  storage_encrypted              = false
+  multi_az                       = false //only true if production deployment
+  publicly_accessible            = false
+  project_name                   = "single view"
+  db_allow_major_version_upgrade = "true"
+  db_parameter_group_name        = "postgres16"
+  copy_tags_to_snapshot          = true
+  additional_tags = {
+    BackupPolicy = "Prod"
+  }
 }
