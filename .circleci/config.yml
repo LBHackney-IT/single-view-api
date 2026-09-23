@@ -248,11 +248,6 @@ jobs:
       - run:
           name: Run tests
           command: docker-compose run SingleViewApi-test
-  assume-role-development:
-    executor: docker-python
-    steps:
-      - assume-role-and-persist-workspace:
-          aws-account: $AWS_ACCOUNT_DEVELOPMENT
   assume-role-staging:
     executor: docker-python
     steps:
@@ -263,11 +258,6 @@ jobs:
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_PRODUCTION
-  preview-terraform-development:
-    executor: docker-terraform
-    steps:
-      - preview-terraform:
-          environment: "development"
   preview-terraform-staging:
     executor: docker-terraform
     steps:
@@ -293,11 +283,6 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "production"
-  terraform-destroy-development:
-    executor: docker-terraform
-    steps:
-      - terraform-init-then-destroy:
-          environment: "development"
   migrate-database-development:
     executor: docker-dotnet
     steps:
@@ -345,21 +330,6 @@ jobs:
 workflows:
   feature-branch-checks:
     jobs:
-      - assume-role-development:
-          context: api-assume-role-corporate-development-context
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - preview-terraform-development:
-          requires:
-            - assume-role-development
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
       - assume-role-staging:
           context: api-assume-role-corporate-staging-context
           filters:
@@ -391,34 +361,9 @@ workflows:
                 - development
                 - master
 
-  # Stage 2 of development teardown (SSI-1305): destroy Terraform (RDS + Redis).
-  # Does not snapshot, migrate, apply, or deploy. Staging/production are unchanged.
-  check-and-deploy-development:
-    jobs:
-      - assume-role-development:
-          context: api-assume-role-corporate-development-context
-          filters:
-            branches:
-              only: development
-      - preview-terraform-development:
-          requires:
-            - assume-role-development
-          filters:
-            branches:
-              only: development
-      - permit-development-terraform-destroy:
-          type: approval
-          requires:
-            - preview-terraform-development
-          filters:
-            branches:
-              only: development
-      - terraform-destroy-development:
-          requires:
-            - permit-development-terraform-destroy
-          filters:
-            branches:
-              only: development
+  # Development teardown (SSI-1305) is complete. Do not plan, apply, or destroy
+  # Terraform for development (that would recreate RDS/Redis). Staging and
+  # production are unchanged.
   check-and-deploy-staging-and-production:
     jobs:
       - build-and-test:
