@@ -114,7 +114,7 @@ commands:
           no_output_timeout: 45m
           command: |
             cd ./SingleViewApi/
-            npx --yes serverless@4 remove --stage <<parameters.stage>> --conceal
+            npx --yes serverless@4 remove --stage <<parameters.stage>>
 
   snapshot-postgres:
     description: "Creates an RDS snapshot and waits until it is available"
