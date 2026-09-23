@@ -98,6 +98,61 @@ commands:
             cd ./SingleViewApi/
             npx --yes serverless@4 deploy --stage <<parameters.stage>> --conceal
 
+  remove-lambda:
+    description: "Removes API via Serverless"
+    parameters:
+      stage:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - node/install
+      - node/install-packages:
+          app-dir: SingleViewApi
+      - run:
+          name: Remove lambda
+          no_output_timeout: 45m
+          command: |
+            cd ./SingleViewApi/
+            npx --yes serverless@4 remove --stage <<parameters.stage>> --conceal
+
+  snapshot-postgres:
+    description: "Creates an RDS snapshot and waits until it is available"
+    parameters:
+      db-instance-identifier:
+        type: string
+        default: "singleview"
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install Unzip
+          command: apt-get update && apt-get install -y unzip
+      - run:
+          name: Install AWS CLI
+          command: |
+            curl -L -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+            unzip awscliv2.zip
+            ./aws/install
+      - run:
+          name: Create RDS snapshot and wait until available
+          no_output_timeout: 45m
+          command: |
+            SNAPSHOT_ID="singleview-development-final-$(date +%Y%m%d%H%M%S)"
+            echo "Creating snapshot ${SNAPSHOT_ID} of <<parameters.db-instance-identifier>>"
+            aws rds create-db-snapshot \
+              --region eu-west-2 \
+              --db-instance-identifier "<<parameters.db-instance-identifier>>" \
+              --db-snapshot-identifier "${SNAPSHOT_ID}"
+            aws rds wait db-snapshot-available \
+              --region eu-west-2 \
+              --db-snapshot-identifier "${SNAPSHOT_ID}"
+            aws rds describe-db-snapshots \
+              --region eu-west-2 \
+              --db-snapshot-identifier "${SNAPSHOT_ID}" \
+              --query "DBSnapshots[0].{Id:DBSnapshotIdentifier,Status:Status,Created:SnapshotCreateTime}" \
+              --output table
+            echo "Snapshot available: ${SNAPSHOT_ID}"
+
   migrate-database:
     description: "Migrate database"
     parameters:
@@ -236,6 +291,16 @@ jobs:
       - deploy-lambda:
           stage: "development"
           aws-account: $AWS_ACCOUNT_DEVELOPMENT
+  snapshot-development-database:
+    executor: docker-dotnet
+    steps:
+      - snapshot-postgres:
+          db-instance-identifier: "singleview"
+  remove-from-development:
+    executor: docker-dotnet
+    steps:
+      - remove-lambda:
+          stage: "development"
   deploy-to-staging:
     executor: docker-dotnet
     steps:
@@ -252,17 +317,6 @@ jobs:
 workflows:
   feature-branch-checks:
     jobs:
-      - check-code-formatting:
-          context: api-nuget-token-context
-      - build-and-test:
-          context: api-nuget-token-context
-          requires:
-            - check-code-formatting
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
       - assume-role-development:
           context: api-assume-role-corporate-development-context
           filters:
@@ -309,31 +363,12 @@ workflows:
                 - development
                 - master
 
+  # Stage 1 of development teardown (SSI-1305): snapshot RDS, then remove Serverless.
+  # Does not migrate, apply Terraform, or deploy. Staging/production are unchanged.
   check-and-deploy-development:
     jobs:
-      - check-code-formatting:
-          context: api-nuget-token-context
-          filters:
-            branches:
-              only: development
-      - build-and-test:
-          context: api-nuget-token-context
-          requires:
-            - check-code-formatting
-          filters:
-            branches:
-              only: development
       - assume-role-development:
           context: api-assume-role-corporate-development-context
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: development
-      - migrate-database-development:
-          context: api-nuget-token-context
-          requires:
-            - assume-role-development
           filters:
             branches:
               only: development
@@ -343,26 +378,32 @@ workflows:
           filters:
             branches:
               only: development
-      - permit-development-terraform-release:
+      - permit-development-db-snapshot:
           type: approval
           requires:
             - preview-terraform-development
           filters:
             branches:
               only: development
-      - terraform-init-and-apply-to-development:
+      - snapshot-development-database:
           requires:
-            - migrate-database-development
-            - permit-development-terraform-release
+            - permit-development-db-snapshot
           filters:
             branches:
               only: development
-      - deploy-to-development:
+      - permit-development-api-teardown:
+          type: approval
+          requires:
+            - snapshot-development-database
+          filters:
+            branches:
+              only: development
+      - remove-from-development:
           context:
             - api-nuget-token-context
             - "Serverless Framework"
           requires:
-            - terraform-init-and-apply-to-development
+            - permit-development-api-teardown
           filters:
             branches:
               only: development
