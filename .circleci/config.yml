@@ -136,8 +136,11 @@ commands:
       - run:
           name: Create RDS snapshot and wait until available
           no_output_timeout: 45m
+          environment:
+            # The CLI image has no pager, and a pager would block the job anyway
+            AWS_PAGER: ""
           command: |
-            SNAPSHOT_ID="singleview-development-final-$(date +%Y%m%d%H%M%S)"
+            SNAPSHOT_ID="<<parameters.db-instance-identifier>>-final-$(date +%Y%m%d%H%M%S)"
             echo "Creating snapshot ${SNAPSHOT_ID} of <<parameters.db-instance-identifier>>"
             aws rds create-db-snapshot \
               --region eu-west-2 \
