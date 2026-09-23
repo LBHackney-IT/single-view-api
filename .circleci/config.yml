@@ -72,6 +72,26 @@ commands:
           command: |
             cd ./terraform/<<parameters.environment>>/
             terraform apply -auto-approve
+  terraform-init-then-destroy:
+    description: "Initializes and destroys terraform configuration"
+    parameters:
+      environment:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - run:
+          command: |
+            cd ./terraform/<<parameters.environment>>/
+            terraform get -update=true
+            terraform init
+          name: get and init
+      - run:
+          name: destroy
+          no_output_timeout: 45m
+          command: |
+            cd ./terraform/<<parameters.environment>>/
+            terraform destroy -auto-approve
   deploy-lambda:
     description: "Deploys API via Serverless"
     parameters:
@@ -273,6 +293,11 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "production"
+  terraform-destroy-development:
+    executor: docker-terraform
+    steps:
+      - terraform-init-then-destroy:
+          environment: "development"
   migrate-database-development:
     executor: docker-dotnet
     steps:
@@ -366,8 +391,8 @@ workflows:
                 - development
                 - master
 
-  # Stage 1 of development teardown (SSI-1305): snapshot RDS, then remove Serverless.
-  # Does not migrate, apply Terraform, or deploy. Staging/production are unchanged.
+  # Stage 2 of development teardown (SSI-1305): destroy Terraform (RDS + Redis).
+  # Does not snapshot, migrate, apply, or deploy. Staging/production are unchanged.
   check-and-deploy-development:
     jobs:
       - assume-role-development:
@@ -381,32 +406,16 @@ workflows:
           filters:
             branches:
               only: development
-      - permit-development-db-snapshot:
+      - permit-development-terraform-destroy:
           type: approval
           requires:
             - preview-terraform-development
           filters:
             branches:
               only: development
-      - snapshot-development-database:
+      - terraform-destroy-development:
           requires:
-            - permit-development-db-snapshot
-          filters:
-            branches:
-              only: development
-      - permit-development-api-teardown:
-          type: approval
-          requires:
-            - snapshot-development-database
-          filters:
-            branches:
-              only: development
-      - remove-from-development:
-          context:
-            - api-nuget-token-context
-            - "Serverless Framework"
-          requires:
-            - permit-development-api-teardown
+            - permit-development-terraform-destroy
           filters:
             branches:
               only: development
