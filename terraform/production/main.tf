@@ -35,37 +35,37 @@ data "aws_subnet_ids" "all" {
   vpc_id = local.vpc_id
 }
 
-### commented out during decommissioning since prod didn't have ElastiCache deployed at the time
+
 # Create ElastiCache Redis security group
 
-# resource "aws_security_group" "redis_sg" {
-#     vpc_id = local.vpc_id
+resource "aws_security_group" "redis_sg" {
+  vpc_id = local.vpc_id
 
-#     ingress {
-#         cidr_blocks = [local.cidr]
-#         from_port   = 6379
-#         to_port     = 6379
-#         protocol    = "tcp"
-#     }
+  ingress {
+    cidr_blocks = [local.cidr]
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+  }
 
-#     egress {
-#         from_port       = 0
-#         to_port         = 0
-#         protocol        = "-1"
-#         cidr_blocks = [local.cidr]
-#     }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [local.cidr]
+  }
 
-# }
+}
 
 # Create ElastiCache Redis subnet group
 
-# resource "aws_elasticache_subnet_group" "default" {
-#     name        = "subnet-group-single-view"
-#     description = "Private subnets for the ElastiCache instances: single view"
-#     subnet_ids  = data.aws_subnet_ids.all.ids
-# }
+resource "aws_elasticache_subnet_group" "default" {
+  name        = "subnet-group-single-view"
+  description = "Private subnets for the ElastiCache instances: single view"
+  subnet_ids  = data.aws_subnet_ids.all.ids
+}
 
-
+### commented out during decommissioning since prod didn't have ElastiCache deployed at the time
 # Create ElastiCache Redis cluster
 
 # resource "aws_elasticache_cluster" "redis" {
