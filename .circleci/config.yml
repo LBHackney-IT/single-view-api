@@ -111,6 +111,7 @@ commands:
           app-dir: SingleViewApi
       - run:
           name: Remove lambda
+          no_output_timeout: 45m
           command: |
             cd ./SingleViewApi/
             npx --yes serverless@4 remove --stage <<parameters.stage>> --conceal
