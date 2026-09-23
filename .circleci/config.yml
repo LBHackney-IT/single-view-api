@@ -121,7 +121,7 @@ commands:
     parameters:
       db-instance-identifier:
         type: string
-        default: "singleview"
+        default: "singleview-db-development"
     steps:
       - *attach_workspace
       - run:
@@ -295,7 +295,7 @@ jobs:
     executor: docker-dotnet
     steps:
       - snapshot-postgres:
-          db-instance-identifier: "singleview"
+          db-instance-identifier: "singleview-db-development"
   remove-from-development:
     executor: docker-dotnet
     steps:
