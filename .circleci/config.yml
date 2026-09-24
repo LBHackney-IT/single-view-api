@@ -72,6 +72,26 @@ commands:
           command: |
             cd ./terraform/<<parameters.environment>>/
             terraform apply -auto-approve
+  terraform-init-then-destroy:
+    description: "Initializes and destroys terraform configuration"
+    parameters:
+      environment:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - run:
+          command: |
+            cd ./terraform/<<parameters.environment>>/
+            terraform get -update=true
+            terraform init
+          name: get and init
+      - run:
+          name: destroy
+          no_output_timeout: 45m
+          command: |
+            cd ./terraform/<<parameters.environment>>/
+            terraform destroy -auto-approve
   deploy-lambda:
     description: "Deploys API via Serverless"
     parameters:
@@ -97,6 +117,64 @@ commands:
           command: |
             cd ./SingleViewApi/
             npx --yes serverless@4 deploy --stage <<parameters.stage>> --conceal
+
+  remove-lambda:
+    description: "Removes API via Serverless"
+    parameters:
+      stage:
+        type: string
+    steps:
+      - *attach_workspace
+      - checkout
+      - node/install
+      - node/install-packages:
+          app-dir: SingleViewApi
+      - run:
+          name: Remove lambda
+          no_output_timeout: 45m
+          command: |
+            cd ./SingleViewApi/
+            npx --yes serverless@4 remove --stage <<parameters.stage>>
+
+  snapshot-postgres:
+    description: "Creates an RDS snapshot and waits until it is available"
+    parameters:
+      db-instance-identifier:
+        type: string
+        default: "singleview-db-development"
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install Unzip
+          command: apt-get update && apt-get install -y unzip
+      - run:
+          name: Install AWS CLI
+          command: |
+            curl -L -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+            unzip awscliv2.zip
+            ./aws/install
+      - run:
+          name: Create RDS snapshot and wait until available
+          no_output_timeout: 45m
+          environment:
+            # The CLI image has no pager, and a pager would block the job anyway
+            AWS_PAGER: ""
+          command: |
+            SNAPSHOT_ID="<<parameters.db-instance-identifier>>-final-$(date +%Y%m%d%H%M%S)"
+            echo "Creating snapshot ${SNAPSHOT_ID} of <<parameters.db-instance-identifier>>"
+            aws rds create-db-snapshot \
+              --region eu-west-2 \
+              --db-instance-identifier "<<parameters.db-instance-identifier>>" \
+              --db-snapshot-identifier "${SNAPSHOT_ID}"
+            aws rds wait db-snapshot-available \
+              --region eu-west-2 \
+              --db-snapshot-identifier "${SNAPSHOT_ID}"
+            aws rds describe-db-snapshots \
+              --region eu-west-2 \
+              --db-snapshot-identifier "${SNAPSHOT_ID}" \
+              --query "DBSnapshots[0].{Id:DBSnapshotIdentifier,Status:Status,Created:SnapshotCreateTime}" \
+              --output table
+            echo "Snapshot available: ${SNAPSHOT_ID}"
 
   migrate-database:
     description: "Migrate database"
@@ -170,11 +248,6 @@ jobs:
       - run:
           name: Run tests
           command: docker-compose run SingleViewApi-test
-  assume-role-development:
-    executor: docker-python
-    steps:
-      - assume-role-and-persist-workspace:
-          aws-account: $AWS_ACCOUNT_DEVELOPMENT
   assume-role-staging:
     executor: docker-python
     steps:
@@ -185,11 +258,6 @@ jobs:
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_PRODUCTION
-  preview-terraform-development:
-    executor: docker-terraform
-    steps:
-      - preview-terraform:
-          environment: "development"
   preview-terraform-staging:
     executor: docker-terraform
     steps:
@@ -236,6 +304,26 @@ jobs:
       - deploy-lambda:
           stage: "development"
           aws-account: $AWS_ACCOUNT_DEVELOPMENT
+  snapshot-development-database:
+    executor: docker-dotnet
+    steps:
+      - snapshot-postgres:
+          db-instance-identifier: "singleview-db-development"
+  remove-from-development:
+    executor: docker-dotnet
+    steps:
+      - remove-lambda:
+          stage: "development"
+  snapshot-staging-database:
+    executor: docker-dotnet
+    steps:
+      - snapshot-postgres:
+          db-instance-identifier: "singleview-db-staging"
+  remove-from-staging:
+    executor: docker-dotnet
+    steps:
+      - remove-lambda:
+          stage: "staging"
   deploy-to-staging:
     executor: docker-dotnet
     steps:
@@ -252,32 +340,6 @@ jobs:
 workflows:
   feature-branch-checks:
     jobs:
-      - check-code-formatting:
-          context: api-nuget-token-context
-      - build-and-test:
-          context: api-nuget-token-context
-          requires:
-            - check-code-formatting
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - assume-role-development:
-          context: api-assume-role-corporate-development-context
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - preview-terraform-development:
-          requires:
-            - assume-role-development
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
       - assume-role-staging:
           context: api-assume-role-corporate-staging-context
           filters:
@@ -309,63 +371,12 @@ workflows:
                 - development
                 - master
 
-  check-and-deploy-development:
-    jobs:
-      - check-code-formatting:
-          context: api-nuget-token-context
-          filters:
-            branches:
-              only: development
-      - build-and-test:
-          context: api-nuget-token-context
-          requires:
-            - check-code-formatting
-          filters:
-            branches:
-              only: development
-      - assume-role-development:
-          context: api-assume-role-corporate-development-context
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: development
-      - migrate-database-development:
-          context: api-nuget-token-context
-          requires:
-            - assume-role-development
-          filters:
-            branches:
-              only: development
-      - preview-terraform-development:
-          requires:
-            - assume-role-development
-          filters:
-            branches:
-              only: development
-      - permit-development-terraform-release:
-          type: approval
-          requires:
-            - preview-terraform-development
-          filters:
-            branches:
-              only: development
-      - terraform-init-and-apply-to-development:
-          requires:
-            - migrate-database-development
-            - permit-development-terraform-release
-          filters:
-            branches:
-              only: development
-      - deploy-to-development:
-          context:
-            - api-nuget-token-context
-            - "Serverless Framework"
-          requires:
-            - terraform-init-and-apply-to-development
-          filters:
-            branches:
-              only: development
+  # Development teardown (SSI-1305) is complete. Do not plan, apply, or destroy
+  # Terraform for development (that would recreate RDS/Redis).
+  #
+  # Stage 1 of staging teardown: snapshot RDS, then remove Serverless. Does not
+  # migrate, apply Terraform, or deploy staging. Production is unchanged except
+  # it no longer waits for a staging deploy (staging will no longer be deployed).
   check-and-deploy-staging-and-production:
     jobs:
       - build-and-test:
@@ -380,46 +391,45 @@ workflows:
           filters:
             branches:
               only: master
-      - migrate-database-staging:
-          context: api-nuget-token-context
-          requires:
-            - assume-role-staging
-          filters:
-            branches:
-              only: master
       - preview-terraform-staging:
           requires:
             - assume-role-staging
           filters:
             branches:
               only: master
-      - permit-staging-terraform-release:
+      - permit-staging-db-snapshot:
           type: approval
           requires:
             - preview-terraform-staging
           filters:
             branches:
               only: master
-      - terraform-init-and-apply-to-staging:
+      - snapshot-staging-database:
           requires:
-            - migrate-database-staging
-            - permit-staging-terraform-release
+            - permit-staging-db-snapshot
           filters:
             branches:
               only: master
-      - deploy-to-staging:
+      - permit-staging-api-teardown:
+          type: approval
+          requires:
+            - snapshot-staging-database
+          filters:
+            branches:
+              only: master
+      - remove-from-staging:
           context:
             - api-nuget-token-context
             - "Serverless Framework"
           requires:
-            - terraform-init-and-apply-to-staging
+            - permit-staging-api-teardown
           filters:
             branches:
               only: master
       - start-production-release:
           type: approval
           requires:
-            - deploy-to-staging
+            - build-and-test
           filters:
               branches:
                 only: master
