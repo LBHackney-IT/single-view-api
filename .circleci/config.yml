@@ -314,6 +314,16 @@ jobs:
     steps:
       - remove-lambda:
           stage: "development"
+  snapshot-staging-database:
+    executor: docker-dotnet
+    steps:
+      - snapshot-postgres:
+          db-instance-identifier: "singleview-db-staging"
+  remove-from-staging:
+    executor: docker-dotnet
+    steps:
+      - remove-lambda:
+          stage: "staging"
   deploy-to-staging:
     executor: docker-dotnet
     steps:
@@ -362,8 +372,11 @@ workflows:
                 - master
 
   # Development teardown (SSI-1305) is complete. Do not plan, apply, or destroy
-  # Terraform for development (that would recreate RDS/Redis). Staging and
-  # production are unchanged.
+  # Terraform for development (that would recreate RDS/Redis).
+  #
+  # Stage 1 of staging teardown: snapshot RDS, then remove Serverless. Does not
+  # migrate, apply Terraform, or deploy staging. Production is unchanged except
+  # it no longer waits for a staging deploy (staging will no longer be deployed).
   check-and-deploy-staging-and-production:
     jobs:
       - build-and-test:
@@ -378,46 +391,45 @@ workflows:
           filters:
             branches:
               only: master
-      - migrate-database-staging:
-          context: api-nuget-token-context
-          requires:
-            - assume-role-staging
-          filters:
-            branches:
-              only: master
       - preview-terraform-staging:
           requires:
             - assume-role-staging
           filters:
             branches:
               only: master
-      - permit-staging-terraform-release:
+      - permit-staging-db-snapshot:
           type: approval
           requires:
             - preview-terraform-staging
           filters:
             branches:
               only: master
-      - terraform-init-and-apply-to-staging:
+      - snapshot-staging-database:
           requires:
-            - migrate-database-staging
-            - permit-staging-terraform-release
+            - permit-staging-db-snapshot
           filters:
             branches:
               only: master
-      - deploy-to-staging:
+      - permit-staging-api-teardown:
+          type: approval
+          requires:
+            - snapshot-staging-database
+          filters:
+            branches:
+              only: master
+      - remove-from-staging:
           context:
             - api-nuget-token-context
             - "Serverless Framework"
           requires:
-            - terraform-init-and-apply-to-staging
+            - permit-staging-api-teardown
           filters:
             branches:
               only: master
       - start-production-release:
           type: approval
           requires:
-            - deploy-to-staging
+            - build-and-test
           filters:
               branches:
                 only: master
