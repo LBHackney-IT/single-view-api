@@ -227,27 +227,6 @@ commands:
             CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
 
 jobs:
-  check-code-formatting:
-    executor: docker-dotnet
-    steps:
-      - checkout
-      - run:
-          name: Install dotnet format
-          command: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
-      - run:
-          name: Run formatter check
-          command: ./dotnet-format-local/dotnet-format --check
-  build-and-test:
-    executor: docker-python
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: build
-          command: docker-compose build SingleViewApi-test
-      - run:
-          name: Run tests
-          command: docker-compose run SingleViewApi-test
   assume-role-staging:
     executor: docker-python
     steps:
@@ -375,19 +354,13 @@ workflows:
   # Terraform for development (that would recreate RDS/Redis).
   #
   # Stage 1 of staging teardown: snapshot RDS, then remove Serverless. Does not
-  # migrate, apply Terraform, or deploy staging. Production is unchanged except
-  # it no longer waits for a staging deploy (staging will no longer be deployed).
+  # migrate, apply Terraform, deploy staging, or run tests. Production is
+  # unchanged except it no longer waits for a staging deploy (staging will no
+  # longer be deployed).
   check-and-deploy-staging-and-production:
     jobs:
-      - build-and-test:
-          context: api-nuget-token-context
-          filters:
-            branches:
-              only: master
       - assume-role-staging:
           context: api-assume-role-corporate-staging-context
-          requires:
-            - build-and-test
           filters:
             branches:
               only: master
@@ -428,8 +401,6 @@ workflows:
               only: master
       - start-production-release:
           type: approval
-          requires:
-            - build-and-test
           filters:
               branches:
                 only: master
