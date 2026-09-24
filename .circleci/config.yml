@@ -262,6 +262,11 @@ jobs:
     steps:
       - terraform-init-then-apply:
           environment: "production"
+  terraform-destroy-staging:
+    executor: docker-terraform
+    steps:
+      - terraform-init-then-destroy:
+          environment: "staging"
   migrate-database-development:
     executor: docker-dotnet
     steps:
@@ -353,10 +358,9 @@ workflows:
   # Development teardown (SSI-1305) is complete. Do not plan, apply, or destroy
   # Terraform for development (that would recreate RDS/Redis).
   #
-  # Stage 1 of staging teardown: snapshot RDS, then remove Serverless. Does not
-  # migrate, apply Terraform, deploy staging, or run tests. Production is
-  # unchanged except it no longer waits for a staging deploy (staging will no
-  # longer be deployed).
+  # Stage 2 of staging teardown: destroy Terraform (RDS + Redis). Does not
+  # snapshot, migrate, apply, or deploy staging. Production is unchanged except
+  # it no longer waits for a staging deploy.
   check-and-deploy-staging-and-production:
     jobs:
       - assume-role-staging:
@@ -370,32 +374,16 @@ workflows:
           filters:
             branches:
               only: master
-      - permit-staging-db-snapshot:
+      - permit-staging-terraform-destroy:
           type: approval
           requires:
             - preview-terraform-staging
           filters:
             branches:
               only: master
-      - snapshot-staging-database:
+      - terraform-destroy-staging:
           requires:
-            - permit-staging-db-snapshot
-          filters:
-            branches:
-              only: master
-      - permit-staging-api-teardown:
-          type: approval
-          requires:
-            - snapshot-staging-database
-          filters:
-            branches:
-              only: master
-      - remove-from-staging:
-          context:
-            - api-nuget-token-context
-            - "Serverless Framework"
-          requires:
-            - permit-staging-api-teardown
+            - permit-staging-terraform-destroy
           filters:
             branches:
               only: master
