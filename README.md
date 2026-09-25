@@ -1,4 +1,7 @@
-# LBH Single View API
+# LBH Single View API - Decommissioned
+
+> [**IMPORTANT**]
+This application has been decommissioned and all related resources have been destroyed.
 
 Single view API is used for search residents across multiple systems.
 
