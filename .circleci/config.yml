@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@5.1.0
   aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
   node: circleci/node@6.3.0
 
@@ -21,6 +20,8 @@ references:
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
+  long_no_output: &long_no_output
+    no_output_timeout: 60m
 
 commands:
   assume-role-and-persist-workspace:
@@ -47,31 +48,13 @@ commands:
       - *attach_workspace
       - checkout
       - run:
+          <<: *long_no_output
+          name: get, init, and plan
           command: |
             cd ./terraform/<<parameters.environment>>/
             terraform get -update=true
             terraform init
             terraform plan
-          name: get, init, and plan
-  terraform-init-then-apply:
-    description: "Initializes and applies terraform configuration"
-    parameters:
-      environment:
-        type: string
-    steps:
-      - *attach_workspace
-      - checkout
-      - run:
-          command: |
-            cd ./terraform/<<parameters.environment>>/
-            terraform get -update=true
-            terraform init
-          name: get and init
-      - run:
-          name: apply
-          command: |
-            cd ./terraform/<<parameters.environment>>/
-            terraform apply -auto-approve
   terraform-init-then-destroy:
     description: "Initializes and destroys terraform configuration"
     parameters:
@@ -81,43 +64,18 @@ commands:
       - *attach_workspace
       - checkout
       - run:
+          <<: *long_no_output
+          name: get and init
           command: |
             cd ./terraform/<<parameters.environment>>/
             terraform get -update=true
             terraform init
-          name: get and init
       - run:
+          <<: *long_no_output
           name: destroy
-          no_output_timeout: 45m
           command: |
             cd ./terraform/<<parameters.environment>>/
             terraform destroy -auto-approve
-  deploy-lambda:
-    description: "Deploys API via Serverless"
-    parameters:
-      stage:
-        type: string
-      aws-account:
-        type: string
-    steps:
-      - *attach_workspace
-      - checkout
-      - setup_remote_docker
-      - node/install
-      - node/install-packages:
-          app-dir: SingleViewApi
-      - run:
-          name: Build lambda
-          command: |
-            cd ./SingleViewApi/
-            chmod +x ./build.sh
-            ./build.sh
-      - run:
-          name: Deploy lambda
-          command: |
-            cd ./SingleViewApi/
-            npx --yes serverless@4 deploy --stage <<parameters.stage>> --conceal
-
   remove-lambda:
     description: "Removes API via Serverless"
     parameters:
@@ -127,35 +85,34 @@ commands:
       - *attach_workspace
       - checkout
       - node/install
-      - node/install-packages:
-          app-dir: SingleViewApi
       - run:
-          name: Remove lambda
-          no_output_timeout: 45m
+          <<: *long_no_output
+          name: Install packages and remove lambda
           command: |
             cd ./SingleViewApi/
+            npm ci
             npx --yes serverless@4 remove --stage <<parameters.stage>>
-
   snapshot-postgres:
     description: "Creates an RDS snapshot and waits until it is available"
     parameters:
       db-instance-identifier:
         type: string
-        default: "singleview-db-development"
     steps:
       - *attach_workspace
       - run:
+          <<: *long_no_output
           name: Install Unzip
           command: apt-get update && apt-get install -y unzip
       - run:
+          <<: *long_no_output
           name: Install AWS CLI
           command: |
             curl -L -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
             unzip awscliv2.zip
             ./aws/install
       - run:
+          <<: *long_no_output
           name: Create RDS snapshot and wait until available
-          no_output_timeout: 45m
           environment:
             # The CLI image has no pager, and a pager would block the job anyway
             AWS_PAGER: ""
@@ -176,233 +133,43 @@ commands:
               --output table
             echo "Snapshot available: ${SNAPSHOT_ID}"
 
-  migrate-database:
-    description: "Migrate database"
-    parameters:
-      stage:
-        type: string
-    steps:
-      - *attach_workspace
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: debug
-          command: |
-            pwd
-            ls -al
-      - run:
-          name: Install Unzip
-          command: apt-get update && apt-get install unzip
-      - run:
-          name: Install dotnet ef core
-          command: dotnet tool install dotnet-ef --tool-path ./dotnet-ef-local/ --version 6.*
-      - run:
-          name: Install ssh
-          command: apt-get update && apt-get -y install openssh-server
-      - run:
-          name: Install AWS CLI
-          command: |
-            curl -L -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-            unzip awscliv2.zip
-            ./aws/install
-      - run:
-          name: Install Session Manager plugin
-          command: |
-            curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
-            dpkg -i session-manager-plugin.deb
-      - run:
-          name: SSH into RDS and migrate database
-          command: |
-            aws ssm get-parameter --name "/single-view/<<parameters.stage>>/jump-box-pem-key" --output text --query Parameter.Value > ./private-key.pem
-            chmod 400 ./private-key.pem
-            HOST=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-hostname --query Parameter.Value)
-            PORT=5302
-            INSTANCE_ID=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/jump-box-instance-id --query Parameter.Value)
-            ssh -4 -i ./private-key.pem -Nf -M -L ${PORT//\"}:${HOST//\"}:${PORT//\"} -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -o ProxyCommand="aws ssm start-session --target %h --document AWS-StartSSHSession --parameters portNumber=%p --region=eu-west-2" ec2-user@${INSTANCE_ID//\"}
-            PASSWORD=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-password --query Parameter.Value --with-decryption)
-            USERNAME=$(aws ssm get-parameter --name /single-view/<<parameters.stage>>/postgres-username --query Parameter.Value)
-            DATABASE=singleview
-            CONN_STR="Host=localhost;Password=${PASSWORD};Port=${PORT};Username=${USERNAME};Database=${DATABASE}"
-            cd ./SingleViewApi/
-            CONNECTION_STRING=${CONN_STR} ./../dotnet-ef-local/dotnet-ef database update
-
 jobs:
-  assume-role-staging:
-    executor: docker-python
-    steps:
-      - assume-role-and-persist-workspace:
-          aws-account: $AWS_ACCOUNT_STAGING
   assume-role-production:
     executor: docker-python
     steps:
       - assume-role-and-persist-workspace:
           aws-account: $AWS_ACCOUNT_PRODUCTION
-  preview-terraform-staging:
-    executor: docker-terraform
-    steps:
-      - preview-terraform:
-          environment: "staging"
   preview-terraform-production:
     executor: docker-terraform
     steps:
       - preview-terraform:
           environment: "production"
-  terraform-init-and-apply-to-development:
-    executor: docker-terraform
+  snapshot-production-database:
+    executor: docker-dotnet
     steps:
-      - terraform-init-then-apply:
-          environment: "development"
-  terraform-init-and-apply-to-staging:
-    executor: docker-terraform
+      - snapshot-postgres:
+          db-instance-identifier: "singleview-db-production"
+  remove-from-production:
+    executor: docker-dotnet
     steps:
-      - terraform-init-then-apply:
-          environment: "staging"
-  terraform-init-and-apply-to-production:
-    executor: docker-terraform
-    steps:
-      - terraform-init-then-apply:
-          environment: "production"
-  terraform-destroy-staging:
+      - remove-lambda:
+          stage: "production"
+  terraform-destroy-production:
     executor: docker-terraform
     steps:
       - terraform-init-then-destroy:
-          environment: "staging"
-  migrate-database-development:
-    executor: docker-dotnet
-    steps:
-      - migrate-database:
-          stage: "development"
-  migrate-database-staging:
-    executor: docker-dotnet
-    steps:
-      - migrate-database:
-          stage: "staging"
-  migrate-database-production:
-    executor: docker-dotnet
-    steps:
-      - migrate-database:
-          stage: "production"
-  deploy-to-development:
-    executor: docker-dotnet
-    steps:
-      - deploy-lambda:
-          stage: "development"
-          aws-account: $AWS_ACCOUNT_DEVELOPMENT
-  snapshot-development-database:
-    executor: docker-dotnet
-    steps:
-      - snapshot-postgres:
-          db-instance-identifier: "singleview-db-development"
-  remove-from-development:
-    executor: docker-dotnet
-    steps:
-      - remove-lambda:
-          stage: "development"
-  snapshot-staging-database:
-    executor: docker-dotnet
-    steps:
-      - snapshot-postgres:
-          db-instance-identifier: "singleview-db-staging"
-  remove-from-staging:
-    executor: docker-dotnet
-    steps:
-      - remove-lambda:
-          stage: "staging"
-  deploy-to-staging:
-    executor: docker-dotnet
-    steps:
-      - deploy-lambda:
-          stage: "staging"
-          aws-account: $AWS_ACCOUNT_STAGING
-  deploy-to-production:
-    executor: docker-dotnet
-    steps:
-      - deploy-lambda:
-          stage: "production"
-          aws-account: $AWS_ACCOUNT_PRODUCTION
+          environment: "production"
 
 workflows:
-  feature-branch-checks:
-    jobs:
-      - assume-role-staging:
-          context: api-assume-role-corporate-staging-context
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - preview-terraform-staging:
-          requires:
-            - assume-role-staging
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - assume-role-production:
-          context: api-assume-role-corporate-production-context
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-      - preview-terraform-production:
-          requires:
-            - assume-role-production
-          filters:
-            branches:
-              ignore:
-                - development
-                - master
-
-  # Development teardown (SSI-1305) is complete. Do not plan, apply, or destroy
-  # Terraform for development (that would recreate RDS/Redis).
+  # Development and staging teardown (SSI-1305) are complete. Do not plan, apply,
+  # or destroy those stacks (that would recreate RDS/Redis).
   #
-  # Stage 2 of staging teardown: destroy Terraform (RDS + Redis). Does not
-  # snapshot, migrate, apply, or deploy staging. Production is unchanged except
-  # it no longer waits for a staging deploy.
-  check-and-deploy-staging-and-production:
+  # Production teardown in one master pipeline: plan → snapshot RDS → remove
+  # Serverless → terraform destroy. Each destructive step is gated by approval.
+  tear-down-production:
     jobs:
-      - assume-role-staging:
-          context: api-assume-role-corporate-staging-context
-          filters:
-            branches:
-              only: master
-      - preview-terraform-staging:
-          requires:
-            - assume-role-staging
-          filters:
-            branches:
-              only: master
-      - permit-staging-terraform-destroy:
-          type: approval
-          requires:
-            - preview-terraform-staging
-          filters:
-            branches:
-              only: master
-      - terraform-destroy-staging:
-          requires:
-            - permit-staging-terraform-destroy
-          filters:
-            branches:
-              only: master
-      - start-production-release:
-          type: approval
-          filters:
-              branches:
-                only: master
       - assume-role-production:
           context: api-assume-role-corporate-production-context
-          requires:
-            - start-production-release
-          filters:
-            branches:
-              only: master
-      - migrate-database-production:
-          context: api-nuget-token-context
-          requires:
-            - assume-role-production
           filters:
             branches:
               only: master
@@ -412,34 +179,45 @@ workflows:
           filters:
             branches:
               only: master
-      - permit-production-terraform-release:
+      - permit-production-db-snapshot:
           type: approval
           requires:
             - preview-terraform-production
           filters:
             branches:
               only: master
-      - terraform-init-and-apply-to-production:
+      - snapshot-production-database:
           requires:
-            - migrate-database-production
-            - permit-production-terraform-release
+            - permit-production-db-snapshot
           filters:
             branches:
               only: master
-      - permit-production-api-release:
+      - permit-production-api-teardown:
           type: approval
           requires:
-            - terraform-init-and-apply-to-production
+            - snapshot-production-database
           filters:
             branches:
               only: master
-      - deploy-to-production:
+      - remove-from-production:
           context:
             - api-nuget-token-context
             - "Serverless Framework"
           requires:
-            - permit-production-api-release
-            - terraform-init-and-apply-to-production
+            - permit-production-api-teardown
+          filters:
+            branches:
+              only: master
+      - permit-production-terraform-destroy:
+          type: approval
+          requires:
+            - remove-from-production
+          filters:
+            branches:
+              only: master
+      - terraform-destroy-production:
+          requires:
+            - permit-production-terraform-destroy
           filters:
             branches:
               only: master
